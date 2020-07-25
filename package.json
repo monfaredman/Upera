@@ -28,7 +28,7 @@
     "vue": "^2.6.11",
     "vue-alertify": "^1.1.0",
     "vue-awesome-swiper": "^4.1.1",
-    "vue-i18n": "^8.18.2",
+    "vue-i18n": "^8.19.0",
     "vue-infinite-loading": "^2.4.5",
     "vue-pattern-input": "^2.1.4"
   },
