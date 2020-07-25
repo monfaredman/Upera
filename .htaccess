@@ -1,4 +1,2 @@
 RewriteEngine On
-RewriteRule \.js - [E=no-gzip:1]
-RewriteRule ^$ http://217.23.4.160:3000/ [P,L]
-RewriteRule (.*) http://nodejs/$1 [P]
+RewriteRule ^(.*)$ http://nodejs/$1 [P,L]
