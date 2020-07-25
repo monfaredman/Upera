@@ -29,12 +29,14 @@ export default function(context) {
 
 	context.app.$axios.onError(error => {
 		if (error.response.status !== 200) {
-			if(error.response.data.errors)
-				context.store.dispatch("validation/setErrors", error.response.data.errors)
-			else if(error.response.data.message_fa)
-				context.store.dispatch("validation/setErrors", error.response.data.message_fa)
-			else
-				context.store.dispatch("validation/setErrors", error.response.data.message)
+			if(error.response) {
+				if(error.response.data.errors)
+					context.store.dispatch("validation/setErrors", error.response.data.errors)
+				else if(error.response.data.message_fa)
+					context.store.dispatch("validation/setErrors", error.response.data.message_fa)
+				else
+					context.store.dispatch("validation/setErrors", error.response.data.message)
+			}
 		}
 	})
 
