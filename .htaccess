@@ -1,3 +1,5 @@
 RewriteEngine On
 RewriteRule ^$ http://%{HTTP_HOST}:3000/ [P,L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.*)$ http://217.23.4.160:3000/$1 [P,L]
