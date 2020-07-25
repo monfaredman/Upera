@@ -1,6 +1,13 @@
 const webpack = require("webpack")
+import fs from 'fs'
 
 export default {
+  server: {
+    https: {
+      key: fs.readFileSync("ssl/sslprivate.key"),
+      cert: fs.readFileSync("ssl/ssl.crt")
+    }
+  },
   loading: {
     color: 'red',
     height: '6px',
