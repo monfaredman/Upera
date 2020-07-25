@@ -135,6 +135,7 @@ export default {
     /**
      * add external plugins
      */
+    extractCSS: true,
     vendor: ["jquery", "bootstrap"],
     plugins: [
       new webpack.ProvidePlugin({
