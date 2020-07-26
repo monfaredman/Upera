@@ -156,6 +156,7 @@ import {mapGetters} from 'vuex'
                 this.password=''
                 this.$store.dispatch('login/SET_MESSAGE_SENT_FALSE')
                 this.$store.dispatch('validation/clearErrors')
+                window.location.reload(true)
                 return response
               } catch (err) {
                 return err

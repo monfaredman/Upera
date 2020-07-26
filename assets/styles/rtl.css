@@ -1832,7 +1832,14 @@ left:auto;
   font-family: "dana", serif !important;
 }
 
-.modal{
+.srmrtl .modal{
   direction: rtl;
     text-align: right;
 }
+
+       .srmrtl .raychat_main_button.right {
+            right: 0;
+           
+            -webkit-transition: display 300ms ease-in-out !important;
+            transition: display 300ms ease-in-out !important;
+        }

@@ -16,7 +16,7 @@
         <div id="episode_topNav" class="content px-0 px-lg-0 py-3 episode_topNav_conten">
           <div class="d-flex justify-content-between align-items-center episode_topNav_box ">
             <h2 class="h4 text-nowrap font-weight-bold mb-0">
-              {{ ChooseLang(data.titles_en[$route.params.list],data.titles[$route.params.list]) }}
+              {{ ChooseLangGenres($route.params.genre) }}
             </h2>
             <div class="series-select movie_selection">
               <a href="#" class="back" @click.prevent="hasHistory() ? $router.go(-1) : $router.push('/')">

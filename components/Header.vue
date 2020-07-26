@@ -103,25 +103,25 @@ import Login from "../components/Login"
     }
   },
   watch: {
-    $route () {
-      $(document).ready(function () {
-    document.body.classList.remove( "scroll-down" )
-  })
+    '$route.path': function() {
+        document.body.classList.remove("scroll-up")
+    document.body.classList.remove("scroll-down")
     }
     },
     mounted() {
-window.onscroll = function () {
+// window.onscroll = function () {
    
     
-    const tabBar = this.document.getElementById('tab-bar')
-    if (this.oldScroll > this.scrollY) {
-        tabBar.classList.add('show')
-    } else {
-        tabBar.classList.remove('show')
+//     const tabBar = this.document.getElementById('tab-bar')
+//     if (this.oldScroll > this.scrollY) {
+//         tabBar.classList.add('show')
+//     } else {
+//         tabBar.classList.remove('show')
         
-    }
-    this.oldScroll = this.scrollY
-}
+//     }
+//     this.oldScroll = this.scrollY
+// }
+
 
 $(document).ready(function () {
   
@@ -139,8 +139,9 @@ $(document).ready(function () {
       
         const currentScroll = window.pageYOffset
 
-        if (currentScroll == 0) {
+        if (currentScroll <= 10) {
             body.classList.remove(scrollUp)
+            body.classList.remove(scrollDown)
 
             return
         }
@@ -177,6 +178,7 @@ $(document).ready(function () {
               }
             },
             changeroute() {
+              window.location.reload(true)
               if(this.$route.name ==='profile'){
                 this.$router.push({
                     name: "login"
