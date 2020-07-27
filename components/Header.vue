@@ -113,6 +113,50 @@
           </div>
         </div>
       </div>
+      <ul v-if="categories.includes($route.path)" class="category-menu-mobile mt-5">
+        <li>
+          <nuxt-link to="/genres">
+            {{ $t('new.genres') }}
+          </nuxt-link>
+        </li>
+        <li>
+          <nuxt-link to="/casts/iranian-actors">
+            {{ $t('new.iranianactors') }}
+          </nuxt-link>
+        </li>
+        <li>
+          <nuxt-link to="/casts/foreign-actors">
+            {{ $t('new.foreignactors') }}
+          </nuxt-link>
+        </li>
+        <li>
+          <nuxt-link to="/casts/directors">
+            {{ $t('new.directors') }}
+          </nuxt-link>
+        </li>
+      </ul>
+      <ul v-if="profile.includes($route.path)" class="container category-menu-mobile category-menu-mobile-setting mt-5  pt-md-3 pt-lg-5 p- app_container_pricing_res">
+        <li class="mr-3">
+          <nuxt-link to="/profile">
+            پروفایل
+          </nuxt-link>
+        </li>
+        <li class="mr-3">
+          <nuxt-link to="/profile/settings">
+            تنظیمات
+          </nuxt-link>
+        </li>
+        <li class="mr-3">
+          <nuxt-link to="/profile/plans">
+            قیمت‌ها
+          </nuxt-link>
+        </li>
+        <li class="mr-3">
+          <nuxt-link to="/profile/internet">
+            اینترنت نیم‌بها
+          </nuxt-link>
+        </li>
+      </ul>
     </header>
 
     <Login v-if="$route.name !=='login'" :show="showModal" :staticmodal="false" @hideModal="HIDE_MODAL" />

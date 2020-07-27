@@ -489,7 +489,7 @@ nav a:hover {
 }
 
 .accordion button i {
-  color: var(--secondary);
+  color: #4b4bf9;
 }
 
 .accordion button:focus {
@@ -909,7 +909,7 @@ nav a:hover {
   color: #333;
 }
 
-#header .category-menu-mobile li.active a {
+#header .category-menu-mobile li a.nuxt-link-exact-active {
   color: #4b4bf9;
   border-bottom: 1px solid #4b4bf9;
 }
@@ -1295,7 +1295,7 @@ top: 40px;
   #header .category .category-menu li a {
     color: #333;
   }
-  #header .category .category-menu li a.active {
+  #header .category .category-menu li a.nuxt-link-exact-active {
     color: #4b4bf9;
     border-bottom: 1px solid #4b4bf9;
   }

@@ -896,9 +896,10 @@ body widget {
     font-size: 1.45em;
     font-weight: 300;
 }
-/*#genre img {
-    border-radius: 5px;
-}*/
+#genre img {
+    height: 347px;
+    width: 100%;
+}
 
 #movie .banner {
     position: relative;
@@ -1585,6 +1586,7 @@ body widget {
 
     #genre img {
         border-radius: 0px 4px 4px 0px;
+        height: auto;
     }
 
     #movie .banner .content .poster > img {

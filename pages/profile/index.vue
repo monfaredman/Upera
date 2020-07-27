@@ -10,11 +10,9 @@
           </header>
           <div class="d-flex flex-column justify-content-center align-items-center">
             <img class="image-profile" src="@/assets/img/profile.png" alt="">
-            <button class="btn btn-lg btn-primary px-4 px-md-4 py-md-2 my-2 mb-4" data-toggle="modal"
-                    data-target="#loginModal"
-            >
+            <nuxt-link :to="{ path: 'login', query: { redirect: 'profile' }}" class="btn btn-lg btn-primary px-4 px-md-4 py-md-2 my-2 mb-4">
               ورود / ثبت نام
-            </button>
+            </nuxt-link>
             <p class="text-center h6 font-weight-normal">
               برای نمایش وضعیت حساب کاربری خود ثبت نام کنید یا وارد شوید
             </p>
@@ -74,17 +72,17 @@
             <!-- Slides -->
             <div v-for="(item,index) in data.downloads.data" :key="index" class="swiper-slide">
               <nuxt-link v-if="item.type=='movie'" :to="{ name: 'movie-id', params: { id: item.id }}">
-                <img :src="data.cdn.poster+item.poster" :alt="item.name">
+                <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
               </nuxt-link>
               <nuxt-link v-else-if="item.type=='episode'" :to="{ name: 'episode-id', params: { id: item.id }}" class="is-series">
-                <img :src="data.cdn.poster+item.poster" :alt="item.name">
-                <img :src="data.cdn.poster+item.poster" :alt="item.name">
-                <img :src="data.cdn.poster+item.poster" :alt="item.name">
+                <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
+                <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
+                <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
               </nuxt-link>
               <nuxt-link v-else :to="{ name: 'series-id', params: { id: item.id }}" class="is-series">
-                <img :src="data.cdn.poster+item.poster" :alt="item.name">
-                <img :src="data.cdn.poster+item.poster" :alt="item.name">
-                <img :src="data.cdn.poster+item.poster" :alt="item.name">
+                <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
+                <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
+                <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
               </nuxt-link>
 
               <div class="mt-2">
@@ -114,17 +112,17 @@
             <!-- Slides -->
             <div v-for="(item,index) in data.watchlist.data" :key="index" class="swiper-slide">
               <nuxt-link v-if="item.type=='movie'" :to="{ name: 'movie-id', params: { id: item.id }}">
-                <img :src="data.cdn.poster+item.poster" :alt="item.name">
+                <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
               </nuxt-link>
               <nuxt-link v-else-if="item.type=='episode'" :to="{ name: 'episode-id', params: { id: item.id }}" class="is-series">
-                <img :src="data.cdn.poster+item.poster" :alt="item.name">
-                <img :src="data.cdn.poster+item.poster" :alt="item.name">
-                <img :src="data.cdn.poster+item.poster" :alt="item.name">
+                <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
+                <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
+                <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
               </nuxt-link>
               <nuxt-link v-else :to="{ name: 'series-id', params: { id: item.id }}" class="is-series">
-                <img :src="data.cdn.poster+item.poster" :alt="item.name">
-                <img :src="data.cdn.poster+item.poster" :alt="item.name">
-                <img :src="data.cdn.poster+item.poster" :alt="item.name">
+                <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
+                <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
+                <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
               </nuxt-link>
 
               <div class="mt-2">
@@ -154,17 +152,17 @@
             <!-- Slides -->
             <div v-for="(item,index) in data.likes.data" :key="index" class="swiper-slide">
               <nuxt-link v-if="item.type=='movie'" :to="{ name: 'movie-id', params: { id: item.id }}">
-                <img :src="data.cdn.poster+item.poster" :alt="item.name">
+                <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
               </nuxt-link>
               <nuxt-link v-else-if="item.type=='episode'" :to="{ name: 'episode-id', params: { id: item.id }}" class="is-series">
-                <img :src="data.cdn.poster+item.poster" :alt="item.name">
-                <img :src="data.cdn.poster+item.poster" :alt="item.name">
-                <img :src="data.cdn.poster+item.poster" :alt="item.name">
+                <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
+                <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
+                <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
               </nuxt-link>
               <nuxt-link v-else :to="{ name: 'series-id', params: { id: item.id }}" class="is-series">
-                <img :src="data.cdn.poster+item.poster" :alt="item.name">
-                <img :src="data.cdn.poster+item.poster" :alt="item.name">
-                <img :src="data.cdn.poster+item.poster" :alt="item.name">
+                <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
+                <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
+                <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
               </nuxt-link>
 
               <div class="mt-2">
@@ -194,17 +192,17 @@
             <!-- Slides -->
             <div v-for="(item,index) in data.offer.data" :key="index" class="swiper-slide">
               <nuxt-link v-if="item.type=='movie'" :to="{ name: 'movie-id', params: { id: item.id }}">
-                <img :src="data.cdn.poster+item.poster" :alt="item.name">
+                <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
               </nuxt-link>
               <nuxt-link v-else-if="item.type=='episode'" :to="{ name: 'episode-id', params: { id: item.id }}" class="is-series">
-                <img :src="data.cdn.poster+item.poster" :alt="item.name">
-                <img :src="data.cdn.poster+item.poster" :alt="item.name">
-                <img :src="data.cdn.poster+item.poster" :alt="item.name">
+                <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
+                <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
+                <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
               </nuxt-link>
               <nuxt-link v-else :to="{ name: 'series-id', params: { id: item.id }}" class="is-series">
-                <img :src="data.cdn.poster+item.poster" :alt="item.name">
-                <img :src="data.cdn.poster+item.poster" :alt="item.name">
-                <img :src="data.cdn.poster+item.poster" :alt="item.name">
+                <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
+                <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
+                <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
               </nuxt-link>
 
               <div class="mt-2">
@@ -235,17 +233,17 @@
             <!-- Slides -->
             <div v-for="(item,index) in data.watched.data" :key="index" class="swiper-slide">
               <nuxt-link v-if="item.type=='movie'" :to="{ name: 'movie-id', params: { id: item.id }}">
-                <img :src="data.cdn.poster+item.poster" :alt="item.name">
+                <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
               </nuxt-link>
               <nuxt-link v-else-if="item.type=='episode'" :to="{ name: 'episode-id', params: { id: item.id }}" class="is-series">
-                <img :src="data.cdn.poster+item.poster" :alt="item.name">
-                <img :src="data.cdn.poster+item.poster" :alt="item.name">
-                <img :src="data.cdn.poster+item.poster" :alt="item.name">
+                <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
+                <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
+                <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
               </nuxt-link>
               <nuxt-link v-else :to="{ name: 'series-id', params: { id: item.id }}" class="is-series">
-                <img :src="data.cdn.poster+item.poster" :alt="item.name">
-                <img :src="data.cdn.poster+item.poster" :alt="item.name">
-                <img :src="data.cdn.poster+item.poster" :alt="item.name">
+                <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
+                <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
+                <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
               </nuxt-link>
 
               <div class="mt-2">
@@ -332,14 +330,16 @@
     },
     mounted() {
       if(this.data.recently!=null){
-          const watching = $('#watching')
       
+          const watching = $('#watching')
+      if(this.watchSwip){
     this.watchSwip.on('reachBeginning', () => {
         watching.removeClass('swipe')
     })
     this.watchSwip.on('fromEdge', () => {
         watching.addClass('swipe')
     })
+  }
 }
 
 

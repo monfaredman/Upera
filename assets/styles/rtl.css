@@ -413,10 +413,7 @@
   border-right: 1px solid #dee2e6 !important;
   border-left: none;
 }
-.srmrtl .border-left-0 {
-  border-left: 0 !important;
-  border-right: auto;
-}
+
 .srmrtl .border-right-0 {
   border-right: 0 !important;
   border-left: auto;

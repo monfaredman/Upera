@@ -74,7 +74,11 @@ import {mapGetters} from 'vuex'
   export default {
   props: {
     show: Boolean,
-    staticmodal: Boolean
+    staticmodal: Boolean,
+    redirect: {
+        type: String,
+        default: ''
+    }
   },
   data() {
     return {
@@ -83,6 +87,7 @@ import {mapGetters} from 'vuex'
                 sms_sent: false,
                 countdown: 90,
                 countdown_finished: false,
+                redirectTo: false,
                 app_mobile: this.$t('auth.mobile'),
                 app_password: this.$t('player.pass')
     }
@@ -156,7 +161,15 @@ import {mapGetters} from 'vuex'
                 this.password=''
                 this.$store.dispatch('login/SET_MESSAGE_SENT_FALSE')
                 this.$store.dispatch('validation/clearErrors')
-                window.location.reload(true)
+                if(this.staticmodal && this.$route.query.redirect){
+                  this.$router.push({ path: this.$route.query.redirect })
+                }else if(this.staticmodal && this.redirect){
+                  this.$router.push({ path: this.redirect })
+                }
+                // else{
+                //   this.$router.go()
+                // }
+                
                 return response
               } catch (err) {
                 return err
