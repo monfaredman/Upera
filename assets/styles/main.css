@@ -166,9 +166,6 @@ a {
   background-color: #f00;
 }
 
-.swiper-slide img {
-  width: 100%;
-}
 
 small {
   font-size: 70%;
@@ -1021,9 +1018,6 @@ nav a:hover {
   position: relative;
 }
 
-#feature img {
-  width: 100%;
-}
 
 #feature .bg-img {
   -webkit-filter: brightness(0.8);
@@ -1033,7 +1027,7 @@ nav a:hover {
 
 #feature .feature {
   position: absolute;
-  top: 0;
+  top: -40px;
   left: 0;
   right: 0;
   display: -webkit-box;
@@ -1068,9 +1062,20 @@ nav a:hover {
   color: white;
   position: relative;
   z-index: 1;
-  text-shadow: 0.5px 1px #fff;
+  text-shadow: 1px 1px 2px #fff;
 }
 
+#feature img {
+    width: 100%;
+}
+
+.swiper-slide img {
+    width: 100%;
+}
+
+#feature .swiper-slide {
+top: 40px;
+  }
 #feature .feature .tags {
   position: relative;
   z-index: 1;
@@ -1123,8 +1128,8 @@ nav a:hover {
 
 .newset,
 .newset2 {
-  padding-top: 30px;
-  padding-bottom: 30px;
+  padding-top: 20px;
+/*  padding-bottom: 30px;*/
 }
 
 .newset.reach-begin .swiper-container,
@@ -1270,7 +1275,7 @@ nav a:hover {
   }
   #header .category .category-menu .angle {
     position: absolute;
-    right: 150px;
+    right: 180px;
     top: -10px;
     color: #ec2927;
     -webkit-transition: all 300ms;
@@ -1290,7 +1295,7 @@ nav a:hover {
   #header .category .category-menu li a {
     color: #333;
   }
-  #header .category .category-menu li.active a {
+  #header .category .category-menu li a.active {
     color: #4b4bf9;
     border-bottom: 1px solid #4b4bf9;
   }
@@ -1298,7 +1303,7 @@ nav a:hover {
     color: #4b4bf9;
     border-bottom: 1px solid #4b4bf9;
   }
-  #header .category.open {
+  #header .category.open,#header .category.open a,#header .category.open > div > i:before {
     color: #ec2927;
   }
   #header .category.open .category-menu {

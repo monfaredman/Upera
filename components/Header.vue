@@ -21,18 +21,22 @@
           class="d-flex justify-content-between align-items-center header trigger-menu"
         >
           <div class="d-flex align-items-center h-full">
-            <nuxt-link to="/" class="logo">
+            <nuxt-link v-if="categories.includes($route.path) || profile.includes($route.path)" to="/" class="logo logo_another_pages">
+              <i class="icon-farsi-logotype" />
+              <i class="icon-logo" />
+            </nuxt-link>
+
+            <nuxt-link v-else to="/" class="logo">
               <img src="@/assets/img/logo.svg" alt="">
               <img src="@/assets/img/logotype-fa.svg" alt="">
             </nuxt-link>
             <div class="d-none d-lg-flex align-items-center ml-5 h-full">
-              <div class="category">
+              <div class="category" :class="{ 'open': categoriesNav }" @mouseover="categoriesHover()" @mouseleave="categoriesleave()">
                 <div class="d-flex align-items-center">
                   <i class="icon-categories" />
-
                   <span class="ml-2">{{ $t('new.categories') }}</span>
                 </div>
-                <ul class="category-menu">
+                <ul v-if="!profileNav" class="category-menu">
                   <i class="fas fa-angle-down angle" />
                   <li>
                     <nuxt-link to="/genres">
@@ -64,10 +68,36 @@
                 <i class="fas fa-search" @click="SEARCH" />
               </div>
 
-              <nuxt-link to="/profile" class="profile ml-4">
-                <i class="fas fa-user-cog" />
-                <span>{{ $t('new.profile') }}</span>
-              </nuxt-link>
+              <div class="category" :class="{ 'open': profileNav }">
+                <nuxt-link to="/profile" class="profile ml-4">
+                  <i class="fas fa-user-cog" />
+
+                  <span>{{ $t('new.profile') }}</span>
+                </nuxt-link>
+                <ul v-if="profileNav" class="category-menu profile_menu">
+                  <i class="fas fa-angle-down angle" />
+                  <li>
+                    <nuxt-link to="/profile">
+                      پروفایل
+                    </nuxt-link>
+                  </li>
+                  <li>
+                    <nuxt-link to="/profile/settings">
+                      تنظیمات
+                    </nuxt-link>
+                  </li>
+                  <li>
+                    <nuxt-link to="/profile/plans">
+                      قیمت‌ها
+                    </nuxt-link>
+                  </li>
+                  <li>
+                    <nuxt-link to="/profile/internet">
+                      اینترنت نیم‌بها
+                    </nuxt-link>
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
           <div class="header-buttons">
@@ -77,7 +107,7 @@
             <b-button v-if="!$auth.loggedIn && $route.name !=='login'" variant="primary" class="py-1 px-lg-4" @click="showModal=true">
               {{ $t('new.login_register') }}
             </b-button>
-            <b-button v-else-if="$route.name !=='login'" variant="primary" class="py-1 px-lg-4" @click="$auth.logout();changeroute();">
+            <b-button v-else-if="$route.name !=='login'" variant="primary" class="py-1 px-lg-4" @click="$auth.logout();">
               خروج
             </b-button>
           </div>
@@ -99,16 +129,25 @@ import Login from "../components/Login"
   data() {
     return {
       query: null,
-      showModal: false
+      showModal: false,
+      categoriesNav: false,
+      profileNav: false,
+      categories: ["/genres", "/casts/iranian-actors", "/casts/foreign-actors", "/casts/directors"],
+      profile: ["/profile", "/profile/settings", "/profile/plans", "/profile/internet"]
+
     }
   },
   watch: {
     '$route.path': function() {
-        document.body.classList.remove("scroll-up")
-    document.body.classList.remove("scroll-down")
+      this.Nav()
+
+      document.body.classList.remove("scroll-up")
+      document.body.classList.remove("scroll-down")
     }
     },
     mounted() {
+      this.Nav()
+
 // window.onscroll = function () {
    
     
@@ -164,6 +203,31 @@ $(document).ready(function () {
 
     },
     methods: {
+            categoriesHover() {
+              if(this.profileNav){
+                this.profileNav=false
+              }
+            },
+            categoriesleave() {
+              this.Nav()
+            },
+            Nav() {
+
+              if (this.categories.includes(this.$route.path)) {
+                this.categoriesNav = true
+              }
+              else {
+                this.categoriesNav = false
+              }  
+
+
+              if (this.profile.includes(this.$route.path)) {
+                this.profileNav = true
+              }
+              else {
+                this.profileNav = false
+              }
+            },
             HIDE_MODAL() {
               this.showModal=false
             },
@@ -178,7 +242,6 @@ $(document).ready(function () {
               }
             },
             changeroute() {
-              window.location.reload(true)
               if(this.$route.name ==='profile'){
                 this.$router.push({
                     name: "login"

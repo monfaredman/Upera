@@ -3,7 +3,7 @@
     <div v-if="!$auth.loggedIn">
       <section id="banner" class="mt-5  pt-md-3 pt-lg-5">
         <div class="container">
-          <header class="headline">
+          <header class="headline mt-5">
             <h5 class="title font-weight-bold">
               حساب کاربری
             </h5>

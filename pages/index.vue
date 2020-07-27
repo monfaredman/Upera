@@ -10,7 +10,7 @@
                 <h2 class="title mb-lg-3">
                   {{ ChooseLang(item.name,item.name_fa) }}
                 </h2>
-                <h4 class="tags mb-lg-4">
+                <h4 class="tags mb-lg-4 d-none d-md-block">
                   <em v-for="(item2,index2) in ChooseLangAllGenres(item.genre)" :key="index2">{{ item2 }}<em v-if="index2+1 < ChooseLangAllGenres(item.genre).length"><span> + </span></em></em>
                 </h4>
                 <div class="d-flex align-items-center justify-content-around feature-buttons">
@@ -56,7 +56,7 @@
       </div>
     </section>
 
-    <section v-if="data.occasions!==null" id="special" class="mt-4 mb-5">
+    <section v-if="data.occasions!==null" id="special" class="mb-5">
       <div v-for="(list,i) in data.occasions" :key="i" class="container-fluid">
         <div class="special d-flex flex-column justify-content-start align-items-start align-items-lg-center flex-lg-row">
           <h4 class="font-weight-bold text-nowrap mr-lg-5 mb-4 mb-lg-0 special-title">
@@ -66,7 +66,7 @@
             <div id="special-slides">
               <div v-for="(item,index) in list.list" :key="index" class="special-slide" :class="{ active: index==0 }">
                 <div class="d-flex justify-content-start w-full special">
-                  <img class="special-image spec-1" :src="data.cdn.poster+item.poster" :alt="item.name">
+                  <img class="special-image spec-1" :src="data.cdn.sm_poster+item.poster" :alt="item.name">
                   <div class="special-content d-flex flex-column justify-content-between justify-content-lg-around align-items-end w-full">
                     <div class="d-flex justify-content-between w-full">
                       <div class=" ml-2 ml-lg-5">
@@ -133,17 +133,17 @@
           <!-- Slides -->
           <div v-for="(item,index) in data.offer" :key="index" class="swiper-slide">
             <nuxt-link v-if="item.type=='movie'" :to="{ name: 'movie-id', params: { id: item.id }}">
-              <img :src="data.cdn.poster+item.poster" :alt="item.name">
+              <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
             </nuxt-link>
             <nuxt-link v-else-if="item.type=='episode'" :to="{ name: 'episode-id', params: { id: item.id }}" class="is-series">
-              <img :src="data.cdn.poster+item.poster" :alt="item.name">
-              <img :src="data.cdn.poster+item.poster" :alt="item.name">
-              <img :src="data.cdn.poster+item.poster" :alt="item.name">
+              <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
+              <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
+              <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
             </nuxt-link>
             <nuxt-link v-else :to="{ name: 'series-id', params: { id: item.id }}" class="is-series">
-              <img :src="data.cdn.poster+item.poster" :alt="item.name">
-              <img :src="data.cdn.poster+item.poster" :alt="item.name">
-              <img :src="data.cdn.poster+item.poster" :alt="item.name">
+              <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
+              <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
+              <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
             </nuxt-link>
 
             <div class="mt-2">
@@ -156,7 +156,7 @@
       </div>
     </section>
 
-    <section v-if="data.free!==null" class="mt-4 reach-begin">
+    <section v-if="data.free!==null" class="reach-begin">
       <div class="d-flex align-items-center justify-content-between w-full px-4 p-sm-3">
         <h4 class="font-weight-bold">
           {{ ChooseLang(data.titles_en.free,data.titles.free) }}
@@ -173,17 +173,17 @@
           <!-- Slides -->
           <div v-for="(item,index) in data.free" :key="index" class="swiper-slide">
             <nuxt-link v-if="item.type=='movie'" :to="{ name: 'movie-id', params: { id: item.id }}">
-              <img :src="data.cdn.poster+item.poster" :alt="item.name">
+              <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
             </nuxt-link>
             <nuxt-link v-else-if="item.type=='episode'" :to="{ name: 'episode-id', params: { id: item.id }}" class="is-series">
-              <img :src="data.cdn.poster+item.poster" :alt="item.name">
-              <img :src="data.cdn.poster+item.poster" :alt="item.name">
-              <img :src="data.cdn.poster+item.poster" :alt="item.name">
+              <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
+              <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
+              <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
             </nuxt-link>
             <nuxt-link v-else :to="{ name: 'series-id', params: { id: item.id }}" class="is-series">
-              <img :src="data.cdn.poster+item.poster" :alt="item.name">
-              <img :src="data.cdn.poster+item.poster" :alt="item.name">
-              <img :src="data.cdn.poster+item.poster" :alt="item.name">
+              <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
+              <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
+              <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
             </nuxt-link>
             <div class="mt-2">
               <h6 class="mt-2 small font-weight-normal">
@@ -195,7 +195,7 @@
       </div>
     </section>
 
-    <section v-if="data.new_titles!==null" class="mt-4 reach-begin">
+    <section v-if="data.new_titles!==null" class="reach-begin">
       <div class="d-flex align-items-center justify-content-between w-full px-4 p-sm-3">
         <h4 class="font-weight-bold">
           {{ ChooseLang(data.titles_en.new_titles,data.titles.new_titles) }}
@@ -212,17 +212,17 @@
           <!-- Slides -->
           <div v-for="(item,index) in data.new_titles" :key="index" class="swiper-slide">
             <nuxt-link v-if="item.type=='movie'" :to="{ name: 'movie-id', params: { id: item.id }}">
-              <img :src="data.cdn.poster+item.poster" :alt="item.name">
+              <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
             </nuxt-link>
             <nuxt-link v-else-if="item.type=='episode'" :to="{ name: 'episode-id', params: { id: item.id }}" class="is-series">
-              <img :src="data.cdn.poster+item.poster" :alt="item.name">
-              <img :src="data.cdn.poster+item.poster" :alt="item.name">
-              <img :src="data.cdn.poster+item.poster" :alt="item.name">
+              <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
+              <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
+              <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
             </nuxt-link>
             <nuxt-link v-else :to="{ name: 'series-id', params: { id: item.id }}" class="is-series">
-              <img :src="data.cdn.poster+item.poster" :alt="item.name">
-              <img :src="data.cdn.poster+item.poster" :alt="item.name">
-              <img :src="data.cdn.poster+item.poster" :alt="item.name">
+              <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
+              <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
+              <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
             </nuxt-link>
             <div class="mt-2">
               <h6 class="mt-2 small font-weight-normal">
@@ -234,7 +234,7 @@
       </div>
     </section>
 
-    <section v-if="data.soon!==null" class="mt-4 reach-begin">
+    <section v-if="data.soon!==null" class="reach-begin">
       <div class="d-flex align-items-center justify-content-between w-full px-4 p-sm-3">
         <h4 class="font-weight-bold">
           {{ ChooseLang(data.titles_en.soon,data.titles.soon) }}
@@ -251,17 +251,17 @@
           <!-- Slides -->
           <div v-for="(item,index) in data.soon" :key="index" class="swiper-slide">
             <nuxt-link v-if="item.type=='movie'" :to="{ name: 'movie-id', params: { id: item.id }}">
-              <img :src="data.cdn.poster+item.poster" :alt="item.name">
+              <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
             </nuxt-link>
             <nuxt-link v-else-if="item.type=='episode'" :to="{ name: 'episode-id', params: { id: item.id }}" class="is-series">
-              <img :src="data.cdn.poster+item.poster" :alt="item.name">
-              <img :src="data.cdn.poster+item.poster" :alt="item.name">
-              <img :src="data.cdn.poster+item.poster" :alt="item.name">
+              <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
+              <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
+              <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
             </nuxt-link>
             <nuxt-link v-else :to="{ name: 'series-id', params: { id: item.id }}" class="is-series">
-              <img :src="data.cdn.poster+item.poster" :alt="item.name">
-              <img :src="data.cdn.poster+item.poster" :alt="item.name">
-              <img :src="data.cdn.poster+item.poster" :alt="item.name">
+              <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
+              <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
+              <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
             </nuxt-link>
             <div class="mt-2">
               <h6 class="mt-2 small font-weight-normal">
@@ -299,7 +299,7 @@
 
     <div v-for="(list, rootindex) in data.data" :key="rootindex">
       <div v-if="list.list.length > 0 ">
-        <section class="newset2 mt-4 reach-begin">
+        <section class="newset2 reach-begin">
           <div class="d-flex align-items-center justify-content-between w-full mb-2 px-4">
             <h4 class="font-weight-bold">
               {{ ChooseLangGenres(list.genre) }}
@@ -317,17 +317,17 @@
             <div class="swiper-wrapper py-4">
               <div v-for="(item, index) in list.list" :key="index" class="swiper-slide">
                 <nuxt-link v-if="item.type=='movie'" :to="{ name: 'movie-id', params: { id: item.id }}">
-                  <img :src="data.cdn.poster+item.poster" :alt="item.name">
+                  <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
                 </nuxt-link>
                 <nuxt-link v-else-if="item.type=='episode'" :to="{ name: 'episode-id', params: { id: item.id }}" class="is-series">
-                  <img :src="data.cdn.poster+item.poster" :alt="item.name">
-                  <img :src="data.cdn.poster+item.poster" :alt="item.name">
-                  <img :src="data.cdn.poster+item.poster" :alt="item.name">
+                  <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
+                  <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
+                  <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
                 </nuxt-link>
                 <nuxt-link v-else :to="{ name: 'series-id', params: { id: item.id }}" class="is-series">
-                  <img :src="data.cdn.poster+item.poster" :alt="item.name">
-                  <img :src="data.cdn.poster+item.poster" :alt="item.name">
-                  <img :src="data.cdn.poster+item.poster" :alt="item.name">
+                  <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
+                  <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
+                  <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
                 </nuxt-link>
                 <div class="mt-2">
                   <h6 class="mt-2 small font-weight-normal">
@@ -450,7 +450,7 @@ if(this.data.occasions!=null){
  $(document).ready(function () {
 
     const spec = $('.special-slide')
-    $('#special').height(spec.height())
+    $('#special').height(spec.height()+20)
 
     $(window).resize(function () {
         setTimeout(() => {

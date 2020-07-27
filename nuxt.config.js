@@ -57,6 +57,7 @@ export default {
     "../assets/styles/swiper.css",
   ],
     router: {
+      linkActiveClass: 'active',
     middleware: ["clearValidationErrors"]
   },
   /*
@@ -91,7 +92,7 @@ export default {
   auth: {
   redirect: {
     login: '/login',
-    logout: false,
+    logout: '/',
     callback: false,
     home: false
   },
