@@ -55,6 +55,7 @@ export default {
     "../assets/fonts/icomoon/style.css",
     "../assets/styles/fa.css",
     "../assets/styles/swiper.css",
+    "../assets/styles/Edited-Style-Dark.css",
   ],
     router: {
       linkActiveClass: 'active',
@@ -101,7 +102,7 @@ export default {
       endpoints: {
         login: { url: '/login', method: 'post', propertyName: 'token' },
         logout: { url: '/logout', method: 'post' },
-        user: { url: '/get/check/user', method: 'get', propertyName: false }
+        user: { url: '/get/user', method: 'get', propertyName: false }
       },
       // tokenRequired: true,
       // tokenType: 'bearer',
@@ -115,7 +116,7 @@ export default {
    ** See https://axios.nuxtjs.org/options
    */
   axios: {
-    baseURL: "http://upera.tv/api/v1",
+    baseURL: "https://upera.tv/api/v1",
     browserBaseURL: "https://upera.tv/api/v1",
   },
   /*

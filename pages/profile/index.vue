@@ -5,16 +5,16 @@
         <div class="container">
           <header class="headline mt-5">
             <h5 class="title font-weight-bold">
-              حساب کاربری
+              {{ $t('new.account') }}
             </h5>
           </header>
           <div class="d-flex flex-column justify-content-center align-items-center">
             <img class="image-profile" src="@/assets/img/profile.png" alt="">
             <nuxt-link :to="{ path: 'login', query: { redirect: 'profile' }}" class="btn btn-lg btn-primary px-4 px-md-4 py-md-2 my-2 mb-4">
-              ورود / ثبت نام
+              {{ $t('new.login_register') }}
             </nuxt-link>
             <p class="text-center h6 font-weight-normal">
-              برای نمایش وضعیت حساب کاربری خود ثبت نام کنید یا وارد شوید
+              {{ $t('new.loginDescription') }}
             </p>
           </div>
         </div>
@@ -25,7 +25,7 @@
         <div class="container">
           <header class="headline mt-5">
             <h5 class="title font-weight-bold">
-              فیلم‌های من
+              {{ $t('new.myMovies') }}
             </h5>
           </header>
         </div>
@@ -62,7 +62,7 @@
           </h4>
           <div class="d-flex flex-column justify-content-center align-items-center small">
             <nuxt-link :to="{ name: 'profile-list-list', params: { list: 'downloads' }}" class="mb-1">
-              نمایش همه
+              {{ $t('new.show_all') }}
             </nuxt-link>
             <img src="@/assets/img/more.svg" height="3" alt="">
           </div>
@@ -102,7 +102,7 @@
           </h4>
           <div class="d-flex flex-column justify-content-center align-items-center small">
             <nuxt-link :to="{ name: 'profile-list-list', params: { list: 'watchlist' }}" class="mb-1">
-              نمایش همه
+              {{ $t('new.show_all') }}
             </nuxt-link>
             <img src="@/assets/img/more.svg" height="3" alt="">
           </div>
@@ -142,7 +142,7 @@
           </h4>
           <div class="d-flex flex-column justify-content-center align-items-center small">
             <nuxt-link :to="{ name: 'profile-list-list', params: { list: 'likes' }}" class="mb-1">
-              نمایش همه
+              {{ $t('new.show_all') }}
             </nuxt-link>
             <img src="@/assets/img/more.svg" height="3" alt="">
           </div>
@@ -182,7 +182,7 @@
           </h4>
           <div class="d-flex flex-column justify-content-center align-items-center small">
             <nuxt-link :to="{ name: 'profile-list-list', params: { list: 'offer' }}" class="mb-1">
-              نمایش همه
+              {{ $t('new.show_all') }}
             </nuxt-link>
             <img src="@/assets/img/more.svg" height="3" alt="">
           </div>
@@ -223,7 +223,7 @@
           </h4>
           <div class="d-flex flex-column justify-content-center align-items-center small">
             <nuxt-link :to="{ name: 'profile-list-list', params: { list: 'watched' }}" class="mb-1">
-              نمایش همه
+              {{ $t('new.show_all') }}
             </nuxt-link>
             <img src="@/assets/img/more.svg" height="3" alt="">
           </div>

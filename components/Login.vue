@@ -5,13 +5,13 @@
     </button>
     <div v-if="!sms_sent">
       <h5 class="mt-2 mb-4 font-weight-bold text-center h6">
-        ورود و ثبت نام با شماره موبایل
+        {{ $t('new.login_register') }}
       </h5>
       <b-form @submit.prevent="sendcode">
         <fieldset>
           <div class="position-relative">
-            <label for="mobile">شماره مویایل خود را وارد کنید</label>                  
-            <b-form-input id="mobile" v-model.trim="mobile" dir="ltr" class="form-control large text-right mobile-input" maxlength="13" placeholder="09123456789 شماره موبایل شما " title="شماره موبایل شما" pattern="(\+98|0|98|0098)?([ ]|-|[()]){0,2}9[0-9]([ ]|-|[()]){0,2}(?:[0-9]([ ]|-|[()]){0,2}){8}" inputmode="numeric" autofocus />
+            <label for="mobile">{{ $t('new.enter_mobile') }}</label>                  
+            <b-form-input id="mobile" v-model.trim="mobile" dir="ltr" class="form-control large text-right mobile-input" maxlength="13" :placeholder="$t('new.enter_mobile')" :title="$t('new.your_mobile')" pattern="(\+98|0|98|0098)?([ ]|-|[()]){0,2}9[0-9]([ ]|-|[()]){0,2}(?:[0-9]([ ]|-|[()]){0,2}){8}" inputmode="numeric" autofocus />
             <div v-if="typeof errors === 'string'" class="text-danger">
               {{ errors }}
             </div>
@@ -19,16 +19,16 @@
               {{ errors.mobile[0] }}
             </div>
             <div v-else class="invalid-feedback">
-              شماره موبایل خود را به درستی وارد کنید
+              {{ $t('new.enter_correctly') }}
             </div>
           </div>
           <button id="submit-mobile" class="btn btn-primary btn-block mt-5 mb-2" disabled>
-            ورود
+            {{ $t('nav.login') }}
           </button>
-          <div class="text-center">
+          <div v-if="$i18n.locale=='fa'" class="text-center">
             <small>
               <span>با ثبت نام در پف فیلم، </span>
-              <a href="#">قوانین و شرایط استفاده و حریم خصوصی</a>
+              <nuxt-link to="/profile/terms">قوانین و شرایط استفاده و حریم خصوصی</nuxt-link>
               <span>را میپذیرم</span>
             </small>
           </div>
@@ -37,18 +37,18 @@
     </div>
     <div v-else>
       <h5 class="mt-2 mb-4 font-weight-bold text-center h6">
-        تأیید شماره موبایل
+        {{ $t('new.mobile_verify') }}
       </h5>
       <b-form @submit.prevent="login">
         <fieldset>
           <div class="position-relative">
-            <label for="sms">کد ارسال شده به مویایل خود را وارد کنید</label>
-            <b-form-input v-model.trim="password" type="number" pattern="[0-9]*" data-formcore-type="numeric" inputmode="numeric" maxlength="4" data-numeric-input class="form-control large is-invalid text-right" data-validate="minlength" data-message="کد وارد شده صحیح نیست یا منقضی شده است" :placeholder="'کد 4 رقمی ارسال شده به شماره '+mobile" required on-key-press="if(this.value.length==4) return false;" autofocus />
+            <label for="sms">{{ $t('new.enter_sent_code') }}</label>
+            <b-form-input v-model.trim="password" type="number" pattern="[0-9]*" data-formcore-type="numeric" inputmode="numeric" maxlength="4" data-numeric-input class="form-control large is-invalid text-right" data-validate="minlength" :data-message="$t('new.code_is_incorrect')" :placeholder="$t('new.digit_code')+' '+mobile" required on-key-press="if(this.value.length==4) return false;" autofocus />
             <div v-if="typeof errors === 'string' || errors.password || errors.mobile" class="invalid-feedback">
               <span v-if="typeof errors === 'string'">{{ errors }}</span>
               <span v-else-if="errors.password">{{ errors.password[0] }}</span>
               <span v-else>{{ errors.mobile[0] }}</span>
-              <a v-show="countdown_finished" class="cup" @click.prevent="sendcode();countdown=90;countDownTimer();countdown_finished=false;">ارسال مجدد</a>
+              <a v-show="countdown_finished" class="cup" @click.prevent="sendcode();countdown=90;countDownTimer();countdown_finished=false;">{{ $t('new.resend_again') }}</a>
             </div>
           </div>
                 
@@ -57,10 +57,10 @@
           </button>
           <div class="d-flex justify-content-center mt-2">
             <small>
-              <span v-if="!countdown_finished">ارسال دوباره کد تا {{ countdown }} ثانیه دیگر</span>
-              <a v-else href="" @click.prevent="sendcode();countdown=90;countDownTimer();countdown_finished=false;">ارسال مجدد کد</a>
+              <span v-if="!countdown_finished">{{ $t('new.resend_code') }} {{ countdown }} {{ $t('new.another_seconds') }}</span>
+              <a v-else href="" @click.prevent="sendcode();countdown=90;countDownTimer();countdown_finished=false;">{{ $t('new.resend_again_code') }}</a>
               <span> | </span>
-              <a href="" @click.prevent="showLoginAgain()">ویرایش شماره موبایل</a>
+              <a href="" @click.prevent="showLoginAgain()">{{ $t('new.edit_mobile') }}</a>
             </small>
           </div>
         </fieldset>
@@ -165,6 +165,10 @@ import {mapGetters} from 'vuex'
                   this.$router.push({ path: this.$route.query.redirect })
                 }else if(this.staticmodal && this.redirect){
                   this.$router.push({ path: this.redirect })
+                }else{
+                  if (process.client) {
+                    this.$store.dispatch('login')
+                  }
                 }
                 // else{
                 //   this.$router.go()

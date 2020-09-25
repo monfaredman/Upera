@@ -1,10 +1,10 @@
 <template>
   <div class="container mt-5  pt-md-3 pt-lg-4 mb-5 faq-page">
     <h4 class="font-weight-bold h6 mt-5 pt-2">
-      <span class="pl-2 title">سوالات پر تکرار</span>
+      <span class="pl-2 title">{{ $t('new.faqTitle') }}</span>
     </h4>
     <div class="input-group search-field with-filter my-4 insert_comment search_box_container">
-      <input v-model="search" class="form-control border-left-0 border shadow-none" type="text" autofocus placeholder="جستجو در بین سوالات متداول...">
+      <input v-model="search" class="form-control border-left-0 border shadow-none" type="text" autofocus :placeholder="$t('new.faq_search')">
 
       <button class="btn btn-sm  btn-send-comment">
         <i class="icon-search" />

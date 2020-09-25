@@ -78,22 +78,22 @@
                   <i class="fas fa-angle-down angle" />
                   <li>
                     <nuxt-link to="/profile">
-                      پروفایل
+                      {{ $t('setting.profile') }}
                     </nuxt-link>
                   </li>
                   <li>
                     <nuxt-link to="/profile/settings">
-                      تنظیمات
+                      {{ $t('setting.app_setting') }}
                     </nuxt-link>
                   </li>
-                  <li>
+                  <li v-if="checkuser.subscription==1">
                     <nuxt-link to="/profile/plans">
-                      قیمت‌ها
+                      {{ $t('new.prices') }}
                     </nuxt-link>
                   </li>
-                  <li>
+                  <li v-if="$i18n.locale=='fa'">
                     <nuxt-link to="/profile/internet">
-                      اینترنت نیم‌بها
+                      {{ $t('new.internet') }}
                     </nuxt-link>
                   </li>
                 </ul>
@@ -107,8 +107,8 @@
             <b-button v-if="!$auth.loggedIn && $route.name !=='login'" variant="primary" class="py-1 px-lg-4" @click="showModal=true">
               {{ $t('new.login_register') }}
             </b-button>
-            <b-button v-else-if="$route.name !=='login'" variant="primary" class="py-1 px-lg-4" @click="$auth.logout();">
-              خروج
+            <b-button v-else-if="$route.name !=='login'" variant="primary" class="py-1 px-lg-4" @click="$store.dispatch('logout');$auth.logout();">
+              {{ $t('nav.logout') }}
             </b-button>
           </div>
         </div>
@@ -138,28 +138,28 @@
       <ul v-if="profile.includes($route.path)" class="container category-menu-mobile category-menu-mobile-setting mt-5  pt-md-3 pt-lg-5 p- app_container_pricing_res">
         <li class="mr-3">
           <nuxt-link to="/profile">
-            پروفایل
+            {{ $t('setting.profile') }}
           </nuxt-link>
         </li>
         <li class="mr-3">
           <nuxt-link to="/profile/settings">
-            تنظیمات
+            {{ $t('setting.app_setting') }}
           </nuxt-link>
         </li>
-        <li class="mr-3">
+        <li v-if="checkuser.subscription==1" class="mr-3">
           <nuxt-link to="/profile/plans">
-            قیمت‌ها
+            {{ $t('new.prices') }}
           </nuxt-link>
         </li>
-        <li class="mr-3">
+        <li v-if="$i18n.locale=='fa'" class="mr-3">
           <nuxt-link to="/profile/internet">
-            اینترنت نیم‌بها
+            {{ $t('new.internet') }}
           </nuxt-link>
         </li>
       </ul>
     </header>
 
-    <Login v-if="$route.name !=='login'" :show="showModal" :staticmodal="false" @hideModal="HIDE_MODAL" />
+    <Login v-if="!$auth.loggedIn && $route.name !=='login'" :show="showModal" :staticmodal="false" @hideModal="HIDE_MODAL" />
   </div>
 </template>
 
@@ -190,8 +190,11 @@ import Login from "../components/Login"
     }
     },
     mounted() {
+
       this.Nav()
 
+if(this.$route.params.search)
+  this.query=this.$route.params.search
 // window.onscroll = function () {
    
     

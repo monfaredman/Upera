@@ -3,11 +3,15 @@
     <div class="search_main_container_reswidth">
       <!--------------  Search Box Show in small device ---------------->
       <div class="input-group search-field with-filter my-4 insert_comment search_box_container d-lg-none">
-        <input class="form-control border-left-0 border shadow-none" type="search" autofocus placeholder="جستجوی فیلم، سریال، بازیگر...">
+        <b-form-input v-model="query" autofocus
+                      :placeholder="$t('new.search')" type="text"
+                      class="form-control border-left-0 border shadow-none" @keyup.enter="SEARCH"
+        />
 
-        <button class="btn btn-sm  btn-send-comment">
+        <button class="btn btn-sm  btn-send-comment" @click="IN_SEARCH">
           <i class="icon-search" />
         </button>
+
 
         <a href="#" class="filter">
           <i class="icon-filter" />
@@ -16,30 +20,22 @@
       <!--------------  Search Box Show in small device ---------------->
       <!--------------  Search Badges ---------------->
       <div class="search_badge">
-        <a href="#" class="badge badge-pill small font-weight-normal py-2 px-3 badge-secondary mb-2 mr-2 mr-lg-4">مناسب کودکان </a>
-        <a href="#" onclick="searchResult()" class="badge badge-pill small font-weight-normal py-2 px-3 badge-secondary mb-2 mr-2 mr-lg-4">ایرانی</a>
-        <a href="#" class="badge badge-pill small font-weight-normal py-2 px-3 badge-secondary mb-2 mr-2 mr-lg-4">دوبله</a>
-        <a href="#" class="badge badge-pill small font-weight-normal py-2 px-3 badge-secondary mb-2 mr-2 mr-lg-4">زیرنویس</a>
-        <a href="#" onclick="searchResult2()" class="badge badge-pill small font-weight-normal py-2 px-3 badge-secondary mb-2 mr-2 mr-lg-4">امتیاز +۸</a>
+        <a href="" class="badge badge-pill small font-weight-normal py-2 px-3 mb-2 mr-2 mr-lg-4 active" :class="{ 'badge-secondary': !dubbed, 'badge-info': dubbed }" @click.prevent="dubbed = !dubbed;IN_SEARCH()">دوبله</a>
+        <a href="" :class="{ 'badge-secondary': !subtitle, 'badge-info': subtitle }" class="badge badge-pill small font-weight-normal py-2 px-3 mb-2 mr-2 mr-lg-4" @click.prevent="subtitle = !subtitle;IN_SEARCH()">زیرنویس</a>
+        <a href="" :class="{ 'badge-secondary': !imdb, 'badge-info': imdb }" class="badge badge-pill small font-weight-normal py-2 px-3 mb-2 mr-2 mr-lg-4" @click.prevent="imdb = !imdb;IN_SEARCH()">امتیاز +۸</a>
+        <a href="" :class="{ 'badge-secondary': !kids, 'badge-info': kids }" class="badge badge-pill small font-weight-normal py-2 px-3 mb-2 mr-2 mr-lg-4" @click.prevent="kids = !kids;IN_SEARCH()">کودک</a>
+        <br><br>
       </div>
       <!--------------  Search Badges ---------------->
       <!--------------  Search Tags ---------------->
-      <div id="search-tags" class="mt-4 search-tags">
-        <div class="tag mt-2">
-          <i class="icon-close" />
-          <span>سریال دل</span>
-        </div>
-        <div class="tag mt-2">
-          <i class="icon-close" />
-          <span>چهار انگشت</span>
-        </div>
-        <div class="tag mt-2">
-          <i class="icon-close" />
-          <span>جوکر</span>
+      <div v-if="!query && lastsearchs && (data.data==null && data.cast==null)" id="search-tags" class="mt-4 search-tags">
+        <div v-for="(item,index) in lastsearchs" :key="index" class="tag mt-2">
+          <i class="icon-close" @click="removeSearch(item)" />
+          <span @click="query = item;IN_SEARCH()">{{ item }}</span>
         </div>
       </div>
       <!--------------  Search Tags ---------------->
-      <header class="headline py-4">
+      <header v-if="!query && topsearch && (data.data==null && data.cast==null)" class="headline py-4">
         <h6 class="title">
           محبوبترین جستجوها
         </h6>
@@ -47,19 +43,20 @@
 
       <!-------------- Popular Search ---------------->
       <!--رو اضافه کنینd-none اگر خواستین این قسمت رو حذف یا مخفی کنین فقط کافیه کلاس-->
-      <div id="popular_search" class="d-flex flex-column align-start popular_search">
-        <a href="#" class="clearfix text-dark">سریال دل</a>
-        <a href="#" class="clearfix text-dark pt-4">چهار انگشت</a>
-        <a href="#" class="clearfix text-dark pt-4">جوکر</a>
-        <a href="#" class="clearfix text-dark pt-4">زندانی ها</a>
+      <div v-if="!query && topsearch && (data.data==null && data.cast==null)" id="popular_search" class="d-flex flex-column align-start popular_search">
+        <a v-for="(item,index) in topsearch" :key="index" href="" class="clearfix text-dark" :class="{ 'pt-4': index>0 }" @click.prevent="query = item;IN_SEARCH()">{{ item }}</a>
       </div>
       <!-------------- Popular Search ---------------->
       <!-------------- Movie Not Found ---------------->
       <!--رو اضافه کنینd-none اگر خواستین این قسمت رو حذف یا مخفی کنین فقط کافیه کلاس-->
-      <div id="notFound" class="movie_notFound mt-5 ">
+      <div v-if="noresult && query" id="notFound" class="movie_notFound mt-5 ">
         <p>
-          متاسفانه چیزی پیدا نکردیم. میتوانید به قسمت <a href="genre.html"><span>دسته ببندی</span></a>  سری
-          بزنین یا <a href="genre.html"><span>درخواست اضافه کردن فیلم یا سریال</span></a> مورد نظرتون رو بدین.
+          متاسفانه چیزی پیدا نکردیم. میتوانید به قسمت <nuxt-link to="/genres">
+            <span>دسته بندی</span>
+          </nuxt-link>  سری
+          بزنین یا <nuxt-link to="/genres">
+            <span>درخواست اضافه کردن فیلم یا سریال</span>
+          </nuxt-link> مورد نظرتون رو بدین.
         </p>
       </div>
       <!-------------- Movie Not Found ---------------->
@@ -68,52 +65,34 @@
 
     <!--------------  Search Container ---------------->
     <!--رو اضافه کنینd-none اگر خواستین این قسمت رو حذف یا مخفی کنین فقط کافیه کلاس-->
-    <div id="actor" class="search_collection">
+    <div v-if="data.data!=null || data.cast!=null" id="actor" class="search_collection">
       <div class="container-fluid pl-md-4 pr-md-5 mt-n5">
-        <div class="row">
-          <!--------------  Search Result -> foreach loop ---------------->
-          <div class="col-4 col-xl-1 col-md-2 col-sm-3 mt-2 mt-lg-4">
-            <a href="#" class="actor is-series">
-
-              <img src="@/assets/img/slide-1/1.png" alt="">
-              <img src="@/assets/img/slide-1/1.png" alt="">
-              <img src="@/assets/img/slide-1/1.png" alt="">
-
-
-              <span class="block">سریال دل</span>
-            </a>
+        <div v-if="data.data!=null" class="row">
+          <div v-for="(item,index) in data.data" :key="index" class="col-4 col-xl-1 col-md-2 col-sm-3 mt-2 mt-lg-4">
+            <nuxt-link v-if="item.type=='movie'" :to="{ name: 'movie-id', params: { id: item.id }}" class="actor">
+              <img :src="data.cdn.md_poster+item.poster" :alt="item.name">
+              <span class="block">{{ ChooseLang(item.name,item.name_fa) }}</span>
+            </nuxt-link>
+            <nuxt-link v-else-if="item.type=='episode'" :to="{ name: 'episode-id', params: { id: item.id }}" class="actor is-series">
+              <img :src="data.cdn.md_poster+item.poster" :alt="item.name">
+              <img :src="data.cdn.md_poster+item.poster" :alt="item.name">
+              <img :src="data.cdn.md_poster+item.poster" :alt="item.name">
+              <span class="block">{{ ChooseLang(item.name,item.name_fa) }}</span>
+            </nuxt-link>
+            <nuxt-link v-else :to="{ name: 'series-id', params: { id: item.id }}" class="actor is-series">
+              <img :src="data.cdn.md_poster+item.poster" :alt="item.name">
+              <img :src="data.cdn.md_poster+item.poster" :alt="item.name">
+              <img :src="data.cdn.md_poster+item.poster" :alt="item.name">
+              <span class="block">{{ ChooseLang(item.name,item.name_fa) }}</span>
+            </nuxt-link>
           </div>
-          <!--------------  Search Result -> foreach loop ---------------->
-
-          <div class="col-4 col-xl-1 col-md-2 col-sm-3 mt-2 mt-lg-4">
-            <a href="#" class="actor">
-              <img src="@/assets/img/actor/3.png" alt="">
-              <span class="block">سیامک انصاری</span>
-            </a>
-          </div>
-          <div class="col-4 col-xl-1 col-md-2 col-sm-3 mt-2 mt-lg-4">
-            <a href="#" class="actor">
-              <img src="@/assets/img/slide-1/2.png" alt="">
-              <span class="block">چهار انگشت</span>
-            </a>
-          </div>
-          <div class="col-4 col-xl-1 col-md-2 col-sm-3 mt-2 mt-lg-4">
-            <a href="#" class="actor">
-              <img src="@/assets/img/slide-1/5.png" alt="">
-              <span class="block">تگزاس 2</span>
-            </a>
-          </div>
-          <div class="col-4 col-xl-1 col-md-2 col-sm-3 mt-2 mt-lg-4">
-            <a href="#" class="actor">
-              <img src="@/assets/img/slide-1/4.png" alt="">
-              <span class="block">زندانی ها</span>
-            </a>
-          </div>
-          <div class="col-4 col-xl-1 col-md-2 col-sm-3 mt-2 mt-lg-4">
-            <a href="#" class="actor">
-              <img src="@/assets/img/actor/2.png" alt="">
-              <span class="block">پیمان معادی</span>
-            </a>
+        </div>
+        <div v-if="data.cast!=null" class="row">
+          <div v-for="(item,index) in data.cast" :key="index" class="col-4 col-xl-1 col-md-2 col-sm-3 mt-2 mt-lg-4">
+            <nuxt-link :to="{ name: 'cast-id', params: { id: item.id }}" class="actor">
+              <img :src="data.cdn.md_cast+item.image" :alt="item.name">
+              <span class="block">{{ ChooseLang(item.name,item.name_fa) }}</span>
+            </nuxt-link>
           </div>
         </div>
       </div>
@@ -121,3 +100,223 @@
     <!--------------  Search Container ---------------->
   </div>
 </template>
+<script>
+import {mapGetters} from 'vuex'
+    export default {
+  async asyncData (context) {
+  if(context.params.search){
+    var queries ={'query':context.params.search}
+    if(context.query.dubbed){
+      queries.dubbed = 1
+    }
+
+    if(context.query.subtitle){
+      queries.subtitle = 1
+    }
+
+    if(context.query.imdb){
+      queries.imdb = 1
+    }
+
+    if(context.query.kids){
+      queries.kids = 1
+    }
+
+    let res
+    if (context.app.$auth.loggedIn) {
+        res = await context.app.$axios.post('/get/search', queries)
+     }else{
+      res = await context.app.$axios.post('/ghost/get/search', queries)
+     }
+
+
+     let noresult2
+
+    if(res.data.data.data==null && res.data.data.cast==null)
+      noresult2=true
+    else{
+      noresult2=false
+    }
+
+
+    let res2
+    if (context.app.$auth.loggedIn) {
+        res2 = await context.app.$axios.get('/topsearch')
+     }else{
+      res2 = await context.app.$axios.get('/ghost/topsearch')
+     }
+    
+
+    if(context.app.i18n.locale!=="fa")
+      res2.data.data.topsearch=res2.data.data.topsearch_en
+
+    return {data:res.data.data,topsearch:res2.data.data.topsearch,noresult:noresult2}
+  }else{
+    let res
+    if (context.app.$auth.loggedIn) {
+        res = await context.app.$axios.get('/topsearch')
+     }else{
+      res = await context.app.$axios.get('/ghost/topsearch')
+     }
+    
+
+    if(context.app.i18n.locale!=="fa")
+      res.data.data.topsearch=res.data.data.topsearch_en
+
+    return {data:{data:null,cast:null},topsearch:res.data.data.topsearch}
+  }
+  },
+  data() {
+            return {
+                query: null,
+                dubbed: 0,
+                subtitle: 0,
+                imdb: 0,
+                kids: 0,
+                showCast: null,
+                data: {},
+                topsearch: {},
+                noresult: false
+            }
+        },
+        computed: {
+            ...mapGetters({lastsearchs: "search/lastsearchs"})
+        },
+  // watch: {
+  //   query: function() {
+  //     this.data={data:null,cast:null}
+  //   }
+  //   },
+    mounted() {
+this.$store.dispatch('search/GetLastSearchs',this.$route.params.search)
+if(this.$route.params.search){
+  
+  this.query=this.$route.params.search
+  this.dubbed=this.$route.query.dubbed
+  this.subtitle=this.$route.query.subtitle
+  this.imdb=this.$route.query.imdb
+  this.kids=this.$route.query.kids
+  this.$store.dispatch('search/addSearch',this.$route.params.search)
+}
+  },
+          methods: {
+
+    ChooseLang(en,fa){
+        if(fa && this.$i18n.locale=="fa")
+            return fa
+        else
+            return en
+    },
+    ChooseLangGenres(genre){
+        if(this.$i18n.locale=="fa"){
+            return this.$i18n.t(`home.${genre.toLowerCase()}`)
+        }else
+           return genre 
+    },
+    ChooseLangAllGenres(genres){
+        if(this.$i18n.locale=="fa"){
+            genres=genres.split(',')
+            if(Array.isArray(genres)){
+                const mm=this
+                for (var key = 0, len = genres.length; key < len; key++) {
+            genres[key] = mm.$i18n.t(`home.${genres[key].toLowerCase()}`)
+        }
+                return genres
+            }else if(genres !== null){
+                return [this.$i18n.t(`home.${genres.toLowerCase()}`)]
+            }else
+                return null
+        }else{
+          if(Array.isArray(genres)){
+              return genres.split(',')
+          }else if(genres !== null){
+            return [genres]
+          }else{
+            return null
+          }
+        }
+    },
+
+            SEARCH() {
+              if(this.query && this.query.length>1){
+                var queries ={}
+                if(this.dubbed){
+                  queries.dubbed = 1
+                }
+
+                if(this.subtitle){
+                  queries.subtitle = 1
+                }
+
+                if(this.imdb){
+                  queries.imdb = 1
+                }
+
+                if(this.kids){
+                  queries.kids = 1
+                }
+
+                this.$router.push({
+                    name: "search-search",
+                    params: {
+                        search: this.query
+                    },
+                    query: queries
+                })
+              }
+            },
+
+            removeSearch(x) {
+              this.$store.dispatch('search/removeSearch',x)
+
+            },
+
+            IN_SEARCH() {
+  if(this.query && this.query.length>1){
+    var queries ={'query':this.query}
+    if(this.dubbed){
+      queries.dubbed = 1
+    }
+
+    if(this.subtitle){
+      queries.subtitle = 1
+    }
+
+    if(this.imdb){
+      queries.imdb = 1
+    }
+
+    if(this.kids){
+      queries.kids = 1
+    }
+
+
+                var apiurl
+                if (this.$auth.loggedIn) {
+                        apiurl='/get/search'
+                } else {
+                        apiurl='/ghost/get/search'
+                }
+                    this.$axios.post(apiurl,queries).then(response => {
+                        if (response.status === 200) {
+                            this.data=response.data.data
+
+                          if(response.data.data.data==null && response.data.data.cast==null){
+                            this.noresult=true
+                          }else{
+                            this.$store.dispatch('search/addSearch',this.query)
+                            this.noresult=false
+                          }
+                        }
+                    }).catch(error => {
+                        this.data={data:null,cast:null}
+                        this.noresult=true
+                        return error
+                    })
+
+                 
+  }
+            }
+        },
+    }
+</script>

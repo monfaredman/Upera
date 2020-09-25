@@ -40,8 +40,8 @@
                     <img class="ml-2" src="@/assets/img/play.svg" alt="">
                   </nuxt-link>
 
-                  <a href="#" class="feature-btn">
-                    <i class="far fa-2x fa-bookmark" />
+                  <a href="#" class="feature-btn" @click.prevent="ADD_WATCHLIST(item.id, item.type, index, item.is_watchlist);">
+                    <i :class="{ 'fa': item.is_watchlist==1,'far': item.is_watchlist==0 }" class="fa-2x fa-bookmark" />
                     <span>بعدا میبینم</span>
                   </a>
                 </div>
@@ -50,8 +50,8 @@
           </div>
         </div>
         <div class="feature-button-wrap">
-          <img class="swiper-next" src="@/assets/img/icons/arrow-next.svg">
-          <img class="swiper-prev" src="@/assets/img/icons/arrow-prev.svg">
+          <img class="swiper-next" src="@/assets/img/icons/arrow-prev.svg">
+          <img class="swiper-prev" src="@/assets/img/icons/arrow-next.svg">
         </div>
       </div>
     </section>
@@ -82,7 +82,7 @@
                       </div>
                       <div class="d-flex flex-column justify-content-center align-items-center small">
                         <nuxt-link :to="{ name: 'lists-list', params: { list: list.occasion }}">
-                          نمایش همه
+                          {{ $t('new.show_all') }}
                         </nuxt-link>
                         <img src="@/assets/img/more.svg" height="3" alt="">
                       </div>
@@ -123,7 +123,7 @@
         </h4>
         <div class="d-flex flex-column justify-content-center align-items-center small">
           <nuxt-link :to="{ name: 'lists-list', params: { list: 'offer' }}" class="mb-1">
-            نمایش همه
+            {{ $t('new.show_all') }}
           </nuxt-link>
           <img src="@/assets/img/more.svg" height="3" alt="">
         </div>
@@ -163,7 +163,7 @@
         </h4>
         <div class="d-flex flex-column justify-content-center align-items-center small">
           <nuxt-link :to="{ name: 'lists-list', params: { list: 'free' }}" class="mb-1">
-            نمایش همه
+            {{ $t('new.show_all') }}
           </nuxt-link>
           <img src="@/assets/img/more.svg" height="3" alt="">
         </div>
@@ -202,7 +202,7 @@
         </h4>
         <div class="d-flex flex-column justify-content-center align-items-center small">
           <nuxt-link :to="{ name: 'lists-list', params: { list: 'new_titles' }}" class="mb-1">
-            نمایش همه
+            {{ $t('new.show_all') }}
           </nuxt-link>
           <img src="@/assets/img/more.svg" height="3" alt="">
         </div>
@@ -241,7 +241,7 @@
         </h4>
         <div class="d-flex flex-column justify-content-center align-items-center small">
           <nuxt-link :to="{ name: 'lists-list', params: { list: 'soon' }}" class="mb-1">
-            نمایش همه
+            {{ $t('new.show_all') }}
           </nuxt-link>
           <img src="@/assets/img/more.svg" height="3" alt="">
         </div>
@@ -308,7 +308,7 @@
             </h4>
             <div class="d-flex flex-column justify-content-center align-items-center small">
               <nuxt-link :to="{ name: 'genres-genre', params: { genre: list.genre.toLowerCase() }}" class="mb-1">
-                نمایش همه
+                {{ $t('new.show_all') }}
               </nuxt-link>
               <img src="@/assets/img/more.svg" height="3" alt="">
             </div>
@@ -340,10 +340,15 @@
         </section>
       </div>
     </div>
+    <Login v-if="!$auth.loggedIn" :show="showModal" :staticmodal="false" @hideModal="HIDE_MODAL" />
   </div>
 </template>
 <script>
-  export default {
+import Login from "@/components/Login"
+    export default {
+  components: {
+    Login
+  },
   filters: {
     // Cut word
     truncate(string, value) {
@@ -365,6 +370,7 @@
     data () {
       return {
       	data:{},
+      showModal: false,
         swiperOption: {
         autoplay: {
             delay: 5800,
@@ -446,6 +452,16 @@
     })
 }
 
+$( "#feature a" ).click(function() {
+  if($( this ).find("i").hasClass( "far" )){
+    $( this ).find("i").removeClass( "far" )
+    $( this ).find("i").addClass( "fa" )
+  }else{
+    $( this ).find("i").removeClass( "fa" )
+    $( this ).find("i").addClass( "far" )    
+  }
+})
+
 if(this.data.occasions!=null){
  $(document).ready(function () {
 
@@ -491,17 +507,20 @@ if(this.data.occasions!=null){
 }
     },
   methods: {
+            HIDE_MODAL() {
+              this.showModal=false
+            },
     ChooseLang(en,fa){
         if(fa && this.$i18n.locale=="fa")
             return fa
         else
-            return en
+            return en.charAt(0).toUpperCase() + en.slice(1)
     },
     ChooseLangGenres(genre){
         if(this.$i18n.locale=="fa"){
             return this.$i18n.t(`home.${genre.toLowerCase()}`)
         }else
-           return genre 
+           return genre.toUpperCase(genre) 
     },
     ChooseLangAllGenres(genres){
         if(this.$i18n.locale=="fa"){
@@ -531,29 +550,23 @@ if(this.data.occasions!=null){
     },
     // Add new like or delete it
     // Params type1 detected if add or delete
-    ADD_WATCHLIST(id, type, rootindex, index, type1) {
-        if (this.$auth.isAuthenticated()) {
-      if (type1 === "add") {
-        // Add true to data array
-        this.data.data[rootindex].list[index].is_like = true
-        this.$store.dispatch("ADD_LIKE", {
-          id,
-          type
-        })
-      } else {
-        // Add false to data array
-        this.data.data[rootindex].list[index].is_like = false
+    ADD_WATCHLIST(id, type, index, is_watchlist) {
+        if (this.$auth.loggedIn) {
 
-        this.$store.dispatch("ADD_LIKE", {
-          id,
-          type
-        })
-      }
+      // if (is_watchlist==0) {
+      //   // Add true to data array
+      //   this.data.top[index].is_watchlist = 1
+      // } else {
+      //   // Add false to data array
+      //   this.data.top[index].is_watchlist = 0
+
+      // }
+
+      this.$axios.post('/create/watchlist', {id,type})
                 } else {
-                    this.$router.push({
-                        name: 'login'
-                    })
+                    this.showModal=true
                 }
+                return {index,is_watchlist}
     }
   }
   }

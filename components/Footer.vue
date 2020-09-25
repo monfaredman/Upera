@@ -4,33 +4,33 @@
       <div class="container-fluid">
         <div class="row align-items-center">
           <div class="col-lg-4 col-md-6">
-            <div class="d-flex flex-column align-items-center align-items-lg-start links ml-lg-5 pl-lg-4">
+            <div v-if="$i18n.locale=='fa'" class="d-flex flex-column align-items-center align-items-lg-start links ml-lg-5 pl-lg-4">
               <nuxt-link to="/profile/faq">
-                سوالات پر تکرار
+                {{ $t('new.FAQ') }}
               </nuxt-link>
               <nuxt-link to="/profile/internet">
-                شرایط استفاده از حجم مصرفی نیم بها
+                {{ $t('new.halfPrice') }}
               </nuxt-link>
               <nuxt-link to="/profile/about-contact">
-                درباره و تماس با ما
+                {{ $t('footer.aboutus') }}
               </nuxt-link>
               <nuxt-link to="/profile/terms">
-                قوانین و شرایط استفاده
+                {{ $t('new.term') }}
               </nuxt-link>
               <div class="question d-none d-lg-block mb-1">
-                سوالی دارید؟ برای پرسیدن درنگ نکنید
+                {{ $t('new.haveQuestion') }}
               </div>
             </div>
           </div>
           <div class="col-lg-4 col-md-6">
             <div class="d-flex flex-column align-items-center mt-3 mt-lg-0 footer_mid_text">
               <nuxt-link to="/app" class="btn btn-secondary px-5 footer_btn">
-                <span>دانلود اپلیکیشن</span>
+                <span>{{ $t('new.download_app') }}</span>
               </nuxt-link>
 
               <div class="d-flex flex-column mt-3 socials_box">
                 <h6 class="mb-2 text-center">
-                  راه‌های ارتباطی
+                  {{ $t('new.communication') }}
                 </h6>
                 <div class="d-flex socials">
                   <a href="https://t.me/shop_upera" class="mr-4">
@@ -46,16 +46,35 @@
               </div>
               <div class="d-flex flex-column flex-lg-row justify-content-center align-items-center mt-1 footer_contact">
                 <div class="mb-2 mb-lg-0">
-                  <span>شماره تماس:</span>
+                  <span>{{ $t('footer.phone_number') }}:</span>
                   <span dir="ltr"><a href="tel:02126290305">021-26290305</a></span>
                 </div>
                 <div class="ml-lg-3">
-                  ایمیل: <a href="mailto:info@upera.tv">info@upera.tv</a>
+                  {{ $t('footer.email') }}: <a href="mailto:info@upera.tv">info@upera.tv</a>
                 </div>
               </div>
             </div>
           </div>
-          <div class="col-lg-4 d-none d-lg-block">
+          <div v-if="$i18n.locale!='fa'" class="col-lg-4 col-md-6" dir="rtl">
+            <div class="d-flex flex-column align-items-center align-items-lg-start links mr-lg-5 pr-lg-4">
+              <nuxt-link to="/profile/faq">
+                {{ $t('new.FAQ') }}
+              </nuxt-link>
+              <nuxt-link to="/profile/internet">
+                {{ $t('new.halfPrice') }}
+              </nuxt-link>
+              <nuxt-link to="/profile/about-contact">
+                {{ $t('footer.aboutus') }}
+              </nuxt-link>
+              <nuxt-link to="/profile/terms">
+                {{ $t('new.term') }}
+              </nuxt-link>
+              <div dir="ltr" class="question d-none d-lg-block mb-1">
+                {{ $t('new.haveQuestion') }}
+              </div>
+            </div>
+          </div>
+          <div v-if="$i18n.locale=='fa'" class="col-lg-4 d-none d-lg-block">
             <div class="d-flex justify-content-center justify-lg-content-end align-items-center mt-4 mt-lg-0">
               <img src="@/assets/img/namad.png" alt="">
               <img src="@/assets/img/resane.png" alt="">
@@ -70,13 +89,13 @@
         <div dir="ltr" class="row align-items-center">
           <div class="col-lg-4 col-md-6 p-0 pt-md-4 mt-md-0">
             <div class="d-flex flex-column align-items-center mt-3 mt-lg-0 footer_mid_text">
-              <a href="#" class="btn btn-secondary px-5 mb-1">
-                <span>دانلود اپلیکیشن</span>
-              </a>
+              <nuxt-link to="/app" class="btn btn-secondary px-5 mb-1">
+                <span>{{ $t('new.download_app') }}</span>
+              </nuxt-link>
 
               <div class="d-flex flex-column mb-1 mt-2 socials_box">
                 <h6 class="mb-2 text-center">
-                  راه‌های ارتباطی
+                  {{ $t('new.communication') }}
                 </h6>
                 <div class="d-flex socials">
                   <a href="#">
@@ -93,11 +112,11 @@
 
               <div class="d-flex flex-column flex-lg-row justify-content-center align-items-center mt-1">
                 <div class="mb-1 mb-lg-0">
-                  <span>شماره تماس:</span>
+                  <span>{{ $t('footer.phone_number') }}:</span>
                   <span dir="ltr"><a href="tel:02126290305">021-26290305</a></span>
                 </div>
                 <div class="mb-1 ml-lg-3">
-                  ایمیل: <a href="mailto:info@upera.tv">info@upera.tv</a>
+                  {{ $t('footer.email') }}: <a href="mailto:info@upera.tv">info@upera.tv</a>
                 </div>
               </div>
             </div>
@@ -105,19 +124,19 @@
           <div class="col-lg-4 col-md-6 p-0 pt-md-4 mt-md-3">
             <div class="d-flex flex-column align-items-center align-items-lg-start links ml-lg-5 pl-lg-4 mt-1">
               <nuxt-link to="/profile/faq">
-                سوالات پر تکرار
+                {{ $t('new.FAQ') }}
               </nuxt-link>
               <nuxt-link to="/profile/internet">
-                شرایط استفاده از حجم مصرفی نیم بها
+                {{ $t('new.halfPrice') }}
               </nuxt-link>
               <nuxt-link to="/profile/about-contact">
-                درباره و تماس با ما
+                {{ $t('footer.aboutus') }}
               </nuxt-link>
               <nuxt-link to="/profile/terms">
-                قوانین و شرایط استفاده
+                {{ $t('new.term') }}
               </nuxt-link>
               <div class="question mb-1">
-                سوالی دارید؟ برای پرسیدن درنگ نکنید
+                {{ $t('new.haveQuestion') }}
               </div>
             </div>
           </div>

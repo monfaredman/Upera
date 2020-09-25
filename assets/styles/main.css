@@ -225,12 +225,12 @@ fieldset .invalid-feedback:after {
 }
 
 
-nav a {
+nav a,#movie-tabs .nav-link {
   color: #333;
   margin-right: 15px;
 }
 
-nav a.active {
+nav a.active,#movie-tabs .nav-link.active{
   border-bottom: 1px solid #4b4bf9;
   color: #4b4bf9;
 }
@@ -708,7 +708,6 @@ nav a:hover {
 
 #movie .description {
   position: relative;
-  height: 250px;
   overflow: hidden;
 }
 
@@ -754,6 +753,7 @@ nav a:hover {
   font-weight: 600;
   margin-right: 13px;
   font-size: 10px;
+  border:0;
 }
 
 #movie-tabs .nav .nav-link.active {
@@ -1049,7 +1049,7 @@ nav a:hover {
 #feature .feature::after {
   content: "";
   position: absolute;
-  background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(255, 255, 255, 0)), color-stop(90%, white), to(#ffffff));
+  background-image: -webkit-gradient(linear, right top, right bottom, from(rgba(255, 255, 255, 0)), color-stop(10%, white), to(#ffffff));
   background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0), white 90%, #ffffff);
   height: 80px;
   width: 100%;
@@ -1170,10 +1170,7 @@ top: 40px;
   top: 0;
 }
 
-#watching.swipe .swiper-container {
-  -webkit-transform: translateX(15px);
-          transform: translateX(15px);
-}
+
 
 
 @media (min-width: 768px) {
@@ -1275,7 +1272,7 @@ top: 40px;
   }
   #header .category .category-menu .angle {
     position: absolute;
-    right: 180px;
+    left: 180px;
     top: -10px;
     color: #ec2927;
     -webkit-transition: all 300ms;
@@ -1410,8 +1407,8 @@ top: 40px;
     margin-right: 60px;
   }
   #watching .swiper-container {
-    -webkit-transform: translateX(-160px);
-            transform: translateX(-160px);
+    -webkit-transform: translateX(160px);
+            transform: translateX(160px);
   }
   #episode .banner .content{
     color: white;
@@ -1596,4 +1593,15 @@ top: 40px;
             -webkit-transition: display 300ms ease-in-out !important;
             transition: display 300ms ease-in-out !important;
         }
+        .custom-switch {
+    padding-left: 0;
+}
+.srmshadow{
+  text-shadow: 1px 1px 2px #000;
+}
+
+
+#movie-tabs .nav .nav-tabs{
+  border:0;
+}
 /*# sourceMappingURL=style.css.map */

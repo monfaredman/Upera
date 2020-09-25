@@ -92,7 +92,7 @@
         align-items: center;
         justify-content: center;
         position: absolute;
-        left: 70px;
+        right: 70px;
         bottom: 10px;
         z-index: 2;
         pointer-events: all;
@@ -115,7 +115,7 @@
     #feature .feature .title ,
     #feature .feature .tags {
         color: #0f252a;
-        padding-right: 75px;
+        padding-left: 75px;
     }
     #feature .bg-img {
         -webkit-filter: brightness(0.8);
@@ -199,7 +199,7 @@
     position: relative;
     z-index: 1;
     font-weight: normal;
-    font-size: 1.4em;
+    font-size: 1.1em;
 }
 
 #feature .feature::before{
@@ -217,9 +217,9 @@
 #feature .feature::after {
     content: "";
     position: absolute;
-    background: -moz-linear-gradient(left, rgba(255,255,255,0) 60%, rgba(255,255,255,1) 100%); /* FF3.6-15 */
-    background: -webkit-linear-gradient(left, rgba(255,255,255,0) 60%,rgba(255,255,255,1) 100%); /* Chrome10-25,Safari5.1-6 */
-    background: linear-gradient(to right, rgba(255,255,255,0) 60%,rgba(255,255,255,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    background: -moz-linear-gradient(right, rgba(255,255,255,0) 30%, rgba(255,255,255,1) 100%); /* FF3.6-15 */
+    background: -webkit-linear-gradient(right, rgba(255,255,255,0) 30%,rgba(255,255,255,1) 100%); /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(to left, rgba(255,255,255,0) 30%,rgba(255,255,255,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ffffff', endColorstr='#ffffff',GradientType=1 ); /* IE6-9 */
     /*height: 80px;*/
     height: 100%;
@@ -934,7 +934,7 @@ body widget {
     z-index: 5;
     font-size: 0.8em;
     font-weight: 300;
-    left: 9.5px;
+    right: 9.5px;
     top: 9.5px;
 }
 
@@ -984,7 +984,7 @@ body widget {
     background-position: 2px 10px !important;
 }
 
-#actor > .banner > .banner_container > .back {
+#actor > .banner > .banner_container > .back,#movie > .banner > .banner_container > .back {
     color: #fff;
     position: absolute;
     top: 25px;
@@ -1133,7 +1133,7 @@ body widget {
     z-index: 5;
     font-size: 1.4em;
     font-weight: 300;
-    left: 17px;
+    right: 17px;
     top: 16px;
 }
 
@@ -1296,6 +1296,10 @@ body widget {
 
 
 @media (min-width: 320px) {
+    .feature > .title {
+        font-size: 2em !important;
+    }
+
     .app_container_pricing_res {
         max-width: 400px;
         margin: 0 auto;
@@ -1558,7 +1562,7 @@ body widget {
         height: 38px;
     }
 
-    #actor > .banner > .banner_container > .back {
+    #actor > .banner > .banner_container > .back,#movie > .banner > .banner_container > .back {
         color: #fff;
         position: absolute;
         top: 10px;
@@ -1596,7 +1600,6 @@ body widget {
     #episode-v2 .description,
     #movie .description {
         position: relative;
-        max-height: 250px;
         overflow: hidden;
         transition: max-height 0.4s ease-out;
         padding: 0 1rem 0 1rem !important;
@@ -1621,6 +1624,7 @@ body widget {
 
         .banner_container > img {
             width: 100%;
+            filter: grayscale(10%);
         }
 
     #movie-tabs .nav .nav-link {
@@ -2045,7 +2049,7 @@ body widget {
         z-index: 5;
         font-size: 1.3em;
         font-weight: 300;
-        left: 4px;
+        right: 4px;
         top: 14px;
     }
 
@@ -2107,7 +2111,7 @@ body widget {
         letter-spacing: -0.5px;
     }
 
-    #actor > .banner > .banner_container > .back {
+    #actor > .banner > .banner_container > .back,#movie > .banner > .banner_container > .back {
         color: #fff;
         position: absolute;
         top: 10px;
@@ -2210,7 +2214,6 @@ body widget {
     
     #movie .description {
         position: relative;
-        height: 250px;
         overflow: hidden;
         padding: 0 1rem 0 1rem !important;
     }
@@ -2330,7 +2333,7 @@ body widget {
     .feature > .title {
         font-weight: 700;
         font-size: 1.15em !important;
-        margin: 0 0 2px 0;
+        margin: 0 0 0 2px;
     }
 
     #feature .feature .tags {
@@ -2412,7 +2415,7 @@ body widget {
         max-width: 92%;
     }
 
-    #actor > .banner > .banner_container > .back {
+    #actor > .banner > .banner_container > .back,#movie > .banner > .banner_container > .back {
         color: #fff;
         position: absolute;
         top: 20px;
@@ -2486,7 +2489,7 @@ body widget {
     #header .category .profile_menu .angle {
         position: absolute;
         top: -10px;
-        right: 686px !important;
+        left: 656px;
         color: #ec2927;
         -webkit-transition: all 300ms;
         transition: all 300ms;
@@ -3668,7 +3671,7 @@ small, .small {
     #feature .feature .title ,
     #feature .feature .tags {
         color: #0f252a;
-        padding-right: 35px;
+        padding-left: 35px;
     }
 }
 @media (max-width: 576px) {
