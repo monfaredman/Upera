@@ -263,7 +263,6 @@
 
   async asyncData (context) {
     let res
-    console.log(context.$auth.$state)
     if (context.app.$auth.loggedIn) {
         res = await context.app.$axios.get('/get/profile/get_list/all')
 

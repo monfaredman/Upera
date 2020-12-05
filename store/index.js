@@ -72,7 +72,6 @@ export const actions = {
 
   async nuxtServerInit(store) {
 
-    console.log(store.state.auth.loggedIn)
     
   	if(!store.state.auth.loggedIn){
   		let res
