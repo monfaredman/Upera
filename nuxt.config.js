@@ -115,7 +115,7 @@ export default {
       endpoints: {
         login: { url: '/login', method: 'post', propertyName: 'token' },
         logout: { url: '/logout', method: 'post' },
-        user: { url: '/check/user', method: 'get', propertyName: 'user' }
+        user: { url: '/get/user', method: 'get', propertyName: 'user' }
       },
       // tokenRequired: true,
       // tokenType: 'bearer',
@@ -129,7 +129,7 @@ export default {
    ** See https://axios.nuxtjs.org/options
    */
   axios: {
-    baseURL: "http://upera.tv/api/v1",
+    baseURL: "https://upera.tv/api/v1",
     browserBaseURL: "https://upera.tv/api/v1",
   },
   /*
