@@ -115,8 +115,8 @@ export default {
       endpoints: {
         login: { url: '/login', method: 'post', propertyName: 'token' },
         logout: { url: '/logout', method: 'post' },
-        user: { url: '/get/check/user', method: 'get', propertyName: false }
-      }
+        user: { url: '/check/user', method: 'get', propertyName: 'user' }
+      },
       // tokenRequired: true,
       // tokenType: 'bearer',
       // globalToken: true,
