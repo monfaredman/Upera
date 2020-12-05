@@ -106,7 +106,7 @@
             <b-button v-if="!$auth.loggedIn && $route.name !=='login'" variant="primary" class="py-1 px-lg-4" @click="showModal=true">
               {{ $t('new.login_register') }}
             </b-button>
-            <b-button v-else-if="$route.name !=='login'" variant="primary" class="py-1 px-lg-4" @click="$store.dispatch('logout');$auth.logout();$router.go();">
+            <b-button v-else-if="$route.name !=='login'" variant="primary" class="py-1 px-lg-4" @click="$store.dispatch('logout');$auth.logout();">
               {{ $t('nav.logout') }}
             </b-button>
           </div>
