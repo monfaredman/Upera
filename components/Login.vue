@@ -169,6 +169,7 @@ import {mapGetters} from 'vuex'
                   if (process.client) {
                     this.$store.dispatch('login')
                   }
+                  this.$router.go()
                 }
                 // else{
                 //   this.$router.go()
