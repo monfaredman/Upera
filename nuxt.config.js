@@ -129,7 +129,7 @@ export default {
    ** See https://axios.nuxtjs.org/options
    */
   axios: {
-    baseURL: "https://upera.tv/api/v1",
+    baseURL: "http://upera.tv/api/v1",
     browserBaseURL: "https://upera.tv/api/v1",
   },
   /*
