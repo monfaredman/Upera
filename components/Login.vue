@@ -15,7 +15,7 @@
             <div v-if="typeof errors === 'string'" class="text-danger">
               {{ errors }}
             </div>
-            <div v-else-if="errors.mobile" class="text-danger">
+            <div v-else-if="errors && errors.mobile" class="text-danger">
               {{ errors.mobile[0] }}
             </div>
             <div v-else class="invalid-feedback">
@@ -27,7 +27,7 @@
           </button>
           <div v-if="$i18n.locale=='fa'" class="text-center">
             <small>
-              <span>با ثبت نام در پف فیلم، </span>
+              <span>با ثبت نام در آپرا، </span>
               <nuxt-link to="/profile/terms">قوانین و شرایط استفاده و حریم خصوصی</nuxt-link>
               <span>را میپذیرم</span>
             </small>
@@ -121,7 +121,7 @@ import {mapGetters} from 'vuex'
               }
         this.$refs['loginModal'].$on('hide', () => {
           $('.default').removeClass('blure')
-          this.$emit("hideModal", null)
+          this.$emit("hide-modal", null)
         })
 
     },
@@ -195,7 +195,7 @@ import {mapGetters} from 'vuex'
       },
       hideModal() {
         this.$refs['loginModal'].hide()
-        this.$emit("hideModal", null)
+        this.$emit("hide-modal", null)
         $('.default').removeClass('blure')
       },
       LoginJquery() {

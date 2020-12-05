@@ -15,12 +15,13 @@
           <div class="d-flex justify-content-between align-items-end w-full srmshadow">
             <div class="d-flex detail">
               <div class="poster film_poster">
-                <img :src="data.cdn.md_poster+data.movie.poster" :alt="data.movie.name">
+                <img :src="'https://thumb.contentpanel.click/thumb?w=272&h=404&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+data.movie.poster" :alt="data.movie.name">
                 <img :class="{ active: data.movie.is_watchlist==1 }" class="viedomark" src="@/assets/img/icons/videomark.svg" @click="ADD_WATCHLIST(data.movie.id, 'movie', 'delete')">
                 <img :class="{ active: data.movie.is_watchlist==0 }" class="viedomark" src="@/assets/img/icons/videomark-o.svg" @click="ADD_WATCHLIST(data.movie.id, 'movie', 'add')">
               </div>
               <div class="d-flex flex-column align-items-start pl-2 pl-lg-4 titles">
-                <h5 class="font-weight-bold mt-2 mt-lg-5">
+                <!--  mt-2  -->
+                <h5 class="font-weight-bold mt-lg-4">
                   {{ ChooseLang(data.movie.name,data.movie.name_fa) }}
                 </h5>
                 <b class="mt-3 mt-lg-2">{{ ChooseLangAllGenres(data.movie.genre) }}</b>
@@ -31,7 +32,7 @@
             </div>
             <div class="ranking d-flex flex-column justify-content-center align-items-end">
               <small class="mb-1">{{ data.movie.runtime }} {{ $t('new.minutes') }}</small>
-              {{ data.movie.age }}
+              <span>{{ data.movie.age }}</span>
               <div class="d-flex justify-content-center align-items-center mb-2 mb-lg-4">
                 <b class="font-weight-bold mr-1 mt-1 mr-lg-2 text-white pt-lg-2 mt-lg-0 small">{{ data.movie.rate }}</b>
                 <img src="@/assets/img/imdb.png" height="25">
@@ -80,7 +81,7 @@
 
                 <div v-for="(item, index) in data.similar" :key="index" class="swiper-slide">
                   <nuxt-link :to="{ name: 'movie-id', params: { id: item.id }}">
-                    <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
+                    <img :src="'https://thumb.contentpanel.click/thumb?w=136&h=202&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
                   </nuxt-link>
                   <div class="mt-2 font-weight-bold">
                     <h5 class="mt-2 small font-weight-normal">
@@ -211,7 +212,7 @@
 
           <div v-for="(item, index) in data.similar" :key="index" class="swiper-slide">
             <nuxt-link :to="{ name: 'movie-id', params: { id: item.id }}">
-              <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
+              <img :src="'https://thumb.contentpanel.click/thumb?w=136&h=202&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
             </nuxt-link>
             <div class="mt-2 font-weight-bold">
               <h5 class="mt-2 small font-weight-normal">
@@ -234,7 +235,7 @@
                   <div v-show="data.casts !== null" class="row row_actor_movie">
                     <div v-for="(item, index) in data.casts" :key="index" class="col-4 col-xl-1 col-md-2 col-sm-3 mt-2 mt-lg-4">
                       <nuxt-link :to="{ name: 'cast-id', params: { id: item.id }}" class="actor">
-                        <img :src="data.cdn.md_cast+item.image" :alt="item.name">
+                        <img :src="'https://thumb.contentpanel.click/thumb?w=141&h=214&q=100&a=c&src=https://cdn.upera.shop/s3/casts/'+item.image" :alt="item.name">
                         <span class="block">{{ ChooseLang(item.name,item.name_fa) }}</span>
                       </nuxt-link>
                     </div>
@@ -392,7 +393,7 @@
         </div>
       </div>
     </section>
-    <Login v-if="!$auth.loggedIn" :show="showModal" :staticmodal="false" @hideModal="HIDE_MODAL" />
+    <Login v-if="!$auth.loggedIn" :show="showModal" :staticmodal="false" @hide-modal="HIDE_MODAL" />
   </div>
 </template>
 <script>
@@ -469,6 +470,7 @@ res.data.data.showtabs=0
         slidesPerView: 3.3,
         grabCursor: true,
         setWrapperSize: true,
+        threshold: 2,
         breakpoints: {
             768: {
                 slidesPerView: 6.5,
@@ -496,6 +498,7 @@ res.data.data.showtabs=0
         slidesPerView: 3.3,
         grabCursor: true,
         setWrapperSize: true,
+        threshold: 2,
         breakpoints: {
             768: {
                 slidesPerView: 3.5,

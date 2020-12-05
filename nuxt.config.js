@@ -9,7 +9,7 @@ export default {
   //   }
   // },
   loading: {
-    color: 'red',
+    color: '#f63',
     height: '6px',
     rtl: true,
     continuous: true,
@@ -55,6 +55,7 @@ export default {
     "../assets/fonts/icomoon/style.css",
     "../assets/styles/fa.css",
     "../assets/styles/swiper.css",
+    "vue-slick-carousel/dist/vue-slick-carousel.css",
     "../assets/styles/Edited-Style-Dark.css",
   ],
     router: {
@@ -65,7 +66,7 @@ export default {
    ** Plugins to load before mounting the App
    ** https://nuxtjs.org/guide/plugins
    */
-  plugins: ["~plugins/bootstrap.js","~plugins/swiper.js",'~/plugins/i18n.js',{src:"~plugins/swiper.js",ssr:false},
+  plugins: ["~plugins/bootstrap.js","~plugins/slick.js","~plugins/swiper.js",'~/plugins/i18n.js',
     "./plugins/axios.js",
     "./plugins/mixins/validation.js"],
   /*
@@ -77,6 +78,9 @@ export default {
    ** Nuxt.js dev-modules
    */
   buildModules: [],
+    eslint: {
+    fix: true
+  },
   /*
    ** Nuxt.js modules
    */
@@ -88,7 +92,16 @@ export default {
     // Doc: https://github.com/nuxt/content
     "@nuxt/content",
     "bootstrap-vue/nuxt",
-    'nuxt-sweetalert2'
+    'nuxt-sweetalert2',
+    ['nuxt-lazy-load', {
+      images: true,
+      videos: false,
+      audios: false,
+      iframes: false,
+      native: false,
+      polyfill: true,
+      directiveOnly: false
+    }]
   ],
   auth: {
   redirect: {
@@ -102,8 +115,8 @@ export default {
       endpoints: {
         login: { url: '/login', method: 'post', propertyName: 'token' },
         logout: { url: '/logout', method: 'post' },
-        user: { url: '/get/user', method: 'get', propertyName: false }
-      },
+        user: { url: '/get/check/user', method: 'get', propertyName: false }
+      }
       // tokenRequired: true,
       // tokenType: 'bearer',
       // globalToken: true,
@@ -116,7 +129,7 @@ export default {
    ** See https://axios.nuxtjs.org/options
    */
   axios: {
-    baseURL: "https://upera.tv/api/v1",
+    baseURL: "http://upera.tv/api/v1",
     browserBaseURL: "https://upera.tv/api/v1",
   },
   /*

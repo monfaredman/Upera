@@ -3,7 +3,7 @@
     color: #f6f6f6;
 }
 .srmdark .btn.btn-primary {
-    background-color: #ec2927;
+    background-color: #f63;
 }
 
 .srmdark .btn.btn-secondary {
@@ -55,13 +55,13 @@
 
 
 .srmdark .show-btn {
-    background-color: #ec2927;
+    background-color: #f63;
     color: white;
     border-radius: 4px;
 }
 
 .srmdark #header .profile:hover {
-    color: #d42a28 !important;
+    color: #f63 !important;
 }
 
     .srmdark .category > div > i:before {
@@ -69,7 +69,7 @@
     }
 
 .srmdark #header .category:hover i::before {
-    color: #ec2927;
+    color: #f63;
 }
 
 
@@ -169,7 +169,7 @@
     background-color: #f16361;
     border-radius: 5px;
     color: #fff;
-    border: 1.2px solid #ec2927;
+    border: 1.2px solid #f63;
 }
 
     .srmdark .box_sell_btn > a:hover {
@@ -209,7 +209,7 @@
 
 .srmdark .btn_sell_cover_active {
     padding: 4px 48px 4px 48px !important;
-    background-color: #ec2927 !important;
+    background-color: #f63 !important;
     font-size: 1.12em;
     font-weight: 600 !important;
 }
@@ -286,7 +286,7 @@
 }
 
 .srmdark .Ticket_time_over {
-    background-color: #ec2927;
+    background-color: #f63;
     color: #fff;
 }
 
@@ -687,22 +687,37 @@ body.srmdark widget {
    
     color: #ffffff !important;
 }
-.srmdark .logo_another_pages .icon-logo:before {
-    color: #ec2927 !important;
+.srmdark .logo_another_pages .icon-upera-fa-logotype:before {
+   
+    color: #ffffff !important;
 }
+
+.srmdark .logo_another_pages .icon-logo:before {
+    color: #f63 !important;
+}
+.srmdark .logo_another_pages .icon-upera-logo:before {
+    color: #f63 !important;
+}
+
 /*.logo_another_pages i::before {
-    color: #ec2927;
+    color: #f63;
 }*/
 .srmdark .logo_another_pages > .icon-farsi-logotype {
     font-size: 2.4em;
     vertical-align: middle;
 }
-
+.srmdark .logo_another_pages > .icon-upera-fa-logotype {
+    font-size: 2.4em;
+    vertical-align: middle;
+}
 .srmdark .logo_another_pages > .icon-logo {
     font-size: 1.58em;
     vertical-align: middle;
 }
-
+.srmdark .logo_another_pages > .icon-upera-logo {
+    font-size: 1.9em;
+    vertical-align: middle;
+}
 .srmdark .insert_comment button {
     position: absolute;
     z-index: 5;
@@ -1487,14 +1502,14 @@ body.srmdark widget {
         padding: 5px 0 5px 11px;
         border-radius: 5px;
         color: #fff;
-        border: 1.2px solid #ec2927;
+        border: 1.2px solid #f63;
         font-weight: 500;
         cursor: pointer;
     }
 
     .srmdark .btn_sell_cover_active {
         padding: 1px 38px 1px 38px !important;
-        background-color: #ec2927 !important;
+        background-color: #f63 !important;
         font-size: 1.2em;
         font-weight: 600 !important;
     }
@@ -1742,12 +1757,18 @@ body.srmdark widget {
         font-size: 2em;
         vertical-align: middle;
     }
-
+    .srmdark .logo_another_pages > .icon-upera-fa-logotype {
+        font-size: 2em;
+        vertical-align: middle;
+    }
     .srmdark .logo_another_pages > .icon-logo {
         font-size: 1.3em;
         vertical-align: middle;
     }
-
+    .srmdark .logo_another_pages > .icon-upera-logo {
+        font-size: 1.6em;
+        vertical-align: middle;
+    }
     .srmdark #movie .banner .content .poster .viedomark {
         position: absolute;
         top: -7px;
@@ -1889,7 +1910,7 @@ body.srmdark widget {
     }
 
     .srmdark .show-btn {
-        background-color: #ec2927;
+        background-color: #f63;
         color: white;
         padding: 6px 10px;
         border-radius: 3px;
@@ -1925,7 +1946,7 @@ body.srmdark widget {
         padding-right: 10px !important;
         max-width: 85%;
         padding-left: 10px !important;
-        background-color: #ec2927 !important;
+        background-color: #f63 !important;
     }
 
     .srmdark #actor > .container-fluid > .row_actor_movie > div {
@@ -2087,7 +2108,7 @@ body.srmdark widget {
     }
 
     .srmdark .episodes_collection > .banner > .banner_container {
-        max-height: 770px;
+        max-height: 65vh;
         overflow: hidden;
     }
 
@@ -2095,7 +2116,7 @@ body.srmdark widget {
         padding-right: 23px !important;
         max-width: 288px !important;
         padding-left: 23px !important;
-        background-color: #ec2927 !important;
+        background-color: #f63 !important;
         margin: 0 auto !important;
         right: 0 !important;
         left: 0 !important;
@@ -2323,7 +2344,7 @@ body.srmdark widget {
 
     .srmdark #feature .feature .feature-buttons .feature-btn i {
         font-size: 2.1rem !important;
-        color: #d62422 !important;
+        color: #f63 !important;
     }
 
 
@@ -2625,7 +2646,7 @@ body.srmdark widget {
     padding-right: 23px !important;
     max-width: 91%;
     padding-left: 23px !important;
-    background-color: #ec2927 !important;
+    background-color: #f63 !important;
 }
 
     .srmdark .menu-bar_red > a > i {
@@ -2638,7 +2659,7 @@ body.srmdark widget {
         }
 
 .srmdark .click-counter > i:before {
-    color: #ec2927 !important;
+    color: #f63 !important;
     font-size: 2.5em !important;
 }
 
@@ -2946,4 +2967,41 @@ body.srmdark widget {
         transform: scale(1);
         opacity: 1;
     }
+}
+
+
+.srmdark .img-gradient:after {
+  content: "";
+  top: 0;
+  left: 0;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  background: -moz-linear-gradient(left, rgba(18 18 18) 26%, rgba(255, 255, 255, 0) 50%, rgba(18 18 18) 75%);
+  /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, right top, color-stop(26%, rgba(18 18 18)), color-stop(50%, rgba(255, 255, 255, 0)), color-stop(75%, rgba(18 18 18)));
+  /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(left, rgba(18 18 18) 26%, rgba(255, 255, 255, 0) 50%, rgba(18 18 18) 75%);
+  /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(left, rgba(18 18 18) 26%, rgba(255, 255, 255, 0) 50%, rgba(18 18 18) 75%);
+  /* Opera 11.10+ */
+  background: -ms-linear-gradient(left, rgba(18 18 18) 26%, rgba(255, 255, 255, 0) 50%, rgba(18 18 18) 75%);
+  /* IE10+ */
+  background: linear-gradient(to right, rgba(18 18 18) 26%, rgba(255, 255, 255, 0) 50%, rgba(18 18 18) 75%);
+  /* W3C */
+  filter: progid: DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#ffffff', GradientType=1);
+  /* IE6-9 */
+}
+
+.srmdark .episodes_collection .banner:after{
+    content: '';
+    position: absolute;
+    background: -moz-linear-gradient(top, rgba(255,255,255,0) 20%, rgba(18 18 18) 80%); /* FF3.6-15 */
+    background: -webkit-linear-gradient(top, rgba(255,255,255,0) 20%,rgba(18 18 18) 80%); /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(to bottom, rgba(255,255,255,0) 20%,rgba(18 18 18) 80%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ffffff', endColorstr='#ffffff',GradientType=0 ); /* IE6-9 */
+    height: 40%;
+    bottom: 0;
+    left: 0;
+    right: 0;
 }

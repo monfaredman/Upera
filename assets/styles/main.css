@@ -667,14 +667,20 @@ nav a:hover {
 
 #movie .banner .content .titles h5 {
   font-size: 1.4rem;
+  background-image: linear-gradient(to left, transparent, #000);
+  padding:10px 20px 0 5px;
 }
 
 #movie .banner .content .titles b {
   font-size: 0.8em;
+  background-image: linear-gradient(to left, transparent, #000);
+  padding:4px 20px 0 5px;
 }
 
 #movie .banner .content .titles p {
   font-size: 0.8rem;
+  background-image: linear-gradient(to left, transparent, #000);
+  padding:2px 20px 0 5px;
 }
 
 #movie .banner .content .detail {
@@ -1453,6 +1459,12 @@ top: 40px;
   }
   #movie .banner .content .ranking small {
     font-size: 16px;
+    background-image: linear-gradient(to right, transparent, #000);
+    padding:4px 5px 0 20px;
+  }
+  #movie .banner .content .ranking span {
+    background-image: linear-gradient(to right, transparent, #000);
+    padding:4px 5px 0 20px;
   }
   #movie .banner .content .ranking b {
     font-size: 18px;
@@ -1604,4 +1616,23 @@ top: 40px;
 #movie-tabs .nav .nav-tabs{
   border:0;
 }
+.logo img {
+  height: 50px;
+}
+
+.img-gradient{
+  position: relative;
+  display: inline-block;
+}
+
+
+.img-gradient .srm-img{
+  display:block;
+  margin: auto;
+  width:50% !important;
+}
+.srm-back{
+  z-index:999999999;
+}
+
 /*# sourceMappingURL=style.css.map */

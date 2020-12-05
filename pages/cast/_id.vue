@@ -2,10 +2,16 @@
   <div id="episode">
     <div v-if="data.movies!==null" id="actor" class="episodes_collection">
       <div class="banner mt-5">
-        <div class="banner_container">
-          <img :src="data.cdn.cdn_cast+data.cast.image" alt="">
+        <div class="banner_container d-lg-none">
+          <img :src="'https://thumb.contentpanel.click/thumb?w=400&h=200&zc=3&q=100&a=c&src=https://cdn.upera.shop/s3/casts/'+data.cast.image" alt="">
           <a href="#" class="back" @click.prevent="hasHistory() ? $router.go(-1) : $router.push('/')">
             <img src="@/assets/img/icons/arrow-back.svg" width="30" alt="">
+          </a>
+        </div>
+        <div class="banner_container d-none d-lg-block img-gradient">
+          <img :src="'https://thumb.contentpanel.click/thumb?w=600&h=300&zc=3&q=100&a=t&src=https://cdn.upera.shop/s3/casts/'+data.cast.image" class="srm-img">
+          <a href="#" class="back srm-back" @click.prevent="hasHistory() ? $router.go(-1) : $router.push('/')">
+            <img src="@/assets/img/icons/arrow-back2.svg" width="30" alt="">
           </a>
         </div>
         <div class="content px-3 px-lg-3 py-3">
@@ -29,19 +35,19 @@
         <div class="row">
           <div v-for="(item,index) in data.filmography" :key="index" class="col-4 col-xl-1 col-md-2 col-sm-3 mt-2 mt-lg-4">
             <nuxt-link v-if="item.type=='movie'" :to="{ name: 'movie-id', params: { id: item.id }}" class="actor">
-              <img :src="data.cdn.md_poster+item.poster" :alt="item.name">
+              <img :src="'https://thumb.contentpanel.click/thumb?w=272&h=404&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
               <span class="block">{{ ChooseLang(item.name,item.name_fa) }}</span>
             </nuxt-link>
             <nuxt-link v-else-if="item.type=='episode'" :to="{ name: 'episode-id', params: { id: item.id }}" class="actor is-series">
-              <img :src="data.cdn.md_poster+item.poster" :alt="item.name">
-              <img :src="data.cdn.md_poster+item.poster" :alt="item.name">
-              <img :src="data.cdn.md_poster+item.poster" :alt="item.name">
+              <img :src="'https://thumb.contentpanel.click/thumb?w=272&h=404&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
+              <img :src="'https://thumb.contentpanel.click/thumb?w=272&h=404&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
+              <img :src="'https://thumb.contentpanel.click/thumb?w=272&h=404&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
               <span class="block">{{ ChooseLang(item.name,item.name_fa) }}</span>
             </nuxt-link>
             <nuxt-link v-else :to="{ name: 'series-id', params: { id: item.id }}" class="actor is-series">
-              <img :src="data.cdn.md_poster+item.poster" :alt="item.name">
-              <img :src="data.cdn.md_poster+item.poster" :alt="item.name">
-              <img :src="data.cdn.md_poster+item.poster" :alt="item.name">
+              <img :src="'https://thumb.contentpanel.click/thumb?w=272&h=404&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
+              <img :src="'https://thumb.contentpanel.click/thumb?w=272&h=404&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
+              <img :src="'https://thumb.contentpanel.click/thumb?w=272&h=404&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
               <span class="block">{{ ChooseLang(item.name,item.name_fa) }}</span>
             </nuxt-link>
           </div>

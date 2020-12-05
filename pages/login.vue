@@ -2,7 +2,7 @@
   <div>
     <section class="login mt-5">
       <div style="min-height:500px;height:100%;">
-        <Login :show="true" :staticmodal="true" @hideModal="HIDE_MODAL" />
+        <Login :show="true" :staticmodal="true" @hide-modal="HIDE_MODAL" />
       </div>
     </section>
   </div>
@@ -15,11 +15,6 @@ import Login from "../components/Login"
   components: {
     Login
   },
-    methods: {
-            HIDE_MODAL() {
-              
-            },
-    },
       head () {
     return {
       
@@ -28,6 +23,11 @@ import Login from "../components/Login"
     }
     }
   },
+    methods: {
+            HIDE_MODAL() {
+              
+            },
+    },
   }
 </script>
 

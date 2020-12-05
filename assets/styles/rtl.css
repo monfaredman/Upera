@@ -1914,6 +1914,31 @@ left:auto;
     right: auto;
 }
 
+.srmrtl #movie .banner .content .titles h5 {
+  background-image: linear-gradient(to right, transparent, #000);
+  padding:10px 5px 0 20px;
+}
+
+.srmrtl #movie .banner .content .titles b {
+  background-image: linear-gradient(to right, transparent, #000);
+  padding:4px 5px 0 20px;
+}
+
+.srmrtl #movie .banner .content .titles p {
+  background-image: linear-gradient(to right, transparent, #000);
+  padding:2px 5px 0 20px;
+}
+
+
+.srmrtl #movie .banner .content .ranking small {
+  background-image: linear-gradient(to left, transparent, #000);
+  padding:4px 20px 0 5px;
+}
+.srmrtl #movie .banner .content .ranking span {
+  background-image: linear-gradient(to left, transparent, #000);
+  padding:4px 20px 0 5px;
+}
+
 #watching.swipe .swiper-container {
   -webkit-transform: translateX(15px);
           transform: translateX(15px);

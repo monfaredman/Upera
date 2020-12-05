@@ -1,12 +1,12 @@
 <template>
   <div>
     <section v-if="data.top!==null" id="feature">
-      <div v-swiper:topSwiper="swiperOption3">
-        <div class="swiper-wrapper">
-          <div v-for="(item,index) in data.top" :key="index" class="swiper-slide">
+      <VueSlickCarousel v-bind="swiperOption3" ref="carousel">
+          <div v-for="(item,index) in data.top" :key="index">
+            <div class="swiper-slide">
             <div class="feature-slide">
-              <img class="bg-img" :src="data.cdn.backdrop+item.backdrop" :alt="item.name">
-              <div class="feature pb-lg-2">
+              <img data-not-lazy class="bg-img" :src="'https://thumb.contentpanel.click/thumb?w=1000&h=620&q=100&a=c&zc=1&src=https://cdn.upera.shop/s3/backdrops/'+item.backdrop" :alt="item.name">
+              <div dir="rtl" class="feature pb-lg-2">
                 <h2 class="title mb-lg-3">
                   {{ ChooseLang(item.name,item.name_fa) }}
                 </h2>
@@ -29,18 +29,18 @@
 
                   <nuxt-link v-if="item.type=='movie'" :to="{ name: 'movie-show-id', params: { id: item.id }}" class="show-btn">
                     <span>نمایش</span>
-                    <img class="ml-2" src="@/assets/img/play.svg" alt="">
+                    <img data-not-lazy class="ml-2" src="@/assets/img/play.svg" alt="">
                   </nuxt-link>
                   <nuxt-link v-else-if="item.type=='episode'" :to="{ name: 'episode-show-id', params: { id: item.id }}" class="show-btn">
                     <span>نمایش</span>
-                    <img class="ml-2" src="@/assets/img/play.svg" alt="">
+                    <img data-not-lazy class="ml-2" src="@/assets/img/play.svg" alt="">
                   </nuxt-link>
                   <nuxt-link v-else :to="{ name: 'series-show-id', params: { id: item.id }}" class="show-btn">
                     <span>نمایش</span>
-                    <img class="ml-2" src="@/assets/img/play.svg" alt="">
+                    <img data-not-lazy class="ml-2" src="@/assets/img/play.svg" alt="">
                   </nuxt-link>
 
-                  <a href="#" class="feature-btn" @click.prevent="ADD_WATCHLIST(item.id, item.type, index, item.is_watchlist);">
+                  <a @click="ADD_WATCHLIST(item.id, item.type, index, item.is_watchlist)" class="feature-btn">
                     <i :class="{ 'fa': item.is_watchlist==1,'far': item.is_watchlist==0 }" class="fa-2x fa-bookmark" />
                     <span>بعدا میبینم</span>
                   </a>
@@ -48,12 +48,12 @@
               </div>
             </div>
           </div>
+          </div>
+      </VueSlickCarousel>
+        <div dir="rtl" class="feature-button-wrap">
+          <img @click="showNext" class="swiper-next" src="@/assets/img/icons/arrow-prev.svg">
+          <img @click="showPrev" class="swiper-prev" src="@/assets/img/icons/arrow-next.svg">
         </div>
-        <div class="feature-button-wrap">
-          <img class="swiper-next" src="@/assets/img/icons/arrow-prev.svg">
-          <img class="swiper-prev" src="@/assets/img/icons/arrow-next.svg">
-        </div>
-      </div>
     </section>
 
     <section v-if="data.occasions!==null" id="special" class="mb-5">
@@ -66,7 +66,7 @@
             <div id="special-slides">
               <div v-for="(item,index) in list.list" :key="index" class="special-slide" :class="{ active: index==0 }">
                 <div class="d-flex justify-content-start w-full special">
-                  <img class="special-image spec-1" :src="data.cdn.sm_poster+item.poster" :alt="item.name">
+                  <img class="special-image spec-1" :src="'https://thumb.contentpanel.click/thumb?w=136&h=202&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
                   <div class="special-content d-flex flex-column justify-content-between justify-content-lg-around align-items-end w-full">
                     <div class="d-flex justify-content-between w-full">
                       <div class=" ml-2 ml-lg-5">
@@ -133,17 +133,17 @@
           <!-- Slides -->
           <div v-for="(item,index) in data.offer" :key="index" class="swiper-slide">
             <nuxt-link v-if="item.type=='movie'" :to="{ name: 'movie-id', params: { id: item.id }}">
-              <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
+              <img :src="'https://thumb.contentpanel.click/thumb?w=136&h=202&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
             </nuxt-link>
             <nuxt-link v-else-if="item.type=='episode'" :to="{ name: 'episode-id', params: { id: item.id }}" class="is-series">
-              <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
-              <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
-              <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
+              <img :src="'https://thumb.contentpanel.click/thumb?w=136&h=202&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
+              <img :src="'https://thumb.contentpanel.click/thumb?w=136&h=202&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
+              <img :src="'https://thumb.contentpanel.click/thumb?w=136&h=202&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
             </nuxt-link>
             <nuxt-link v-else :to="{ name: 'series-id', params: { id: item.id }}" class="is-series">
-              <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
-              <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
-              <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
+              <img :src="'https://thumb.contentpanel.click/thumb?w=136&h=202&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
+              <img :src="'https://thumb.contentpanel.click/thumb?w=136&h=202&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
+              <img :src="'https://thumb.contentpanel.click/thumb?w=136&h=202&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
             </nuxt-link>
 
             <div class="mt-2">
@@ -173,17 +173,17 @@
           <!-- Slides -->
           <div v-for="(item,index) in data.free" :key="index" class="swiper-slide">
             <nuxt-link v-if="item.type=='movie'" :to="{ name: 'movie-id', params: { id: item.id }}">
-              <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
+              <img :src="'https://thumb.contentpanel.click/thumb?w=136&h=202&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
             </nuxt-link>
             <nuxt-link v-else-if="item.type=='episode'" :to="{ name: 'episode-id', params: { id: item.id }}" class="is-series">
-              <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
-              <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
-              <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
+              <img :src="'https://thumb.contentpanel.click/thumb?w=136&h=202&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
+              <img :src="'https://thumb.contentpanel.click/thumb?w=136&h=202&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
+              <img :src="'https://thumb.contentpanel.click/thumb?w=136&h=202&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
             </nuxt-link>
             <nuxt-link v-else :to="{ name: 'series-id', params: { id: item.id }}" class="is-series">
-              <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
-              <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
-              <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
+              <img :src="'https://thumb.contentpanel.click/thumb?w=136&h=202&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
+              <img :src="'https://thumb.contentpanel.click/thumb?w=136&h=202&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
+              <img :src="'https://thumb.contentpanel.click/thumb?w=136&h=202&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
             </nuxt-link>
             <div class="mt-2">
               <h6 class="mt-2 small font-weight-normal">
@@ -212,17 +212,17 @@
           <!-- Slides -->
           <div v-for="(item,index) in data.new_titles" :key="index" class="swiper-slide">
             <nuxt-link v-if="item.type=='movie'" :to="{ name: 'movie-id', params: { id: item.id }}">
-              <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
+              <img :src="'https://thumb.contentpanel.click/thumb?w=136&h=202&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
             </nuxt-link>
             <nuxt-link v-else-if="item.type=='episode'" :to="{ name: 'episode-id', params: { id: item.id }}" class="is-series">
-              <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
-              <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
-              <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
+              <img :src="'https://thumb.contentpanel.click/thumb?w=136&h=202&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
+              <img :src="'https://thumb.contentpanel.click/thumb?w=136&h=202&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
+              <img :src="'https://thumb.contentpanel.click/thumb?w=136&h=202&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
             </nuxt-link>
             <nuxt-link v-else :to="{ name: 'series-id', params: { id: item.id }}" class="is-series">
-              <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
-              <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
-              <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
+              <img :src="'https://thumb.contentpanel.click/thumb?w=136&h=202&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
+              <img :src="'https://thumb.contentpanel.click/thumb?w=136&h=202&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
+              <img :src="'https://thumb.contentpanel.click/thumb?w=136&h=202&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
             </nuxt-link>
             <div class="mt-2">
               <h6 class="mt-2 small font-weight-normal">
@@ -251,17 +251,17 @@
           <!-- Slides -->
           <div v-for="(item,index) in data.soon" :key="index" class="swiper-slide">
             <nuxt-link v-if="item.type=='movie'" :to="{ name: 'movie-id', params: { id: item.id }}">
-              <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
+              <img :src="'https://thumb.contentpanel.click/thumb?w=136&h=202&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
             </nuxt-link>
             <nuxt-link v-else-if="item.type=='episode'" :to="{ name: 'episode-id', params: { id: item.id }}" class="is-series">
-              <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
-              <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
-              <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
+              <img :src="'https://thumb.contentpanel.click/thumb?w=136&h=202&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
+              <img :src="'https://thumb.contentpanel.click/thumb?w=136&h=202&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
+              <img :src="'https://thumb.contentpanel.click/thumb?w=136&h=202&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
             </nuxt-link>
             <nuxt-link v-else :to="{ name: 'series-id', params: { id: item.id }}" class="is-series">
-              <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
-              <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
-              <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
+              <img :src="'https://thumb.contentpanel.click/thumb?w=136&h=202&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
+              <img :src="'https://thumb.contentpanel.click/thumb?w=136&h=202&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
+              <img :src="'https://thumb.contentpanel.click/thumb?w=136&h=202&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
             </nuxt-link>
             <div class="mt-2">
               <h6 class="mt-2 small font-weight-normal">
@@ -283,13 +283,13 @@
             <!-- Slides -->
             <div v-for="(item,index) in data.recenlty" :key="index" class="swiper-slide">
               <nuxt-link v-if="item.type=='movie'" :to="{ name: 'movie-show-id', params: { id: item.id }}">
-                <img :src="data.cdn.backdrop+item.backdrop" :alt="item.name">
+                <img :src="'https://thumb.contentpanel.click/thumb?w=364&h=190&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/'+item.backdrop" :alt="item.name">
               </nuxt-link>
               <nuxt-link v-else-if="item.type=='episode'" :to="{ name: 'episode-show-id', params: { id: item.id }}">
-                <img :src="data.cdn.backdrop+item.backdrop" :alt="item.name">
+                <img :src="'https://thumb.contentpanel.click/thumb?w=364&h=190&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/'+item.backdrop" :alt="item.name">
               </nuxt-link>
               <nuxt-link v-else :to="{ name: 'series-show-id', params: { id: item.id }}">
-                <img :src="data.cdn.backdrop+item.backdrop" :alt="item.name">
+                <img :src="'https://thumb.contentpanel.click/thumb?w=364&h=190&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/'+item.backdrop" :alt="item.name">
               </nuxt-link>
             </div>
           </div>
@@ -317,17 +317,17 @@
             <div class="swiper-wrapper py-4">
               <div v-for="(item, index) in list.list" :key="index" class="swiper-slide">
                 <nuxt-link v-if="item.type=='movie'" :to="{ name: 'movie-id', params: { id: item.id }}">
-                  <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
+                  <img :src="'https://thumb.contentpanel.click/thumb?w=136&h=202&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
                 </nuxt-link>
                 <nuxt-link v-else-if="item.type=='episode'" :to="{ name: 'episode-id', params: { id: item.id }}" class="is-series">
-                  <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
-                  <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
-                  <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
+                  <img :src="'https://thumb.contentpanel.click/thumb?w=136&h=202&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
+                  <img :src="'https://thumb.contentpanel.click/thumb?w=136&h=202&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
+                  <img :src="'https://thumb.contentpanel.click/thumb?w=136&h=202&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
                 </nuxt-link>
                 <nuxt-link v-else :to="{ name: 'series-id', params: { id: item.id }}" class="is-series">
-                  <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
-                  <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
-                  <img :src="data.cdn.sm_poster+item.poster" :alt="item.name">
+                  <img :src="'https://thumb.contentpanel.click/thumb?w=136&h=202&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
+                  <img :src="'https://thumb.contentpanel.click/thumb?w=136&h=202&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
+                  <img :src="'https://thumb.contentpanel.click/thumb?w=136&h=202&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
                 </nuxt-link>
                 <div class="mt-2">
                   <h6 class="mt-2 small font-weight-normal">
@@ -340,7 +340,7 @@
         </section>
       </div>
     </div>
-    <Login v-if="!$auth.loggedIn" :show="showModal" :staticmodal="false" @hideModal="HIDE_MODAL" />
+    <Login v-if="!$auth.loggedIn" :show="showModal" :staticmodal="false" @hide-modal="HIDE_MODAL" />
   </div>
 </template>
 <script>
@@ -360,6 +360,7 @@ import Login from "@/components/Login"
   },
   async asyncData (context) {
   	let res
+
   	if (context.app.$auth.loggedIn) {
   	    res = await context.app.$axios.get('/get/discover')
   	 }else{
@@ -372,13 +373,11 @@ import Login from "@/components/Login"
       	data:{},
       showModal: false,
         swiperOption: {
-        autoplay: {
-            delay: 5800,
-        },
         spaceBetween: 10,
         slidesPerView: 3.3,
         grabCursor: true,
         setWrapperSize: true,
+        threshold: 2,
         breakpoints: {
             768: {
                 slidesPerView: 6.5,
@@ -399,23 +398,20 @@ import Login from "@/components/Login"
         }
         },
         swiperOption3: {
-      init: true,
-      slidesPerView: 'auto',
-      centeredSlides: true,
-      loop: true,
-      loopedSlides: 0,
-      slidesPerGroup: 1,
-      spaceBetween: 30,
-        navigation: {
-            nextEl: '.swiper-next',
-            prevEl: '.swiper-prev',
-        },
+ "dots": false,
+ "arrows": false,
+  "infinite": true,
+  "speed": 500,
+  "slidesToShow": 1,
+  "slidesToScroll": 1,
+  "touchThreshold": 10
         },
         swiperOption2: {
         slidesPerView: 2.5,
         spaceBetween: 10,
         grabCursor: true,
         watchOverflow: true,
+        threshold: 2,
         breakpoints: {
             320: {
                 slidesPerView: 1.5,
@@ -452,15 +448,8 @@ import Login from "@/components/Login"
     })
 }
 
-$( "#feature a" ).click(function() {
-  if($( this ).find("i").hasClass( "far" )){
-    $( this ).find("i").removeClass( "far" )
-    $( this ).find("i").addClass( "fa" )
-  }else{
-    $( this ).find("i").removeClass( "fa" )
-    $( this ).find("i").addClass( "far" )    
-  }
-})
+
+
 
 if(this.data.occasions!=null){
  $(document).ready(function () {
@@ -548,25 +537,34 @@ if(this.data.occasions!=null){
     truncate(string, value) {
       return string.substring(0, value) + "..."
     },
+
+      showNext() {
+        this.$refs.carousel.next()
+      },
+
+      showPrev() {
+        this.$refs.carousel.prev()
+      },
     // Add new like or delete it
     // Params type1 detected if add or delete
     ADD_WATCHLIST(id, type, index, is_watchlist) {
         if (this.$auth.loggedIn) {
 
-      // if (is_watchlist==0) {
-      //   // Add true to data array
-      //   this.data.top[index].is_watchlist = 1
-      // } else {
-      //   // Add false to data array
-      //   this.data.top[index].is_watchlist = 0
+      if (is_watchlist==0) {
+        // Add true to data array
+        this.data.top[index].is_watchlist = 1
+      } else {
+        // Add false to data array
+        this.data.top[index].is_watchlist = 0
 
-      // }
+      }
 
       this.$axios.post('/create/watchlist', {id,type})
                 } else {
                     this.showModal=true
+
                 }
-                return {index,is_watchlist}
+                
     }
   }
   }

@@ -193,6 +193,7 @@
                 slidesPerView: 3.3,
                 grabCursor: true,
                 setWrapperSize: true,
+                threshold: 2,
                 breakpoints: {
                     768: {
                         slidesPerView: 3.5,

@@ -70,19 +70,19 @@
         <div v-if="data.data!=null" class="row">
           <div v-for="(item,index) in data.data" :key="index" class="col-4 col-xl-1 col-md-2 col-sm-3 mt-2 mt-lg-4">
             <nuxt-link v-if="item.type=='movie'" :to="{ name: 'movie-id', params: { id: item.id }}" class="actor">
-              <img :src="data.cdn.md_poster+item.poster" :alt="item.name">
+              <img :src="'https://thumb.contentpanel.click/thumb?w=272&h=404&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
               <span class="block">{{ ChooseLang(item.name,item.name_fa) }}</span>
             </nuxt-link>
             <nuxt-link v-else-if="item.type=='episode'" :to="{ name: 'episode-id', params: { id: item.id }}" class="actor is-series">
-              <img :src="data.cdn.md_poster+item.poster" :alt="item.name">
-              <img :src="data.cdn.md_poster+item.poster" :alt="item.name">
-              <img :src="data.cdn.md_poster+item.poster" :alt="item.name">
+              <img :src="'https://thumb.contentpanel.click/thumb?w=272&h=404&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
+              <img :src="'https://thumb.contentpanel.click/thumb?w=272&h=404&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
+              <img :src="'https://thumb.contentpanel.click/thumb?w=272&h=404&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
               <span class="block">{{ ChooseLang(item.name,item.name_fa) }}</span>
             </nuxt-link>
             <nuxt-link v-else :to="{ name: 'series-id', params: { id: item.id }}" class="actor is-series">
-              <img :src="data.cdn.md_poster+item.poster" :alt="item.name">
-              <img :src="data.cdn.md_poster+item.poster" :alt="item.name">
-              <img :src="data.cdn.md_poster+item.poster" :alt="item.name">
+              <img :src="'https://thumb.contentpanel.click/thumb?w=272&h=404&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
+              <img :src="'https://thumb.contentpanel.click/thumb?w=272&h=404&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
+              <img :src="'https://thumb.contentpanel.click/thumb?w=272&h=404&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
               <span class="block">{{ ChooseLang(item.name,item.name_fa) }}</span>
             </nuxt-link>
           </div>
@@ -90,7 +90,7 @@
         <div v-if="data.cast!=null" class="row">
           <div v-for="(item,index) in data.cast" :key="index" class="col-4 col-xl-1 col-md-2 col-sm-3 mt-2 mt-lg-4">
             <nuxt-link :to="{ name: 'cast-id', params: { id: item.id }}" class="actor">
-              <img :src="data.cdn.md_cast+item.image" :alt="item.name">
+              <img :src="'https://thumb.contentpanel.click/thumb?w=141&h=214&q=100&a=c&src=https://cdn.upera.shop/s3/casts/'+item.image" :alt="item.name">
               <span class="block">{{ ChooseLang(item.name,item.name_fa) }}</span>
             </nuxt-link>
           </div>

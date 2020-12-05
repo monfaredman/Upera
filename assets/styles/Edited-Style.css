@@ -1,5 +1,5 @@
 ﻿.btn.btn-primary {
-    background-color: #d42a28;
+    background-color: #f63;
 }
 
 .btn.btn-secondary {
@@ -125,7 +125,7 @@
 
 
 .show-btn {
-    background-color: #ec2927;
+    background-color: #f63;
     color: white;
     padding: 5px 80px;
     border-radius: 4px;
@@ -144,7 +144,7 @@
 }
 
 #header .profile:hover {
-    color: #d42a28 !important;
+    color: #f63 !important;
 }
 
 .category > div > i {
@@ -157,11 +157,11 @@
 }
 
 #header .category:hover i::before {
-    color: #ec2927;
+    color: #f63;
 }
 
 #header .category:hover a i::before {
-    color: #ec2927;
+    color: #f63;
 }
 
 #header .header {
@@ -357,7 +357,7 @@
     padding: 8px 0 7px 11px;
     border-radius: 5px;
     color: #fff;
-    border: 1.2px solid #ec2927;
+    border: 1.2px solid #f63;
     font-weight: 500;
     cursor: pointer;
 }
@@ -402,7 +402,7 @@
 
 .btn_sell_cover_active {
     padding: 4px 48px 4px 48px !important;
-    background-color: #ec2927 !important;
+    background-color: #f63 !important;
     font-size: 1.12em;
     font-weight: 600 !important;
 }
@@ -515,7 +515,7 @@
 }
 
 .Ticket_time_over {
-    background-color: #ec2927;
+    background-color: #f63;
     color: #fff;
     padding: 7px 0 4px 0 !important;
     margin: 5px 0 17px 0 !important;
@@ -923,12 +923,18 @@ body widget {
     font-size: 2.4em;
     vertical-align: middle;
 }
-
+.logo_another_pages > .icon-upera-fa-logotype {
+    font-size: 2.4em;
+    vertical-align: middle;
+}
 .logo_another_pages > .icon-logo {
     font-size: 1.58em;
     vertical-align: middle;
 }
-
+.logo_another_pages > .icon-upera-logo {
+    font-size: 1.9em;
+    vertical-align: middle;
+}
 .insert_comment button {
     position: absolute;
     z-index: 5;
@@ -969,9 +975,9 @@ body widget {
 .episodes_collection .banner:after{
     content: '';
     position: absolute;
-    background: -moz-linear-gradient(top, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%); /* FF3.6-15 */
-    background: -webkit-linear-gradient(top, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%); /* Chrome10-25,Safari5.1-6 */
-    background: linear-gradient(to bottom, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    background: -moz-linear-gradient(top, rgba(255,255,255,0) 20%, rgba(255,255,255,1) 80%); /* FF3.6-15 */
+    background: -webkit-linear-gradient(top, rgba(255,255,255,0) 20%,rgba(255,255,255,1) 80%); /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(to bottom, rgba(255,255,255,0) 20%,rgba(255,255,255,1) 80%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ffffff', endColorstr='#ffffff',GradientType=0 ); /* IE6-9 */
     height: 40%;
     bottom: 0;
@@ -1932,14 +1938,14 @@ body widget {
         padding: 5px 0 5px 11px;
         border-radius: 5px;
         color: #fff;
-        border: 1.2px solid #ec2927;
+        border: 1.2px solid #f63;
         font-weight: 500;
         cursor: pointer;
     }
 
     .btn_sell_cover_active {
         padding: 1px 38px 1px 38px !important;
-        background-color: #ec2927 !important;
+        background-color: #f63 !important;
         font-size: 1.2em;
         font-weight: 600 !important;
     }
@@ -2189,11 +2195,19 @@ body widget {
         vertical-align: middle;
     }
 
+    .logo_another_pages > .icon-upera-fa-logotype {
+        font-size: 2em;
+        vertical-align: middle;
+    }
+
     .logo_another_pages > .icon-logo {
         font-size: 1.3em;
         vertical-align: middle;
     }
-
+    .logo_another_pages > .icon-upera-logo {
+        font-size: 1.6em;
+        vertical-align: middle;
+    }
     #movie .banner .content .poster .viedomark {
         position: absolute;
         top: -7px;
@@ -2346,7 +2360,7 @@ body widget {
     }
 
     .show-btn {
-        background-color: #ec2927;
+        background-color: #f63;
         color: white;
         padding: 6px 10px;
         border-radius: 3px;
@@ -2382,7 +2396,7 @@ body widget {
         padding-right: 10px !important;
         max-width: 85%;
         padding-left: 10px !important;
-        background-color: #ec2927 !important;
+        background-color: #f63 !important;
     }
 
     #actor > .container-fluid > .row_actor_movie > div {
@@ -2484,13 +2498,13 @@ body widget {
     }
 
         #header .category:hover > a {
-            color: #ec2927;
+            color: #f63;
         }
     #header .category .profile_menu .angle {
         position: absolute;
         top: -10px;
         left: 656px;
-        color: #ec2927;
+        color: #f63;
         -webkit-transition: all 300ms;
         transition: all 300ms;
         opacity: 0;
@@ -2555,7 +2569,7 @@ body widget {
         padding-right: 23px !important;
         max-width: 288px !important;
         padding-left: 23px !important;
-        background-color: #ec2927 !important;
+        background-color: #f63 !important;
         margin: 0 auto !important;
         right: 0 !important;
         left: 0 !important;
@@ -2787,7 +2801,7 @@ body widget {
 
     #feature .feature .feature-buttons .feature-btn i {
         font-size: 2.1rem !important;
-        color: #d62422 !important;
+        color: #f63 !important;
     }
 
 
@@ -3114,7 +3128,7 @@ small, .small {
     padding-right: 23px !important;
     max-width: 91%;
     padding-left: 23px !important;
-    background-color: #ec2927 !important;
+    background-color: #f63 !important;
 }
 
     .menu-bar_red > a > i {
@@ -3127,7 +3141,7 @@ small, .small {
         }
 
 .click-counter > i:before {
-    color: #ec2927 !important;
+    color: #f63 !important;
     font-size: 2.5em !important;
 }
 
@@ -3631,7 +3645,7 @@ small, .small {
     height: 26px;
 }
 .series-ads__content ul li:nth-child(2){
-    background-color: #ec2927;
+    background-color: #f63;
     padding: 6px 10px;
     color: #ffffff;
     display: flex;
@@ -3704,3 +3718,27 @@ small, .small {
 }
 
 #episode_topNav h2{z-index:1;}
+
+.img-gradient:after {
+  content: "";
+  top: 0;
+  left: 0;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  background: -moz-linear-gradient(left, rgba(255, 255, 255, 1) 26%, rgba(255, 255, 255, 0) 50%, rgba(255, 255, 255, 1) 75%);
+  /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, right top, color-stop(26%, rgba(255, 255, 255, 1)), color-stop(50%, rgba(255, 255, 255, 0)), color-stop(75%, rgba(255, 255, 255, 1)));
+  /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(left, rgba(255, 255, 255, 1) 26%, rgba(255, 255, 255, 0) 50%, rgba(255, 255, 255, 1) 75%);
+  /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(left, rgba(255, 255, 255, 1) 26%, rgba(255, 255, 255, 0) 50%, rgba(255, 255, 255, 1) 75%);
+  /* Opera 11.10+ */
+  background: -ms-linear-gradient(left, rgba(255, 255, 255, 1) 26%, rgba(255, 255, 255, 0) 50%, rgba(255, 255, 255, 1) 75%);
+  /* IE10+ */
+  background: linear-gradient(to right, rgba(255, 255, 255, 1) 26%, rgba(255, 255, 255, 0) 50%, rgba(255, 255, 255, 1) 75%);
+  /* W3C */
+  filter: progid: DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#ffffff', GradientType=1);
+  /* IE6-9 */
+}
+

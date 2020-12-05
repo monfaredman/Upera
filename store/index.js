@@ -71,10 +71,14 @@ export const mutations = {
 export const actions = {
 
   async nuxtServerInit(store) {
+
+    console.log(store.state.auth.loggedIn)
+    
   	if(!store.state.auth.loggedIn){
   		let res
     	res=await this.$axios.get('/ghost/get/check/user')
         store.commit('SET_USER',res.data)
+
     }else{
 
       store.commit('SET_USER',store.state.auth.user)

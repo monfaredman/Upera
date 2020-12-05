@@ -11,7 +11,7 @@
         <i class="icon-search" />
       </nuxt-link>
       <nuxt-link to="/" style="font-size: 1.97em;">
-        <i class="icon-farsi-logotype" />
+        <i class="icon-upera-fa-logotype" />
       </nuxt-link>
     </div>
 
@@ -22,13 +22,12 @@
         >
           <div class="d-flex align-items-center h-full">
             <nuxt-link v-if="categories.includes($route.path) || profile.includes($route.path)" to="/" class="logo logo_another_pages">
-              <i class="icon-farsi-logotype" />
-              <i class="icon-logo" />
+              <i class="icon-upera-fa-logotype" />
+              <i class="icon-upera-logo" />
             </nuxt-link>
 
             <nuxt-link v-else to="/" class="logo">
               <img src="@/assets/img/logo.svg" alt="">
-              <img src="@/assets/img/logotype-fa.svg" alt="">
             </nuxt-link>
             <div class="d-none d-lg-flex align-items-center ml-5 h-full">
               <div class="category" :class="{ 'open': categoriesNav }" @mouseover="categoriesHover()" @mouseleave="categoriesleave()">
@@ -159,7 +158,7 @@
       </ul>
     </header>
 
-    <Login v-if="!$auth.loggedIn && $route.name !=='login'" :show="showModal" :staticmodal="false" @hideModal="HIDE_MODAL" />
+    <Login v-if="!$auth.loggedIn && $route.name !=='login'" :show="showModal" :staticmodal="false" @hide-modal="HIDE_MODAL" />
   </div>
 </template>
 
