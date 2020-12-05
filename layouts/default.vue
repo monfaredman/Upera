@@ -22,9 +22,9 @@ export default {
         },
 created: function() {
   if (process.browser) {
-    // if(!this.$auth.loggedIn && localStorage.getItem('auth.strategy')=='local' && (localStorage.getItem('auth._token.local') === null || localStorage.getItem('auth._token.local') != 'false')){
-    //   this.$auth.logout()
-    // }
+    if(!this.$auth.loggedIn && localStorage.getItem('auth.strategy')=='local' && (localStorage.getItem('auth._token.local') === null || localStorage.getItem('auth._token.local') != 'false')){
+      this.$auth.logout()
+    }
     this.$store.dispatch('GET_LANG')
     this.$store.dispatch('GET_NIGHTMODE')
   }
