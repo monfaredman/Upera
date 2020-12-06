@@ -169,7 +169,7 @@ import {mapGetters} from 'vuex'
                   if (process.client) {
                     this.$store.dispatch('login')
                   }
-                  this.$router.go()
+                  this.$nuxt.refresh()
                 }
                 // else{
                 //   this.$router.go()
