@@ -11,7 +11,7 @@
     "serve": "nuxt serve",
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
     "lintfix": "eslint --fix --ext .js,.vue --ignore-path .gitignore .",
-    "deploy": "pm2 start npm --host 127.0.0.1 --name upera --max-memory-restart 10000M -- start"
+    "deploy": "pm2 start npm --name upera --max-memory-restart 10000M -- start"
   },
   "dependencies": {
     "@nuxt/content": "^1.11.1",
