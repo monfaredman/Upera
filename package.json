@@ -6,7 +6,7 @@
     "dev": "nuxt",
     "dev2": "nuxt --hostname 127.0.0.1 --port 3000",
     "build": "nuxt build",
-    "start": "nuxt --hostname 127.0.0.1 --port 3000 -- start",
+    "start": "nuxt start --hostname 127.0.0.1 --port 3000",
     "export": "nuxt export",
     "serve": "nuxt serve",
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
