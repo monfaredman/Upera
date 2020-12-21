@@ -103,10 +103,10 @@
             <nuxt-link to="/app" class="btn btn-secondary px-lg-4 py-1 ml-1">
               {{ $t('new.download_app') }}
             </nuxt-link>
-            <b-button v-if="!$auth.loggedIn && $route.name !=='login'" variant="primary" class="py-1 px-lg-4" @click="showModal=true">
+            <b-button v-if="!$auth.loggedIn && $route.name !=='login'" variant="primary" class="py-1 px-lg-4" @click="SHOW_MODAL()">
               {{ $t('new.login_register') }}
             </b-button>
-            <b-button v-else-if="$route.name !=='login'" variant="primary" class="py-1 px-lg-4" @click="$store.dispatch('logout');$auth.logout();">
+            <b-button v-else-if="$route.name !=='login'" variant="primary" class="py-1 px-lg-4" @click="$store.dispatch('logout');$auth.logout();refresh();">
               {{ $t('nav.logout') }}
             </b-button>
           </div>
@@ -163,16 +163,19 @@
 </template>
 
 <script>
+import {mapGetters} from 'vuex'
 import Login from "../components/Login"
 
   export default {
   components: {
     Login
   },
+    computed: {
+        ...mapGetters({showModal: "login/showModal"})
+    },
   data() {
     return {
       query: null,
-      showModal: false,
       categoriesNav: false,
       profileNav: false,
       categories: ["/genres", "/casts/iranian-actors", "/casts/foreign-actors", "/casts/directors"],
@@ -275,7 +278,7 @@ $(document).ready(function () {
               }
             },
             HIDE_MODAL() {
-              this.showModal=false
+              this.$store.dispatch('login/HIDE_MODAL')
             },
             SEARCH() {
               if(this.query && this.query.length>1){
@@ -295,6 +298,12 @@ $(document).ready(function () {
               }
             },
             
+      refresh() {
+        this.$nuxt.refresh()
+      },
+      SHOW_MODAL() {
+        this.$store.dispatch('login/SHOW_MODAL',{premessage: null,premobile: null})
+      }
     },
   }
 </script>

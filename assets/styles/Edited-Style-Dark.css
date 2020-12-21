@@ -102,7 +102,6 @@
 
 .srmdark #newset .swiper-slide img, .srmdark #newset2 .swiper-slide img {
     width: 100%;
-    max-width: 158px;
     box-shadow: 0 0 4px rgb(27, 27, 27);
 }
 .srmdark .swiper-container {

@@ -5,6 +5,9 @@ export const state = () => ({
         support_request: {},
         plan: {},
         loading: true,
+        showModal: false,
+        premessage: null,
+        premobile: null,
         button_loading: false,
         messageSent: false
 })
@@ -12,6 +15,18 @@ export const state = () => ({
 export const getters = {
     messageSent(state) {
         return state.messageSent
+    },
+    button_loading(state) {
+        return state.button_loading
+    },
+    showModal(state) {
+        return state.showModal
+    },
+    premessage(state) {
+        return state.premessage
+    },
+    premobile(state) {
+        return state.premobile
     }
 }
 
@@ -30,10 +45,10 @@ export const actions = {
                     return response
                 }, (error) => {
 
-                    
+                    commit('BUTTON_CLEAR')
                     this.dispatch("validation/setErrors",{'errors': error.response.data.errors})
 
-                    commit('BUTTON_CLEAR')
+                    
                 })
         },
 
@@ -215,10 +230,10 @@ export const actions = {
          * @param {any} {commit } 
          */
         CHANGE_PLAN({
-            commit
+            commit,payload
         }, data) {
             this.$swal({
-                title: this.$i18l.t('auth.change_plan_q'),
+                title: payload.i18l.t('auth.change_plan_q'),
                 icon: 'warning',
                 buttons: true,
                 dangerMode: true,
@@ -294,10 +309,10 @@ export const actions = {
         * @param {*} commit
         * @param {*} caption 
         */
-        SET_CAPTION({ commit }, caption) {
+        SET_CAPTION({ commit , payload}, caption) {
             this.$axios.post('/api/v1/update/profile/caption', {caption: caption}).then(res => {
                 this.$alertify.logPosition('top right')
-                this.$alertify.success(this.$i18l.t('auth.successful_update'))
+                this.$alertify.success(payload.i18l.t('auth.successful_update'))
                 return res
             }, error => {
                 this.$alertify.logPosition('top right')
@@ -442,6 +457,16 @@ export const actions = {
             this.dispatch("validation/clearErrors")
             return commit
         },
+
+        SHOW_MODAL({commit}, {premessage,premobile}) {
+            this.dispatch("validation/clearErrors")
+            commit('SHOW_MODAL', {premessage: premessage,premobile: premobile})
+            return commit
+        },
+        HIDE_MODAL({commit}) {
+            commit('HIDE_MODAL')
+            return commit
+        },
 }
 
 
@@ -519,10 +544,23 @@ export const mutations = {
         // BUTTON load
         BUTTON_LOAD(state) {
             state.button_loading = true
+            $('#submit-mobile').attr('disabled', true)
         },
 
         BUTTON_CLEAR(state) {
             state.button_loading = false
+            $('#submit-mobile').attr('disabled', false)
+        },
+        SHOW_MODAL(state, { premessage,premobile }) {
+            state.showModal = true
+            state.premessage = premessage
+            state.premobile = premobile
+        },
+
+        HIDE_MODAL(state) {
+            state.showModal = false
+            state.premessage = null
+            state.premobile = null
         },
 }
 

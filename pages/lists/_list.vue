@@ -3,7 +3,7 @@
     <div v-if="data.movies!==null" id="actor" class="episodes_collection">
       <div class="banner mt-5">
         <div class="banner_container">
-          <img :src="data.cdn.lg_backdrop+data.movies[0].backdrop" alt="">
+          <img :src="'https://thumb.contentpanel.click/thumb?w=1920&h=938&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/'+data.movies[0].backdrop" alt="">
           <a href="#" class="back" @click.prevent="hasHistory() ? $router.go(-1) : $router.push('/')">
             <img src="@/assets/img/icons/arrow-back.svg" width="30" alt="">
           </a>

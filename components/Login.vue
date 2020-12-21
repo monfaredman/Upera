@@ -1,9 +1,9 @@
 <template>
-  <b-modal ref="loginModal" centered hide-footer hide-header :no-close-on-backdrop="staticmodal ? true : false" :hide-backdrop="staticmodal ? true : false">
+  <b-modal ref="loginModal" :centered="staticmodal ? false : true" hide-footer hide-header :no-close-on-backdrop="staticmodal ? true : false" :hide-backdrop="staticmodal ? true : false" :no-close-on-esc="staticmodal ? true : false" :static="staticmodal ? true : false" no-enforce-focus>
     <button v-show="!staticmodal" type="button" class="close" @click="hideModal">
       <span aria-hidden="true">&times;</span>
     </button>
-    <div v-if="!sms_sent">
+    <div v-if="!sms_sent && !premobile">
       <h5 class="mt-2 mb-4 font-weight-bold text-center h6">
         {{ $t('new.login_register') }}
       </h5>
@@ -41,9 +41,12 @@
       </h5>
       <b-form @submit.prevent="login">
         <fieldset>
+          <h6 v-if="premessage" class="text-danger text-center">
+            {{ premessage }}
+          </h6>
           <div class="position-relative">
             <label for="sms">{{ $t('new.enter_sent_code') }}</label>
-            <b-form-input v-model.trim="password" type="number" pattern="[0-9]*" data-formcore-type="numeric" inputmode="numeric" maxlength="4" data-numeric-input class="form-control large is-invalid text-right" data-validate="minlength" :data-message="$t('new.code_is_incorrect')" :placeholder="$t('new.digit_code')+' '+mobile" required on-key-press="if(this.value.length==4) return false;" autofocus />
+            <b-form-input id="password" v-model.trim="password" type="text" pattern="[0-9]*" data-formcore-type="numeric" inputmode="numeric" maxlength="4" data-numeric-input class="form-control large is-invalid text-left" data-validate="minlength" :data-message="$t('new.code_is_incorrect')" :placeholder="$t('new.digit_code')+' '+mobile" required on-key-press="if(this.value.length==4) return false;" autofocus />
             <div v-if="typeof errors === 'string' || errors.password || errors.mobile" class="invalid-feedback">
               <span v-if="typeof errors === 'string'">{{ errors }}</span>
               <span v-else-if="errors.password">{{ errors.password[0] }}</span>
@@ -52,7 +55,7 @@
             </div>
           </div>
                 
-          <button class="btn btn-primary btn-block mt-5">
+          <button id="submit-code" class="btn btn-primary btn-block mt-5">
             ورود
           </button>
           <div class="d-flex justify-content-center mt-2">
@@ -94,11 +97,18 @@ import {mapGetters} from 'vuex'
   },
 
         computed: {
-            ...mapGetters({messageSent: "login/messageSent"})
+            ...mapGetters({messageSent: "login/messageSent"}),
+            ...mapGetters({button_loading: "login/button_loading"}),
+            ...mapGetters({premessage: "login/premessage"}),
+            ...mapGetters({premobile: "login/premobile"})
         },
         watch: {
             show(val) {
               if (val !== null && this.show) {
+                  if(this.premobile){
+                    this.mobile=this.premobile
+                    this.sendcode()
+                  }
                 this.showModal()
               }else{
                 this.hideModal()
@@ -150,6 +160,7 @@ import {mapGetters} from 'vuex'
                 }) 
             },
             async login() {
+              $('#submit-code').attr('disabled', true)
               try {
                 let response = await this.$auth.loginWith('local', { data: {mobile:this.mobile.replace(/\s/g, ''),password:this.password} })
                 $('.default').removeClass('blure')
@@ -177,6 +188,7 @@ import {mapGetters} from 'vuex'
                 
                 return response
               } catch (err) {
+                $('#submit-code').attr('disabled', false)
                 return err
               }
             },
@@ -184,6 +196,7 @@ import {mapGetters} from 'vuex'
         this.$refs['loginModal'].show()
         if(!this.staticmodal)
         $('.default').addClass('blure')
+        $('body').removeClass('download')
         this.LoginJquery()
       },
       showLoginAgain() {
@@ -197,6 +210,9 @@ import {mapGetters} from 'vuex'
       hideModal() {
         this.$refs['loginModal'].hide()
         this.$emit("hide-modal", null)
+
+        $('body').addClass('download')
+
         $('.default').removeClass('blure')
       },
       LoginJquery() {
@@ -236,7 +252,19 @@ if(!this.sms_sent){
 
                  
                   const target = event.target
-                  const input = event.target.value.replace(/\D/g, '').substring(0, 11) 
+                  if(target.value){
+                  target.value=target.value.replace(/۱/g, "1")
+                  target.value=target.value.replace(/۲/g, "2")
+                  target.value=target.value.replace(/۳/g, "3")
+                  target.value=target.value.replace(/۴/g, "4")
+                  target.value=target.value.replace(/۵/g, "5")
+                  target.value=target.value.replace(/۶/g, "6")
+                  target.value=target.value.replace(/۷/g, "7")
+                  target.value=target.value.replace(/۸/g, "8")
+                  target.value=target.value.replace(/۹/g, "9")
+                  target.value=target.value.replace(/۰/g, "0")
+                  }
+                  var input = event.target.value.replace(/\D/g, '').substring(0, 11) 
                   const zip = input.substring(0, 4)
                   const middle = input.substring(4, 7)
                   const last = input.substring(7, 11)
@@ -247,6 +275,31 @@ if(!this.sms_sent){
                   else if (input.length > 4) { target.value = `${zip} ${middle}` }
                   else if (input.length > 0) { target.value = `${zip}` }
               }
+
+              const formatToNum = (event) => {
+                  if (isModifierKey(event)) { return }
+
+                 
+                  const target = event.target
+                  if(target.value){
+                  target.value=target.value.replace(/۱/g, "1")
+                  target.value=target.value.replace(/۲/g, "2")
+                  target.value=target.value.replace(/۳/g, "3")
+                  target.value=target.value.replace(/۴/g, "4")
+                  target.value=target.value.replace(/۵/g, "5")
+                  target.value=target.value.replace(/۶/g, "6")
+                  target.value=target.value.replace(/۷/g, "7")
+                  target.value=target.value.replace(/۸/g, "8")
+                  target.value=target.value.replace(/۹/g, "9")
+                  target.value=target.value.replace(/۰/g, "0")
+                  }
+              }
+
+              const inputElement2 = document.getElementById('password')
+              if(inputElement2){
+              inputElement2.addEventListener('keyup', formatToNum)
+
+               }
               const inputElement = document.getElementById('mobile')
               if(inputElement){
               inputElement.addEventListener('keydown', enforceFormat)

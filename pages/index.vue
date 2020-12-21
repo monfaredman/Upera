@@ -1,11 +1,11 @@
 <template>
   <div>
     <section v-if="data.top!==null" id="feature">
-      <VueSlickCarousel v-bind="swiperOption3" ref="carousel">
-          <div v-for="(item,index) in data.top" :key="index">
-            <div class="swiper-slide">
+      <VueSlickCarousel ref="carousel" v-bind="swiperOption3">
+        <div v-for="(item,index) in data.top" :key="index">
+          <div class="swiper-slide">
             <div class="feature-slide">
-              <img data-not-lazy class="bg-img" :src="'https://thumb.contentpanel.click/thumb?w=1000&h=620&q=100&a=c&zc=1&src=https://cdn.upera.shop/s3/backdrops/'+item.backdrop" :alt="item.name">
+              <img data-not-lazy class="bg-img" :src="'https://thumb.contentpanel.click/thumb?w=850&h=500&q=100&a=c&zc=1&src=https://cdn.upera.shop/s3/backdrops/'+item.backdrop" :alt="item.name">
               <div dir="rtl" class="feature pb-lg-2">
                 <h2 class="title mb-lg-3">
                   {{ ChooseLang(item.name,item.name_fa) }}
@@ -40,7 +40,7 @@
                     <img data-not-lazy class="ml-2" src="@/assets/img/play.svg" alt="">
                   </nuxt-link>
 
-                  <a @click="ADD_WATCHLIST(item.id, item.type, index, item.is_watchlist)" class="feature-btn">
+                  <a class="feature-btn" @click="ADD_WATCHLIST(item.id, item.type, index, item.is_watchlist)">
                     <i :class="{ 'fa': item.is_watchlist==1,'far': item.is_watchlist==0 }" class="fa-2x fa-bookmark" />
                     <span>بعدا میبینم</span>
                   </a>
@@ -48,12 +48,12 @@
               </div>
             </div>
           </div>
-          </div>
-      </VueSlickCarousel>
-        <div dir="rtl" class="feature-button-wrap">
-          <img @click="showNext" class="swiper-next" src="@/assets/img/icons/arrow-prev.svg">
-          <img @click="showPrev" class="swiper-prev" src="@/assets/img/icons/arrow-next.svg">
         </div>
+      </VueSlickCarousel>
+      <div dir="rtl" class="feature-button-wrap">
+        <img class="swiper-next" src="@/assets/img/icons/arrow-prev.svg" @click="showNext">
+        <img class="swiper-prev" src="@/assets/img/icons/arrow-next.svg" @click="showPrev">
+      </div>
     </section>
 
     <section v-if="data.occasions!==null" id="special" class="mb-5">
@@ -340,15 +340,10 @@
         </section>
       </div>
     </div>
-    <Login v-if="!$auth.loggedIn" :show="showModal" :staticmodal="false" @hide-modal="HIDE_MODAL" />
   </div>
 </template>
 <script>
-import Login from "@/components/Login"
     export default {
-  components: {
-    Login
-  },
   filters: {
     // Cut word
     truncate(string, value) {
@@ -371,7 +366,6 @@ import Login from "@/components/Login"
     data () {
       return {
       	data:{},
-      showModal: false,
         swiperOption: {
         spaceBetween: 10,
         slidesPerView: 3.3,
@@ -437,6 +431,9 @@ import Login from "@/components/Login"
       }
     },
     mounted() {
+
+
+      console.log(this.data)
     	if(this.data.recenlty!=null){
     	    const watching = $('#watching')
     	
@@ -496,9 +493,6 @@ if(this.data.occasions!=null){
 }
     },
   methods: {
-            HIDE_MODAL() {
-              this.showModal=false
-            },
     ChooseLang(en,fa){
         if(fa && this.$i18n.locale=="fa")
             return fa
@@ -561,7 +555,7 @@ if(this.data.occasions!=null){
 
       this.$axios.post('/create/watchlist', {id,type})
                 } else {
-                    this.showModal=true
+                    this.$store.dispatch('login/SHOW_MODAL',{premessage: null,premobile: null})
 
                 }
                 

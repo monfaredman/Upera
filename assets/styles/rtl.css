@@ -1938,8 +1938,23 @@ left:auto;
   background-image: linear-gradient(to left, transparent, #000);
   padding:4px 20px 0 5px;
 }
+.swal-text {
+    direction: rtl;
+    text-align: right;
+}
 
 #watching.swipe .swiper-container {
   -webkit-transform: translateX(15px);
           transform: translateX(15px);
 }
+
+.srmrtl .report-modal{
+  direction: rtl;
+}
+.srmrtl .modal{
+    direction: rtl;
+    text-align: right;
+}
+
+
+.srmrtl .srmbtn {padding-right:auto;padding-right:40% !important;}

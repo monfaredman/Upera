@@ -41,6 +41,11 @@ export default {
       },
     ],
     link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }], 
+    script: [
+      {
+        src: 'https://upera.tv/jwplayer?v1'
+      }
+    ],
   },
   /*
    ** Global CSS
@@ -66,9 +71,9 @@ export default {
    ** Plugins to load before mounting the App
    ** https://nuxtjs.org/guide/plugins
    */
-  plugins: ["~plugins/bootstrap.js","~plugins/slick.js","~plugins/swiper.js",'~/plugins/i18n.js',
-    "./plugins/axios.js",
-    "./plugins/mixins/validation.js"],
+  plugins: ["~plugins/bootstrap","~plugins/slick","~plugins/swiper",'~/plugins/i18n','~/plugins/swal',
+    "./plugins/axios",
+    "./plugins/mixins/validation","~/plugins/lightGallery.client"],
   /*
    ** Auto import components
    ** See https://nuxtjs.org/api/configuration-components
@@ -92,7 +97,15 @@ export default {
     // Doc: https://github.com/nuxt/content
     "@nuxt/content",
     "bootstrap-vue/nuxt",
-    'nuxt-sweetalert2',
+    "nuxt-clipboard2",
+    // 'nuxt-sweetalert2',
+    // [
+    //   'vue-sweetalert2/nuxt',
+    //   {
+    //     confirmButtonColor: '#41b882',
+    //     cancelButtonColor: '#ff7674'
+    //   }
+    // ],
     ['nuxt-lazy-load', {
       images: true,
       videos: false,
@@ -155,7 +168,7 @@ export default {
     plugins: [
       new webpack.ProvidePlugin({
         $: "jquery"
-      }),
+      })
     ],
     /*
      ** Run ESLint on save
@@ -170,5 +183,5 @@ export default {
         })
       }
     },
-  },
+  }
 }

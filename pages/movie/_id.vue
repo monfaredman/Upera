@@ -3,7 +3,7 @@
     <section id="movie">
       <div class="banner mt-5">
         <div class="banner_container">
-          <img :src="data.cdn.cdn_backdrop+ChooseLang(data.movie.backdrop,data.movie.backdrop_fa)" :alt="data.movie.name">
+          <img :src="'https://thumb.contentpanel.click/thumb?w=1920&h=938&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/'+ChooseLang(data.movie.backdrop,data.movie.backdrop_fa)" :alt="data.movie.name">
 
           <a class="back" @click.prevent="hasHistory() ? $router.go(-1) : $router.push('/')">
             <img src="@/assets/img/icons/arrow-back.svg" width="30" alt="">
@@ -17,7 +17,7 @@
               <div class="poster film_poster">
                 <img :src="'https://thumb.contentpanel.click/thumb?w=272&h=404&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+data.movie.poster" :alt="data.movie.name">
                 <img :class="{ active: data.movie.is_watchlist==1 }" class="viedomark" src="@/assets/img/icons/videomark.svg" @click="ADD_WATCHLIST(data.movie.id, 'movie', 'delete')">
-                <img :class="{ active: data.movie.is_watchlist==0 }" class="viedomark" src="@/assets/img/icons/videomark-o.svg" @click="ADD_WATCHLIST(data.movie.id, 'movie', 'add')">
+                <img :class="{ active: !data.movie.is_watchlist }" class="viedomark" src="@/assets/img/icons/videomark-o.svg" @click="ADD_WATCHLIST(data.movie.id, 'movie', 'add')">
               </div>
               <div class="d-flex flex-column align-items-start pl-2 pl-lg-4 titles">
                 <!--  mt-2  -->
@@ -42,9 +42,9 @@
         </div>
       </div>
       <div class="row description p-5 mt-2 p-lg-5 p-md-3">
-        <div class="preview-btn px-3 d-md-block  d-none">
-          <button class="btn btn-primary rounded-pill btn-inline py-2 px-5" style="width: 250px;">
-            <span v-if="MainButton==0"><i class="fa fa-play pr-2 " /><span>نمایش</span></span>
+        <div class="preview-btn preview-btn2 px-3 d-md-block d-none">
+          <button v-if="MainButton" class="btn btn-primary rounded-pill btn-inline py-2 px-5" style="width: 250px;" @click="PLAY()">
+            <span v-if="MainButton==9"><i class="fa fa-play pr-2 " /><span>نمایش</span></span>
             <span v-else-if="MainButton==1"><i class="fa fa-play pr-2 " /><span>خرید</span></span>
             <span v-else-if="MainButton==2"><i class="fa fa-play pr-2 " /><span>پیش خرید</span></span>
             <span v-else-if="MainButton==3"><i class="fa fa-play pr-2 " /><span>خرید اشتراک</span></span>
@@ -52,23 +52,23 @@
             <span v-else-if="MainButton==5"><i class="fa fa-play pr-2 " /><span>پیش خرید بلیط</span></span>
             <span v-else-if="MainButton==6"><i class="fa fa-play pr-2 " /><span>به زودی</span></span>
             <span v-else-if="MainButton==7"><i class="fa fa-play pr-2 " /><span>presale ساعت مانده تا نمایش</span></span>
+            <span v-else-if="MainButton==8"><i class="fa fa-play pr-2 " /><span>خرید امکان نمایش</span></span>
           </button>
-          <button class="btn btn-secondary rounded-pill btn-inline py-2 px-5" style="width: 200px; margin-right: 8px;">
-            پیش نمایش فیلم
-          </button>
-          <button v-if="DownloadButton" class="btn btn-light rounded-pill btn-inline" style="width: 50px;">
-            <span v-if="DownloadButton==1"><i class="fa fa-download pr-2 " /></span>
-            <span v-else-if="DownloadButton==2"><i class="fa fa-download pr-2 " /></span>
+          <button v-if="DownloadButton" class="btn btn-secondary rounded-pill btn-inline py-2 px-5" style="width: 200px; margin-right: 8px;" @click="ftb=false;DOWNLOAD_MODAL_LOAD();">
+            <span v-if="DownloadButton==1"><i class="fa fa-download pr-2 " /><span>دانلد</span></span>
+            <span v-else-if="DownloadButton==2"><i class="fa fa-download pr-2 " /><span>دانلود رایگان</span></span>
+            <span v-else-if="DownloadButton==3"><i class="fa fa-download pr-2 " /><span>خرید و دانلود</span></span>
+            <span v-else-if="DownloadButton==4"><i class="fa fa-download pr-2 " /><span>پیش خرید و دانلود</span></span>
           </button>
         </div>
-        <div class="col-12 col-lg-7 mt-5">
-          <h6 class="mt-lg-4 mt-5">
+        <div class="col-12 mt-5" :class="{ 'col-lg-7': (data.files.teaser === 1)}">
+          <h6 class="mt-lg-4 mt-4">
             {{ $t('new.story') }}
           </h6>
           <p>
             {{ ChooseLang(data.movie.overview,data.movie.overview_fa) }}
           </p>
-          <div class="d-none d-lg-block">
+          <div v-if="data.files.teaser === 1" class="d-none d-lg-block">
             <h6 class="mt-2">
               {{ $t('show.similar') }}
             </h6>
@@ -92,121 +92,79 @@
               </div>
             </div>
           </div>
+          <div v-else class="d-none d-lg-block">
+            <h6 class="mt-4">
+              {{ $t('show.similar') }}
+            </h6>
+
+    
+            <div v-swiper:similar="swiperOption" class="newset-slider">
+              <div class="swiper-wrapper py-3">
+                <!-- Slides -->
+
+
+                <div v-for="(item, index) in data.similar" :key="index" class="swiper-slide">
+                  <nuxt-link :to="{ name: 'movie-id', params: { id: item.id }}">
+                    <img :src="'https://thumb.contentpanel.click/thumb?w=136&h=202&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
+                  </nuxt-link>
+                  <div class="mt-2 font-weight-bold">
+                    <h5 class="mt-2 small font-weight-normal">
+                      {{ ChooseLang(item.name,item.name_fa) }}
+                    </h5>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
           <!--           <a id="show-more" href="#" class="d-lg-none">
             <span>نمایش بیشتر</span>
             <i class="fas fa-angle-down" />
           </a> -->
-          <div class="preview-btn px-3 d-lg-none">
-            <button class="btn btn-primary rounded-pill btn-block py-2 px-5">
-              <img src="@/assets/img/icons/play.svg"><span>نمایش فیلم</span>
+          <div class="preview-btn px-3 mb-2 d-md-none d-block">
+            <button v-if="MainButton" class="btn btn-primary rounded-pill btn-block py-2 px-5" @click="PLAY()">
+              <span v-if="MainButton==9"><i class="fa fa-play pr-2 " /><span>نمایش</span></span>
+              <span v-else-if="MainButton==1"><i class="fa fa-play pr-2 " /><span>خرید</span></span>
+              <span v-else-if="MainButton==2"><i class="fa fa-play pr-2 " /><span>پیش خرید</span></span>
+              <span v-else-if="MainButton==3"><i class="fa fa-play pr-2 " /><span>خرید اشتراک</span></span>
+              <span v-else-if="MainButton==4"><i class="fa fa-play pr-2 " /><span>خرید بلیط</span></span>
+              <span v-else-if="MainButton==5"><i class="fa fa-play pr-2 " /><span>پیش خرید بلیط</span></span>
+              <span v-else-if="MainButton==6"><i class="fa fa-play pr-2 " /><span>به زودی</span></span>
+              <span v-else-if="MainButton==7"><i class="fa fa-play pr-2 " /><span>presale ساعت مانده تا نمایش</span></span>
+              <span v-else-if="MainButton==8"><i class="fa fa-play pr-2 " /><span>خرید امکان نمایش</span></span>
             </button>
-            <button class="btn btn-secondary rounded-pill btn-block py-2 px-5">
-              پیش نمایش فیلم
+            <button v-if="DownloadButton" class="btn btn-secondary rounded-pill btn-block py-2 px-5" @click="ftb=false;DOWNLOAD_MODAL_LOAD();">
+              <span v-if="DownloadButton==1"><i class="fa fa-download pr-2 " /><span>دانلد</span></span>
+              <span v-else-if="DownloadButton==2"><i class="fa fa-download pr-2 " /><span>دانلود رایگان</span></span>
+              <span v-else-if="DownloadButton==3"><i class="fa fa-download pr-2 " /><span>خرید و دانلود</span></span>
+              <span v-else-if="DownloadButton==4"><i class="fa fa-download pr-2 " /><span>پیش خرید و دانلود</span></span>
             </button>
           </div>
         </div>
 
-        <div class="col-12 col-lg-5 mt-5 pt-5 p-0">
-          <div>
-            <div class="modal-content border-0 modal_overlay shadow-none">
-              <div class="tooltip1">
-                <div class="top text-right">
-                  <h6>مصرف اینترنت جهت دانلود قانونی نیم بها است</h6>
-                  <i />
-                </div>
-              </div>
-              <div class="modal-body p-0">
-                <form>
-                  <fieldset>
-                    <table class="table text-right overlay_tbl">
-                      <tbody>
-                        <tr class="table-active tbl_color1">
-                          <td>
-                            480p
-                            <span class="d-block font-weight-light">مناسب موبایل</span>
-                          </td>
-                          <td>
-                            <span class="overlay_price font-weight-light"><span class="overlay_price_label position-relative"><i class="icon-toman" /></span><span>۴</span>.۰۰۰</span>
-                            <span dir="ltr" class="d-block font-weight-light">583 mb</span>
-                          </td>
-                          <td class="box_sell_btn">
-                            <a class="overlay_sell_btn sell_btn"><span class="btn_sell_cover">خرید</span>دانلود</a>
-                          </td>
-                        </tr>
-                        <tr class="table-active tbl_color2">
-                          <td>
-                            480p
-                            <span class="d-block font-weight-light">مناسب تبلت</span>
-                          </td>
-                          <td>
-                            <span class="overlay_price font-weight-light"><span class="overlay_price_label position-relative"><i class="icon-toman" /></span><span>۴</span>.۵۰۰</span>
-                            <span dir="ltr" class="d-block font-weight-light">978 mb</span>
-                          </td>
-                          <td class="box_sell_btn">
-                            <a class="overlay_sell_btn sell_btn"><span class="btn_sell_cover">خرید</span>دانلود</a>
-                          </td>
-                        </tr>
-                        <tr class="table-active tbl_color1">
-                          <td>
-                            1080p
-                            <span class="d-block font-weight-light">مناسب لپ تاپ</span>
-                          </td>
-                          <td>
-                            <span class="overlay_price font-weight-light"><span class="overlay_price_label position-relative"><i class="icon-toman" /></span><span>۵</span>.۰۰۰</span>
-                            <span dir="ltr" class="d-block font-weight-light">1.1 GB</span>
-                          </td>
-                          <td class="box_sell_btn">
-                            <a class="overlay_sell_btn sell_btn btn_sell_cover_active">دانلود</a>
-                          </td>
-                        </tr>
-                        <tr class="table-active tbl_color2">
-                          <td>
-                            1080p-HQ
-                            <span class="d-block font-weight-light">مناسب تلویزیون</span>
-                          </td>
-                          <td>
-                            <span class="overlay_price font-weight-light"><span class="overlay_price_label position-relative"><i class="icon-toman" /></span><span>۶</span>.۰۰۰</span>
-                            <span dir="ltr" class="d-block font-weight-light">2.23 GB</span>
-                          </td>
-                          <td class="box_sell_btn">
-                            <a class="overlay_sell_btn sell_btn"><span class="btn_sell_cover">خرید</span>دانلود</a>
-                          </td>
-                        </tr>
-                        <tr class="table-active tbl_color1">
-                          <td>
-                            BLURAY
-                            <span class="d-block font-weight-light">مناسب سینمای خانگی</span>
-                          </td>
-                          <td>
-                            <span class="overlay_price font-weight-light"><span class="overlay_price_label position-relative"><i class="icon-toman" /></span><span>۷</span>.۰۰۰</span>
-                            <span dir="ltr" class="d-block font-weight-light">4.63 GB</span>
-                          </td>
-                          <td class="box_sell_btn">
-                            <a class="overlay_sell_btn sell_btn"><span class="btn_sell_cover">خرید</span>دانلود</a>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                    <p class="text-center overlay_p_faq">
-                      جهت مدیریت دانلود ها Documents دریافت اپلیکیشن
-                    </p>
-                  </fieldset>
-                </form>
-              </div>
-            </div>
-          </div>
+        <div v-if="data.files.teaser === 1" class="col-12 col-lg-5 mt-md-5 mt-2">
+          <h6 class="mt-lg-4 mt-3">
+            {{ $t('show.trailer') }}
+          </h6>
+          <p>
+            <a href="" class="position-relative" @click.prevent="GET_FILE(1);">
+              <i class="far fa-2x fa-play-circle"
+                 style="color: white; position: absolute; top: 45%; left: 45%;"
+              />
+              <img :src="'https://thumb.contentpanel.click/thumb?w=1920&h=1200&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/'+Chooseback(data.movie.backdrop_teaser,data.movie.backdrop)" class="img-fluid" :alt="'تیزر '+data.movie.name_fa">
+            </a>
+          </p>
         </div>
       </div>
     </section>
 
-    <section id="newset" class="mt-2 in-movie d-block d-lg-none">
+    <section id="newset" class="reach-begin d-block d-lg-none" :class="{ 'mt-4': (data.files.teaser === 0),'mt-3': (data.files.teaser === 1)}">
       <div class="d-flex align-items-center justify-content-between w-full px-3 pr-lg-5 pl-lg-5">
-        <h5 class="font-weight-bold mb-0 head-title">
+        <h4 class="font-weight-bold mb-0 head-title">
           {{ $t('show.similar') }}
-        </h5>
+        </h4>
       </div>
-      <div v-swiper:similarSwiper="swiperOption" class="newset-slider mr-2">
-        <div class="swiper-wrapper py-3">
+      <div v-swiper:similarSwiper="swiperOption" class="pr-1 newset-slider">
+        <div class="swiper-wrapper py-4">
           <!-- Slides -->
 
 
@@ -315,76 +273,48 @@
                 </div>
               </div>
             </b-tab>
-            <b-tab v-if="data.files.backstage !== null" title="پشت صحنه">
+            <b-tab v-if="data.files.backstage === 1" title="پشت صحنه">
               <div class="row">
                 <div class="col-lg-6 mb-2">
-                  <a href="#" class="position-relative">
+                  <a href="" class="position-relative" @click.prevent="GET_FILE(2);">
                     <i class="far fa-2x fa-play-circle"
                        style="color: white; position: absolute; top: 45%; left: 45%;"
                     />
-                    <img src="@/assets/img/music-video.jpg" alt="">
-                  </a>
-                </div>
-                <div class="col-lg-6 mb-2">
-                  <a href="#" class="position-relative">
-                    <i class="far fa-2x fa-play-circle"
-                       style="color: white; position: absolute; top: 45%; left: 45%;"
-                    />
-                    <img src="@/assets/img/music-video.jpg" alt="">
+                    <img :src="'https://thumb.contentpanel.click/thumb?w=1920&h=1200&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/'+Chooseback(data.movie.backdrop_teaser,data.movie.backdrop)" class="img-fluid" :alt="'تیزر '+data.movie.name_fa">
                   </a>
                 </div>
               </div>
             </b-tab>
-            <b-tab v-if="data.files.image !== null" title="گالری">
+            <b-tab v-if="data.files.image === 1" title="گالری">
               <div class="mansory">
-                <a href="#">
-                  <img src="@/assets/img/gallery/1.jpg" alt="">
-                </a>
-                <a href="#">
-                  <img src="@/assets/img/gallery/2.jpg" alt="">
-                </a>
-                <a href="#">
-                  <img src="@/assets/img/gallery/3.jpg" alt="">
-                </a>
-                <a href="#">
-                  <img src="@/assets/img/gallery/4.jpg" alt="">
-                </a>
-                <a href="#">
-                  <img src="@/assets/img/gallery/5.jpg" alt="">
-                </a>
-                <a href="#">
-                  <img src="@/assets/img/gallery/6.jpg" alt="">
-                </a>
-                <a href="#">
-                  <img src="@/assets/img/gallery/7.jpg" alt="">
-                </a>
-                <a href="#">
-                  <img src="@/assets/img/gallery/8.jpg" alt="">
-                </a>
-                <a href="#">
-                  <img src="@/assets/img/gallery/9.jpg" alt="">
-                </a>
-                <a href="#">
-                  <img src="@/assets/img/gallery/10.jpg" alt="">
-                </a>
+                <no-ssr v-if="data.movie.images">
+                  <LightGallery ref="lightbox" :images="data.movie.images" />
+                </no-ssr>
+                <no-ssr v-else-if="lightimages">
+                  <LightGallery ref="lightbox" :images="lightimages" />
+                </no-ssr>
               </div>
             </b-tab>
-            <b-tab v-if="data.files.musicvideo !== null" title="موزیک ویدئو">
+            <b-tab v-if="data.files.musicvideo === 1" title="موزیک ویدئو">
               <div class="row">
                 <div class="col-lg-6 mb-2">
-                  <a href="#" class="position-relative">
+                  <a href="" class="position-relative" @click.prevent="GET_FILE(4);">
                     <i class="far fa-2x fa-play-circle"
-                       style="color: white; position: absolute; top: 42%; left: 45%;"
+                       style="color: white; position: absolute; top: 45%; left: 45%;"
                     />
-                    <img src="@/assets/img/music-video.jpg" alt="">
+                    <img :src="'https://thumb.contentpanel.click/thumb?w=1920&h=1200&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/'+Chooseback(data.movie.backdrop_teaser,data.movie.backdrop)" class="img-fluid" :alt="'تیزر '+data.movie.name_fa">
                   </a>
                 </div>
+              </div>
+            </b-tab>
+            <b-tab v-if="data.files.next === 1" title="آنچه در قسمت بعد خواهید دید">
+              <div class="row">
                 <div class="col-lg-6 mb-2">
-                  <a href="#" class="position-relative">
+                  <a href="" class="position-relative" @click.prevent="GET_FILE(3);">
                     <i class="far fa-2x fa-play-circle"
-                       style="color: white; position: absolute; top: 42%; left: 45%;"
+                       style="color: white; position: absolute; top: 45%; left: 45%;"
                     />
-                    <img src="@/assets/img/music-video.jpg" alt="">
+                    <img :src="'https://thumb.contentpanel.click/thumb?w=1920&h=1200&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/'+Chooseback(data.movie.backdrop_teaser,data.movie.backdrop)" class="img-fluid" :alt="'تیزر '+data.movie.name_fa">
                   </a>
                 </div>
               </div>
@@ -393,14 +323,20 @@
         </div>
       </div>
     </section>
-    <Login v-if="!$auth.loggedIn" :show="showModal" :staticmodal="false" @hide-modal="HIDE_MODAL" />
+    <Download :id="data.movie.id" :show="showDownloadModal" :ftb="ftb" :owned="data.movie.owned" :vod="data.movie.vod" :free="data.movie.free" :name="data.movie.name" :namefa="data.movie.name_fa" :posterf="data.movie.poster" :backdrop="data.movie.backdrop" type="movie" @hide-modal="HIDE_MODAL2" />
+    <no-ssr>
+      <File :id="data.movie.id" :show="showplyrmodal" :content="modalcontent" :name="data.movie.name" :namefa="data.movie.name_fa" :backdrop="data.movie.backdrop" :backdropteaser="data.movie.backdrop_teaser" type="movie" @hide-modal="HIDE_MODAL3" />
+    </no-ssr>
   </div>
 </template>
 <script>
-import Login from "@/components/Login"
+import {mapGetters} from 'vuex'
+import Download from "@/components/Download"
+import File from "@/components/File"
     export default {
   components: {
-    Login
+    Download,
+    File
   },
 
   async asyncData (context) {
@@ -411,61 +347,64 @@ import Login from "@/components/Login"
   	 	res = await context.app.$axios.get('/ghost/get/movie/'+context.params.id)
   	 }
 
-	res.data.data.showtabs=1
-	res.data.data.comments=0
+     res.data.data.showtabs=1
+     res.data.data.comments=0
+
   	 if(res.data.data.casts == null && res.data.data.directors == null && res.data.data.producers == null){
   	 	if(res.data.data.movie.news!== null){
 
-let comments
-  	if (context.app.$auth.loggedIn) {
-  	    comments = await context.app.$axios.get('/get/comments/'+res.data.data.movie.news)
-  	 }else{
-  	 	comments = await context.app.$axios.get('/ghost/get/comments/'+res.data.data.movie.news)
-  	 }
+         let comments
+      	 if (context.app.$auth.loggedIn) {
+      	   comments = await context.app.$axios.get('/get/comments/'+res.data.data.movie.news)
+      	 }else{
+      	   comments = await context.app.$axios.get('/ghost/get/comments/'+res.data.data.movie.news)
+      	 }
 
-               res.data.data.commentsData = comments.data.data.comments
-               res.data.data.avatar=comments.data.data.avatar
-               res.data.data.email=comments.data.data.email
-               res.data.data.fullname=comments.data.data.name
-               res.data.data.comments=1
+         res.data.data.commentsData = comments.data.data.comments
+         res.data.data.avatar=comments.data.data.avatar
+         res.data.data.email=comments.data.data.email
+         res.data.data.fullname=comments.data.data.name
+         res.data.data.comments=1
   	 	}else{
   	 		if(res.data.data.files.backstage !== 1 && res.data.data.files.image === 1){
-let images
-  	if (context.app.$auth.loggedIn) {
-  	    images = await context.app.$axios.post('/get/files/', {
-                    id: context.params.id,
-                    content: 5,
-                    hls: 1,
-                    type: 'movie'
-                })
-  	 }else{
-  	 	images = await context.app.$axios.post('/ghost/get/files/', {
-                    id: context.params.id,
-                    content: 5,
-                    hls: 1,
-                    type: 'movie'
-                })
-  	 }
+          let images
+        	if (context.app.$auth.loggedIn) {
+        	    images = await context.app.$axios.post('/get/files/', {
+                          id: context.params.id,
+                          content: 5,
+                          hls: 1,
+                          type: 'movie'
+                      })
+        	 }else{
+        	 	  images = await context.app.$axios.post('/ghost/get/files/', {
+                          id: context.params.id,
+                          content: 5,
+                          hls: 1,
+                          type: 'movie'
+                      })
+        	 }
 
             res.data.data.images=images
   	 		}else if(res.data.data.files.musicvideo !== 1){
-res.data.data.showtabs=0
+            res.data.data.showtabs=0
   	 		}
   	 	}
   	 }
     return {data:res.data.data}
   },
+        computed: {
+            ...mapGetters({showplyrmodal: "player/showplyrmodal"}),
+            ...mapGetters({showDownloadModal: "player/showDownloadModal"})
+        },
         data() {
             return {
             	data:{},
             	MainButton:0,
+              ftb:false,
             	DownloadButton:0,
             	ShowPresale:0,
-      showModal: false,
+              modalcontent: 0,
         swiperOption: {
-        autoplay: {
-            delay: 5800,
-        },
         spaceBetween: 10,
         slidesPerView: 3.3,
         grabCursor: true,
@@ -520,10 +459,7 @@ res.data.data.showtabs=0
         },
                 castShow: null,
                 rent_title: null,
-                showplyrmodal: false,
                 lightimages: [],
-                download_files: [],
-                filesloading: false,
                 collection: {
                     id: null,
                     poster: null,
@@ -564,9 +500,6 @@ res.data.data.showtabs=0
                 else
                     document.title = this.data.movie.name
 
-                if(this.data.files.teaser===1){
-                    this.GET_FILE_TEASER()
-                }
 
                 if(this.data.movie.ekran===1){
                     if(this.data.movie.owned===1){
@@ -580,10 +513,18 @@ res.data.data.showtabs=0
             }
         },
         mounted() {
+
                 if(this.data.movie.free){
-					this.MainButton=0
+
+                  if(this.data.movie.vod || this.data.movie.owned){
+          					this.MainButton=9
+                  }else if(this.checkuser.subscription){
+                    this.MainButton=3
+                  }else{
+                    this.MainButton=8
+                  }
             		if(this.data.movie.upera && this.data.movie.download){
-						this.DownloadButton=1
+						      this.DownloadButton=2
             		}
                 }else{
                 	if(this.data.movie.ekran){
@@ -597,7 +538,7 @@ res.data.data.showtabs=0
 								}
 							}else{
 								if(this.data.movie.owned){
-									this.MainButton=0
+									this.MainButton=9
 								}else{
 									this.MainButton=4
 								}
@@ -612,16 +553,16 @@ res.data.data.showtabs=0
 								this.ShowPresale=1
 							}else{
 								if(this.checkuser.access || this.data.movie.owned){
-									this.MainButton=0
+									this.MainButton=9
 								}else{
 									this.MainButton=3
 								}
 							}
 							if(this.data.movie.upera && this.data.movie.download && !this.data.movie.owned){
 								if(this.data.movie.presale){
-									this.DownloadButton=2
+									this.DownloadButton=4
 								}else{
-									this.DownloadButton=1
+									this.DownloadButton=3
 								}
 							}
 						}else if(this.data.movie.upera && this.data.movie.download){
@@ -634,7 +575,7 @@ res.data.data.showtabs=0
 								}
 							}else{
 								if(this.data.movie.owned){
-									this.MainButton=0
+									this.MainButton=9
 									this.DownloadButton=1
 								}else{
 									this.MainButton=1
@@ -652,14 +593,31 @@ res.data.data.showtabs=0
         },
 
         methods: {
-            HIDE_MODAL() {
-              this.showModal=false
+            PLAY() {
+              if(this.MainButton==9){
+                this.$router.push({ name: 'movie-show-id' , params: {id: this.data.movie.id }})
+              }else if(this.MainButton==1 || this.MainButton==2 || this.MainButton==4 || this.MainButton==5 || this.MainButton==8){
+                this.ftb=true
+                this.$store.dispatch('player/DOWNLOAD_MODAL_LOAD')
+              }
+            },
+            HIDE_MODAL2() {
+              this.$store.dispatch('player/DOWNLOAD_MODAL_CLEAN')
+            },
+            HIDE_MODAL3() {
+              this.$store.dispatch('player/PLAYER_MODAL_CLEAN')
             },
             ChooseLang(en,fa){
                 if(fa && this.$i18n.locale=="fa")
                     return fa
                 else
                     return en
+            },
+            Chooseback(teaser,backdrop){
+                if(teaser)
+                    return teaser
+                else
+                    return backdrop
             },
             ChooseLangAllGenres(genres){
                 if(this.$i18n.locale=="fa"){
@@ -873,6 +831,11 @@ res.data.data.showtabs=0
            }
  
        },
+
+       GET_FILE(content) {
+          this.modalcontent=content
+          this.$store.dispatch('player/PLAYER_MODAL_LOAD')
+       },
  
        voteComment(commentId, commentType, index, index2, voteType) {
  
@@ -930,9 +893,15 @@ res.data.data.showtabs=0
 
 	        	this.$axios.post('/create/watchlist', {id,type})
 		    } else {
-		        this.showModal=true
+		        this.$store.dispatch('login/SHOW_MODAL',{premessage: null,premobile: null})
 		    }
-		}
+		},
+    DOWNLOAD_MODAL_LOAD() {
+      this.$store.dispatch('player/DOWNLOAD_MODAL_LOAD')
+    }
    }
 }
 </script>
+<style scoped>
+.namasha-embed{display:block;height:0;padding:0;overflow:hidden;padding-bottom:56.25%;}
+</style>
