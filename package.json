@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "nuxt",
-    "dev2": "nuxt --hostname next.upera.tv --port 3000",
+    "dev2": "nuxt --hostname 127.0.0.1 --port 3000",
     "build": "nuxt build",
     "start": "nuxt start",
     "export": "nuxt export",
