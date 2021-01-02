@@ -96,11 +96,17 @@ export const actions = {
         
         GET_DOWNLOAD({ commit }, {id,type,quality,force_to_buy}) {
             commit('DOWNLOAD_SPINER_LOAD')
+
+            var ref=this.$cookiz.get('ref')
+            if(!ref || isNaN(ref))
+              ref=0
+
             this.$axios.post('/get/cart', {
                 id: id,
                 type: type,
                 quality: quality,
-                force_to_buy: force_to_buy
+                force_to_buy: force_to_buy,
+                ref: ref
             }).then((response) => {
                 if (response.status === 200) {
                     commit('SET_DOWNLOAD', response.data.data)
@@ -117,11 +123,16 @@ export const actions = {
         },
         GET_GHOST_DOWNLOAD({ commit }, {id,type,quality,force_to_buy}) {
             commit('DOWNLOAD_SPINER_LOAD')
+
+            var ref=this.$cookiz.get('ref')
+            if(!ref || isNaN(ref))
+              ref=0
             this.$axios.post('/ghost/get/cart', {
                 id: id,
                 type: type,
                 quality: quality,
-                force_to_buy: force_to_buy
+                force_to_buy: force_to_buy,
+                ref: ref
             }).then((response) => {
                 if (response.status === 200) {
                     commit('SET_DOWNLOAD', response.data.data)
@@ -144,11 +155,25 @@ export const actions = {
             commit('DELETE_DOWNLOAD_FROM_OBJECT', { itemid:itemid,amount:amount})
         },
 
+        GET_CART({ commit }) {
+            commit('GET_CART')
+        },
+
 }
 
 export const mutations = {
 
-        
+        GET_CART(state){
+
+            let copy_cart = JSON.parse(localStorage.getItem('_cart'))
+            if(!copy_cart){
+                copy_cart={}
+                copy_cart.content=[]
+                copy_cart.amount=0
+            }
+            state.cart = copy_cart.content
+            state.total_amount = copy_cart.amount
+        },
         SET_DOWNLOAD(state, data){
             state.downloadslist = data.downloads
             state.presale = data.presale

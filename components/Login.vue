@@ -22,7 +22,7 @@
               {{ $t('new.enter_correctly') }}
             </div>
           </div>
-          <button id="submit-mobile" class="btn btn-primary btn-block mt-5 mb-2" disabled>
+          <button id="submit-mobile" class="btn btn-main btn-block mt-5 mb-2" disabled>
             {{ $t('nav.login') }}
           </button>
           <div v-if="$i18n.locale=='fa'" class="text-center">
@@ -55,7 +55,7 @@
             </div>
           </div>
                 
-          <button id="submit-code" class="btn btn-primary btn-block mt-5">
+          <button id="submit-code" class="btn btn-main btn-block mt-5">
             ورود
           </button>
           <div class="d-flex justify-content-center mt-2">
@@ -80,7 +80,7 @@ import {mapGetters} from 'vuex'
     staticmodal: Boolean,
     redirect: {
         type: String,
-        default: ''
+        default: null
     }
   },
   data() {
@@ -90,7 +90,7 @@ import {mapGetters} from 'vuex'
                 sms_sent: false,
                 countdown: 90,
                 countdown_finished: false,
-                redirectTo: false,
+                redirectTo: null,
                 app_mobile: this.$t('auth.mobile'),
                 app_password: this.$t('player.pass')
     }
@@ -100,7 +100,9 @@ import {mapGetters} from 'vuex'
             ...mapGetters({messageSent: "login/messageSent"}),
             ...mapGetters({button_loading: "login/button_loading"}),
             ...mapGetters({premessage: "login/premessage"}),
-            ...mapGetters({premobile: "login/premobile"})
+            ...mapGetters({premobile: "login/premobile"}),
+            ...mapGetters({preredirect: "login/preredirect"}),
+            ...mapGetters({prerefresh: "login/prerefresh"})
         },
         watch: {
             show(val) {
@@ -109,6 +111,13 @@ import {mapGetters} from 'vuex'
                     this.mobile=this.premobile
                     this.sendcode()
                   }
+
+                  if(this.redirect){
+                    this.redirectTo=this.redirect
+                  }else if(this.preredirect){
+                    this.redirectTo=this.preredirect
+                  }
+
                 this.showModal()
               }else{
                 this.hideModal()
@@ -118,6 +127,11 @@ import {mapGetters} from 'vuex'
                 if(val){
                   this.sms_sent=true
                   this.countDownTimer()
+                }
+            },
+            password(val) {
+                if(val.length>3){
+                  this.login()
                 }
             }
         },
@@ -163,28 +177,32 @@ import {mapGetters} from 'vuex'
               $('#submit-code').attr('disabled', true)
               try {
                 let response = await this.$auth.loginWith('local', { data: {mobile:this.mobile.replace(/\s/g, ''),password:this.password} })
-                $('.default').removeClass('blure')
-                this.hideModal()
+
+                if(this.staticmodal && this.$route.query.redirect){
+                  this.$router.push({ path: this.$route.query.redirect })
+                }else if(this.redirectTo){
+                  this.$router.push({ path: this.redirectTo })
+                }else if(this.prerefresh){
+                  await this.$router.go()
+                }else{
+                  await this.$store.dispatch('login')
+                  this.$nuxt.refresh()
+                }
+
+
                 this.countdown=90
                 this.countdown_finished=false
                 this.sms_sent=false
                 this.mobile=''
                 this.password=''
+
                 this.$store.dispatch('login/SET_MESSAGE_SENT_FALSE')
                 this.$store.dispatch('validation/clearErrors')
-                if(this.staticmodal && this.$route.query.redirect){
-                  this.$router.push({ path: this.$route.query.redirect })
-                }else if(this.staticmodal && this.redirect){
-                  this.$router.push({ path: this.redirect })
-                }else{
-                  if (process.client) {
-                    this.$store.dispatch('login')
-                  }
-                  this.$nuxt.refresh()
-                }
-                // else{
-                //   this.$router.go()
-                // }
+
+
+
+                this.hideModal()
+
                 
                 return response
               } catch (err) {
@@ -197,6 +215,7 @@ import {mapGetters} from 'vuex'
         if(!this.staticmodal)
         $('.default').addClass('blure')
         $('body').removeClass('download')
+        $('body').removeClass('callback')
         this.LoginJquery()
       },
       showLoginAgain() {
@@ -212,6 +231,8 @@ import {mapGetters} from 'vuex'
         this.$emit("hide-modal", null)
 
         $('body').addClass('download')
+
+        $('body').addClass('callback')
 
         $('.default').removeClass('blure')
       },
@@ -293,6 +314,7 @@ if(!this.sms_sent){
                   target.value=target.value.replace(/۹/g, "9")
                   target.value=target.value.replace(/۰/g, "0")
                   }
+
               }
 
               const inputElement2 = document.getElementById('password')

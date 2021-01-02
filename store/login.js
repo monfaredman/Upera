@@ -8,6 +8,8 @@ export const state = () => ({
         showModal: false,
         premessage: null,
         premobile: null,
+        preredirect: null,
+        prerefresh: false,
         button_loading: false,
         messageSent: false
 })
@@ -27,6 +29,12 @@ export const getters = {
     },
     premobile(state) {
         return state.premobile
+    },
+    preredirect(state) {
+        return state.preredirect
+    },
+    prerefresh(state) {
+        return state.prerefresh
     }
 }
 
@@ -35,7 +43,12 @@ export const actions = {
         
         SEND_LOGIN_CODE({commit}, data) {
             commit('BUTTON_LOAD')
-            
+
+            var ref=this.$cookiz.get('ref')
+            if(!ref || isNaN(ref))
+              ref=0
+
+            data.ref=ref
             this.$axios.post('/login/send-code', data)
                 .then(response => {
                     
@@ -458,9 +471,9 @@ export const actions = {
             return commit
         },
 
-        SHOW_MODAL({commit}, {premessage,premobile}) {
+        SHOW_MODAL({commit}, {premessage,premobile,preredirect,prerefresh}) {
             this.dispatch("validation/clearErrors")
-            commit('SHOW_MODAL', {premessage: premessage,premobile: premobile})
+            commit('SHOW_MODAL', {premessage: premessage,premobile: premobile,preredirect: preredirect,prerefresh: prerefresh})
             return commit
         },
         HIDE_MODAL({commit}) {
@@ -551,16 +564,20 @@ export const mutations = {
             state.button_loading = false
             $('#submit-mobile').attr('disabled', false)
         },
-        SHOW_MODAL(state, { premessage,premobile }) {
+        SHOW_MODAL(state, { premessage,premobile,preredirect,prerefresh }) {
             state.showModal = true
             state.premessage = premessage
             state.premobile = premobile
+            state.preredirect = preredirect
+            state.prerefresh = prerefresh
         },
 
         HIDE_MODAL(state) {
             state.showModal = false
             state.premessage = null
             state.premobile = null
+            state.preredirect = null
+            state.prerefresh = false
         },
 }
 

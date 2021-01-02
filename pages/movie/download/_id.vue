@@ -3,7 +3,7 @@
     <section id="banner" class="mt-5  pt-md-3 pt-lg-5">
       <div class="container">
         <div>
-          <Download :id="data.movie.id" :show="true" :ftb="false" :staticmodal="true" :owned="data.movie.owned" :vod="data.movie.vod" :free="data.movie.free" :name="data.movie.name" :namefa="data.movie.name_fa" :posterf="data.movie.poster" :backdrop="data.movie.backdrop" type="movie" @hide-modal="HIDE_MODAL" />
+          <Download :id="data.movie.id" :show="true" :ftb="false" :staticmodal="true" :owned="data.movie.owned" :traffic="data.movie.traffic" :trafficoo="data.movie.traffic_oo" :vod="data.movie.vod" :free="data.movie.free" :name="data.movie.name" :namefa="data.movie.name_fa" :posterf="data.movie.poster" :backdrop="data.movie.backdrop" type="movie" @hide-modal="HIDE_MODAL" />
         </div>
       </div>
     </section>
@@ -34,18 +34,23 @@ import Download from "../../../components/Download"
               data:{},
             }
         },
-      head () {
-    return {
-      
+  head() {
+
+    return { 
     bodyAttrs: {
       class: 'download'
-    }
-    }
+    },title: 'دانلود '+(this.ChooseLang(this.data.movie.name,this.data.movie.name_fa)) }
   },
 
     methods: {
             HIDE_MODAL() {
               
+            },
+            ChooseLang(en,fa){
+                if(fa && this.$i18n.locale=="fa")
+                    return fa
+                else
+                    return en
             },
     },
   }

@@ -83,11 +83,13 @@
 	import {mapGetters} from 'vuex'
 
     export default {
-        name: 'MoviePlayer',
 
 
         beforeRouteLeave(to, from, next) {
-            //this.$store.commit('FLOWPLAYER_DESTORY', 'movie')
+           	var playersm=window.jwplayer('my-player')
+            if($('#my-player').length && playersm){
+                playersm.remove()
+            }
             next()
             $( "body" ).removeClass('playerback')
         },
@@ -105,6 +107,10 @@
                 guest: true,
             }
         },
+  head() {
+
+    return { title: 'تماشای آنلاین' }
+  },
 
         computed: {
             ...mapGetters({url: "player/url"}),

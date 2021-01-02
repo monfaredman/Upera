@@ -89,6 +89,10 @@
       ghostApi:'/ghost/get/discover'
     }
   },
+  head() {
+
+    return { title:  this.ChooseLang(this.data.titles_en[this.$route.params.list],this.data.titles[this.$route.params.list]) }
+  },
     methods: {
     ChooseLang(en,fa){
         if(fa && this.$i18n.locale=="fa")

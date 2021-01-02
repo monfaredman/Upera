@@ -58,7 +58,12 @@ export const actions = {
          */
 
         LOAD_MOVIE_PLAYER({commit}, {id, lg_backdrop, md_backdrop,SRMdata}) {
-            this.$axios.get('/get/watch/movie-hls/' + id + '/1').then(response => {
+            var ref=this.$cookiz.get('ref')
+            if(!ref || isNaN(ref))
+              ref=''
+            else
+              ref='?ref='+ref
+            this.$axios.get('/get/watch/movie-hls/' + id + '/1'+ref).then(response => {
                 if (response.status === 200) {
                     response.data.data.guest=0
                     commit('SET_MOVIE', {data:response.data.data, lg_backdrop, md_backdrop})
@@ -113,7 +118,8 @@ export const actions = {
                           switch (value) {
                          
                             case "back":
-                              this.$router.push({ name: 'movie-id' , params: {id: id }})
+                              
+                              (window.history.length > 2) ? this.$router.go(-1) : this.$router.push({ name: 'movie-id' , params: {id: id }})
                               //commit('FLOWPLAYER_DESTORY', 'movie')
                               break
                          
@@ -128,7 +134,7 @@ export const actions = {
                               break
 
                             default:
-                              this.$router.push({ name: 'movie-id' , params: {id: id }})
+                              (window.history.length > 2) ? this.$router.go(-1) : this.$router.push({ name: 'movie-id' , params: {id: id }})
                               //commit('FLOWPLAYER_DESTORY', 'movie')
                               break
                           }
@@ -140,7 +146,7 @@ export const actions = {
                         dangerMode: true,
                         button: this.app.i18n.t('player.back'),
                     }).then(() => {
-                        this.$router.push({ name: 'movie-id' , params: {id: id }})
+                        (window.history.length > 2) ? this.$router.go(-1) : this.$router.push({ name: 'movie-id' , params: {id: id }})
                         //commit('FLOWPLAYER_DESTORY', 'movie')
                     })
                 }
@@ -149,12 +155,26 @@ export const actions = {
         },
 
         LOAD_GHOST_MOVIE_PLAYER({commit}, {id, lg_backdrop, md_backdrop,SRMdata,ekran_unique_id}) {
+          var ref=this.$cookiz.get('ref')
+
             if(ekran_unique_id){
               ekran_unique_id='?ekran_unique_id='+ekran_unique_id
+
+            
+            if(!ref || isNaN(ref))
+              ref=''
+            else
+              ref='&ref='+ref
             }else{
               ekran_unique_id=''
+
+            
+            if(!ref || isNaN(ref))
+              ref=''
+            else
+              ref='?ref='+ref
             }
-            this.$axios.get('/ghost/get/watch/movie-hls/' + id + '/1'+ekran_unique_id).then(response => {
+            this.$axios.get('/ghost/get/watch/movie-hls/' + id + '/1'+ekran_unique_id+ref).then(response => {
                 if (response.status === 200) {
                     response.data.data.guest=1
                     commit('SET_MOVIE', {data:response.data.data, lg_backdrop, md_backdrop})
@@ -218,7 +238,7 @@ export const actions = {
                           switch (value) {
                          
                             case "back":
-                              this.$router.push({ name: 'movie-id' , params: {id: id }})
+                              (window.history.length > 2) ? this.$router.go(-1) :this.$router.push({ name: 'movie-id' , params: {id: id }})
                               //commit('FLOWPLAYER_DESTORY', 'movie')
                               break
                          
@@ -235,7 +255,7 @@ export const actions = {
 
 
                             case "login":
-                              this.dispatch('login/SHOW_MODAL',{premessage: null,premobile: null})
+                              this.dispatch('login/SHOW_MODAL',{premessage: null,premobile: null,preredirect: null,prerefresh: false})
                               break
 
                             case "download":
@@ -243,7 +263,7 @@ export const actions = {
                               break
 
                             default:
-                              this.$router.push({ name: 'movie-id' , params: {id: id }})
+                              (window.history.length > 2) ? this.$router.go(-1) : this.$router.push({ name: 'movie-id' , params: {id: id }})
                               //commit('FLOWPLAYER_DESTORY', 'movie')
                               break
                           }
@@ -255,7 +275,7 @@ export const actions = {
                         dangerMode: true,
                         button: this.app.i18n.t('player.back'),
                     }).then(() => {
-                        this.$router.push({ name: 'movie-id' , params: {id: id }})
+                        (window.history.length > 2) ? this.$router.go(-1) : this.$router.push({ name: 'movie-id' , params: {id: id }})
                         //commit('FLOWPLAYER_DESTORY', 'movie')
                     })
                 }
@@ -268,11 +288,15 @@ export const actions = {
          * @param {uuid,string,uuid}  Array
          */
         LOAD_SERIES_PLAYER({commit}, {episode_id, type, series_id, lg_backdrop,md_backdrop,SRMdata}) {
+            var ref=this.$cookiz.get('ref')
+            if(!ref || isNaN(ref))
+              ref=0
             this.$axios.post('/get/watch/series', {
                 episode_id: episode_id,
                 type: type,
                 series_id: series_id,
                 hls: 1,
+                ref: ref,
             })
                 .then(response => {
                     if (response.data.status === 'success') {
@@ -328,9 +352,9 @@ export const actions = {
                            
                               case "back":
                                 if(type!='cur'){
-                                  this.$router.push({ name: 'episode-id' , params: {id: episode_id }})
+                                  (window.history.length > 2) ? this.$router.go(-1) :this.$router.push({ name: 'episode-id' , params: {id: episode_id }})
                                 }else{
-                                  this.$router.push({ name: 'episode-id' , params: {id: error.response.data.episode_id }})
+                                  (window.history.length > 2) ? this.$router.go(-1) :this.$router.push({ name: 'episode-id' , params: {id: error.response.data.episode_id }})
                                 }
                                 //commit('FLOWPLAYER_DESTORY', 'series')
                               break
@@ -351,9 +375,9 @@ export const actions = {
 
                               default:
                                 if(type!='cur'){
-                                  this.$router.push({ name: 'episode-id' , params: {id: episode_id }})
+                                  (window.history.length > 2) ? this.$router.go(-1) :this.$router.push({ name: 'episode-id' , params: {id: episode_id }})
                                 }else{
-                                  this.$router.push({ name: 'episode-id' , params: {id: error.response.data.episode_id }})
+                                  (window.history.length > 2) ? this.$router.go(-1) :this.$router.push({ name: 'episode-id' , params: {id: error.response.data.episode_id }})
                                 }
                                 //commit('FLOWPLAYER_DESTORY', 'series')
                                 break
@@ -367,9 +391,9 @@ export const actions = {
                             button: this.app.i18n.t('player.back'),
                         }).then(() => {
                                 if(type!='cur'){
-                                  this.$router.push({ name: 'episode-id' , params: {id: episode_id }})
+                                  (window.history.length > 2) ? this.$router.go(-1) :this.$router.push({ name: 'episode-id' , params: {id: episode_id }})
                                 }else{
-                                  this.$router.push({ name: 'episode-id' , params: {id: error.response.data.episode_id }})
+                                  (window.history.length > 2) ? this.$router.go(-1) :this.$router.push({ name: 'episode-id' , params: {id: error.response.data.episode_id }})
                                 }
                             //commit('FLOWPLAYER_DESTORY', 'series')
                         })
@@ -378,11 +402,15 @@ export const actions = {
 return SRMdata
         },
         LOAD_GHOST_SERIES_PLAYER({commit}, {episode_id, type, series_id, lg_backdrop,md_backdrop,SRMdata}) {
+                      var ref=this.$cookiz.get('ref')
+            if(!ref || isNaN(ref))
+              ref=0
             this.$axios.post('/ghost/get/watch/series', {
                 episode_id: episode_id,
                 type: type,
                 series_id: series_id,
                 hls: 1,
+                ref: ref
             })
                 .then(response => {
                     if (response.data.status === 'success') {
@@ -446,9 +474,9 @@ return SRMdata
                            
                               case "back":
                                 if(type!='cur'){
-                                  this.$router.push({ name: 'episode-id' , params: {id: episode_id }})
+                                  (window.history.length > 2) ? this.$router.go(-1) :this.$router.push({ name: 'episode-id' , params: {id: episode_id }})
                                 }else{
-                                  this.$router.push({ name: 'episode-id' , params: {id: error.response.data.episode_id }})
+                                  (window.history.length > 2) ? this.$router.go(-1) :this.$router.push({ name: 'episode-id' , params: {id: error.response.data.episode_id }})
                                 }
                                 //commit('FLOWPLAYER_DESTORY', 'series')
                                 break
@@ -466,7 +494,7 @@ return SRMdata
 
 
                               case "login":
-                                this.dispatch('login/SHOW_MODAL',{premessage: null,premobile: null})
+                                this.dispatch('login/SHOW_MODAL',{premessage: null,premobile: null,preredirect: null,prerefresh: false})
                                 break
 
                               case "download":
@@ -480,9 +508,9 @@ return SRMdata
 
                               default:
                                 if(type!='cur'){
-                                  this.$router.push({ name: 'episode-id' , params: {id: episode_id }})
+                                  (window.history.length > 2) ? this.$router.go(-1) :this.$router.push({ name: 'episode-id' , params: {id: episode_id }})
                                 }else{
-                                  this.$router.push({ name: 'episode-id' , params: {id: error.response.data.episode_id }})
+                                  (window.history.length > 2) ? this.$router.go(-1) :this.$router.push({ name: 'episode-id' , params: {id: error.response.data.episode_id }})
                                 }
                                 //commit('FLOWPLAYER_DESTORY', 'series')
                                 break
@@ -496,9 +524,9 @@ return SRMdata
                             button: this.app.i18n.t('player.back'),
                         }).then(() => {
                                 if(type!='cur'){
-                                  this.$router.push({ name: 'episode-id' , params: {id: episode_id }})
+                                  (window.history.length > 2) ? this.$router.go(-1) :this.$router.push({ name: 'episode-id' , params: {id: episode_id }})
                                 }else{
-                                  this.$router.push({ name: 'episode-id' , params: {id: error.response.data.episode_id }})
+                                  (window.history.length > 2) ? this.$router.go(-1) :this.$router.push({ name: 'episode-id' , params: {id: error.response.data.episode_id }})
                                 }
                                 //commit('FLOWPLAYER_DESTORY', 'series')
                         })
@@ -551,7 +579,7 @@ return SRMdata
                       switch (value) {
                      
                         case "back":
-                          this.$router.go(-1)
+                          (window.history.length > 2) ? this.$router.go(-1) :  this.$router.push('/')
                           //commit('FLOWPLAYER_DESTORY', 'tv')
                           break
                      
@@ -561,7 +589,7 @@ return SRMdata
                           break
                      
                         default:
-                          this.$router.go(-1)
+                          (window.history.length > 2) ? this.$router.go(-1) :  this.$router.push('/')
                           //commit('FLOWPLAYER_DESTORY', 'tv')
                           break
                       }
@@ -624,7 +652,7 @@ return SRMdata
                       switch (value) {
                      
                         case "back":
-                          this.$router.go(-1)
+                          (window.history.length > 2) ? this.$router.go(-1) :  this.$router.push('/')
                           //commit('FLOWPLAYER_DESTORY', 'tv')
                           break
                      
@@ -636,11 +664,11 @@ return SRMdata
 
                           
                           case "login":
-                            this.dispatch('login/SHOW_MODAL',{premessage: null,premobile: null})
+                            this.dispatch('login/SHOW_MODAL',{premessage: null,premobile: null,preredirect: null,prerefresh: false})
                             break
                      
                         default:
-                          this.$router.push({ name: 'discover' })
+                          (window.history.length > 2) ? this.$router.go(-1) :  this.$router.push('/')
                           //commit('FLOWPLAYER_DESTORY', 'tv')
                       }
                     })
@@ -663,6 +691,9 @@ return SRMdata
 
 
         LOAD_FILE_PLAYER({commit}, {loggedIn,id,type, content, backdrop,block_id,name}) {
+            var ref=this.$cookiz.get('ref')
+            if(!ref || isNaN(ref))
+              ref=0
                 var api_url
                 if (loggedIn) {
                     api_url='/get/files'
@@ -674,7 +705,8 @@ return SRMdata
                     id: id,
                     content: content,
                     hls: 1,
-                    type: type
+                    type: type,
+                    ref: ref
                 }).then((res) => {
                     if (res.status === 200) {
                         if(content==5){
@@ -733,6 +765,8 @@ return SRMdata
                                   })
                                 })
 jwp.on('ready', (e) => {
+
+
   commit('DOWNLOAD_SPINER_CLEAN')
   return e
 })
@@ -744,6 +778,7 @@ jwp.on('ready', (e) => {
 
                     }
                 }, (error) => {
+
 commit('PLAYER_MODAL_CLEAN')
                     if (error.response.data.status == 'not_free') {
 
@@ -821,7 +856,7 @@ commit('PLAYER_MODAL_CLEAN')
 
 
                                 case "login":
-                                  this.dispatch('login/SHOW_MODAL',{premessage: null,premobile: null})
+                                  this.dispatch('login/SHOW_MODAL',{premessage: null,premobile: null,preredirect: null,prerefresh: false})
                                   break
 
                                 case "download":
@@ -1093,7 +1128,10 @@ export const mutations = {
                     addElement.innerHTML = `<div id="my-player" class="fp-full fp-mute fp-edgy flowplayer">
 
                         </div>`
-                        app.router.push({ name: 'movie-id' , params: {id: data.data.video[0].id }})
+                        if(window.history.length > 2) 
+                         app.router.go(-1) 
+                       else
+                          app.router.push({ name: 'movie-id' , params: {id: data.data.video[0].id }})
 
                 })
  
@@ -1174,6 +1212,9 @@ export const mutations = {
 
                             </div>`
 
+                                                if(window.history.length > 2) 
+                         app.router.go(-1) 
+                       else
                         app.router.push({ name: 'movie-id' , params: {id: data.data.video[0].id }})
                     })
 
@@ -1227,7 +1268,7 @@ export const mutations = {
 
 
                                       case "download":
-                                        this.$router.push({ name: 'movie-download-id', params: {id: data.data.video[0].id }, query: { force_to_buy: 1 } })
+                                        app.router.push({ name: 'movie-download-id', params: {id: data.data.video[0].id }, query: { force_to_buy: 1 } })
                                         break
 
                                       default:
@@ -1512,6 +1553,9 @@ $('body').addClass('loaded')
                         <div id="my-player" class="fp-full fp-mute fp-edgy flowplayer">
 
                             </div>`
+                                                if(window.history.length > 2) 
+                         app.router.go(-1) 
+                       else
                         app.router.push({ name: 'episode-id' , params: {id: data.data.episode[0].id }})
                     })
 
@@ -1564,7 +1608,7 @@ $('body').addClass('loaded')
                                         break
 
                                       case "download":
-                                      this.$router.push({ name: 'episode-download-id', params: {id: data.data.episode[0].id }, query: { force_to_buy: 1 } })
+                                      app.router.push({ name: 'episode-download-id', params: {id: data.data.episode[0].id }, query: { force_to_buy: 1 } })
 
                                         break
 
@@ -1705,7 +1749,10 @@ $('body').addClass('loaded')
 
 
                     </div>`
-                            app.router.push({ name: 'episode-id' , params: {id: data.data.episode[0].id }})
+                                                    if(window.history.length > 2) 
+                         app.router.go(-1) 
+                       else
+                        app.router.push({ name: 'episode-id' , params: {id: data.data.episode[0].id }})
 
                         })
          
@@ -1975,6 +2022,10 @@ $('body').addClass('loaded')
 
         PLAYER_MODAL_CLEAN(state) {
             state.showplyrmodal = false
+           var playersm=window.jwplayer('my-files-player')
+            if($('#my-files-player').length && playersm){
+                playersm.remove()
+            }
         },
         DOWNLOAD_MODAL_LOAD(state) {
             state.showDownloadModal = true
@@ -1982,6 +2033,7 @@ $('body').addClass('loaded')
 
         DOWNLOAD_MODAL_CLEAN(state) {
             state.showDownloadModal = false
+
         },
         PLAYER_DOWNLOAD_FILE(state,data) {
             state.download_files = data

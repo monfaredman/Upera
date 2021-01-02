@@ -1488,7 +1488,7 @@
 .srmrtl h4,
 .srmrtl h5,
 .srmrtl h6 {
-  font-family: "dana", serif !important;
+  font-family: "dana VF", serif !important;
 }
 .srmrtl .slide-fade-enter-active {
     animation: slide-fade-out2 .5s;
@@ -1583,7 +1583,7 @@
 }
 
 .srmrtl .video-js>div.season-list .vjs-menu-listbox .overview strong{
-  font-family: "dana", serif !important;
+  font-family: "dana VF", serif !important;
 }
 .show .body .overview p{
   text-align:justify;
@@ -1604,7 +1604,7 @@
 }
 
 .srmrtl .fp-title{
-  font-family: "dana", serif !important;
+  font-family: "dana VF", serif !important;
 }
 
 .srmrtl .tv-player {
@@ -1834,7 +1834,7 @@ left:auto;
 }
 
 .srmrtl .jwplayer .jw-title-primary {
-  font-family: "dana", serif !important;
+  font-family: "dana VF", serif !important;
 }
 
 .srmrtl .modal{
@@ -1886,11 +1886,6 @@ left:auto;
         padding-right: 35px;
         padding-left: auto;
     }
-}
-
-.srmrtl .swiper-prev,.srmrtl .swiper-next{
-    -webkit-transform: scaleX(-1);
-    transform: scaleX(-1);
 }
 
 .srmrtl #feature .feature::after {
@@ -1958,3 +1953,19 @@ left:auto;
 
 
 .srmrtl .srmbtn {padding-right:auto;padding-right:40% !important;}
+.dropdown-menu{
+  direction: rtl !important;
+  text-align:right !important;
+}
+
+.srmrtl .showcase-desc-wrapper{
+  direction: rtl;
+}
+
+.srmrtl .main-slideshow .main-slideshow-next{
+  right:auto;
+}
+
+.showcase-thumbnail-wrapper .btn-download{
+  padding: 0.375rem 0.75rem;
+}

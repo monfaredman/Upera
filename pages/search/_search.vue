@@ -5,7 +5,7 @@
       <div class="input-group search-field with-filter my-4 insert_comment search_box_container d-lg-none">
         <b-form-input v-model="query" autofocus
                       :placeholder="$t('new.search')" type="text"
-                      class="form-control border-left-0 border shadow-none" @keyup.enter="SEARCH"
+                      class="form-control border-left-0 border shadow-none" style="top:15px" @keyup.enter="SEARCH"
         />
 
         <button class="btn btn-sm  btn-send-comment" @click="IN_SEARCH">
@@ -179,6 +179,10 @@ import {mapGetters} from 'vuex'
                 noresult: false
             }
         },
+  head() {
+
+    return { title: (this.$route.params.search) ? this.$route.params.search+' | جستجو' : 'جستجو' }
+  },
         computed: {
             ...mapGetters({lastsearchs: "search/lastsearchs"})
         },

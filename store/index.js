@@ -45,26 +45,6 @@ export const mutations = {
   EMPTY_LANG(state) {
     localStorage.removeItem('lang')
     state.locale='fa'
-  },
-  SET_NIGHTMODE (state, nightmode) {
-    if (nightmode) {
-      localStorage.setItem('nightmode', true)
-      state.nightmode = true
-      $( "body" ).addClass( "srmdark" )
-    }else{
-      localStorage.removeItem('nightmode')
-      state.nightmode = false
-      $( "body" ).removeClass( "srmdark" )
-    }
-  },
-  GET_NIGHTMODE (state) {
-    if (localStorage.getItem("nightmode")) {
-      state.nightmode = true
-      $( "body" ).addClass( "srmdark" )
-    }else{
-      state.nightmode = false
-      $( "body" ).removeClass( "srmdark" )
-    }
   }
 }
 
@@ -99,12 +79,14 @@ export const actions = {
   login(store) {
   	if(store.state.auth.loggedIn){
         store.commit('SET_USER',store.state.auth.user)
+        window.location.href =location.href
     }
   },
   SET_NIGHTMODE(store,nightmode) {
-      store.commit('SET_NIGHTMODE',nightmode)
-  },
-  GET_NIGHTMODE(store) {
-      store.commit('GET_NIGHTMODE')
+    if (nightmode) {
+      this.$colorMode.preference='dark'
+    }else{
+      this.$colorMode.preference='system'
+    }
   }
 }

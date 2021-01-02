@@ -25,6 +25,29 @@ export default function(context) {
 
 		if(country)
 			context.app.$axios.setHeader('Nuxt_Country', country)
+
+
+
+if (context.route.query.ref){
+  const num = context.route.query.ref
+  const limit = num.length
+  if (context.app.$cookiz.get('refb')!=num && limit < 11) {
+    context.app.$cookiz.set('refb', num)
+
+    const base = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+
+    var res =  (base + '').indexOf(num.charAt(0), 0)
+
+    var i
+    for (i = 1; i < limit; i++) {
+      res = 62 * res + (base + '').indexOf(num.charAt(i), 0)
+    }
+
+    context.app.$cookiz.set('ref', res)
+
+  }
+}
+
 	}
 
 	context.app.$axios.onError(error => {

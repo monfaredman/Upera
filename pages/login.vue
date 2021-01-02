@@ -15,13 +15,12 @@ import Login from "../components/Login"
   components: {
     Login
   },
-      head () {
-    return {
-      
+  head() {
+
+    return { 
     bodyAttrs: {
       class: 'login'
-    }
-    }
+    },title:  'ورود' }
   },
     methods: {
             HIDE_MODAL() {

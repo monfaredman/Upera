@@ -10,11 +10,11 @@
           </header>
           <div class="d-flex flex-column justify-content-center align-items-center">
             <img class="image-profile" src="@/assets/img/profile.png" alt="">
-            <!--             <nuxt-link :to="{ path: 'login', query: { redirect: 'profile' }}" class="btn btn-lg btn-primary px-4 px-md-4 py-md-2 my-2 mb-4">
+            <!--             <nuxt-link :to="{ path: 'login', query: { redirect: 'profile' }}" class="btn btn-lg btn-main px-4 px-md-4 py-md-2 my-2 mb-4">
               {{ $t('new.login_register') }}
             </nuxt-link> -->
 
-            <a class="btn btn-lg btn-primary px-4 px-md-4 py-md-2 my-2 mb-4" href="" @click.prevent="SHOW_MODAL();">
+            <a class="btn btn-lg btn-main px-4 px-md-4 py-md-2 my-2 mb-4" href="" @click.prevent="SHOW_MODAL();">
               {{ $t('new.login_register') }}
             </a>
             <p class="text-center h6 font-weight-normal">
@@ -339,6 +339,10 @@
         }
       }
     },
+  head() {
+
+    return { title:  this.$t('setting.profile') }
+  },
     mounted() {
       if(this.data.recently!=null){
       
@@ -363,7 +367,7 @@
             return en
     },
     SHOW_MODAL(){
-      this.$store.dispatch('login/SHOW_MODAL',{premessage: null,premobile: null})
+      this.$store.dispatch('login/SHOW_MODAL',{premessage: null,premobile: null,preredirect: null,prerefresh: false})
     }
   }
   }

@@ -46,6 +46,10 @@ export default {
       return {
         data:{},
       }
-    }
+    },
+  head() {
+
+    return { title:  this.$t('new.halfPrice') }
+  }
 }
 </script>

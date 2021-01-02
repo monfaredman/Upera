@@ -86,6 +86,10 @@ export default {
         nightmode:false
       }
     },
+  head() {
+
+    return { title:  this.$t('new.quickSetting') }
+  },
   watch: {
     'fa': function() {
       if(this.fa){
@@ -107,7 +111,7 @@ export default {
     }
     },
     mounted () {
-       if (localStorage.getItem("nightmode"))
+       if (this.$colorMode.value=='dark')
       this.nightmode=true
       if(this.$i18n.locale=='fa')
         this.fa=true

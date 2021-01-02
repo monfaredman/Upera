@@ -11,7 +11,7 @@
       </div>
     </div>
     <div v-if="distance < 0 && data.last_page > 1" class="text-center p-2">
-      <button class="btn-load-more btn btn-primary" @click="manualLoad">
+      <button class="btn-load-more btn btn-main" @click="manualLoad">
         {{ $t('home.load_more') }}
       </button>
     </div>
@@ -46,6 +46,10 @@ import InfiniteLoading from 'vue-infinite-loading'
       userApi:'new_casts/2/all/0',
       ghostApi:'new_casts/2/all/0'
     }
+  },
+  head() {
+
+    return { title:  this.$t('new.directors') }
   },
     methods: {
     ChooseLang(en,fa){

@@ -14,7 +14,7 @@
           <del>۱۵.۰۰۰</del>
           <span class="overlay_price font-weight-light ml-1"><span class="overlay_price_label position-relative"><i class="icon-toman" /></span><span>۱۳</span>.۰۰۰</span>
           <small>هزینه ماهیانه کمتر از یک بلیط سینما</small>
-          <a href="" class="btn btn-primary py-1 px-4 px-lg-4 float-left" data-toggle="modal" data-target="#">پرداخت</a>
+          <a href="" class="btn btn-main py-1 px-4 px-lg-4 float-left" data-toggle="modal" data-target="#">پرداخت</a>
         </div>
       </div>
       <div class="pricing_list_container mb-3 bg-light p-2 p-lg-3">
@@ -26,7 +26,7 @@
           <del class="pricing_Subscribe_boldmoves_del">۴۵.۰۰۰</del>
           <span class="overlay_price overlay_price_boldmoves"><span class="overlay_price_label position-relative"><i class="icon-toman" /></span><span>۳۳</span>.۰۰۰</span>
 
-          <a href="" class="btn btn-primary py-1 px-4 px-lg-4 float-left" data-toggle="modal" data-target="#">پرداخت</a>
+          <a href="" class="btn btn-main py-1 px-4 px-lg-4 float-left" data-toggle="modal" data-target="#">پرداخت</a>
         </div>
       </div>
       <div class="pricing_list_container mb-3 bg-light p-2 p-lg-3">
@@ -36,7 +36,7 @@
         <div class="text-right pricing_cost_box">
           <del>۹۰.۰۰۰</del>
           <span style="flex:1" class="overlay_price font-weight-light ml-1"><span class="overlay_price_label position-relative"><i class="icon-toman" /></span><span>۵۹</span>.۰۰۰</span>
-          <a href="" class="btn btn-primary py-1 px-4 px-lg-4 float-left" data-toggle="modal" data-target="#">پرداخت</a>
+          <a href="" class="btn btn-main py-1 px-4 px-lg-4 float-left" data-toggle="modal" data-target="#">پرداخت</a>
         </div>
       </div>
       <div class="invite_friend_container mb-1 p-2 p-lg-3">

@@ -24,6 +24,8 @@
     "quickSetting": "Quick Setting",
     "persianLang": "Persian Language",
     "nightMode": "Night mode",
+    "nightMode2": "Night mode",
+    "nightMode3": "",
     "socialMedia": "SocialMedia",
     "halfPrice": "Traffic Usage Terms",
     "FAQ": "FAQ",
@@ -49,6 +51,7 @@
     "faqTitle": "FAQ",
     "minutes": "Minutes",
     "story": "Story Line",
+    "story2": "Story Line",
     "casts": "Cast",
     "other_casts": "Other Cast"
   },

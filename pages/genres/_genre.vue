@@ -49,7 +49,7 @@
       </div>
     </div>
     <div v-if="distance < 0 && data.last_page > 1" class="text-center p-2">
-      <button class="btn-load-more btn btn-primary" @click="manualLoad">
+      <button class="btn-load-more btn btn-main" @click="manualLoad">
         {{ $t('home.load_more') }}
       </button>
     </div>
@@ -84,6 +84,10 @@ import InfiniteLoading from 'vue-infinite-loading'
       userApi:'/genre/'+this.$route.params.genre.toLowerCase(),
       ghostApi:'/genre/'+this.$route.params.genre.toLowerCase()
     }
+  },
+  head() {
+
+    return { title:  this.ChooseLangGenres(this.$route.params.genre) }
   },
     methods: {
     ChooseLang(en,fa){

@@ -48,6 +48,10 @@ export default {
       return {
         data:{},
       }
-    }
+    },
+  head() {
+
+    return { title:  this.$t('footer.terms') }
+  }
 }
 </script>

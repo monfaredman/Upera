@@ -43,6 +43,10 @@ export default {
         search: '',
       }
     },
+  head() {
+
+    return { title:  this.$t('new.faqTitle') }
+  },
   computed: {
     filteredList() {
       return this.data.filter(data => {

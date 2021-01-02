@@ -53,18 +53,26 @@ export default {
   /*
    ** Global CSS
    */
+  // css: [
+  //   "~/node_modules/bootstrap/dist/css/bootstrap.css",
+  //   "../assets/styles/fontiran.css",
+  //   "../assets/styles/main.css",
+  //   "../assets/styles/Edited-Style.css",
+  //   "../assets/styles/component-custom-switch.css",
+  //   "../assets/styles/rtl.css",
+  //   "../assets/fonts/icomoon/style.css",
+  //   "../assets/styles/fa.css",
+  //   "../assets/styles/swiper.css",
+  //   "vue-slick-carousel/dist/vue-slick-carousel.css",
+  //   "../assets/styles/Edited-Style-Dark.css",
+  // ],
   css: [
     "~/node_modules/bootstrap/dist/css/bootstrap.css",
-    "../assets/styles/fontiran.css",
-    "../assets/styles/main.css",
-    "../assets/styles/Edited-Style.css",
-    "../assets/styles/component-custom-switch.css",
-    "../assets/styles/rtl.css",
-    "../assets/fonts/icomoon/style.css",
     "../assets/styles/fa.css",
-    "../assets/styles/swiper.css",
-    "vue-slick-carousel/dist/vue-slick-carousel.css",
+    "../assets/styles/new.css",
+    "../assets/styles/rtl.css",
     "../assets/styles/Edited-Style-Dark.css",
+    "vue-slick-carousel/dist/vue-slick-carousel.css"
   ],
     router: {
       linkActiveClass: 'active',
@@ -76,7 +84,7 @@ export default {
    */
   plugins: ["~plugins/bootstrap","~plugins/slick","~plugins/swiper",'~/plugins/i18n','~/plugins/swal',
     "./plugins/axios",
-    "./plugins/mixins/validation","~/plugins/lightGallery.client"],
+    "./plugins/mixins/validation","~/plugins/lightGallery.client","~/plugins/awesomeCountdown.client"],
   /*
    ** Auto import components
    ** See https://nuxtjs.org/api/configuration-components
@@ -97,10 +105,12 @@ export default {
     "@nuxtjs/axios",
     '@nuxtjs/auth',
     "@nuxtjs/pwa",
+    '@nuxtjs/color-mode',
     // Doc: https://github.com/nuxt/content
     "@nuxt/content",
     "bootstrap-vue/nuxt",
     "nuxt-clipboard2",
+    ['cookie-universal-nuxt', { alias: 'cookiz' }],
     // 'nuxt-sweetalert2',
     // [
     //   'vue-sweetalert2/nuxt',
@@ -157,6 +167,17 @@ export default {
    ** Build configuration
    ** See https://nuxtjs.org/api/configuration-build/
    */
+pwa: {
+  manifest: {
+    name: 'آپرا',
+    lang: 'fa',
+    description: 'سینمای آنلاین شما'
+  }
+},
+colorMode: {
+  classPrefix: 'theme-',
+  classSuffix: ''
+},
 
   transition: {
     name: "fade",

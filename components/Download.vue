@@ -2,15 +2,24 @@
   <div>
     <b-modal id="downloadLinks" ref="downloadLinks" :centered="staticmodal ? false : true" hide-footer hide-header size="lg" :no-close-on-backdrop="staticmodal ? true : false" :hide-backdrop="staticmodal ? true : false" :no-close-on-esc="staticmodal ? true : false" modal-class="modal-download-link" :static="staticmodal ? true : false" no-enforce-focus>
       <div class="download-links">
-        <div class="download-links-poster" :style="'background-image: url(\'https://thumb.contentpanel.click/thumb?w=800&h=300&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/'+backdrop+'\')'">
+        <!-- <div class="download-links-poster" :style="'background-image: url(\'https://thumb.contentpanel.click/thumb?w=800&h=300&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/'+backdrop+'\')'"> -->
+
+        <div class="download-links-poster download-links-poster2" :style="'background-image: url(\'https://thumb.contentpanel.click/thumb?w=800&h=412&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/'+backdrop+'\')'">
           <div class="download-links-info d-flex align-items-center">
             <div class="download-links-thumbnail">
               <img class="download-links-thumbnail" :src="'https://thumb.contentpanel.click/thumb?w=70&h=103&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+posterf">
             </div>
-            <div class="download-links-title font-weight-bold">
+            <div v-if="type!='episode'" class="download-links-title font-weight-bold">
               <a href="" class="text-white" @click.prevent="Push(id,type)">
                 {{ ChooseLang(name,namefa) }}
               </a>
+            </div>
+            <div v-else class="download-links-title font-weight-bold">
+              <a href="" class="text-white" @click.prevent="Push(id,type)">
+                {{ ChooseLang(itemdata.series_name,itemdata.series_name_fa) }}
+              </a><br><h6 class="text-small">
+                {{ ChooseLang(name,namefa) }}
+              </h6>
             </div>
           </div>
           <button v-show="!staticmodal" type="button" class="close" @click="hideModal">
@@ -19,12 +28,28 @@
         </div>
         <!-- !owned && (!free || (free && (ftb || $route.query.force_to_buy))) &&  -->
         <div v-if="!cartloading && (!free || ftb2) && Object.keys(downloadslist).length > 0 && cart.length > 0 && cart.some(function(el){ return downloadslist.some(function(el2){ return el.itemid === el2.id})})">
-          <div class="download-links-body" :class="{ 'download-links-body2': ($auth.loggedIn || !totalamount)}">
-            <div v-show="!$auth.loggedIn && totalamount" class="row py-4 download-options-wrapper">
+          <div class="download-links-body" :class="{ 'download-links-body2': (($auth.loggedIn || !totalamount) && !season)}">
+            <div v-if="season" class="row py-4 download-options-wrapper">
+              <div class="col-sm-6">
+                <b-dropdown block :text="seasontitle" variant="dark">
+                  <b-dropdown-item v-for="(item, index) in season" :key="index" href="#" :active="selectseriesid==index" @click.prevent="selectseries(index)">
+                    فصل {{ index }}
+                  </b-dropdown-item>
+                </b-dropdown>
+              </div>
+              <div class="col-sm-6">
+                <b-dropdown block :text="episodetitle" variant="outline-dark" class="srmb">
+                  <b-dropdown-item v-for="(item, index) in season[selectseriesid]" :key="index" href="#" :active="type=='episode' && itemdata.episode_number==item.episode_number" @click.prevent="selectepisode(item.id)">
+                    قسمت {{ item.episode_number }}
+                  </b-dropdown-item>
+                </b-dropdown>
+              </div>
+            </div>
+            <div v-show="!$auth.loggedIn && totalamount" class="row download-options-wrapper" :class="{ 'py-4': !season}">
               <div class="col-12">
                 <div class="position-relative">
                   <label for="premobile">{{ $t('new.enter_mobile') }}</label>                  
-                  <b-form-input id="premobile" v-model.trim="mobile" style="text-align:left!important" name="mobile" dir="ltr" class="form-control large text-right mobile-input" maxlength="13" :placeholder="$t('download.enter_mobile')" :title="$t('download.enter_mobile')" autofocus />
+                  <b-form-input id="premobile" v-model.trim="mobile" style="text-align:left!important" name="mobile" dir="ltr" class="form-control large text-right mobile-input" maxlength="13" :placeholder="$t('download.enter_mobile')" :title="$t('download.enter_mobile')" autofocus @keyup.enter="BUY" />
                   <div v-if="typeof errors === 'string'" class="text-danger">
                     {{ errors }}
                   </div>
@@ -38,7 +63,7 @@
               </div>
             </div>
 
-            <div class="download-links-items" :class="{'download-links-items2': (!$auth.loggedIn && totalamount)}">
+            <div class="download-links-items" :class="{'download-links-items2': (!$auth.loggedIn && totalamount && !season),'download-links-season2': (!$auth.loggedIn && totalamount && season),'download-links-season':(($auth.loggedIn || !totalamount) && season)}">
               <div class="col-12">
                 <svg v-if="buyloading" id="L9" class="svg-loader" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 100 100" enable-background="new 0 0 0 0" xml:space="preserve"><path data-v-28f0b4cb="" fill="#373737" d="M73,50c0-12.7-10.3-23-23-23S27,37.3,27,50 M30.9,50c0-10.5,8.5-19.1,19.1-19.1S69.1,39.5,69.1,50" transform="rotate(109.69 50 50)"><animateTransform data-v-28f0b4cb="" attributeName="transform" attributeType="XML" type="rotate" dur="1s" from="0 50 50" to="360 50 50" repeatCount="indefinite" /></path></svg>
 
@@ -76,10 +101,9 @@
                     <div class="col-sm-6">
                       <div class="d-flex h-100 align-items-end">
                         <div class="download-link">
-                          <button class="btn btn-sm btn-danger btn-block" style="font-size: 0.875rem !important;    font-weight: inherit  !important;" @click="REMOVEFROMCART(item.itemid,item.amount)">
+                          <a href="" class="text-sm text-danger" @click.prevent="REMOVEFROMCART(item.itemid,item.amount)">
                             حذف از سبد خرید
-                            <i class="fa fa-trash pr-2" />
-                          </button>
+                          </a>
                         </div>
 
                         <div class="copy-link" :class="{ 'text-right': staticmodal,'text-left': !staticmodal }">
@@ -144,37 +168,20 @@
         </div>
         <div v-else>
           <div class="download-links-body" :class="{ 'download-links-body2': !season,'download-links-0': (divcount+play_button)==0,'download-links-2': (divcount+play_button)==2,'download-links-3': (divcount+play_button)==3 }">
-            <div v-show="season" class="row py-4 download-options-wrapper">
+            <div v-if="season" class="row py-4 download-options-wrapper">
               <div class="col-sm-6">
-                <div class="download-options download-options-dark dropdown">
-                  <span class="download-options-label font-weight-bold">همه کیفیت ها</span>
-                  <i class="fas fa-chevron-down" />
-                  <ul class="dropdown-menu">
-                    <a href="#" class="dropdown-item">کیفیت 480</a>
-                    <a href="#" class="dropdown-item">کیفیت 720</a>
-                    <a href="#" class="dropdown-item">کیفیت 1080</a>
-                  </ul>
-                </div>
+                <b-dropdown block :text="seasontitle" variant="dark">
+                  <b-dropdown-item v-for="(item, index) in season" :key="index" href="#" :active="selectseriesid==index" @click.prevent="selectseries(index)">
+                    فصل {{ index }}
+                  </b-dropdown-item>
+                </b-dropdown>
               </div>
               <div class="col-sm-6">
-                <div class="download-options dropdown">
-                  <span class="download-options-label font-weight-bold">قسمت 5</span>
-                  <i class="fas fa-chevron-down" />
-                  <ul class="dropdown-menu">
-                    <a href="#" class="dropdown-item">قسمت 1</a>
-                    <a href="#" class="dropdown-item">قسمت 2</a>
-                    <a href="#" class="dropdown-item">قسمت 3</a>
-                    <a href="#" class="dropdown-item">قسمت 4</a>
-                    <a href="#" class="dropdown-item">قسمت 5</a>
-                    <a href="#" class="dropdown-item">قسمت 6</a>
-                    <a href="#" class="dropdown-item">قسمت 7</a>
-                    <a href="#" class="dropdown-item">قسمت 8</a>
-                    <a href="#" class="dropdown-item">قسمت 9</a>
-                    <a href="#" class="dropdown-item">قسمت 10</a>
-                    <a href="#" class="dropdown-item">قسمت 11</a>
-                    <a href="#" class="dropdown-item">قسمت 12</a>
-                  </ul>
-                </div>
+                <b-dropdown block :text="episodetitle" variant="outline-dark" class="srmb">
+                  <b-dropdown-item v-for="(item, index) in season[selectseriesid]" :key="index" href="#" :active="type=='episode' && itemdata.episode_number==item.episode_number" @click.prevent="selectepisode(item.id)">
+                    قسمت {{ item.episode_number }}
+                  </b-dropdown-item>
+                </b-dropdown>
               </div>
             </div>
 
@@ -184,7 +191,12 @@
                 <svg v-if="cartloading || downloadloading" id="L9" class="svg-loader" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 100 100" enable-background="new 0 0 0 0" xml:space="preserve"><path data-v-28f0b4cb="" fill="#373737" d="M73,50c0-12.7-10.3-23-23-23S27,37.3,27,50 M30.9,50c0-10.5,8.5-19.1,19.1-19.1S69.1,39.5,69.1,50" transform="rotate(109.69 50 50)"><animateTransform data-v-28f0b4cb="" attributeName="transform" attributeType="XML" type="rotate" dur="1s" from="0 50 50" to="360 50 50" repeatCount="indefinite" /></path></svg>
 
 
-                <span v-if="!screening.ekran && !cartloading" class="text-danger h6 text-justify">مصرف اینترنت جهت دانلود قانونی {{ fullrate_data.fa.title }} می باشد<br><br></span>
+                <span v-if="!screening.ekran && !cartloading" class="text-danger h6 text-justify">حجم مصرفی: {{ fullrate_data.fa.title }}<br><br></span>
+
+                <span v-if="!ftb2 && !cartloading && !owned && traffic && trafficoo && !(downloadslist.some(function(el){ return el.owned === 1}))" class="text-justify ">دسترسی رایگان به فیلم با اینترنت همراه اول و ایرانسل<br><button class="btn btn-secondary text-right" @click="SHOWAGAIN(0)">
+                  بررسی اتصال اینترنت
+                  <i class="fas fa-sync-alt" />
+                </button><br>و یا خرید با اینترنت فعلی شما:<br><br></span>
 
                 <span v-if="screening.ekran && !cartloading" class="text-danger h6 text-justify">مصرف اینترنت جهت تماشای آنلاین {{ fullrate_data.fa.title }} می باشد<br><br></span>
 
@@ -244,7 +256,7 @@
                         <div class="download-full-link">
                           <button class="btn btn-secondary btn-block" @click="EKRAN(screening.ekran_id)">
                             تماشا
-                            <i class="icon-download" />
+                            <i class="icon-play" />
                           </button>
                         </div>
                       </div>
@@ -281,7 +293,7 @@
                       <div class="d-flex h-100 align-items-end">
                         <div class="download-link">
                           <button class="btn btn-danger btn-block" @click="ADDTOCART(item.id,item.amount,item.size,item.quality)">
-                            <span v-if="presale">{{ $t('download.presale') }}</span><span v-else>{{ $t('download.buy') }}</span>
+                            <span v-if="presale">{{ $t('download.presale') }}</span><span v-else>{{ $t('download.buy') }}</span><span v-if="staticmodal"> و دانلود</span>
                             <i class="icon-download" />
                           </button>
                         </div>
@@ -304,15 +316,15 @@
                     </div>
                   </div>
                   <div class="col-sm-6">
-                    <a v-if="type=='movie'" href="" class="btn btn-primary btn-block" @click.prevent="Push2(id,type)">
+                    <a v-if="type=='movie'" href="" class="btn btn-main btn-block" @click.prevent="Push2(id,type)">
                       نمایش فیلم
                       <i class="icon-play" />
                     </a>
-                    <a v-else-if="type=='series'" class="btn btn-primary btn-block" href="" @click.prevent="Push2(id,type)">
+                    <a v-else-if="type=='series'" class="btn btn-main btn-block" href="" @click.prevent="Push2(id,type)">
                       نمایش قسمت اول سریال
                       <i class="icon-play" />
                     </a>
-                    <a v-else href="" class="btn btn-primary btn-block" @click.prevent="Push2(id,type)">
+                    <a v-else href="" class="btn btn-main btn-block" @click.prevent="Push2(id,type)">
                       نمایش این قسمت
                       <i class="icon-play" />
                     </a>
@@ -385,6 +397,14 @@ import {mapGetters} from 'vuex'
         type: Number,
         default: 0
     },
+    traffic: {
+        type: Number,
+        default: 0
+    },
+    trafficoo: {
+        type: Number,
+        default: 0
+    },
     vod: {
         type: Number,
         default: 0
@@ -425,6 +445,10 @@ import {mapGetters} from 'vuex'
     season: {
         type: Object,
         default: null
+    },
+    itemdata: {
+        type: Object,
+        default: null
     }
   },
 
@@ -441,7 +465,10 @@ import {mapGetters} from 'vuex'
         buyloading: null,
         disable_button: false,
         play_button: 0,
-          showBoxAnimation: false
+          showBoxAnimation: false,
+          selectseriesid: 1,
+          seasontitle: 'فصل 1',
+          episodetitle: 'قسمت ها'
       }
     },
 
@@ -510,13 +537,23 @@ if(this.owned || (this.free && this.vod) || (this.vod && this.checkuser.access))
 // })
               }
 
+
+
+if(this.type=='episode'){
+  this.selectseriesid=this.itemdata.season_number
+  this.seasontitle='فصل '+this.selectseriesid
+  this.episodetitle='قسمت '+this.itemdata.episode_number
+}
+
         this.$refs['downloadLinks'].$on('hide', () => {
           $('.default').removeClass('blure')
           this.$emit("hide-modal", null)
         })
-
+$('.download-options-label').removeClass('btn')
 
           $('body').addClass('loaded')
+
+
 
         },
 
@@ -602,7 +639,19 @@ if(this.owned || (this.free && this.vod) || (this.vod && this.checkuser.access))
       },
 
       ADDTOCART(itemid,amount,size,quality) {
-        this.$store.dispatch("download/ADD_NEW_TO_DOWNLOAD", {itemid: itemid,amount:amount,size:size,name:this.ChooseLang(this.name,this.namefa),quality:quality,id: this.id,type:this.type,poster:'https://thumb.contentpanel.click/thumb?w=70&h=103&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+this.posterf })
+
+        var name
+
+        if(this.type=='episode'){
+          if(this.itemdata.season_number==1)
+            name=this.ChooseLang(this.itemdata.series_name,this.itemdata.series_name_fa)+',قسمت '+this.itemdata.episode_number
+          else
+            name=this.ChooseLang(this.itemdata.series_name,this.itemdata.series_name_fa)+',قسمت '+this.itemdata.episode_number+' فصل '+this.itemdata.season_number
+        }
+        else
+          name=this.ChooseLang(this.name,this.namefa)
+
+        this.$store.dispatch("download/ADD_NEW_TO_DOWNLOAD", {itemid: itemid,amount:amount,size:size,name:name,quality:quality,id: this.id,type:this.type,poster:'https://thumb.contentpanel.click/thumb?w=70&h=103&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+this.posterf })
         $('.modal-download-link .download-links-items').scrollTop(0)
       },
       REMOVEFROMCART(itemid,amount) {
@@ -771,6 +820,10 @@ if(this.owned || (this.free && this.vod) || (this.vod && this.checkuser.access))
           this.mobile=this.mobile.replace(/۰/g, "0")
         }
 
+        var ref=this.$cookiz.get('ref')
+        if(!ref || isNaN(ref))
+          ref=0
+
         var api_url
         if (this.$auth.loggedIn) {
             api_url='/get/buy'
@@ -782,7 +835,9 @@ if(this.owned || (this.free && this.vod) || (this.vod && this.checkuser.access))
             cart: this.cart,
             mobile: this.mobile,
             ekran: this.screening.ekran,
-            payment_method: this.payment_method
+            callback_url: location.origin+'/callback?mobile='+this.mobile,
+            payment_method: this.payment_method,
+            ref: ref
         }).then((res) => {
           this.buyloading=false
           if(res.status === 200){
@@ -794,7 +849,7 @@ if(this.owned || (this.free && this.vod) || (this.vod && this.checkuser.access))
           this.buyloading=false
            this.premessage=error.response.data.message
             if(error.response.data.login)
-              this.$store.dispatch('login/SHOW_MODAL',{premessage: this.premessage,premobile: this.mobile})
+              this.$store.dispatch('login/SHOW_MODAL',{premessage: this.premessage,premobile: this.mobile,preredirect: null,prerefresh: false})
         })
       },
     async copy(text) {
@@ -808,7 +863,24 @@ if(this.owned || (this.free && this.vod) || (this.vod && this.checkuser.access))
           return e
       }
     },
+    selectseries(id){
+      this.selectseriesid=id
 
+      this.seasontitle='فصل '+id
+    },
+
+    selectepisode(id){
+      if(id!=this.id){
+            this.hideModal()
+
+            this.$router.push({
+                name:"episode-download-id",
+                params: {
+                    id: id
+                }
+            })
+          }
+    },
     },
 
 

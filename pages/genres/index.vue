@@ -37,6 +37,10 @@ export default {
       data:{},
       id: "",
     }
+  },
+  head() {
+
+    return { title:  this.$t('new.genres') }
   }
 }
 </script>

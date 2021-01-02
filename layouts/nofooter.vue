@@ -23,7 +23,6 @@ created: function() {
       this.$auth.logout()
     }
     this.$store.dispatch('GET_LANG')
-    this.$store.dispatch('GET_NIGHTMODE')
   }
 },
     mounted() {
