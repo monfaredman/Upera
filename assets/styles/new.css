@@ -5155,10 +5155,7 @@ div.download-links-poster::after
         height: calc(90vh - 60px);
     }
 
-    .download .modal-download-link .download-links
-    {
-        height: calc(85vh - 60px);
-    }
+
     .credit .download-links
     {
         height: calc(90vh - 200px);
@@ -5245,6 +5242,11 @@ div.download-links-poster::after
 }
 @media (max-width: 767.98px)
 {
+
+      .download .modal-download-link .download-links
+    {
+        height: calc(85vh - 60px);
+    }
   .download-links .download-size
 {
     color: #cacaca;
