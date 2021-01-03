@@ -71,7 +71,6 @@ export default {
     "../assets/styles/fa.css",
     "../assets/styles/new.css",
     "../assets/styles/rtl.css",
-    "../assets/styles/Edited-Style-Dark.css",
     "vue-slick-carousel/dist/vue-slick-carousel.css"
   ],
     router: {
@@ -176,7 +175,9 @@ pwa: {
 },
 colorMode: {
   classPrefix: 'theme-',
-  classSuffix: ''
+  classSuffix: '',
+  preference: 'light',
+  fallback: 'light'
 },
 
   transition: {
