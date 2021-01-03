@@ -26,7 +26,7 @@ export default {
    */
   target: "server",
   server: {
-    host: '127.0.0.1'
+    host: '192.168.31.143'
   },
   /*
    ** Headers of the page

@@ -528,6 +528,8 @@ import {mapGetters} from 'vuex'
 //             this.$route.query.quality=0
 //             this.$route.query.force_to_buy=0
 //   }
+this.Resize('e')
+
 window.addEventListener("resize", this.Resize)
 
 if(this.owned || (this.free && this.vod) || (this.vod && this.checkuser.access)){
