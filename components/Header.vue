@@ -477,7 +477,7 @@ import Login from "../components/Login"
       categories: ["/genres", "/casts/iranian-actors", "/casts/foreign-actors", "/casts/directors"],
       profile: ["/profile", "/profile/settings", "/profile/plans", "/profile/internet"],
       banner: ["index", "cast-id", "movie-id", "episode-id", "series-id", "genres-genre", "lists-list"],
-      itemmenu: ["movie-id", "episode-id", "series-id"]
+      itemmenu: ["callback","movie-download-id","episode-download-id","ekran-id","movie-id", "episode-id", "series-id"]
 
     }
   },

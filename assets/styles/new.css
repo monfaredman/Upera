@@ -5148,13 +5148,15 @@ div.download-links-poster::after
     text-overflow: ellipsis;
     display: block;
 }
+
+/*height: calc(90vh - 60px);*/
     .modal-download-link .download-links
     {
-        height: calc(100vh - 60px);
+        height: calc(95vh - 60px);
     }
     .credit .download-links
     {
-        height: calc(100vh - 100px);
+        height: calc(95vh - 200px);
     }
 @media (min-width: 768px)
 {
@@ -5233,7 +5235,7 @@ div.download-links-poster::after
     }
     .footer-1
     {
-        height: 3.3125rem;
+        height: 3rem;
     }
 }
 @media (max-width: 767.98px)
@@ -5316,10 +5318,14 @@ div.download-links-poster::after
     }
     .download-links-footer
     {
-        /*height: 3.3125rem;*/
+        height: 3.3125rem;
         left: 0;
         right: 0;
         bottom: 1rem;
+    }
+    .footer-0
+    {
+        height: 0;
     }
 /*    .footer-1
     {
