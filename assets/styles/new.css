@@ -5162,6 +5162,9 @@ div.download-links-poster::after
     {
         height: calc(100vh - 200px);
     }
+    .footer-0{
+      height:0;
+    }
 @media (min-width: 768px)
 {
 

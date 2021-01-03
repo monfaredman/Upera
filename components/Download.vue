@@ -576,7 +576,7 @@ $('.download-options-label').removeClass('btn')
     let vh = window.innerHeight * 0.01
     let element=document.getElementsByClassName('download-links')
 
-    if(element)
+    if(element.length)
       element[0].style.setProperty('--vh', `${vh}px`)
     
     return e
