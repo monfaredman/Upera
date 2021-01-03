@@ -5152,11 +5152,11 @@ div.download-links-poster::after
 /*height: calc(90vh - 60px);*/
     .modal-download-link .download-links
     {
-        height: calc(95vh - 60px);
+        height: calc(90vh - 60px);
     }
     .credit .download-links
     {
-        height: calc(95vh - 200px);
+        height: calc(90vh - 200px);
     }
 @media (min-width: 768px)
 {
