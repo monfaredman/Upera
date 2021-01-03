@@ -494,6 +494,7 @@ import {mapGetters} from 'vuex'
       show(val) {
         if (val !== null && this.show) {
           this.showModal()
+
         }else{
           this.hideModal()
         }
@@ -528,9 +529,9 @@ import {mapGetters} from 'vuex'
 //             this.$route.query.quality=0
 //             this.$route.query.force_to_buy=0
 //   }
-this.Resize('e')
 
 window.addEventListener("resize", this.Resize)
+
 
 if(this.owned || (this.free && this.vod) || (this.vod && this.checkuser.access)){
   this.play_button=1
@@ -539,9 +540,11 @@ if(this.owned || (this.free && this.vod) || (this.vod && this.checkuser.access))
                 if (this.staticmodal) {
                 this.showModal()
                 $('.modal-content').removeAttr("tabindex")
-//   this.$refs['downloadLinks'].$on('show', function() {
-//     $('.modal-content').removeAttr("tabindex")
-// })
+
+
+
+
+
               }
 
 
@@ -551,6 +554,8 @@ if(this.type=='episode'){
   this.seasontitle='فصل '+this.selectseriesid
   this.episodetitle='قسمت '+this.itemdata.episode_number
 }
+
+
 
         this.$refs['downloadLinks'].$on('hide', () => {
           $('.default').removeClass('blure')
@@ -569,7 +574,11 @@ $('.download-options-label').removeClass('btn')
     methods: {
   Resize(e) {
     let vh = window.innerHeight * 0.01
-    document.getElementsByClassName('download-links')[0].style.setProperty('--vh', `${vh}px`)
+    let element=document.getElementsByClassName('download-links')
+
+    if(element)
+      element[0].style.setProperty('--vh', `${vh}px`)
+    
     return e
   },
         ChooseLang(en,fa){
@@ -625,7 +634,11 @@ $('.download-options-label').removeClass('btn')
         if(!this.staticmodal)
         $('.default').addClass('blure')
 
-
+var v=this
+this.$refs['downloadLinks'].$on('shown', () => {
+    
+    v.Resize('e')
+})
 
         if(!this.ftb)
           this.ftb2=0

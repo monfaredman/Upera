@@ -5148,10 +5148,16 @@ div.download-links-poster::after
     text-overflow: ellipsis;
     display: block;
 }
-    .modal-download-link .download-links
+/*    .modal-download-link .download-links
     {
         height: calc(100vh - 60px);
-    }
+    }*/
+.modal-download-link .download-links
+{
+      height: 85vh;
+  height: calc(var(--vh, 1vh) * 100 - 70px);
+}
+
     .credit .download-links
     {
         height: calc(100vh - 200px);
@@ -5316,7 +5322,7 @@ div.download-links-poster::after
     }
     .download-links-footer
     {
-        /*height: 3.3125rem;*/
+        height: 3.3125rem;
         left: 0;
         right: 0;
         bottom: 1rem;
