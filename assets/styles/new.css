@@ -5163,7 +5163,7 @@ div.download-links-poster::after
         height: calc(100vh - 200px);
     }
     .footer-0{
-      height:0;
+      height:0 !important;
     }
 @media (min-width: 768px)
 {
