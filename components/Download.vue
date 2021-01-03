@@ -513,6 +513,11 @@ import {mapGetters} from 'vuex'
       // }
     },
 
+
+  destroyed () {
+    window.removeEventListener('resize', this.Resize)
+  },
+
         mounted() {
 // if(this.show){
 //             if (this.$auth.loggedIn) {
@@ -523,7 +528,7 @@ import {mapGetters} from 'vuex'
 //             this.$route.query.quality=0
 //             this.$route.query.force_to_buy=0
 //   }
-
+window.addEventListener("resize", this.Resize)
 
 if(this.owned || (this.free && this.vod) || (this.vod && this.checkuser.access)){
   this.play_button=1
@@ -560,7 +565,11 @@ $('.download-options-label').removeClass('btn')
 
         
     methods: {
-
+  Resize(e) {
+    let vh = window.innerHeight * 0.01
+    document.getElementsByClassName('download-links')[0].style.setProperty('--vh', `${vh}px`)
+    return e
+  },
         ChooseLang(en,fa){
             if(fa && this.$i18n.locale=="fa")
                 return fa
