@@ -5154,6 +5154,11 @@ div.download-links-poster::after
     {
         height: calc(90vh - 60px);
     }
+
+    .download .modal-download-link .download-links
+    {
+        height: calc(87vh - 60px);
+    }
     .credit .download-links
     {
         height: calc(90vh - 200px);
