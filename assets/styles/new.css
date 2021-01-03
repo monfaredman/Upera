@@ -5152,13 +5152,13 @@ div.download-links-poster::after
 /*height: calc(90vh - 60px);*/
     .modal-download-link .download-links
     {
-        height: calc(90vh - 60px);
+        height: calc(95vh - 60px);
     }
 
 
     .credit .download-links
     {
-        height: calc(90vh - 200px);
+        height: calc(95vh - 200px);
     }
 @media (min-width: 768px)
 {
@@ -5240,12 +5240,22 @@ div.download-links-poster::after
         height: 3rem;
     }
 }
+
+@media (max-width: 575.98px)
+{
+.download-links-footer{
+position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+  }
 @media (max-width: 767.98px)
 {
 
+
       .download .modal-download-link .download-links
     {
-        height: calc(85vh - 60px);
+        height: calc(100vh - 3.3125rem);
     }
   .download-links .download-size
 {

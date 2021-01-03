@@ -140,7 +140,7 @@
               <div class="download-links-item">
                 <div class="row">
                   <div class="col-sm-6">
-                    <div class="font-weight-bold hide-mobile">
+                    <div class="font-weight-bold d-none d-sm-block">
                       {{ $t('download.amount_payable') }}: 
                       <span v-if="checkuser.tax"><span class="overlay_price font-weight-light"><span class="overlay_price_label position-relative"><i class="icon-toman" /></span><span>{{ charAt2((totalamount+(totalamount * 0.09))) }}</span>.{{ substring2((totalamount+(totalamount * 0.09))) }}</span></span>
                       <span v-else><span class="overlay_price font-weight-light"><span class="overlay_price_label position-relative"><i class="icon-toman" /></span><span>{{ charAt2(totalamount) }}</span>.{{ substring2(totalamount) }}</span></span>
@@ -311,7 +311,7 @@
               <div v-show="play_button" class="download-links-item">
                 <div class="row">
                   <div class="col-sm-6">
-                    <div class="font-weight-bold hide-mobile">
+                    <div class="font-weight-bold d-none d-sm-block">
                       کیفیت متناسب با سرعت اینترنت
                     </div>
                   </div>
@@ -334,7 +334,7 @@
               <div v-show="show_free" class="download-links-item">
                 <div class="row">
                   <div class="col-sm-6">
-                    <div class="font-weight-bold hide-mobile">
+                    <div class="font-weight-bold d-none d-sm-block">
                       همه کیفیت ها
                     </div>
                   </div>
@@ -349,7 +349,7 @@
               <div v-show="show_buy" class="download-links-item">
                 <div class="row">
                   <div class="col-sm-6">
-                    <div class="font-weight-bold hide-mobile">
+                    <div class="font-weight-bold d-none d-sm-block">
                       خرید و دانلود
                     </div>
                   </div>
@@ -364,7 +364,7 @@
               <div v-show="ussd" class="download-links-item">
                 <div class="row">
                   <div class="col-sm-6">
-                    <div class="font-weight-bold hide-mobile">
+                    <div class="font-weight-bold d-none d-sm-block">
                       خرید با USSD
                     </div>
                   </div>
