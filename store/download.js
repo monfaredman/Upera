@@ -32,6 +32,7 @@ export const state = () => ({
         total_amount: 0,
         loading: false,
         divcount: 0,
+        play_button: 0,
         cartloading: false
 })
 
@@ -159,6 +160,13 @@ export const actions = {
             commit('GET_CART')
         },
 
+
+        ADD_DIVCOUNT({ commit }) {
+            commit('ADD_DIVCOUNT')
+        },
+        RESET_DOWNLOAD({ commit }) {
+            commit('RESET_DOWNLOAD')
+        },
 }
 
 export const mutations = {
@@ -174,6 +182,16 @@ export const mutations = {
             state.cart = copy_cart.content
             state.total_amount = copy_cart.amount
         },
+        ADD_DIVCOUNT(state){
+
+            state.divcount = state.divcount+1
+            state.play_button=1
+        },
+        RESET_DOWNLOAD(state){
+
+            state.divcount = 0
+            state.play_button = 0
+        },
         SET_DOWNLOAD(state, data){
             state.downloadslist = data.downloads
             state.presale = data.presale
@@ -187,11 +205,12 @@ export const mutations = {
             state.show_buy = data.show_buy
             state.notes = data.notes
 
-            if(data.show_buy || data.show_free){
-                if(data.ussd)
-                    state.divcount=2
+
+            if(state.show_buy || state.show_free){
+                if(state.ussd)
+                    state.divcount=state.play_button+2
                 else
-                    state.divcount=1
+                    state.divcount=state.play_button+1
             }
 
 

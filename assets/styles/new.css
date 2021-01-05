@@ -5162,9 +5162,9 @@ div.download-links-poster::after
     {
         height: calc(100vh - 200px);
     }
-    .footer-0{
+/*    .footer-0{
       height:0 !important;
-    }
+    }*/
 @media (min-width: 768px)
 {
 
@@ -5222,7 +5222,7 @@ div.download-links-poster::after
 
     .download-links-2 .download-links-items
     {
-        bottom: 10.1rem;
+        bottom: 8.9rem;
     }
 
     .credit .download-links-items
@@ -5231,19 +5231,23 @@ div.download-links-poster::after
     }
     .download-links-3 .download-links-items
     {
-        bottom: 14.5rem;
+        bottom: 13.1rem;
+    }
+    .download-links-items{
+     bottom:  12.9375rem
     }
     .download-links-footer
     {
         left: 1.5rem;
         right: 1.5rem;
-        bottom: 1.5rem;
+        /*bottom: 1.5rem;*/
+        bottom: 0;
         /*height: 3.3125rem;*/
     }
-    .footer-1
+/*    .footer-1
     {
         height: 3.3125rem;
-    }
+    }*/
 }
 @media (max-width: 767.98px)
 {
@@ -5263,7 +5267,7 @@ div.download-links-poster::after
     }
     .download-options-wrapper
     {
-        height: 8.25rem;
+        /*height: 8.25rem;*/
         padding-left: 1rem;
         padding-right: 1rem;
     }
@@ -5287,6 +5291,18 @@ div.download-links-poster::after
     {
         top: 5.25rem !important;
     }
+    .download-links-body .download-links-season-num1
+    {
+        top: 5rem;
+    }
+    .download-links-body .download-links-season2.download-links-season-num2
+    {
+        top: 11rem;
+    }
+    .download-links-body .download-links-season.download-links-season-num2
+    {
+        top: 5rem;
+    }
     .callback .raychat_main_button{margin-bottom: 100px;}
     .download-links-0 .download-links-items
     {
@@ -5294,12 +5310,12 @@ div.download-links-poster::after
     }
     .download-links-2 .download-links-items
     {
-        bottom: 9.6rem;
+        bottom: 8.7rem;
     }
 
     .download-links-3 .download-links-items
     {
-        bottom: 14.5rem;
+        bottom: 13.1rem;
     }
     .download-links-body2 .download-links-items
     {
@@ -5325,10 +5341,10 @@ div.download-links-poster::after
     }
     .download-links-footer
     {
-        height: 3.3125rem;
+        /*height: 3.3125rem;*/
         left: 0;
         right: 0;
-        bottom: 1rem;
+        bottom: 0;
     }
 /*    .footer-1
     {

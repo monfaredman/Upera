@@ -30,14 +30,14 @@
         <div v-if="!cartloading && (!free || ftb2) && Object.keys(downloadslist).length > 0 && cart.length > 0 && cart.some(function(el){ return downloadslist.some(function(el2){ return el.itemid === el2.id})})">
           <div class="download-links-body" :class="{ 'download-links-body2': (($auth.loggedIn || !totalamount) && !season)}">
             <div v-if="season" class="row py-4 download-options-wrapper">
-              <div class="col-sm-6">
+              <div v-if="season_num>1" class="col-sm-6">
                 <b-dropdown block :text="seasontitle" variant="dark">
-                  <b-dropdown-item v-for="(item, index) in season" :key="index" href="#" :active="selectseriesid==index" @click.prevent="selectseries(index)">
+                  <b-dropdown-item v-for="(item, index) in season" :key="index" href="#" :active="selectseriesid==index" @click.prevent="selectseries(index,season[index][0].id)">
                     فصل {{ index }}
                   </b-dropdown-item>
                 </b-dropdown>
               </div>
-              <div class="col-sm-6">
+              <div :class="{ 'col-sm-6': (season_num>1),'col-sm-12': (season_num<=1)}">
                 <b-dropdown block :text="episodetitle" variant="outline-dark" class="srmb">
                   <b-dropdown-item v-for="(item, index) in season[selectseriesid]" :key="index" href="#" :active="type=='episode' && itemdata.episode_number==item.episode_number" @click.prevent="selectepisode(item.id)">
                     قسمت {{ item.episode_number }}
@@ -49,7 +49,7 @@
               <div class="col-12">
                 <div class="position-relative">
                   <label for="premobile">{{ $t('new.enter_mobile') }}</label>                  
-                  <b-form-input id="premobile" v-model.trim="mobile" style="text-align:left!important" name="mobile" dir="ltr" class="form-control large text-right mobile-input" maxlength="13" :placeholder="$t('download.enter_mobile')" :title="$t('download.enter_mobile')" autofocus @keyup.enter="BUY" />
+                  <b-form-input id="premobile" v-model="mobile" style="text-align:left!important" name="mobile" dir="ltr" class="form-control large text-right mobile-input" :placeholder="$t('download.enter_mobile')" :title="$t('download.enter_mobile')" autofocus @keyup.enter="BUY" />
                   <div v-if="typeof errors === 'string'" class="text-danger">
                     {{ errors }}
                   </div>
@@ -63,7 +63,7 @@
               </div>
             </div>
 
-            <div class="download-links-items" :class="{'download-links-items2': (!$auth.loggedIn && totalamount && !season),'download-links-season2': (!$auth.loggedIn && totalamount && season),'download-links-season':(($auth.loggedIn || !totalamount) && season)}">
+            <div class="download-links-items" :class="{'download-links-items2': (!$auth.loggedIn && totalamount && !season),'download-links-season2': (!$auth.loggedIn && totalamount && season),'download-links-season':(($auth.loggedIn || !totalamount) && season),'download-links-season-num2':(season_num==1)}">
               <div class="col-12">
                 <svg v-if="buyloading" id="L9" class="svg-loader" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 100 100" enable-background="new 0 0 0 0" xml:space="preserve"><path data-v-28f0b4cb="" fill="#373737" d="M73,50c0-12.7-10.3-23-23-23S27,37.3,27,50 M30.9,50c0-10.5,8.5-19.1,19.1-19.1S69.1,39.5,69.1,50" transform="rotate(109.69 50 50)"><animateTransform data-v-28f0b4cb="" attributeName="transform" attributeType="XML" type="rotate" dur="1s" from="0 50 50" to="360 50 50" repeatCount="indefinite" /></path></svg>
 
@@ -167,16 +167,16 @@
           </div>
         </div>
         <div v-else>
-          <div class="download-links-body" :class="{ 'download-links-body2': !season,'download-links-0': (divcount+play_button)==0,'download-links-2': (divcount+play_button)==2,'download-links-3': (divcount+play_button)==3 }">
+          <div class="download-links-body" :class="{ 'download-links-body2': !season,'download-links-0': divcount==0,'download-links-2': divcount==2,'download-links-3': divcount==3 }">
             <div v-if="season" class="row py-4 download-options-wrapper">
-              <div class="col-sm-6">
+              <div v-if="season_num>1" class="col-sm-6">
                 <b-dropdown block :text="seasontitle" variant="dark">
-                  <b-dropdown-item v-for="(item, index) in season" :key="index" href="#" :active="selectseriesid==index" @click.prevent="selectseries(index)">
+                  <b-dropdown-item v-for="(item, index) in season" :key="index" href="#" :active="selectseriesid==index" @click.prevent="selectseries(index,season[index][0].id)">
                     فصل {{ index }}
                   </b-dropdown-item>
                 </b-dropdown>
               </div>
-              <div class="col-sm-6">
+              <div :class="{ 'col-sm-6': (season_num>1),'col-sm-12': (season_num<=1)}">
                 <b-dropdown block :text="episodetitle" variant="outline-dark" class="srmb">
                   <b-dropdown-item v-for="(item, index) in season[selectseriesid]" :key="index" href="#" :active="type=='episode' && itemdata.episode_number==item.episode_number" @click.prevent="selectepisode(item.id)">
                     قسمت {{ item.episode_number }}
@@ -186,14 +186,14 @@
             </div>
 
 
-            <div class="download-links-items">
+            <div class="download-links-items" :class="{'download-links-season-num1':(season_num==1)}">
               <div class="col-12">
                 <svg v-if="cartloading || downloadloading" id="L9" class="svg-loader" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 100 100" enable-background="new 0 0 0 0" xml:space="preserve"><path data-v-28f0b4cb="" fill="#373737" d="M73,50c0-12.7-10.3-23-23-23S27,37.3,27,50 M30.9,50c0-10.5,8.5-19.1,19.1-19.1S69.1,39.5,69.1,50" transform="rotate(109.69 50 50)"><animateTransform data-v-28f0b4cb="" attributeName="transform" attributeType="XML" type="rotate" dur="1s" from="0 50 50" to="360 50 50" repeatCount="indefinite" /></path></svg>
 
 
                 <span v-if="!screening.ekran && !cartloading" class="text-danger h6 text-justify">حجم مصرفی: {{ fullrate_data.fa.title }}<br><br></span>
-
-                <span v-if="!ftb2 && !cartloading && !owned && traffic && trafficoo && !(downloadslist.some(function(el){ return el.owned === 1}))" class="text-justify ">دسترسی رایگان به فیلم با اینترنت همراه اول و ایرانسل<br><button class="btn btn-secondary text-right" @click="SHOWAGAIN(0)">
+<!-- !ftb2 &&  -->
+                <span v-if="!cartloading && !owned && traffic && trafficoo && !(downloadslist.some(function(el){ return el.owned === 1}))" class="text-justify ">دسترسی رایگان به فیلم با اینترنت همراه اول و ایرانسل<br><button class="btn btn-secondary text-right" @click="SHOWAGAIN(0)">
                   بررسی اتصال اینترنت
                   <i class="fas fa-sync-alt" />
                 </button><br>و یا خرید با اینترنت فعلی شما:<br><br></span>
@@ -307,7 +307,7 @@
                 </div>
               </div>
             </div>
-            <div v-if="!cartloading" class="download-links-footer" :class="{ 'footer-0': (divcount+play_button)==0,'footer-1': (divcount+play_button)==1 }">
+            <div v-if="!cartloading" class="download-links-footer" :class="{ 'footer-0': divcount==0,'footer-1': divcount==1 }">
               <div v-show="play_button" class="download-links-item">
                 <div class="row">
                   <div class="col-sm-6">
@@ -465,6 +465,7 @@ import {mapGetters} from 'vuex'
         buyloading: null,
         disable_button: false,
         play_button: 0,
+        season_num: 0,
           showBoxAnimation: false,
           selectseriesid: 1,
           seasontitle: 'فصل 1',
@@ -514,11 +515,6 @@ import {mapGetters} from 'vuex'
       // }
     },
 
-
-  destroyed () {
-    window.removeEventListener('resize', this.Resize)
-  },
-
         mounted() {
 // if(this.show){
 //             if (this.$auth.loggedIn) {
@@ -530,13 +526,16 @@ import {mapGetters} from 'vuex'
 //             this.$route.query.force_to_buy=0
 //   }
 
-window.addEventListener("resize", this.Resize)
 
+
+
+
+      
 
 if(this.owned || (this.free && this.vod) || (this.vod && this.checkuser.access)){
   this.play_button=1
+  this.$store.dispatch("download/ADD_DIVCOUNT")
 }
-
                 if (this.staticmodal) {
                 this.showModal()
                 $('.modal-content').removeAttr("tabindex")
@@ -558,6 +557,9 @@ if(this.type=='episode'){
 
 
         this.$refs['downloadLinks'].$on('hide', () => {
+          window.removeEventListener('resize', this.Resize)
+          this.$store.dispatch("download/RESET_DOWNLOAD")
+
           $('.default').removeClass('blure')
           this.$emit("hide-modal", null)
         })
@@ -599,6 +601,15 @@ $('.download-options-label').removeClass('btn')
             })
           }
         },
+        sizeofobj(obj) {
+          if(!obj)
+            return 0
+        var size = 0, key
+        for (key in obj) {
+            if ({}.propertyIsEnumerable.call(obj,key)) size++
+        }
+        return size
+    },
         Push2(id,type){
             this.hideModal()
 
@@ -636,8 +647,10 @@ $('.download-options-label').removeClass('btn')
 
 var v=this
 this.$refs['downloadLinks'].$on('shown', () => {
-    
+    window.addEventListener("resize", this.Resize)
     v.Resize('e')
+v.season_num=v.sizeofobj(v.season)
+
 })
 
         if(!this.ftb)
@@ -887,10 +900,23 @@ this.$refs['downloadLinks'].$on('shown', () => {
           return e
       }
     },
-    selectseries(id){
+    selectseries(id,num){
+          if(num && num!=this.id){
+            this.hideModal()
+
+            this.$router.push({
+                name:"episode-download-id",
+                params: {
+                    id: num
+                }
+            })
+          }else{
       this.selectseriesid=id
 
       this.seasontitle='فصل '+id
+
+      }
+
     },
 
     selectepisode(id){
