@@ -811,7 +811,10 @@ import Comments from "@/components/Comments"
                   this.$router.push({ name: this.type+'-show-id' , params: {id: this.data.item.id }})
                 }
               }else if(this.MainButton==1 || this.MainButton==2 || this.MainButton==4 || this.MainButton==5 || this.MainButton==8){
-                this.ftb=true
+                if(this.DownloadButton)
+                  this.ftb=true
+                else
+                  this.ftb=false
                 this.$store.dispatch('player/DOWNLOAD_MODAL_LOAD')
               }
             },
