@@ -44,6 +44,7 @@
     "vue-light-gallery": "^1.0.1",
     "vue-pattern-input": "^2.1.4",
     "vue-slick-carousel": "^1.0.6",
+    "vue-social-sharing": "^3.0.4",
     "vue-swal": "^1.0.0",
     "vue-sweetalert2": "^4.1.1"
   },

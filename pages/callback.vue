@@ -184,26 +184,30 @@
 
                   <div v-if="backtoapp" class="download-links-item">
                     <div class="row">
+                       <div class="col-12">
                       <a href="uperaapp://upera?type=download&success=false" class="btn btn-main btn-block">
                         نمایش فیلم
                         <i class="fa fa-back pr-2" />
                       </a>
                     </div>
+                    </div>
                   </div>
                   <div v-else-if="title_msg.id" class="download-links-item">
                     <div class="row">
-                      <a v-if="title_msg.type=='movie'" href="" class="btn btn-main btn-block" @click.prevent="Push2(title_msg.id,title_msg.type)">
-                        نمایش فیلم
-                        <i class="icon-play" />
+                       <div class="col-12">
+                      <a v-if="title_msg.type=='movie'" href="" class="btn btn-second btn-block" @click.prevent="Push2(title_msg.id,title_msg.type)">
+                        بازگشت به صفحه فیلم
+                        <i class="fa fa-arrow-alt-circle-left" />
                       </a>
-                      <a v-else-if="title_msg.type=='series'" class="btn btn-main btn-block" href="" @click.prevent="Push2(title_msg.id,title_msg.type)">
-                        نمایش قسمت اول سریال
-                        <i class="icon-play" />
+                      <a v-else-if="title_msg.type=='series'" class="btn btn-second btn-block" href="" @click.prevent="Push2(title_msg.id,title_msg.type)">
+                        بازگشت به صفحه سریال
+                        <i class="fa fa-arrow-alt-circle-left" />
                       </a>
-                      <a v-else href="" class="btn btn-main btn-block" @click.prevent="Push2(title_msg.id,title_msg.type)">
-                        نمایش این قسمت
-                        <i class="icon-play" />
+                      <a v-else href="" class="btn btn-second btn-block" @click.prevent="Push2(title_msg.id,title_msg.type)">
+                        بازگشت به صفحه این قسمت سریال
+                        <i class="fa fa-arrow-alt-circle-left" />
                       </a>
+                    </div>
                     </div>
                   </div>
                 </div>
@@ -265,6 +269,7 @@ import {mapGetters} from 'vuex'
 
 
         this.$refs['callbackModal'].$on('hide', () => {
+          window.removeEventListener('resize', this.Resize)
           $('.default').removeClass('blure')
           this.$emit("hide-modal", null)
         })
@@ -279,7 +284,7 @@ import {mapGetters} from 'vuex'
             this.hideModal()
 
             this.$router.push({
-                name: type+"-show-id",
+                name: type+"-id",
                 params: {
                     id: id
                 }
@@ -350,6 +355,12 @@ import {mapGetters} from 'vuex'
       showModal() {
         this.$refs['callbackModal'].show()
 
+this.$refs['callbackModal'].$on('shown', () => {
+    window.addEventListener("resize", this.Resize)
+    this.Resize('e')
+
+})
+
 
         const data = {
           payment_id: this.$route.query.payment_id,
@@ -371,6 +382,15 @@ import {mapGetters} from 'vuex'
         this.$emit("hide-modal", null)
         $('.default').removeClass('blure')
       },
+  Resize(e) {
+    let vh = window.innerHeight * 0.01
+    let element=document.getElementsByClassName('download-links')
+
+    if(element.length)
+      element[0].style.setProperty('--vh', `${vh}px`)
+    
+    return e
+  },
     async COPY(text) {
       try {
         await this.$copyText(text)

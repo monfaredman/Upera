@@ -82,6 +82,7 @@
 
 
         this.$refs['creditModal'].$on('hide', () => {
+          window.removeEventListener('resize', this.Resize)
           $('.default').removeClass('blure')
           this.$emit("hide-modal", null)
         })
@@ -100,8 +101,22 @@
         this.$refs['creditModal'].show()
         $('.default').addClass('blure')
 
+this.$refs['creditModal'].$on('shown', () => {
+    window.addEventListener("resize", this.Resize)
+    this.Resize('e')
+
+})
 
       },
+  Resize(e) {
+    let vh = window.innerHeight * 0.01
+    let element=document.getElementsByClassName('download-links')
+
+    if(element.length)
+      element[0].style.setProperty('--vh', `${vh}px`)
+    
+    return e
+  },
       hideModal() {
         this.$refs['creditModal'].hide()
         this.$emit("hide-modal", null)

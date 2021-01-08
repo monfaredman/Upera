@@ -11708,6 +11708,11 @@
     "resize-observer-polyfill" "1.5.1"
     "vue" "^2.6.10"
 
+"vue-social-sharing@^3.0.4":
+  "integrity" "sha512-noifuAgZIiNnsVEwGYz0kTVRdj80JkEIt1Qp1HRTLYPPQsyKVhrIMqJGVQGQjm9cp4UB51pUOxdGElMVyavvtw=="
+  "resolved" "https://registry.npmjs.org/vue-social-sharing/-/vue-social-sharing-3.0.4.tgz"
+  "version" "3.0.4"
+
 "vue-style-loader@^4.1.0":
   "integrity" "sha512-0ip8ge6Gzz/Bk0iHovU9XAUQaFt/G2B61bnWa2tCcqqdgfHs1lF9xXorFbE55Gmy92okFT+8bfmySuUOu13vxQ=="
   "resolved" "https://registry.npmjs.org/vue-style-loader/-/vue-style-loader-4.1.2.tgz"

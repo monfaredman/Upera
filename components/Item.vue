@@ -7,38 +7,38 @@
             <div class="col-6">
               <button v-if="!MainButton && DownloadButton" class="btn btn-main btn-block" @click="ftb=false;DOWNLOAD_MODAL_LOAD();">
                 <span v-if="DownloadButton==1"><i class="fa fa-download pr-2 " /><span>دانلود</span></span>
-                <span v-else-if="DownloadButton==2"><i class="fa fa-download pr-2 " /><span>دانلود رایگان</span></span>
-                <span v-else-if="DownloadButton==3"><i class="fa fa-download pr-2 " /><span>خرید و دانلود</span></span>
-                <span v-else-if="DownloadButton==4"><i class="fa fa-download pr-2 " /><span>پیش خرید و دانلود</span></span>
+                <span class="smallsrm" v-else-if="DownloadButton==2"><i class="fa fa-download pr-2 " /><span>دانلود رایگان</span></span>
+                <span class="smallsrm" v-else-if="DownloadButton==3"><i class="fa fa-download pr-2 " /><span>خرید و دانلود</span></span>
+                <span class="smallsrm" v-else-if="DownloadButton==4"><i class="fa fa-download pr-2 " /><span>پیش خرید و دانلود</span></span>
               </button>
               <button v-else-if="!MainButton" class="btn btn-main">
                 به زودی
               </button>
               <button v-else class="btn btn-main btn-block" @click="PLAY()">
-                <span v-if="MainButton==9"><i class="fa fa-play pr-2 " /><span>نمایش<span v-if="episode.id"> قسمت {{ episode.episode_number }}</span></span></span>
+                <span class="smallsrm" v-if="MainButton==9"><i class="fa fa-play pr-2 " /><span>نمایش<span v-if="episode.id"> قسمت {{ episode.episode_number }}</span></span></span>
                 <span v-else-if="MainButton==1"><i class="fa fa-play pr-2 " /><span>خرید</span></span>
                 <span v-else-if="MainButton==2"><i class="fa fa-play pr-2 " /><span>پیش خرید</span></span>
                 <span v-else-if="MainButton==3"><i class="fa fa-play pr-2 " /><span>خرید اشتراک</span></span>
                 <span v-else-if="MainButton==4"><i class="fa fa-play pr-2 " /><span>خرید بلیط</span></span>
-                <span v-else-if="MainButton==5"><i class="fa fa-play pr-2 " /><span>پیش خرید بلیط</span></span>
+                <span class="smallsrm" v-else-if="MainButton==5"><i class="fa fa-play pr-2 " /><span>پیش خرید بلیط</span></span>
                 <span v-else-if="MainButton==6"><i class="fa fa-play pr-2 " /><span>به زودی</span></span>
-                <span v-else-if="MainButton==7"><i class="fa fa-play pr-2 " /><span>presale ساعت مانده تا نمایش</span></span>
-                <span v-else-if="MainButton==8"><i class="fa fa-play pr-2 " /><span>خرید امکان نمایش</span></span>
+                <span v-else-if="MainButton==7"><i class="fa fa-play pr-2 " /><span>به زودی</span></span>
+                <span class="smallsrm" v-else-if="MainButton==8"><i class="fa fa-play pr-2 " /><span>خرید امکان نمایش</span></span>
               </button>
             </div>
             <div class="col-6 h-full">
               <div class="row h-full">
-                <a class="col-4 d-flex align-items-center justify-content-center text-darker">
+                <a @click.prevent="ADD_CLAP(data.item.id, type)" class="col-4 d-flex align-items-center justify-content-center text-darker">
                   <div class="likes">
-                    <span class="badge badge-secondary">۸</span>
+                    <span v-if="user_claps" class="badge badge-secondary">{{user_claps}}</span>
                     <i class="icon-clap" />
                   </div>
                 </a>
-                <a class="col-4 d-flex align-items-center justify-content-center text-darker">
+                <a class="col-4 d-flex align-items-center justify-content-center text-darker" @click.prevent="modalsharing = !modalsharing">
                   <i class="icon-share-android" />
                 </a>
                 <a href="" class="col-4 d-flex align-items-center justify-content-center text-darker" @click.prevent="ADD_WATCHLIST(data.item.id, type)">
-                  <i :class="{ 'icon-bookmark': !is_watchlist,'icon-bookmark-empty': is_watchlist==1 }" />
+                  <i :class="{ 'icon-bookmark-empty': !is_watchlist,'icon-bookmark': is_watchlist==1 }" />
                 </a>
               </div>
             </div>
@@ -46,23 +46,29 @@
         </div>
       </div>
     </div>
-    <section id="slideshow" dir="ltr">
-      <div class="swiper-container showcase main-slideshow">
+    <section id="slideshow">
+      <div class="swiper-container showcase showcase-theme-m-tn">
         <div class="swiper-slide">
           <div class="row no-gutters">
+
+            <div class="col-md-6 col-lg-5" />
             <div class="col-md-6 col-lg-7 showcase-pic">
               <img data-not-lazy class="showcase-img d-none d-lg-block" :src="'https://thumb.contentpanel.click/thumb?w=1120&h=576&q=100&a=t&zc=1&src=https://cdn.upera.shop/s3/backdrops/'+ChooseLang(data.item.backdrop,data.item.backdrop_fa)" :alt="data.item.name">
               <img data-not-lazy class="showcase-img d-lg-none" :src="'https://thumb.contentpanel.click/thumb?w=375&h=300&q=100&a=c&zc=1&src=https://cdn.upera.shop/s3/backdrops/'+ChooseLang(data.item.backdrop,data.item.backdrop_fa)" :alt="data.item.name">
             </div>
-            <div class="col-md-6 col-lg-5" />
           </div>
-          <div
-            class="showcase-thumbnail-wrapper-outter d-flex align-items-center justify-content-between pr-gutter pr-md-3"
-          >
-            <div class="showcase-thumbnail-wrapper w-full">
-              <div class="d-flex h-full align-items-end">
-                <div class="pr-md-4 pr-md-2 showcase-desc-wrapper">
-                  <div class="showcase-desc">
+<div id="showcase-thumbnail-wrapper-outter" class="showcase-thumbnail-wrapper-outter d-flex align-items-center justify-content-between pr-gutter p-lg-3 p-md-3">
+                    <div class="showcase-thumbnail-wrapper w-full container-fluid">
+                        <div class="d-flex h-full align-items-end">
+
+                            <div class="thumbnail">
+                                                  <nuxt-link :to="{ name: type+'-id', params: { id: data.item.id }}">
+                    <img @load="itemsize('e')"  @error="itemsize('e')" class="thumbnail" :src="'https://thumb.contentpanel.click/thumb?w=207&h=307&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+data.item.poster" :alt="data.item.name">
+                  </nuxt-link>
+                            </div>
+                            <div class="pr-md-4 pr-2 pr-0 mr-0 showcase-desc-wrapper h-full">
+                                <div class="showcase-desc">
+                                  <div class="showcase-top">
                     <div v-if="type!='episode'" class="title text-invert mb-5 mb-md-3">
                       <nuxt-link :to="{ name: type+'-id', params: { id: data.item.id }}">
                         {{ ChooseLang(data.item.name,data.item.name_fa) }}
@@ -73,21 +79,77 @@
                         {{ ChooseLang(data.item.series_name,data.item.series_name_fa) }}
                       </nuxt-link>
                     </div>
-                    <div v-if="type=='episode'" class="p-fs-small text-invert mb-1 mb-md-3 hide-mobile font-weight-normal">
+                    <div v-if="type=='episode'" class="p-fs-small title title2 text-invert mb-1 mb-md-3 font-weight-normal d-lg-none">
                       {{ $t('show.season') }}{{ data.item.season_number }}
-                      - {{ $t('show.episode') }} {{ data.item.episode_number }} - {{ ChooseLang(data.item.name,data.item.name_fa) }}
+                      - {{ $t('show.episode') }} {{ data.item.episode_number }}
+                    </div>
+                  </div>
+                  <div class="showcase-bottom">
+                    <div v-if="type=='episode'" class="p-fs-small text-invert mb-1 mb-md-3 font-weight-normal d-none d-lg-block">
+                      {{ $t('show.season') }}{{ data.item.season_number }}
+                      - {{ $t('show.episode') }} {{ data.item.episode_number }}
                     </div>
                     <div class="text-invert mb-1 mb-md-3">
                       <nuxt-link v-for="(item2,index2) in ChooseLangAllGenres(data.item.genre)" :key="index2" :to="{ name: 'genres-genre', params: { genre: item2.genre }}" class="tag">
                         {{ item2.title }}
                       </nuxt-link>
                     </div>
-                    <div v-if="!data.item.ir && data.item.persian" class="text-invert mb-1 mb-md-3 hide-mobile">
+                    <div v-if="!data.item.ir && data.item.persian" class="text-invert mb-1 mb-md-3">
                       دوبله فارسی
                     </div>
-                    <div v-else-if="!data.item.ir && !data.item.persian" class="text-invert mb-1 mb-md-3 hide-mobile">
+                    <div v-else-if="!data.item.ir && !data.item.persian" class="text-invert mb-1 mb-md-3">
                       زیرنویس فارسی
                     </div>
+                  </div>
+                                </div>
+                                <div id="showcase-button-wrapper" class="showcase-button-wrapper">
+
+
+                    <button v-if="MainButton" class="btn btn-main mr-1 ml-0" @click="PLAY()">
+                      <span class="smallsrm" v-if="MainButton==9"><i class="fa fa-play pr-2 " /><span>نمایش<span v-if="episode.id"> قسمت {{ episode.episode_number }}</span></span></span>
+                      <span v-else-if="MainButton==1"><i class="fa fa-play pr-2 " /><span>خرید</span></span>
+                      <span v-else-if="MainButton==2"><i class="fa fa-play pr-2 " /><span>پیش خرید</span></span>
+                      <span v-else-if="MainButton==3"><i class="fa fa-play pr-2 " /><span>خرید اشتراک</span></span>
+                      <span v-else-if="MainButton==4"><i class="fa fa-play pr-2 " /><span>خرید بلیط</span></span>
+                      <span class="smallsrm" v-else-if="MainButton==5"><i class="fa fa-play pr-2 " /><span>پیش خرید بلیط</span></span>
+                      <span v-else-if="MainButton==6"><i class="fa fa-play pr-2 " /><span>به زودی</span></span>
+                      <span class="smallsrm" v-else-if="MainButton==7"><i class="fa fa-play pr-2 " /><span>به زودی</span></span>
+                      <span class="smallsrm" v-else-if="MainButton==8"><i class="fa fa-play pr-2 " /><span>خرید امکان نمایش</span></span>
+                    </button>
+
+                    <button v-if="DownloadButton" class="btn btn-dark btn-download mr-1 ml-0" @click="ftb=false;DOWNLOAD_MODAL_LOAD();">
+                      <span v-if="DownloadButton==1"><i class="fa fa-download pr-2 " /><span>دانلود</span></span>
+                      <span class="smallsrm" v-else-if="DownloadButton==2"><i class="fa fa-download pr-2 " /><span>دانلود رایگان</span></span>
+                      <span class="smallsrm" v-else-if="DownloadButton==3"><i class="fa fa-download pr-2 " /><span>خرید و دانلود</span></span>
+                      <span class="smallsrm" v-else-if="DownloadButton==4"><i class="fa fa-download pr-2 " /><span>پیش خرید و دانلود</span></span>
+                    </button>
+                    <a href="" @click.prevent="ADD_CLAP(data.item.id, type)" class="btn btn-dark btn-icon ml-1 hide-mobile">
+                      <div class="likes">
+                      <span v-if="user_claps" class="badge badge-secondary">{{user_claps}}</span>
+                      <i class="icon-clap" />
+                    </div>
+                    </a>
+                    <a href="" @click.prevent="modalsharing = !modalsharing" class="btn btn-dark btn-icon ml-1 hide-mobile">
+                      <i class="icon-share-android" />
+                    </a>
+                    <a href="" class="btn btn-dark btn-icon ml-1 hide-mobile" @click.prevent="ADD_WATCHLIST(data.item.id, type)">
+                      <i :class="{ 'icon-bookmark-empty': !is_watchlist,'icon-bookmark': is_watchlist==1 }" />
+                    </a>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+<!--           <div
+            class="showcase-thumbnail-wrapper-outter d-flex align-items-center justify-content-between pr-gutter pr-md-3"
+          >
+            <div class="showcase-thumbnail-wrapper w-full">
+              <div class="d-flex h-full align-items-end">
+                <div class="pr-md-4 pr-md-2 showcase-desc-wrapper">
+                  <div class="showcase-desc">
+
+                    
                   </div>
                   <div class="showcase-button-wrapper">
                     <a v-if="DownloadButton && MainButton" href="" class="text-invert show-mobile" @click.prevent="ftb=false;DOWNLOAD_MODAL_LOAD();">
@@ -105,7 +167,7 @@
                       </div>
                     </a>
 
-                    <button v-if="!MainButton && DownloadButton" class="btn btn-main" @click="ftb=false;DOWNLOAD_MODAL_LOAD();">
+                    <button v-if="!MainButton && DownloadButton" class="btn btn-main mr-1 ml-0" @click="ftb=false;DOWNLOAD_MODAL_LOAD();">
                       <span v-if="DownloadButton==1"><i class="fa fa-download pr-2 " /><span>دانلود</span></span>
                       <span v-else-if="DownloadButton==2"><i class="fa fa-download pr-2 " /><span>دانلود رایگان</span></span>
                       <span v-else-if="DownloadButton==3"><i class="fa fa-download pr-2 " /><span>خرید و دانلود</span></span>
@@ -114,7 +176,7 @@
                     <button v-else-if="!MainButton" class="btn btn-main">
                       به زودی
                     </button>
-                    <button v-else class="btn btn-main" @click="PLAY()">
+                    <button v-else class="btn btn-main mr-1 ml-0" @click="PLAY()">
                       <span v-if="MainButton==9"><i class="fa fa-play pr-2 " /><span>نمایش<span v-if="episode.id"> قسمت {{ episode.episode_number }}</span></span></span>
                       <span v-else-if="MainButton==1"><i class="fa fa-play pr-2 " /><span>خرید</span></span>
                       <span v-else-if="MainButton==2"><i class="fa fa-play pr-2 " /><span>پیش خرید</span></span>
@@ -132,17 +194,17 @@
                       <span v-else-if="DownloadButton==3"><i class="fa fa-download pr-2 " /><span>خرید و دانلود</span></span>
                       <span v-else-if="DownloadButton==4"><i class="fa fa-download pr-2 " /><span>پیش خرید و دانلود</span></span>
                     </button>
-                    <a href="#" class="btn btn-dark btn-icon hide-mobile">
+                    <a href="#" class="btn btn-dark btn-icon ml-1 hide-mobile">
                       <i class="icon-clap" />
                     </a>
-                    <a href="#" class="btn btn-dark btn-icon mr-1 hide-mobile">
+                    <a href="#" class="btn btn-dark btn-icon ml-1 hide-mobile">
                       <i class="icon-share-android" />
                     </a>
-                    <a href="" class="btn btn-dark btn-icon hide-mobile" @click.prevent="ADD_WATCHLIST(data.item.id, type)">
-                      <i :class="{ 'icon-bookmark': !is_watchlist,'icon-bookmark-empty': is_watchlist==1 }" />
+                    <a href="" class="btn btn-dark btn-icon ml-1 hide-mobile" @click.prevent="ADD_WATCHLIST(data.item.id, type)">
+                      <i :class="{ 'icon-bookmark-empty': !is_watchlist,'icon-bookmark': is_watchlist==1 }" />
                     </a>
                     <a href="" class="text-invert show-mobile" @click.prevent="ADD_WATCHLIST(data.item.id, type)">
-                      <i :class="{ 'icon-bookmark': !is_watchlist,'icon-bookmark-empty': is_watchlist==1 }" />
+                      <i :class="{ 'icon-bookmark-empty': !is_watchlist,'icon-bookmark': is_watchlist==1 }" />
                       <div v-if="is_watchlist==1">حذف از لیست</div>
                       <div v-else>بعدا می بینم</div>
                     </a>
@@ -155,7 +217,7 @@
                 </div>
               </div>
             </div>
-          </div>
+          </div> -->
           <client-only>
             <countdown v-if="data.item.presale" :left-time="data.item.presale * 1000">
               <div slot="process" slot-scope="{ timeObj }" class="d-flex align-items-center justify-content-center count-down-wrapper">
@@ -183,7 +245,7 @@
                     ساعت
                   </div>
                 </div>
-                <div class="count-down count-down-invert text-center">
+                <div v-if="timeObj.d" class="count-down count-down-invert text-center">
                   <div class="count-down-num">
                     {{ timeObj.d }}
                   </div>
@@ -207,10 +269,18 @@
     <section id="movie" class="page">
       <div class="container-fluid">
         <div class="article py-3">
-          <a v-if="data.files.teaser==1" href="" @click.prevent="GET_FILE(1);">
-            <img class="article-img mr-lg-3 img-fluid" :src="'https://thumb.contentpanel.click/thumb?w=1920&h=1200&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/'+Chooseback(data.item.backdrop_teaser,data.item.backdrop)" :alt="'تیزر '+data.item.name_fa">
-
-          </a>
+          <div v-if="data.files.teaser==1" class="article-img-wrapper mr-lg-3" @click.prevent="GET_FILE(1);">
+              <div class="font-weight-bold mb-2 d-none d-lg-block">نمایش تیزر </div>
+              <div class="article-img-holder d-none d-lg-block">
+                  <img class="article-img" :src="'https://thumb.contentpanel.click/thumb?w=413&h=258&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/'+Chooseback(data.item.backdrop_teaser,data.item.backdrop)" :alt="'تیزر '+data.item.name_fa">
+                  <a href="#" class="play-movie text-invert">
+                      <i class="icon-play"></i>
+                  </a>
+              </div>
+              <button @click.prevent="GET_FILE(1);" class="btn btn-block btn-dark btn-second d-lg-none">
+                نمایش تیزر
+              </button>
+          </div>
           <div class="content">
             <div class="statistics d-flex align-items-center justify-content-between">
               <div class="statistics-item statistics-item-row text-muted">
@@ -235,24 +305,24 @@
                                     class="hide-mobile"> سال به بالا</span> -->
                 </span>
               </div>
-              <div class="statistics-item statistics-item-row text-muted">
+              <div v-if="total_claps" class="statistics-item statistics-item-row text-muted">
                 <i class="icon-clap" />
                 <span class="statistics-item-caption">
-                  <span class="font-weight-bold">{{ data.claps.total }}</span><span class="hide-mobile"> بار این <span v-if="type=='movie'">فیلم</span><span v-else>سریال</span> را
+                  <span class="font-weight-bold">{{ total_claps }}</span><span class="hide-mobile"> بار این <span v-if="type=='movie'">فیلم</span><span v-else>سریال</span> را
                     پسندیده&zwnj;اند</span>
                 </span>
                 <span class="statistics-item-caption" />
               </div>
-              <div class="statistics-item statistics-item-row text-muted">
+              <div v-if="type=='series' || data.item.runtime" class="statistics-item statistics-item-row text-muted">
                 <i class="icon-episodes" />
                 <span v-if="type=='series'" class="statistics-item-caption">
-                  <span class="font-weight-bold">16</span><span class="hide-mobile"> قسمت در </span><span
+                  <span class="font-weight-bold">{{episode_num}}</span><span class="hide-mobile"> قسمت در </span><span
                     class="show-mobile"
-                  > - </span><span class="font-weight-bold">2</span><span
+                  > - </span><span class="font-weight-bold">{{season_num}}</span><span
                     class="hide-mobile"
                   >
                     فصل</span></span>
-                <span v-else class="statistics-item-caption"><span class="font-weight-bold">{{ data.item.runtime }}</span><span class="hide-mobile">{{ $t('new.minutes') }}</span></span>
+                <span v-else class="statistics-item-caption"><span class="font-weight-bold">{{ data.item.runtime }} </span><span class="hide-mobile">{{ $t('new.minutes') }}</span></span>
               </div>
             </div>
             <!--                     <div class="alert alert-warning my-4">
@@ -268,7 +338,7 @@
             <div v-else class="title mt-4 mb-3">
               {{ $t('new.story2') }}
             </div>
-            <p>{{ ChooseLang(data.item.overview,data.item.overview_fa) }} </p>
+            <p>{{ ChooseLang(data.item.overview,data.item.overview_fa) }} <span v-if="type=='episode'">({{ ChooseLang(data.item.name,data.item.name_fa) }})</span></p>
           </div>
         </div>
       </div>
@@ -303,7 +373,7 @@
 
 
     <section v-if="type=='series' && data.last_episode" id="slideshow" dir="ltr">
-      <div class="swiper-container showcase main-slideshow">
+      <div class="swiper-container showcase main-slideshow showcase-season">
         <div class="swiper-slide">
           <div class="row no-gutters">
             <div class="col-md-6 col-lg-7 showcase-pic">
@@ -569,20 +639,26 @@
       </div>
     </section>
     <Download :id="data.item.id" :show="showDownloadModal" :ftb="ftb" :owned="data.item.owned" :traffic="data.item.traffic" :trafficoo="data.item.traffic_oo" :vod="data.item.vod" :free="data.item.free" :name="data.item.name" :namefa="data.item.name_fa" :posterf="data.item.poster" :backdrop="data.item.backdrop" :season="season" :itemdata="data.item" :type="type" @hide-modal="HIDE_MODAL2" />
-    <no-ssr>
+    <client-only>
       <File :id="data.item.id" :show="showplyrmodal" :content="modalcontent" :name="data.item.name" :namefa="data.item.name_fa" :backdrop="data.item.backdrop" :backdropteaser="data.item.backdrop_teaser" :type="type" @hide-modal="HIDE_MODAL3" />
-    </no-ssr>
+
+      <b-modal v-model="modalsharing" id="modal-sharing" centered hide-footer :title="'اشتراک گذاری'">
+        <Socialsharing :mtitle="data.item.name_fa" :description="data.item.overview_fa" />
+      </b-modal>
+    </client-only>
   </div>
 </template>
 <script>
 import {mapGetters} from 'vuex'
 import Download from "@/components/Download"
 import File from "@/components/File"
+import Socialsharing from "@/components/Socialsharing"
 import Comments from "@/components/Comments"
     export default {
   components: {
     Download,
     File,
+    Socialsharing,
     Comments
   },
 
@@ -608,17 +684,22 @@ import Comments from "@/components/Comments"
               modalcontent: 0,
               showcomment: false,
               season: null,
+              season_num: 0,
+              episode_num: 0,
               episode: {
                 id: null
               },
         
+        countdown: {},
+        total_claps: 0,
+        user_claps: 0,
+        user_claps_counter: 0,
         swiperOption: {
         spaceBetween: 10,
         slidesPerView: 3.3,
         grabCursor: true,
         setWrapperSize: true,
         threshold: 2,
-        countdown: {},
         breakpoints: {
             768: {
                 slidesPerView: 6.5,
@@ -630,16 +711,17 @@ import Comments from "@/components/Comments"
                 slidesPerView: 7.5,
             },
             1420: {
-                slidesPerView: 10.5,
+                slidesPerView: 8.5,
             },
             1670: {
-                slidesPerView: 11.5,
+                slidesPerView: 9.5,
             },
 
         }},
                 lightimages: [],
                 imagesloading: false,
-                is_watchlist: 0
+                is_watchlist: 0,
+                modalsharing:false
             }
         },
   head() {
@@ -674,14 +756,44 @@ import Comments from "@/components/Comments"
 
             }
         },
+
+        beforeDestroy() {
+          window.removeEventListener('resize', this.itemsize)
+        },  
+        created() {
+          this.total_claps=this.data.claps.total
+          this.user_claps=this.data.claps.user
+        },
         mounted() {
 
+
+          window.addEventListener("resize", this.itemsize)
           if(this.data.comments){
             this.showcomment=true
           }
 
+
+
           if(this.type!="movie" && this.data.season) {
             this.season=this.data.season
+
+            if(this.type=="series"){
+              this.season_num=this.sizeofobj(this.season)
+
+              console.log(this.season_num)
+
+
+
+              if(this.season_num>0){
+                var j=this
+
+                for (const [key, value] of Object.entries(this.season)) {
+                  j.episode_num=j.episode_num+j.sizeofobj(value)
+                  key
+                }
+
+              }
+            }
           }
 
           this.is_watchlist=this.data.item.is_watchlist
@@ -892,6 +1004,43 @@ import Comments from "@/components/Comments"
                 }
               
     },
+     ADD_CLAP(id, type) {
+        if (this.$auth.loggedIn) {
+      this.user_claps_counter=this.user_claps_counter + 1
+
+            this.total_claps=parseInt(this.total_claps) + 1
+              this.user_claps=parseInt(this.user_claps) + 1
+
+
+if(this.user_claps_counter==1){
+setTimeout(function(scope) {
+        scope.$axios.post('/add/clap', {id,type,claps:scope.user_claps_counter}).then((res) => {
+          if(res.status === 200){
+
+
+
+              scope.user_claps_counter=0
+
+
+          }else{
+              scope.user_claps_counter=0
+              scope.total_claps=parseInt(scope.total_claps) - scope.user_claps_counter
+              scope.user_claps=parseInt(scope.user_claps) - scope.user_claps_counter
+          }
+        }, (error) => {
+              scope.user_claps_counter=0
+              scope.total_claps=parseInt(scope.total_claps) - scope.user_claps_counter
+              scope.user_claps=parseInt(scope.user_claps) - scope.user_claps_counter
+          return error
+        })
+        }, 2000, this)
+}   
+                } else {
+                    this.$store.dispatch('login/SHOW_MODAL',{premessage: null,premobile: null,preredirect: null,prerefresh: false})
+
+                }
+              
+    },
     DOWNLOAD_MODAL_LOAD() {
       this.$store.dispatch('player/DOWNLOAD_MODAL_LOAD')
     },
@@ -907,6 +1056,44 @@ import Comments from "@/components/Comments"
         else
           return false
     },
+        sizeofobj(obj) {
+          if(!obj)
+            return 0
+        var size = 0, key
+        for (key in obj) {
+            if ({}.propertyIsEnumerable.call(obj,key)) size++
+        }
+        return size
+    },
+  itemsize(e) {
+    let w=window.innerWidth
+    let i=25
+    
+    if(w<=375){
+      i=12
+    }else if(w<=357){
+      i=10
+    }
+    if(w<=767.98){
+      let vh = document.getElementById("showcase-thumbnail-wrapper-outter").offsetHeight-document.getElementById("showcase-button-wrapper").offsetHeight-i
+      let element=document.getElementsByClassName('showcase-bottom')
+
+      if(element.length){
+        element[0].style.setProperty('height', `${vh}px`)
+        if(this.data.item.ir && !this.DownloadButton)
+          element[0].style.setProperty('padding-top', `${(vh/2)}px`)
+        else if(!this.data.item.ir && !this.DownloadButton)
+          element[0].style.setProperty('padding-top', `${(vh/3)}px`)
+      }
+    }else if(e!='e'){
+      let element=document.getElementsByClassName('showcase-bottom')
+      if(element.length){
+        element[0].style.removeProperty('height')
+        element[0].style.removeProperty('padding-top')
+      }
+    }
+    return e
+  },
     LoadImages() {
 if(!this.lightimages.length){
         this.imagesloading=true

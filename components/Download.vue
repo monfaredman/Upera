@@ -89,7 +89,7 @@
                           </div>
                         </div>
                         <div class="col-3 d-flex justify-end align-items-end text-right">
-                          <div class="download-size">
+                          <div v-if="item.size" class="download-size">
                             {{ item.size }}
                           </div>
                         </div>
@@ -212,7 +212,15 @@
                   <div class="row">
                     <div class="col-sm-6">
                       <div class="row">
-                        <div v-if="item.isfolder && type!='series'" class="col-9">
+                        <div v-if="screening.ekran" class="col-9">
+                          <div class="download-quality font-weight-bold">
+                            بلیط اکران
+                          </div>
+                          <div class="download-suitable">
+                            تماشای آنلاین
+                          </div>
+                        </div>
+                        <div v-else-if="item.isfolder && type!='series'" class="col-9">
                           <div class="download-quality font-weight-bold">
                             {{ $t('download.all_qualities') }}
                           </div>
@@ -293,8 +301,9 @@
                       <div class="d-flex h-100 align-items-end">
                         <div class="download-link">
                           <button class="btn btn-danger btn-block" @click="ADDTOCART(item.id,item.amount,item.size,item.quality)">
-                            <span v-if="presale">{{ $t('download.presale') }}</span><span v-else>{{ $t('download.buy') }}</span><span v-if="staticmodal"> و دانلود</span>
-                            <i class="icon-download" />
+                            <span v-if="presale">{{ $t('download.presale') }}</span><span v-else>{{ $t('download.buy') }}</span><span v-if="screening.ekran"> بلیط</span><span v-else> و دانلود</span>
+                            <i v-if="screening.ekran" class="fa fa-ticket-alt pr-2" />
+                            <i v-else class="icon-download" />
                           </button>
                         </div>
 
@@ -645,11 +654,11 @@ $('.download-options-label').removeClass('btn')
         if(!this.staticmodal)
         $('.default').addClass('blure')
 
-var v=this
+
 this.$refs['downloadLinks'].$on('shown', () => {
     window.addEventListener("resize", this.Resize)
-    v.Resize('e')
-v.season_num=v.sizeofobj(v.season)
+    this.Resize('e')
+this.season_num=this.sizeofobj(this.season)
 
 })
 

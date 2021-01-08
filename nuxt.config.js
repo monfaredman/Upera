@@ -110,6 +110,7 @@ export default {
     "bootstrap-vue/nuxt",
     "nuxt-clipboard2",
     ['cookie-universal-nuxt', { alias: 'cookiz' }],
+    'vue-social-sharing/nuxt',
     // 'nuxt-sweetalert2',
     // [
     //   'vue-sweetalert2/nuxt',
@@ -154,8 +155,8 @@ export default {
    ** See https://axios.nuxtjs.org/options
    */
   axios: {
-    baseURL: "http://upera.tv/api/v1",
-    browserBaseURL: "https://upera.tv/api/v1",
+    baseURL: "http://seeko.tv/api/v1",
+    browserBaseURL: "https://seeko.tv/api/v1",
   },
   /*
    ** Content module configuration

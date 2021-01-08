@@ -71,7 +71,7 @@
                               ساعت
                             </div>
                           </div>
-                          <div class="count-down count-down-invert text-center">
+                          <div v-if="timeObj.d" class="count-down count-down-invert text-center">
                             <div class="count-down-num">
                               {{ timeObj.d }}
                             </div>
@@ -189,6 +189,7 @@
 
 
         this.$refs['callbackModal'].$on('hide', () => {
+          window.removeEventListener('resize', this.Resize)
           $('.default').removeClass('blure')
           this.$emit("hide-modal", null)
         })
@@ -225,7 +226,12 @@
             },
       showModal() {
         this.$refs['callbackModal'].show()
+        
+this.$refs['callbackModal'].$on('shown', () => {
+    window.addEventListener("resize", this.Resize)
+    this.Resize('e')
 
+})
 
         
             var api_url
@@ -322,6 +328,15 @@
                 })
 
             },
+  Resize(e) {
+    let vh = window.innerHeight * 0.01
+    let element=document.getElementsByClassName('download-links')
+
+    if(element.length)
+      element[0].style.setProperty('--vh', `${vh}px`)
+    
+    return e
+  },
             ChooseLang(en,fa){
                 if(fa && this.$i18n.locale=="fa")
                     return fa

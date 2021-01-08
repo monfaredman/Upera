@@ -581,7 +581,7 @@
               </div>
             </div>
             <div class="col-md-4">
-              <div class="socials text-center text-md-left">
+              <div class="socials text-center text-md-right">
                 <a v-if="shownotification" id="notif2" class="text-darker notification mr-3" @click.prevent="notification('notif2')">
                   <i class="notif-ic" />
                   <i class="icon-notification" />

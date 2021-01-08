@@ -25,7 +25,7 @@
                       </div>
                       <div v-else class="title text-invert mb-1 mb-md-3">
                         <nuxt-link :to="{ name: item.type+'-id', params: { id: item.id }}">
-                          {{ ChooseLang(item.series_name,item.series_name_fa) }}
+                          {{ ChooseLang(item.series_name,item.series_name_fa) }}<span v-if="item.season_number>1" class="show-mobile"> {{item.season_number}}</span>
                         </nuxt-link>
                       </div>
                       <div v-if="item.type=='episode'" class="p-fs-small text-invert mb-1 mb-md-3 hide-mobile font-weight-normal">
@@ -47,7 +47,10 @@
                     <div class="showcase-button-wrapper">
                       <nuxt-link :to="{ name: item.type+'-id', params: { id: item.id }}" class="text-invert show-mobile">
                         <i class="icon-info" />
-                        <div>توضیحات <span v-if="item.type=='movie'">فیلم</span><span v-else-if="item.type=='episode'">این قسمت سریال</span><span v-else>سریال</span></div>
+                        <!-- <div class="hide-mobile">توضیحات <span v-if="item.type=='movie'">فیلم</span><span v-else-if="item.type=='episode'">این قسمت سریال</span><span v-else>سریال</span></div> -->
+                        <div v-if="item.type!='episode'">توضیحات</div>
+                        <div v-else>قسمت {{item.episode_number}}</div>
+                         <!-- <span v-if="item.type=='movie'">فیلم</span><span v-else-if="item.type=='episode'">قسمت</span><span v-else>سریال</span> -->
                       </nuxt-link>
 
                       <nuxt-link v-if="item.presale" :to="{ name: item.type+'-id', params: { id: item.id }}" class="btn btn-main">
@@ -66,10 +69,10 @@
                         <i class="icon-info" />
                       </nuxt-link>
                       <a href="" class="btn btn-dark btn-icon hide-mobile" @click.prevent="ADD_WATCHLIST(item.id, item.type, index, item.is_watchlist)">
-                        <i :class="{ 'icon-bookmark': !item.is_watchlist,'icon-bookmark-empty': item.is_watchlist==1 }" />
+                        <i :class="{ 'icon-bookmark-empty': !item.is_watchlist,'icon-bookmark': item.is_watchlist==1 }" />
                       </a>
                       <a href="" class="text-invert show-mobile" @click.prevent="ADD_WATCHLIST(item.id, item.type, index, item.is_watchlist)">
-                        <i :class="{ 'icon-bookmark': !item.is_watchlist,'icon-bookmark-empty': item.is_watchlist==1 }" />
+                        <i :class="{ 'icon-bookmark-empty': !item.is_watchlist,'icon-bookmark': item.is_watchlist==1 }" />
                         <div v-if="item.is_watchlist==1">حذف از لیست</div>
                         <div v-else>بعدا می بینم</div>
                       </a>
@@ -174,8 +177,11 @@
               <span v-if="item.free" class="label label-blue label-2" :class="{'label-rotated':item.type=='movie'}">رایگان</span>
             </nuxt-link>
             <div class="mt-2">
-              <h6 class="mt-2 small font-weight-normal">
+              <h6 v-if="item.type!='episode'" class="mt-2 small font-weight-normal">
                 {{ ChooseLang(item.name,item.name_fa) }}
+              </h6>
+              <h6 v-else class="mt-2 small font-weight-normal">
+                {{ $t('show.episode') }} {{item.episode_number}} {{ ChooseLang(item.series_name,item.series_name_fa) }}<span v-if="item.season_number>1"> {{item.season_number}}</span>
               </h6>
             </div>
           </div>
@@ -206,8 +212,11 @@
               <span v-if="item.free" class="label label-blue label-2" :class="{'label-rotated':item.type=='movie'}">رایگان</span>
             </nuxt-link>
             <div class="mt-2">
-              <h6 class="mt-2 small font-weight-normal">
+              <h6 v-if="item.type!='episode'" class="mt-2 small font-weight-normal">
                 {{ ChooseLang(item.name,item.name_fa) }}
+              </h6>
+              <h6 v-else class="mt-2 small font-weight-normal">
+                {{ $t('show.episode') }} {{item.episode_number}} {{ ChooseLang(item.series_name,item.series_name_fa) }}<span v-if="item.season_number>1"> {{item.season_number}}</span>
               </h6>
             </div>
           </div>
@@ -238,8 +247,11 @@
               <span v-if="item.free" class="label label-blue label-2" :class="{'label-rotated':item.type=='movie'}">رایگان</span>
             </nuxt-link>
             <div class="mt-2">
-              <h6 class="mt-2 small font-weight-normal">
+              <h6 v-if="item.type!='episode'" class="mt-2 small font-weight-normal">
                 {{ ChooseLang(item.name,item.name_fa) }}
+              </h6>
+              <h6 v-else class="mt-2 small font-weight-normal">
+                {{ $t('show.episode') }} {{item.episode_number}} {{ ChooseLang(item.series_name,item.series_name_fa) }}<span v-if="item.season_number>1"> {{item.season_number}}</span>
               </h6>
             </div>
           </div>
@@ -270,8 +282,11 @@
               <span v-if="item.free" class="label label-blue label-2" :class="{'label-rotated':item.type=='movie'}">رایگان</span>
             </nuxt-link>
             <div class="mt-2">
-              <h6 class="mt-2 small font-weight-normal">
+              <h6 v-if="item.type!='episode'" class="mt-2 small font-weight-normal">
                 {{ ChooseLang(item.name,item.name_fa) }}
+              </h6>
+              <h6 v-else class="mt-2 small font-weight-normal">
+                {{ $t('show.episode') }} {{item.episode_number}} {{ ChooseLang(item.series_name,item.series_name_fa) }}<span v-if="item.season_number>1"> {{item.season_number}}</span>
               </h6>
             </div>
           </div>
@@ -329,9 +344,12 @@
                   <span v-if="item.free" class="label label-blue label-2" :class="{'label-rotated':item.type=='movie'}">رایگان</span>
                 </nuxt-link>
                 <div class="mt-2">
-                  <h6 class="mt-2 small font-weight-normal">
-                    {{ ChooseLang(item.name,item.name_fa) }}
-                  </h6>
+              <h6 v-if="item.type!='episode'" class="mt-2 small font-weight-normal">
+                {{ ChooseLang(item.name,item.name_fa) }}
+              </h6>
+              <h6 v-else class="mt-2 small font-weight-normal">
+                {{ $t('show.episode') }} {{item.episode_number}} {{ ChooseLang(item.series_name,item.series_name_fa) }}<span v-if="item.season_number>1"> {{item.season_number}}</span>
+              </h6>
                 </div>
               </div>
             </div>
@@ -383,10 +401,10 @@
                 slidesPerView: 7.5,
             },
             1420: {
-                slidesPerView: 10.5,
+                slidesPerView: 8.5,
             },
             1670: {
-                slidesPerView: 11.5,
+                slidesPerView: 9.5,
             },
 
         }
