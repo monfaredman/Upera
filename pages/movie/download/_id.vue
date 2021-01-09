@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <section id="banner" class="mt-5  pt-md-3 pt-lg-5">
+  <div id="checkcontainer" class="container-fluid">
+    <section id="banner" class="mt-5 pt-lg-5 pt-md-5">
       <div class="container">
         <div>
           <Download :id="data.movie.id" :show="true" :ftb="false" :staticmodal="true" :owned="data.movie.owned" :traffic="data.movie.traffic" :trafficoo="data.movie.traffic_oo" :vod="data.movie.vod" :free="data.movie.free" :name="data.movie.name" :namefa="data.movie.name_fa" :posterf="data.movie.poster" :backdrop="data.movie.backdrop" type="movie" @hide-modal="HIDE_MODAL" />

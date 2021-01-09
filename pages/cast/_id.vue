@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="checkcontainer">
     <section id="slideshow" class="banner">
       <div class="swiper-container showcase main-slideshow">
         <div class="swiper-wrapper">
@@ -18,7 +18,7 @@
                 <div class="d-flex h-full align-items-end">
                   <div class="pr-md-4 pr-md-2 showcase-desc-wrapper">
                     <div class="showcase-desc">
-                      <div class="title h5 text-invert mb-1 mb-md-3">
+                      <div class="h2 text-invert mb-1 mb-md-3">
                         {{ ChooseLang(data.cast.name,data.cast.name_fa) }}
                       </div>
                     </div>

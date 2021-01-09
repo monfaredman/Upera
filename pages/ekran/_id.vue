@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <section id="banner" class="mt-5  pt-md-3 pt-lg-5">
+  <div id="checkcontainer" class="container-fluid">
+    <section id="banner" class="mt-5 pt-lg-5 pt-md-5">
       <div class="container">
         <div>
           <b-modal id="callbackModal" ref="callbackModal" :centered="false" hide-footer hide-header size="lg" no-close-on-backdrop hide-backdrop no-close-on-esc modal-class="modal-download-link" static no-enforce-focus>

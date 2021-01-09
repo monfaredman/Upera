@@ -7,30 +7,31 @@
             <div class="col-6">
               <button v-if="!MainButton && DownloadButton" class="btn btn-main btn-block" @click="ftb=false;DOWNLOAD_MODAL_LOAD();">
                 <span v-if="DownloadButton==1"><i class="fa fa-download pr-2 " /><span>دانلود</span></span>
-                <span class="smallsrm" v-else-if="DownloadButton==2"><i class="fa fa-download pr-2 " /><span>دانلود رایگان</span></span>
-                <span class="smallsrm" v-else-if="DownloadButton==3"><i class="fa fa-download pr-2 " /><span>خرید و دانلود</span></span>
-                <span class="smallsrm" v-else-if="DownloadButton==4"><i class="fa fa-download pr-2 " /><span>پیش خرید و دانلود</span></span>
+                <span v-else-if="DownloadButton==2" class="smallsrm"><i class="fa fa-download pr-2 " /><span>دانلود رایگان</span></span>
+                <span v-else-if="DownloadButton==3" class="smallsrm"><i class="fa fa-download pr-2 " /><span>خرید و دانلود</span></span>
+                <span v-else-if="DownloadButton==4" class="smallsrm"><i class="fa fa-download pr-2 " /><span>پیش خرید و دانلود</span></span>
               </button>
               <button v-else-if="!MainButton" class="btn btn-main">
                 به زودی
               </button>
               <button v-else class="btn btn-main btn-block" @click="PLAY()">
-                <span class="smallsrm" v-if="MainButton==9"><i class="fa fa-play pr-2 " /><span>نمایش<span v-if="episode.id"> قسمت {{ episode.episode_number }}</span></span></span>
+                <span v-if="MainButton==9" class="smallsrm"><i class="fa fa-play pr-2 " /><span>نمایش<span v-if="episode.id"> قسمت {{ episode.episode_number }}</span></span></span>
                 <span v-else-if="MainButton==1"><i class="fa fa-play pr-2 " /><span>خرید</span></span>
                 <span v-else-if="MainButton==2"><i class="fa fa-play pr-2 " /><span>پیش خرید</span></span>
                 <span v-else-if="MainButton==3"><i class="fa fa-play pr-2 " /><span>خرید اشتراک</span></span>
                 <span v-else-if="MainButton==4"><i class="fa fa-play pr-2 " /><span>خرید بلیط</span></span>
-                <span class="smallsrm" v-else-if="MainButton==5"><i class="fa fa-play pr-2 " /><span>پیش خرید بلیط</span></span>
+                <span v-else-if="MainButton==5" class="smallsrm"><i class="fa fa-play pr-2 " /><span>پیش خرید بلیط</span></span>
                 <span v-else-if="MainButton==6"><i class="fa fa-play pr-2 " /><span>به زودی</span></span>
                 <span v-else-if="MainButton==7"><i class="fa fa-play pr-2 " /><span>به زودی</span></span>
-                <span class="smallsrm" v-else-if="MainButton==8"><i class="fa fa-play pr-2 " /><span>خرید امکان نمایش</span></span>
+                <span v-else-if="MainButton==8" class="smallsrm"><i class="fa fa-play pr-2 " /><span>خرید امکان نمایش</span></span>
               </button>
             </div>
             <div class="col-6 h-full">
               <div class="row h-full">
-                <a @click.prevent="ADD_CLAP(data.item.id, type)" class="col-4 d-flex align-items-center justify-content-center text-darker">
+                <!-- @click.prevent="ADD_CLAP(data.item.id, type)" -->
+                <a :class="{active:clapinterval}" class="col-4 d-flex align-items-center justify-content-center text-darker" @mousedown="startclap" @mouseleave="stopclap" @mouseup="stopclap" @touchstart="startclap" @touchend="stopclap" @touchcancel="stopclap">
                   <div class="likes">
-                    <span v-if="user_claps" class="badge badge-secondary">{{user_claps}}</span>
+                    <span v-if="user_claps" class="badge badge-secondary">{{ user_claps }}</span>
                     <i class="icon-clap" />
                   </div>
                 </a>
@@ -50,98 +51,94 @@
       <div class="swiper-container showcase showcase-theme-m-tn">
         <div class="swiper-slide">
           <div class="row no-gutters">
-
             <div class="col-md-6 col-lg-5" />
             <div class="col-md-6 col-lg-7 showcase-pic">
               <img data-not-lazy class="showcase-img d-none d-lg-block" :src="'https://thumb.contentpanel.click/thumb?w=1120&h=576&q=100&a=t&zc=1&src=https://cdn.upera.shop/s3/backdrops/'+ChooseLang(data.item.backdrop,data.item.backdrop_fa)" :alt="data.item.name">
               <img data-not-lazy class="showcase-img d-lg-none" :src="'https://thumb.contentpanel.click/thumb?w=375&h=300&q=100&a=c&zc=1&src=https://cdn.upera.shop/s3/backdrops/'+ChooseLang(data.item.backdrop,data.item.backdrop_fa)" :alt="data.item.name">
             </div>
           </div>
-<div id="showcase-thumbnail-wrapper-outter" class="showcase-thumbnail-wrapper-outter d-flex align-items-center justify-content-between pr-gutter p-lg-3 p-md-3">
-                    <div class="showcase-thumbnail-wrapper w-full container-fluid">
-                        <div class="d-flex h-full align-items-end">
-
-                            <div class="thumbnail">
-                                                  <nuxt-link :to="{ name: type+'-id', params: { id: data.item.id }}">
-                    <img @load="itemsize('e')"  @error="itemsize('e')" class="thumbnail" :src="'https://thumb.contentpanel.click/thumb?w=207&h=307&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+data.item.poster" :alt="data.item.name">
+          <div id="showcase-thumbnail-wrapper-outter" class="showcase-thumbnail-wrapper-outter d-flex align-items-center justify-content-between pr-gutter p-lg-3 p-md-3">
+            <div class="showcase-thumbnail-wrapper w-full container-fluid">
+              <div class="d-flex h-full align-items-end">
+                <div class="thumbnail">
+                  <nuxt-link :to="{ name: type+'-id', params: { id: data.item.id }}">
+                    <img class="thumbnail" :src="'https://thumb.contentpanel.click/thumb?w=207&h=307&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+data.item.poster" :alt="data.item.name" @load="itemsize('e')" @error="itemsize('e')">
                   </nuxt-link>
-                            </div>
-                            <div class="pr-md-4 pr-2 pr-0 mr-0 showcase-desc-wrapper h-full">
-                                <div class="showcase-desc">
-                                  <div class="showcase-top">
-                    <div v-if="type!='episode'" class="title text-invert mb-5 mb-md-3">
-                      <nuxt-link :to="{ name: type+'-id', params: { id: data.item.id }}">
-                        {{ ChooseLang(data.item.name,data.item.name_fa) }}
-                      </nuxt-link>
+                </div>
+                <div class="pr-md-4 pr-2 pr-0 mr-0 showcase-desc-wrapper h-full">
+                  <div class="showcase-desc">
+                    <div class="showcase-top">
+                      <div v-if="type!='episode'" class="title text-invert mb-5 mb-md-3">
+                        <nuxt-link :to="{ name: type+'-id', params: { id: data.item.id }}">
+                          {{ ChooseLang(data.item.name,data.item.name_fa) }}
+                        </nuxt-link>
+                      </div>
+                      <div v-else class="title text-invert mb-5 mb-md-3">
+                        <nuxt-link :to="{ name: type+'-id', params: { id: data.item.id }}">
+                          {{ ChooseLang(data.item.series_name,data.item.series_name_fa) }}
+                        </nuxt-link>
+                      </div>
+                      <div v-if="type=='episode'" class="p-fs-small title title2 text-invert mb-1 mb-md-3 font-weight-normal d-lg-none">
+                        {{ $t('show.season') }}{{ data.item.season_number }}
+                        - {{ $t('show.episode') }} {{ data.item.episode_number }}
+                      </div>
                     </div>
-                    <div v-else class="title text-invert mb-5 mb-md-3">
-                      <nuxt-link :to="{ name: type+'-id', params: { id: data.item.id }}">
-                        {{ ChooseLang(data.item.series_name,data.item.series_name_fa) }}
-                      </nuxt-link>
-                    </div>
-                    <div v-if="type=='episode'" class="p-fs-small title title2 text-invert mb-1 mb-md-3 font-weight-normal d-lg-none">
-                      {{ $t('show.season') }}{{ data.item.season_number }}
-                      - {{ $t('show.episode') }} {{ data.item.episode_number }}
+                    <div class="showcase-bottom">
+                      <div v-if="type=='episode'" class="p-fs-small text-invert mb-1 mb-md-3 font-weight-normal d-none d-lg-block">
+                        {{ $t('show.season') }}{{ data.item.season_number }}
+                        - {{ $t('show.episode') }} {{ data.item.episode_number }}
+                      </div>
+                      <div class="text-invert mb-1 mb-md-3">
+                        <nuxt-link v-for="(item2,index2) in ChooseLangAllGenres(data.item.genre)" :key="index2" :to="{ name: 'genres-genre', params: { genre: item2.genre }}" class="tag">
+                          {{ item2.title }}
+                        </nuxt-link>
+                      </div>
+                      <div v-if="!data.item.ir && data.item.persian" class="text-invert mb-1 mb-md-3">
+                        دوبله فارسی
+                      </div>
+                      <div v-else-if="!data.item.ir && !data.item.persian" class="text-invert mb-1 mb-md-3">
+                        زیرنویس فارسی
+                      </div>
                     </div>
                   </div>
-                  <div class="showcase-bottom">
-                    <div v-if="type=='episode'" class="p-fs-small text-invert mb-1 mb-md-3 font-weight-normal d-none d-lg-block">
-                      {{ $t('show.season') }}{{ data.item.season_number }}
-                      - {{ $t('show.episode') }} {{ data.item.episode_number }}
-                    </div>
-                    <div class="text-invert mb-1 mb-md-3">
-                      <nuxt-link v-for="(item2,index2) in ChooseLangAllGenres(data.item.genre)" :key="index2" :to="{ name: 'genres-genre', params: { genre: item2.genre }}" class="tag">
-                        {{ item2.title }}
-                      </nuxt-link>
-                    </div>
-                    <div v-if="!data.item.ir && data.item.persian" class="text-invert mb-1 mb-md-3">
-                      دوبله فارسی
-                    </div>
-                    <div v-else-if="!data.item.ir && !data.item.persian" class="text-invert mb-1 mb-md-3">
-                      زیرنویس فارسی
-                    </div>
-                  </div>
-                                </div>
-                                <div id="showcase-button-wrapper" class="showcase-button-wrapper">
-
-
+                  <div id="showcase-button-wrapper" class="showcase-button-wrapper">
                     <button v-if="MainButton" class="btn btn-main mr-1 ml-0" @click="PLAY()">
-                      <span class="smallsrm" v-if="MainButton==9"><i class="fa fa-play pr-2 " /><span>نمایش<span v-if="episode.id"> قسمت {{ episode.episode_number }}</span></span></span>
+                      <span v-if="MainButton==9" class="smallsrm"><i class="fa fa-play pr-2 " /><span>نمایش<span v-if="episode.id"> قسمت {{ episode.episode_number }}</span></span></span>
                       <span v-else-if="MainButton==1"><i class="fa fa-play pr-2 " /><span>خرید</span></span>
                       <span v-else-if="MainButton==2"><i class="fa fa-play pr-2 " /><span>پیش خرید</span></span>
                       <span v-else-if="MainButton==3"><i class="fa fa-play pr-2 " /><span>خرید اشتراک</span></span>
                       <span v-else-if="MainButton==4"><i class="fa fa-play pr-2 " /><span>خرید بلیط</span></span>
-                      <span class="smallsrm" v-else-if="MainButton==5"><i class="fa fa-play pr-2 " /><span>پیش خرید بلیط</span></span>
+                      <span v-else-if="MainButton==5" class="smallsrm"><i class="fa fa-play pr-2 " /><span>پیش خرید بلیط</span></span>
                       <span v-else-if="MainButton==6"><i class="fa fa-play pr-2 " /><span>به زودی</span></span>
-                      <span class="smallsrm" v-else-if="MainButton==7"><i class="fa fa-play pr-2 " /><span>به زودی</span></span>
-                      <span class="smallsrm" v-else-if="MainButton==8"><i class="fa fa-play pr-2 " /><span>خرید امکان نمایش</span></span>
+                      <span v-else-if="MainButton==7" class="smallsrm"><i class="fa fa-play pr-2 " /><span>به زودی</span></span>
+                      <span v-else-if="MainButton==8" class="smallsrm"><i class="fa fa-play pr-2 " /><span>خرید امکان نمایش</span></span>
                     </button>
 
                     <button v-if="DownloadButton" class="btn btn-dark btn-download mr-1 ml-0" @click="ftb=false;DOWNLOAD_MODAL_LOAD();">
                       <span v-if="DownloadButton==1"><i class="fa fa-download pr-2 " /><span>دانلود</span></span>
-                      <span class="smallsrm" v-else-if="DownloadButton==2"><i class="fa fa-download pr-2 " /><span>دانلود رایگان</span></span>
-                      <span class="smallsrm" v-else-if="DownloadButton==3"><i class="fa fa-download pr-2 " /><span>خرید و دانلود</span></span>
-                      <span class="smallsrm" v-else-if="DownloadButton==4"><i class="fa fa-download pr-2 " /><span>پیش خرید و دانلود</span></span>
+                      <span v-else-if="DownloadButton==2" class="smallsrm"><i class="fa fa-download pr-2 " /><span>دانلود رایگان</span></span>
+                      <span v-else-if="DownloadButton==3" class="smallsrm"><i class="fa fa-download pr-2 " /><span>خرید و دانلود</span></span>
+                      <span v-else-if="DownloadButton==4" class="smallsrm"><i class="fa fa-download pr-2 " /><span>پیش خرید و دانلود</span></span>
                     </button>
-                    <a href="" @click.prevent="ADD_CLAP(data.item.id, type)" class="btn btn-dark btn-icon ml-1 hide-mobile">
+                    <!-- @click.prevent="ADD_CLAP(data.item.id, type)" -->
+                    <a :class="{active:clapinterval}" class="btn btn-dark btn-icon ml-1 hide-mobile" @mousedown="startclap" @mouseleave="stopclap" @mouseup="stopclap" @touchstart="startclap" @touchend="stopclap" @touchcancel="stopclap">
                       <div class="likes">
-                      <span v-if="user_claps" class="badge badge-secondary">{{user_claps}}</span>
-                      <i class="icon-clap" />
-                    </div>
+                        <span v-if="user_claps" class="badge badge-secondary">{{ user_claps }}</span>
+                        <i class="icon-clap" />
+                      </div>
                     </a>
-                    <a href="" @click.prevent="modalsharing = !modalsharing" class="btn btn-dark btn-icon ml-1 hide-mobile">
+                    <a href="" class="btn btn-dark btn-icon ml-1 hide-mobile" @click.prevent="modalsharing = !modalsharing">
                       <i class="icon-share-android" />
                     </a>
                     <a href="" class="btn btn-dark btn-icon ml-1 hide-mobile" @click.prevent="ADD_WATCHLIST(data.item.id, type)">
                       <i :class="{ 'icon-bookmark-empty': !is_watchlist,'icon-bookmark': is_watchlist==1 }" />
                     </a>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
+                  </div>
                 </div>
-<!--           <div
+              </div>
+            </div>
+          </div>
+          <!--           <div
             class="showcase-thumbnail-wrapper-outter d-flex align-items-center justify-content-between pr-gutter pr-md-3"
           >
             <div class="showcase-thumbnail-wrapper w-full">
@@ -270,16 +267,18 @@
       <div class="container-fluid">
         <div class="article py-3">
           <div v-if="data.files.teaser==1" class="article-img-wrapper mr-lg-3" @click.prevent="GET_FILE(1);">
-              <div class="font-weight-bold mb-2 d-none d-lg-block">نمایش تیزر </div>
-              <div class="article-img-holder d-none d-lg-block">
-                  <img class="article-img" :src="'https://thumb.contentpanel.click/thumb?w=413&h=258&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/'+Chooseback(data.item.backdrop_teaser,data.item.backdrop)" :alt="'تیزر '+data.item.name_fa">
-                  <a href="#" class="play-movie text-invert">
-                      <i class="icon-play"></i>
-                  </a>
-              </div>
-              <button @click.prevent="GET_FILE(1);" class="btn btn-block btn-dark btn-second d-lg-none">
-                نمایش تیزر
-              </button>
+            <div class="font-weight-bold mb-2 d-none d-lg-block">
+              نمایش تیزر
+            </div>
+            <div class="article-img-holder d-none d-lg-block">
+              <img class="article-img" :src="'https://thumb.contentpanel.click/thumb?w=413&h=258&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/'+Chooseback(data.item.backdrop_teaser,data.item.backdrop)" :alt="'تیزر '+data.item.name_fa">
+              <a href="#" class="play-movie text-invert">
+                <i class="icon-play" />
+              </a>
+            </div>
+            <button class="btn btn-block btn-dark btn-second d-lg-none" @click.prevent="GET_FILE(1);">
+              نمایش تیزر
+            </button>
           </div>
           <div class="content">
             <div class="statistics d-flex align-items-center justify-content-between">
@@ -308,7 +307,7 @@
               <div v-if="total_claps" class="statistics-item statistics-item-row text-muted">
                 <i class="icon-clap" />
                 <span class="statistics-item-caption">
-                  <span class="font-weight-bold">{{ total_claps }}</span><span class="hide-mobile"> بار این <span v-if="type=='movie'">فیلم</span><span v-else>سریال</span> را
+                  <span class="font-weight-bold">{{ total_claps }}</span><span class="hide-mobile"> بار این <span v-if="type=='movie'">فیلم</span><span v-else-if="type=='episode'">قسمت</span><span v-else>سریال</span> را
                     پسندیده&zwnj;اند</span>
                 </span>
                 <span class="statistics-item-caption" />
@@ -316,9 +315,9 @@
               <div v-if="type=='series' || data.item.runtime" class="statistics-item statistics-item-row text-muted">
                 <i class="icon-episodes" />
                 <span v-if="type=='series'" class="statistics-item-caption">
-                  <span class="font-weight-bold">{{episode_num}}</span><span class="hide-mobile"> قسمت در </span><span
+                  <span class="font-weight-bold">{{ episode_num }}</span><span class="hide-mobile"> قسمت در </span><span
                     class="show-mobile"
-                  > - </span><span class="font-weight-bold">{{season_num}}</span><span
+                  > - </span><span class="font-weight-bold">{{ season_num }}</span><span
                     class="hide-mobile"
                   >
                     فصل</span></span>
@@ -642,7 +641,7 @@
     <client-only>
       <File :id="data.item.id" :show="showplyrmodal" :content="modalcontent" :name="data.item.name" :namefa="data.item.name_fa" :backdrop="data.item.backdrop" :backdropteaser="data.item.backdrop_teaser" :type="type" @hide-modal="HIDE_MODAL3" />
 
-      <b-modal v-model="modalsharing" id="modal-sharing" centered hide-footer :title="'اشتراک گذاری'">
+      <b-modal id="modal-sharing" v-model="modalsharing" centered hide-footer :title="'اشتراک گذاری'">
         <Socialsharing :mtitle="data.item.name_fa" :description="data.item.overview_fa" />
       </b-modal>
     </client-only>
@@ -694,6 +693,8 @@ import Comments from "@/components/Comments"
         total_claps: 0,
         user_claps: 0,
         user_claps_counter: 0,
+      clapCheckTimer: false,
+      clapinterval:false,
         swiperOption: {
         spaceBetween: 10,
         slidesPerView: 3.3,
@@ -759,6 +760,32 @@ import Comments from "@/components/Comments"
 
         beforeDestroy() {
           window.removeEventListener('resize', this.itemsize)
+
+      if (this.clapCheckTimer) {
+        clearTimeout(this.clapCheckTimer)
+    }
+
+if(this.user_claps_counter>=1){
+        this.$axios.post('/add/clap', {id:this.data.item.id,type:this.type,claps:this.user_claps_counter}).then((res) => {
+          if(res.status === 200){
+
+
+
+              this.user_claps_counter=0
+
+
+          }else{
+              this.user_claps_counter=0
+              this.total_claps=parseInt(this.total_claps) - this.user_claps_counter
+              this.user_claps=parseInt(this.user_claps) - this.user_claps_counter
+          }
+        }, (error) => {
+              this.user_claps_counter=0
+              this.total_claps=parseInt(this.total_claps) - this.user_claps_counter
+              this.user_claps=parseInt(this.user_claps) - this.user_claps_counter
+          return error
+        })
+}   
         },  
         created() {
           this.total_claps=this.data.claps.total
@@ -1004,6 +1031,45 @@ import Comments from "@/components/Comments"
                 }
               
     },
+    startclap(){
+      if (this.$auth.loggedIn) {
+      if(!this.clapinterval){
+        this.clapinterval = setInterval(() => (this.user_claps_counter=this.user_claps_counter + 1,
+            this.total_claps=parseInt(this.total_claps) + 1,
+              this.user_claps=parseInt(this.user_claps) + 1)
+
+, 30) 
+  
+
+      }
+                } else {
+                    this.$store.dispatch('login/SHOW_MODAL',{premessage: null,premobile: null,preredirect: null,prerefresh: false})
+
+                }
+    },
+    stopclap(){
+      if(this.clapinterval){
+        clearInterval(this.clapinterval)
+        this.clapinterval = false
+if(this.user_claps_counter>=1){
+this.clapCheckTimer = setTimeout(function(scope) {
+if(scope.user_claps_counter>=1){
+        scope.$axios.post('/add/clap', {id:scope.data.item.id,type:scope.type,claps:scope.user_claps_counter}).then((res) => {
+          if(res.status !== 200){
+              scope.total_claps=parseInt(scope.total_claps) - scope.user_claps_counter
+              scope.user_claps=parseInt(scope.user_claps) - scope.user_claps_counter
+          }
+        }, (error) => {
+              scope.total_claps=parseInt(scope.total_claps) - scope.user_claps_counter
+              scope.user_claps=parseInt(scope.user_claps) - scope.user_claps_counter
+          return error
+        })
+          scope.user_claps_counter=0
+        }
+        }, 2000, this)
+}  
+      }
+    },
      ADD_CLAP(id, type) {
         if (this.$auth.loggedIn) {
       this.user_claps_counter=this.user_claps_counter + 1
@@ -1013,26 +1079,19 @@ import Comments from "@/components/Comments"
 
 
 if(this.user_claps_counter==1){
-setTimeout(function(scope) {
+this.clapCheckTimer = setTimeout(function(scope) {
+
         scope.$axios.post('/add/clap', {id,type,claps:scope.user_claps_counter}).then((res) => {
-          if(res.status === 200){
-
-
-
-              scope.user_claps_counter=0
-
-
-          }else{
-              scope.user_claps_counter=0
+          if(res.status !== 200){
               scope.total_claps=parseInt(scope.total_claps) - scope.user_claps_counter
               scope.user_claps=parseInt(scope.user_claps) - scope.user_claps_counter
           }
         }, (error) => {
-              scope.user_claps_counter=0
               scope.total_claps=parseInt(scope.total_claps) - scope.user_claps_counter
               scope.user_claps=parseInt(scope.user_claps) - scope.user_claps_counter
           return error
         })
+          scope.user_claps_counter=0
         }, 2000, this)
 }   
                 } else {

@@ -398,7 +398,6 @@ input, button, select, optgroup, textarea {
     font-size: calc(1.275rem + 0.3vw);
   }
 }
-
 .avatar {
   border-radius: 50rem;
   overflow: hidden;
@@ -2334,8 +2333,6 @@ a.thumbnail-wrapper {
     z-index: 10 !important;
     display: flex !important;
     align-items: center !important;
-    padding: 0 1rem !important;
-    margin: 0 !important;
   }
   .mega-menu > li {
     height: 2.5rem !important;
@@ -3919,7 +3916,7 @@ nav a:hover {
 
 .search-field.with-filter .filter {
   position: absolute;
-  top: 20px;
+  top: 30px;
   right: 10px;
   -webkit-filter: grayscale(100%) brightness(2);
           filter: grayscale(100%) brightness(2);
@@ -5690,6 +5687,10 @@ div.download-links-poster::after
     {
         top: 5.25rem !important;
     }
+    .download-links-body-header .download-links-items-credit
+    {
+        top: 0 !important;
+    }
     .download-links-body .download-links-season-num1
     {
         top: 5rem;
@@ -6620,7 +6621,6 @@ body widget {
     font-weight: 300;
 }
 #genre img {
-    height: 347px;
     width: 100%;
 }
 
@@ -6866,7 +6866,7 @@ body widget {
 
 .search-field.with-filter .filter {
     position: absolute;
-    top: 21px;
+    top: 31px;
     z-index: 5;
     right: 15px;
     font-size: 1.4em;
@@ -7307,7 +7307,6 @@ body widget {
     }
 
     #genre img {
-        border-radius: 0px 4px 4px 0px;
         height: auto;
     }
 
@@ -7544,7 +7543,7 @@ body widget {
         margin: -35px 0 115px 0 !important;
     }
     .faq-page .collapse-header .btn-link {
-        font-size: 15.5px;
+        font-size: 13px;
         letter-spacing: -0.3px;
         font-weight: 500;
     }
@@ -7724,7 +7723,7 @@ body widget {
 
     .search-field.with-filter .filter {
         position: absolute;
-        top: 18px;
+        top: 28px;
         z-index: 5;
         right: 13px;
         font-size: 1.3em;
@@ -7863,9 +7862,6 @@ body widget {
         opacity: 1;
     }
 
-    #genre img {
-        border-radius: 0px 4px 4px 0px;
-    }
 
     #genre > .container-fluid > .row > .col-8 {
         padding-left: 0 !important;
@@ -8126,9 +8122,7 @@ body widget {
         margin: 0 0 0px 0;
     }
 
-    #genre img {
-        border-radius: 5px;
-    }
+
 
     .banner_container {
         max-height: 360px;
@@ -9987,6 +9981,10 @@ body .border-bottom-md-gray {
 .w-sm-100 {
     width: 100% !important;
 }
+    .search_box_container .icon-search,.search_box_container .icon-filter{
+      font-size: 2.2rem !important;
+      line-height: 0.6;
+    }
 }
 
 .header-mobile .smallsrm{
@@ -10017,3 +10015,23 @@ body .border-bottom-md-gray {
 #modal-sharing .modal-header .close {
     margin: -1rem auto -1rem -1rem;
 }
+
+#watching .progress,.watching-slider .progress{
+  direction: rtl;
+  left: 0.5rem;
+    bottom: 0.5rem;
+    direction: ltr;
+    height: 0.25rem;
+    right: 0.5rem;
+    position: absolute;
+    background-color: #979797;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+#watching .progress-bar,.watching-slider .progress-bar{
+      background-color: #FF6633;
+}
+
+    #genre img {
+        border-radius: 6% 6% 6% 6%;
+    }

@@ -6,8 +6,8 @@
           <div v-for="(item,index) in data.top" :key="index" class="swiper-slide">
             <div class="row no-gutters">
               <div class="col-md-6 col-lg-7 showcase-pic">
-                <img data-not-lazy class="showcase-img d-none d-lg-block" :src="'https://thumb.contentpanel.click/thumb?w=1120&h=576&q=100&a=t&zc=1&src=https://cdn.upera.shop/s3/backdrops/'+item.backdrop" :alt="item.name">
-                <img data-not-lazy class="showcase-img d-lg-none" :src="'https://thumb.contentpanel.click/thumb?w=375&h=300&q=100&a=c&zc=1&src=https://cdn.upera.shop/s3/backdrops/'+item.backdrop" :alt="item.name">
+                <img data-not-lazy class="showcase-img d-none d-lg-block" :src="'https://thumb.contentpanel.click/thumb?w=1120&h=576&q=90&a=t&zc=1&src=https://cdn.upera.shop/s3/backdrops/'+item.backdrop" :alt="item.name">
+                <img data-not-lazy class="showcase-img d-lg-none" :src="'https://thumb.contentpanel.click/thumb?w=375&h=300&q=90&a=c&zc=1&src=https://cdn.upera.shop/s3/backdrops/'+item.backdrop" :alt="item.name">
               </div>
               <div class="col-md-6 col-lg-5" />
             </div>
@@ -25,7 +25,7 @@
                       </div>
                       <div v-else class="title text-invert mb-1 mb-md-3">
                         <nuxt-link :to="{ name: item.type+'-id', params: { id: item.id }}">
-                          {{ ChooseLang(item.series_name,item.series_name_fa) }}<span v-if="item.season_number>1" class="show-mobile"> {{item.season_number}}</span>
+                          {{ ChooseLang(item.series_name,item.series_name_fa) }}<span v-if="item.season_number>1" class="show-mobile"> {{ item.season_number }}</span>
                         </nuxt-link>
                       </div>
                       <div v-if="item.type=='episode'" class="p-fs-small text-invert mb-1 mb-md-3 hide-mobile font-weight-normal">
@@ -48,9 +48,13 @@
                       <nuxt-link :to="{ name: item.type+'-id', params: { id: item.id }}" class="text-invert show-mobile">
                         <i class="icon-info" />
                         <!-- <div class="hide-mobile">توضیحات <span v-if="item.type=='movie'">فیلم</span><span v-else-if="item.type=='episode'">این قسمت سریال</span><span v-else>سریال</span></div> -->
-                        <div v-if="item.type!='episode'">توضیحات</div>
-                        <div v-else>قسمت {{item.episode_number}}</div>
-                         <!-- <span v-if="item.type=='movie'">فیلم</span><span v-else-if="item.type=='episode'">قسمت</span><span v-else>سریال</span> -->
+                        <div v-if="item.type!='episode'">
+                          توضیحات
+                        </div>
+                        <div v-else>
+                          قسمت {{ item.episode_number }}
+                        </div>
+                        <!-- <span v-if="item.type=='movie'">فیلم</span><span v-else-if="item.type=='episode'">قسمت</span><span v-else>سریال</span> -->
                       </nuxt-link>
 
                       <nuxt-link v-if="item.presale" :to="{ name: item.type+'-id', params: { id: item.id }}" class="btn btn-main">
@@ -154,14 +158,14 @@
         </div>
       </div>
     </section>
-    <section v-if="data.offer!==null" class="horizontal-list-container mt-4 reach-begin">
+    <section v-if="data.offer!==null" class="horizontal-list-container mt-5 reach-begin">
       <div class="d-flex justify-content-between align-items-center mb-2 container-fluid">
-        <h4 class="title">
+        <h4 class="font-weight-bold">
           {{ ChooseLang(data.titles_en.offer,data.titles.offer) }}
         </h4>
-        <nuxt-link :to="{ name: 'lists-list', params: { list: 'offer' }}" class="text-dark">
+        <nuxt-link :to="{ name: 'lists-list', params: { list: 'offer' }}" class="mb-1">
           {{ $t('new.show_all') }}
-          <i class="icon-see-more mr-1" />
+          <img src="@/assets/img/more.svg" height="3" alt="">
         </nuxt-link>
       </div>
       <div v-swiper:offerSwiper="swiperOption" class="newset-slider">
@@ -181,7 +185,7 @@
                 {{ ChooseLang(item.name,item.name_fa) }}
               </h6>
               <h6 v-else class="mt-2 small font-weight-normal">
-                {{ $t('show.episode') }} {{item.episode_number}} {{ ChooseLang(item.series_name,item.series_name_fa) }}<span v-if="item.season_number>1"> {{item.season_number}}</span>
+                {{ $t('show.episode') }} {{ item.episode_number }} {{ ChooseLang(item.series_name,item.series_name_fa) }}<span v-if="item.season_number>1"> {{ item.season_number }}</span>
               </h6>
             </div>
           </div>
@@ -189,14 +193,14 @@
       </div>
     </section>
 
-    <section v-if="data.free!==null" class="horizontal-list-container reach-begin mt-4">
+    <section v-if="data.free!==null" class="horizontal-list-container reach-begin mt-5">
       <div class="d-flex justify-content-between align-items-center mb-2 container-fluid">
-        <h4 class="title">
+        <h4 class="font-weight-bold">
           {{ ChooseLang(data.titles_en.free,data.titles.free) }}
         </h4>
-        <nuxt-link :to="{ name: 'lists-list', params: { list: 'free' }}" class="text-dark">
+        <nuxt-link :to="{ name: 'lists-list', params: { list: 'free' }}" class="mb-1">
           {{ $t('new.show_all') }}
-          <i class="icon-see-more mr-1" />
+          <img src="@/assets/img/more.svg" height="3" alt="">
         </nuxt-link>
       </div>
       <div v-swiper:freeSwiper="swiperOption" class="newset-slider">
@@ -216,7 +220,7 @@
                 {{ ChooseLang(item.name,item.name_fa) }}
               </h6>
               <h6 v-else class="mt-2 small font-weight-normal">
-                {{ $t('show.episode') }} {{item.episode_number}} {{ ChooseLang(item.series_name,item.series_name_fa) }}<span v-if="item.season_number>1"> {{item.season_number}}</span>
+                {{ $t('show.episode') }} {{ item.episode_number }} {{ ChooseLang(item.series_name,item.series_name_fa) }}<span v-if="item.season_number>1"> {{ item.season_number }}</span>
               </h6>
             </div>
           </div>
@@ -224,14 +228,14 @@
       </div>
     </section>
 
-    <section v-if="data.new_titles!==null" class="horizontal-list-container reach-begin mt-4">
+    <section v-if="data.new_titles!==null" class="horizontal-list-container reach-begin mt-5">
       <div class="d-flex justify-content-between align-items-center mb-2 container-fluid">
-        <h4 class="title">
+        <h4 class="font-weight-bold">
           {{ ChooseLang(data.titles_en.new_titles,data.titles.new_titles) }}
         </h4>
-        <nuxt-link :to="{ name: 'lists-list', params: { list: 'new_titles' }}" class="text-dark">
+        <nuxt-link :to="{ name: 'lists-list', params: { list: 'new_titles' }}" class="mb-1">
           {{ $t('new.show_all') }}
-          <i class="icon-see-more mr-1" />
+          <img src="@/assets/img/more.svg" height="3" alt="">
         </nuxt-link>
       </div>
       <div v-swiper:new_titlesSwiper="swiperOption" class="newset-slider">
@@ -251,7 +255,7 @@
                 {{ ChooseLang(item.name,item.name_fa) }}
               </h6>
               <h6 v-else class="mt-2 small font-weight-normal">
-                {{ $t('show.episode') }} {{item.episode_number}} {{ ChooseLang(item.series_name,item.series_name_fa) }}<span v-if="item.season_number>1"> {{item.season_number}}</span>
+                {{ $t('show.episode') }} {{ item.episode_number }} {{ ChooseLang(item.series_name,item.series_name_fa) }}<span v-if="item.season_number>1"> {{ item.season_number }}</span>
               </h6>
             </div>
           </div>
@@ -259,14 +263,14 @@
       </div>
     </section>
 
-    <section v-if="data.soon!==null" class="horizontal-list-container reach-begin mt-4">
+    <section v-if="data.soon!==null" class="horizontal-list-container reach-begin mt-5">
       <div class="d-flex justify-content-between align-items-center mb-2 container-fluid">
-        <h4 class="title">
+        <h4 class="font-weight-bold">
           {{ ChooseLang(data.titles_en.soon,data.titles.soon) }}
         </h4>
-        <nuxt-link :to="{ name: 'lists-list', params: { list: 'soon' }}" class="text-dark">
+        <nuxt-link :to="{ name: 'lists-list', params: { list: 'soon' }}" class="mb-1">
           {{ $t('new.show_all') }}
-          <i class="icon-see-more mr-1" />
+          <img src="@/assets/img/more.svg" height="3" alt="">
         </nuxt-link>
       </div>
       <div v-swiper:soonSwiper="swiperOption" class="newset-slider">
@@ -286,7 +290,7 @@
                 {{ ChooseLang(item.name,item.name_fa) }}
               </h6>
               <h6 v-else class="mt-2 small font-weight-normal">
-                {{ $t('show.episode') }} {{item.episode_number}} {{ ChooseLang(item.series_name,item.series_name_fa) }}<span v-if="item.season_number>1"> {{item.season_number}}</span>
+                {{ $t('show.episode') }} {{ item.episode_number }} {{ ChooseLang(item.series_name,item.series_name_fa) }}<span v-if="item.season_number>1"> {{ item.season_number }}</span>
               </h6>
             </div>
           </div>
@@ -312,6 +316,9 @@
               <nuxt-link v-else :to="{ name: 'series-show-id', params: { id: item.id }}">
                 <img :src="'https://thumb.contentpanel.click/thumb?w=364&h=190&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/'+item.backdrop" :alt="item.name">
               </nuxt-link>
+              <div class="progress">
+                                <div class="progress-bar" :style="'width: '+(item.current_time/item.duration_time)*100+'%'" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
             </div>
           </div>
         </div>
@@ -320,16 +327,16 @@
 
     <div v-for="(list, rootindex) in data.data" :key="rootindex">
       <div v-if="list.list.length > 0 ">
-        <section class="horizontal-list-container  newset2 reach-begin">
+        <section class="horizontal-list-container  mt-5 reach-begin">
           <div class="d-flex justify-content-between align-items-center mb-2 container-fluid">
-            <h4 class="title">
+            <h4 class="font-weight-bold">
               {{ ChooseLangGenres(list.genre) }}
               <!--               <small v-if="list.type === 'Movies'" class="text-muted"> - {{ $t('home.movies') }} </small>
               <small v-else class="text-muted"> - {{ $t('home.series') }} </small> -->
             </h4>
-            <nuxt-link :to="{ name: 'genres-genre', params: { genre: list.genre.toLowerCase() }}" class="text-dark">
+            <nuxt-link :to="{ name: 'genres-genre', params: { genre: list.genre.toLowerCase() }}" class="mb-1">
               {{ $t('new.show_all') }}
-              <i class="icon-see-more mr-1" />
+              <img src="@/assets/img/more.svg" height="3" alt="">
             </nuxt-link>
           </div>
           <div v-swiper:[rootindex]="swiperOption" class="swiper-container newset-slider2">
@@ -344,12 +351,12 @@
                   <span v-if="item.free" class="label label-blue label-2" :class="{'label-rotated':item.type=='movie'}">رایگان</span>
                 </nuxt-link>
                 <div class="mt-2">
-              <h6 v-if="item.type!='episode'" class="mt-2 small font-weight-normal">
-                {{ ChooseLang(item.name,item.name_fa) }}
-              </h6>
-              <h6 v-else class="mt-2 small font-weight-normal">
-                {{ $t('show.episode') }} {{item.episode_number}} {{ ChooseLang(item.series_name,item.series_name_fa) }}<span v-if="item.season_number>1"> {{item.season_number}}</span>
-              </h6>
+                  <h6 v-if="item.type!='episode'" class="mt-2 small font-weight-normal">
+                    {{ ChooseLang(item.name,item.name_fa) }}
+                  </h6>
+                  <h6 v-else class="mt-2 small font-weight-normal">
+                    {{ $t('show.episode') }} {{ item.episode_number }} {{ ChooseLang(item.series_name,item.series_name_fa) }}<span v-if="item.season_number>1"> {{ item.season_number }}</span>
+                  </h6>
                 </div>
               </div>
             </div>

@@ -1,103 +1,105 @@
 <template>
-  <div class="container-fluid mt-5  pt-md-3 pt-lg-5">
-    <div class="search_main_container_reswidth">
-      <!--------------  Search Box Show in small device ---------------->
-      <div class="input-group search-field with-filter my-4 insert_comment search_box_container d-lg-none">
-        <b-form-input v-model="query" autofocus
-                      :placeholder="$t('new.search')" type="text"
-                      class="form-control border-left-0 border shadow-none" style="top:15px" @keyup.enter="SEARCH"
-        />
+  <div id="checkcontainer" class="container-fluid">
+    <div class="mt-5  pt-lg-5 pt-md-5">
+      <div class="search_main_container_reswidth">
+        <!--------------  Search Box Show in small device ---------------->
+        <div class="input-group search-field with-filter my-4 insert_comment search_box_container d-md-none">
+          <b-form-input v-model="query" autofocus
+                        :placeholder="$t('new.search')" type="text"
+                        class="form-control border-left-0 border shadow-none" style="top:15px" @keyup.enter="SEARCH"
+          />
 
-        <button class="btn btn-sm  btn-send-comment" @click="IN_SEARCH">
-          <i class="icon-search" />
-        </button>
+          <button class="btn btn-sm  btn-send-comment" @click="IN_SEARCH">
+            <i class="icon-search" />
+          </button>
 
 
-        <a href="#" class="filter">
-          <i class="icon-filter" />
-        </a>
-      </div>
-      <!--------------  Search Box Show in small device ---------------->
-      <!--------------  Search Badges ---------------->
-      <div class="search_badge">
-        <a href="" class="badge badge-pill small font-weight-normal py-2 px-3 mb-2 mr-2 mr-lg-4 active" :class="{ 'badge-secondary': !dubbed, 'badge-info': dubbed }" @click.prevent="dubbed = !dubbed;IN_SEARCH()">دوبله</a>
-        <a href="" :class="{ 'badge-secondary': !subtitle, 'badge-info': subtitle }" class="badge badge-pill small font-weight-normal py-2 px-3 mb-2 mr-2 mr-lg-4" @click.prevent="subtitle = !subtitle;IN_SEARCH()">زیرنویس</a>
-        <a href="" :class="{ 'badge-secondary': !imdb, 'badge-info': imdb }" class="badge badge-pill small font-weight-normal py-2 px-3 mb-2 mr-2 mr-lg-4" @click.prevent="imdb = !imdb;IN_SEARCH()">امتیاز +۸</a>
-        <a href="" :class="{ 'badge-secondary': !kids, 'badge-info': kids }" class="badge badge-pill small font-weight-normal py-2 px-3 mb-2 mr-2 mr-lg-4" @click.prevent="kids = !kids;IN_SEARCH()">کودک</a>
-        <br><br>
-      </div>
-      <!--------------  Search Badges ---------------->
-      <!--------------  Search Tags ---------------->
-      <div v-if="!query && lastsearchs && (data.data==null && data.cast==null)" id="search-tags" class="mt-4 search-tags">
-        <div v-for="(item,index) in lastsearchs" :key="index" class="tag mt-2">
-          <i class="icon-close" @click="removeSearch(item)" />
-          <span @click="query = item;IN_SEARCH()">{{ item }}</span>
+          <a href="#" class="filter">
+            <i class="icon-filter" />
+          </a>
         </div>
-      </div>
-      <!--------------  Search Tags ---------------->
-      <header v-if="!query && topsearch && (data.data==null && data.cast==null)" class="headline py-4">
-        <h6 class="title">
-          محبوبترین جستجوها
-        </h6>
-      </header>
-
-      <!-------------- Popular Search ---------------->
-      <!--رو اضافه کنینd-none اگر خواستین این قسمت رو حذف یا مخفی کنین فقط کافیه کلاس-->
-      <div v-if="!query && topsearch && (data.data==null && data.cast==null)" id="popular_search" class="d-flex flex-column align-start popular_search">
-        <a v-for="(item,index) in topsearch" :key="index" href="" class="clearfix text-dark" :class="{ 'pt-4': index>0 }" @click.prevent="query = item;IN_SEARCH()">{{ item }}</a>
-      </div>
-      <!-------------- Popular Search ---------------->
-      <!-------------- Movie Not Found ---------------->
-      <!--رو اضافه کنینd-none اگر خواستین این قسمت رو حذف یا مخفی کنین فقط کافیه کلاس-->
-      <div v-if="noresult && query" id="notFound" class="movie_notFound mt-5 ">
-        <p>
-          متاسفانه چیزی پیدا نکردیم. میتوانید به قسمت <nuxt-link to="/genres">
-            <span>دسته بندی</span>
-          </nuxt-link>  سری
-          بزنین یا <nuxt-link to="/genres">
-            <span>درخواست اضافه کردن فیلم یا سریال</span>
-          </nuxt-link> مورد نظرتون رو بدین.
-        </p>
-      </div>
-      <!-------------- Movie Not Found ---------------->
-    </div>
-
-
-    <!--------------  Search Container ---------------->
-    <!--رو اضافه کنینd-none اگر خواستین این قسمت رو حذف یا مخفی کنین فقط کافیه کلاس-->
-    <div v-if="data.data!=null || data.cast!=null" id="actor" class="search_collection">
-      <div class="container-fluid pl-md-4 pr-md-5 mt-n5">
-        <div v-if="data.data!=null" class="row">
-          <div v-for="(item,index) in data.data" :key="index" class="col-4 col-xl-1 col-md-2 col-sm-3 mt-2 mt-lg-4">
-            <nuxt-link v-if="item.type=='movie'" :to="{ name: 'movie-id', params: { id: item.id }}" class="actor">
-              <img :src="'https://thumb.contentpanel.click/thumb?w=272&h=404&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
-              <span class="block">{{ ChooseLang(item.name,item.name_fa) }}</span>
-            </nuxt-link>
-            <nuxt-link v-else-if="item.type=='episode'" :to="{ name: 'episode-id', params: { id: item.id }}" class="actor is-series">
-              <img :src="'https://thumb.contentpanel.click/thumb?w=272&h=404&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
-              <img :src="'https://thumb.contentpanel.click/thumb?w=272&h=404&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
-              <img :src="'https://thumb.contentpanel.click/thumb?w=272&h=404&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
-              <span class="block">{{ ChooseLang(item.name,item.name_fa) }}</span>
-            </nuxt-link>
-            <nuxt-link v-else :to="{ name: 'series-id', params: { id: item.id }}" class="actor is-series">
-              <img :src="'https://thumb.contentpanel.click/thumb?w=272&h=404&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
-              <img :src="'https://thumb.contentpanel.click/thumb?w=272&h=404&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
-              <img :src="'https://thumb.contentpanel.click/thumb?w=272&h=404&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
-              <span class="block">{{ ChooseLang(item.name,item.name_fa) }}</span>
-            </nuxt-link>
+        <!--------------  Search Box Show in small device ---------------->
+        <!--------------  Search Badges ---------------->
+        <div class="search_badge">
+          <a href="" class="badge badge-pill small font-weight-normal py-2 px-3 mb-2 mr-2 mr-lg-4 active" :class="{ 'badge-secondary': !dubbed, 'badge-info': dubbed }" @click.prevent="dubbed = !dubbed;IN_SEARCH()">دوبله</a>
+          <a href="" :class="{ 'badge-secondary': !subtitle, 'badge-info': subtitle }" class="badge badge-pill small font-weight-normal py-2 px-3 mb-2 mr-2 mr-lg-4" @click.prevent="subtitle = !subtitle;IN_SEARCH()">زیرنویس</a>
+          <a href="" :class="{ 'badge-secondary': !imdb, 'badge-info': imdb }" class="badge badge-pill small font-weight-normal py-2 px-3 mb-2 mr-2 mr-lg-4" @click.prevent="imdb = !imdb;IN_SEARCH()">امتیاز +۸</a>
+          <a href="" :class="{ 'badge-secondary': !kids, 'badge-info': kids }" class="badge badge-pill small font-weight-normal py-2 px-3 mb-2 mr-2 mr-lg-4" @click.prevent="kids = !kids;IN_SEARCH()">کودک</a>
+          <br><br>
+        </div>
+        <!--------------  Search Badges ---------------->
+        <!--------------  Search Tags ---------------->
+        <div v-if="!query && lastsearchs && (data.data==null && data.cast==null)" id="search-tags" class="mt-4 search-tags">
+          <div v-for="(item,index) in lastsearchs" :key="index" class="tag mt-2">
+            <i class="icon-close" @click="removeSearch(item)" />
+            <span @click="query = item;IN_SEARCH()">{{ item }}</span>
           </div>
         </div>
-        <div v-if="data.cast!=null" class="row">
-          <div v-for="(item,index) in data.cast" :key="index" class="col-4 col-xl-1 col-md-2 col-sm-3 mt-2 mt-lg-4">
-            <nuxt-link :to="{ name: 'cast-id', params: { id: item.id }}" class="actor">
-              <img :src="'https://thumb.contentpanel.click/thumb?w=141&h=214&q=100&a=c&src=https://cdn.upera.shop/s3/casts/'+item.image" :alt="item.name">
-              <span class="block">{{ ChooseLang(item.name,item.name_fa) }}</span>
-            </nuxt-link>
+        <!--------------  Search Tags ---------------->
+        <header v-if="!query && topsearch && (data.data==null && data.cast==null)" class="headline py-4">
+          <h6 class="title">
+            محبوبترین جستجوها
+          </h6>
+        </header>
+
+        <!-------------- Popular Search ---------------->
+        <!--رو اضافه کنینd-none اگر خواستین این قسمت رو حذف یا مخفی کنین فقط کافیه کلاس-->
+        <div v-if="!query && topsearch && (data.data==null && data.cast==null)" id="popular_search" class="d-flex flex-column align-start popular_search">
+          <a v-for="(item,index) in topsearch" :key="index" href="" class="clearfix text-dark" :class="{ 'pt-4': index>0 }" @click.prevent="query = item;IN_SEARCH()">{{ item }}</a>
+        </div>
+        <!-------------- Popular Search ---------------->
+        <!-------------- Movie Not Found ---------------->
+        <!--رو اضافه کنینd-none اگر خواستین این قسمت رو حذف یا مخفی کنین فقط کافیه کلاس-->
+        <div v-if="noresult && query" id="notFound" class="movie_notFound mt-5 ">
+          <p>
+            متاسفانه چیزی پیدا نکردیم. میتوانید به قسمت <nuxt-link to="/genres">
+              <span>دسته بندی</span>
+            </nuxt-link>  سری
+            بزنین یا <nuxt-link to="/genres">
+              <span>درخواست اضافه کردن فیلم یا سریال</span>
+            </nuxt-link> مورد نظرتون رو بدین.
+          </p>
+        </div>
+      <!-------------- Movie Not Found ---------------->
+      </div>
+
+
+      <!--------------  Search Container ---------------->
+      <!--رو اضافه کنینd-none اگر خواستین این قسمت رو حذف یا مخفی کنین فقط کافیه کلاس-->
+      <div v-if="data.data!=null || data.cast!=null" id="actor" class="search_collection">
+        <div class="container-fluid pl-md-4 pr-md-5 mt-n5">
+          <div v-if="data.data!=null" class="row">
+            <div v-for="(item,index) in data.data" :key="index" class="col-4 col-xl-1 col-md-2 col-sm-3 mt-2 mt-lg-4">
+              <nuxt-link v-if="item.type=='movie'" :to="{ name: 'movie-id', params: { id: item.id }}" class="actor">
+                <img :src="'https://thumb.contentpanel.click/thumb?w=272&h=404&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
+                <span class="block">{{ ChooseLang(item.name,item.name_fa) }}</span>
+              </nuxt-link>
+              <nuxt-link v-else-if="item.type=='episode'" :to="{ name: 'episode-id', params: { id: item.id }}" class="actor is-series">
+                <img :src="'https://thumb.contentpanel.click/thumb?w=272&h=404&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
+                <img :src="'https://thumb.contentpanel.click/thumb?w=272&h=404&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
+                <img :src="'https://thumb.contentpanel.click/thumb?w=272&h=404&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
+                <span class="block">{{ ChooseLang(item.name,item.name_fa) }}</span>
+              </nuxt-link>
+              <nuxt-link v-else :to="{ name: 'series-id', params: { id: item.id }}" class="actor is-series">
+                <img :src="'https://thumb.contentpanel.click/thumb?w=272&h=404&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
+                <img :src="'https://thumb.contentpanel.click/thumb?w=272&h=404&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
+                <img :src="'https://thumb.contentpanel.click/thumb?w=272&h=404&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
+                <span class="block">{{ ChooseLang(item.name,item.name_fa) }}</span>
+              </nuxt-link>
+            </div>
+          </div>
+          <div v-if="data.cast!=null" class="row">
+            <div v-for="(item,index) in data.cast" :key="index" class="col-4 col-xl-1 col-md-2 col-sm-3 mt-2 mt-lg-4">
+              <nuxt-link :to="{ name: 'cast-id', params: { id: item.id }}" class="actor">
+                <img :src="'https://thumb.contentpanel.click/thumb?w=141&h=214&q=100&a=c&src=https://cdn.upera.shop/s3/casts/'+item.image" :alt="item.name">
+                <span class="block">{{ ChooseLang(item.name,item.name_fa) }}</span>
+              </nuxt-link>
+            </div>
           </div>
         </div>
       </div>
-    </div>
     <!--------------  Search Container ---------------->
+    </div>
   </div>
 </template>
 <script>

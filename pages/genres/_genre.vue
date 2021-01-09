@@ -1,32 +1,46 @@
 <template>
-  <div id="episode">
-    <div v-if="data.movies!==null" id="actor" class="episodes_collection">
-      <div class="banner mt-5">
-        <div class="banner_container">
-          <img :src="'https://thumb.contentpanel.click/thumb?w=1920&h=1020&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/'+data.movies[0].backdrop" alt="">
-          <a href="#" class="back" @click.prevent="hasHistory() ? $router.go(-1) : $router.push('/')">
-            <img src="@/assets/img/icons/arrow-back.svg" width="30" alt="">
-          </a>
-        </div>
-        <div class="content px-3 px-lg-3 py-3">
-          <div class="d-flex justify-content-between align-items-center" />
-        </div>
-      </div>
-      <div class="container-fluid pl-md-4 pr-md-5 mt-n5  ">
-        <div id="episode_topNav" class="content px-0 px-lg-0 py-3 episode_topNav_conten">
-          <div class="d-flex justify-content-between align-items-center episode_topNav_box ">
-            <h2 class="h4 text-nowrap font-weight-bold mb-0">
-              {{ ChooseLangGenres($route.params.genre) }}
-            </h2>
-            <div class="series-select movie_selection">
-              <a href="#" class="back" @click.prevent="hasHistory() ? $router.go(-1) : $router.push('/')">
-                <i class="icon-arrow-back" />
-              </a>
+    <div id="checkcontainer">
+    <section v-if="data.movies!==null" id="slideshow" class="banner">
+      <div class="swiper-container showcase main-slideshow">
+        <div class="swiper-wrapper">
+          <div class="swiper-slide">
+            <div class="row no-gutters">
+              <div class="col-md-6 col-lg-8" />
+              <div class="col-md-6 col-lg-4 showcase-pic">
+                <img class="showcase-img d-none d-lg-block" :src="'https://thumb.contentpanel.click/thumb?w=800&h=400&zc=3&q=100&a=t&src=https://cdn.upera.shop/s3/backdrops/'+data.movies[0].backdrop" alt="">
+                <img class="showcase-img d-lg-none" :src="'https://thumb.contentpanel.click/thumb?w=400&h=300&zc=3&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/'+data.movies[0].backdrop" alt="">
+              </div>
+            </div>
+            <div
+              class="showcase-thumbnail-wrapper-outter d-flex align-items-center justify-content-between pr-gutter pr-md-3"
+            >
+              <div class="showcase-thumbnail-wrapper w-full">
+                <div class="d-flex h-full align-items-end">
+                  <div class="pr-md-4 pr-md-2 showcase-desc-wrapper">
+                    <div class="showcase-desc">
+                      <div class="h2 text-invert mb-1 mb-md-3">
+                        {{ ChooseLangGenres($route.params.genre) }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
+          <a href="#" class="back d-md-none" @click.prevent="hasHistory() ? $router.go(-1) : $router.push('/')">
+            <img src="@/assets/img/icons/arrow-back.svg" width="30" alt="">
+          </a>
+          <a href="#" class="back2 d-none d-md-block" @click.prevent="hasHistory() ? $router.go(-1) : $router.push('/')">
+            <img src="@/assets/img/icons/arrow-back2.svg" width="30" alt="">
+          </a>
         </div>
+      </div>
+    </section>
+  <div id="episode">
+    <div v-if="data.movies!==null" id="actor" class="episodes_collection">
 
-        <div class="row">
+        <div class="container-fluid pl-md-4 pr-md-5 mt-3  ">
+          <div class="row">
           <div v-for="(item,index) in data.movies" :key="index" class="col-4 col-xl-1 col-md-2 col-sm-3 mt-2 mt-lg-4">
             <nuxt-link v-if="item.type=='movie'" :to="{ name: 'movie-id', params: { id: item.id }}" class="actor">
               <img :src="'https://thumb.contentpanel.click/thumb?w=272&h=404&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
@@ -58,6 +72,7 @@
       <span slot="no-results" />
     </infinite-loading>
   </div>
+</div>
 </template>
 
 <script>

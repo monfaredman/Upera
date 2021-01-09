@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div id="checkcontainer">
     <section id="slideshow" class="slideshow d-none d-md-block mt-5">
-      <div class="container-fluid">
+      <div>
         <div v-swiper:topSwiper="swiperOption" class="swiper-container app-slider" dir="rtl">
           <div class="swiper-wrapper">
             <!-- Slides -->
@@ -65,13 +65,13 @@
       </div>
     </section>
 
-    <div id="page" class="mb-5 mt-5">
+    <div id="page" class="container-fluid mb-5 mt-5">
       <!--       <h5 class="text-center my-5 px-md-5">
         با دانلود اپلیکیشن پف‌فیلم هر هفته با اینترنت نیم‌بها هفت فیلم رایگان ایرانی و
         خارجی ببینید
       </h5> -->
 
-      <div class="container-fluid mb-5 mt-5 app_container">
+      <div class="mb-5 mt-5 app_container">
         <div class="accordion">
           <h5 class="mb-1 mt-4 collapse-header ">
             <b-button id="collapse-1" v-b-toggle="'accordion-1'" variant="link" class="app_container_title">

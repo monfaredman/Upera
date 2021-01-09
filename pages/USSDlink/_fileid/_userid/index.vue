@@ -14,7 +14,7 @@ export default {
 
   async asyncData (context) {
 
-  	context.redirect('http://'+context.req.headers.host+'/movie/'+context.params.id)
+  	context.redirect('https://web.upera.tv/USSDlink/'+context.params.fileid+'/'+context.params.userid)
   },
 }
 </script>

@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <section id="banner" class="mt-5  pt-md-3 pt-lg-5">
+  <div id="checkcontainer" class="container-fluid">
+    <section id="banner" class="mt-5 pt-lg-5 pt-md-5">
       <div class="container">
         <div>
           <b-modal id="callbackModal" ref="callbackModal" :centered="false" hide-footer hide-header size="lg" no-close-on-backdrop hide-backdrop no-close-on-esc modal-class="modal-download-link" static no-enforce-focus>
@@ -184,30 +184,30 @@
 
                   <div v-if="backtoapp" class="download-links-item">
                     <div class="row">
-                       <div class="col-12">
-                      <a href="uperaapp://upera?type=download&success=false" class="btn btn-main btn-block">
-                        نمایش فیلم
-                        <i class="fa fa-back pr-2" />
-                      </a>
-                    </div>
+                      <div class="col-12">
+                        <a href="uperaapp://upera?type=download&success=false" class="btn btn-main btn-block">
+                          نمایش فیلم
+                          <i class="fa fa-back pr-2" />
+                        </a>
+                      </div>
                     </div>
                   </div>
                   <div v-else-if="title_msg.id" class="download-links-item">
                     <div class="row">
-                       <div class="col-12">
-                      <a v-if="title_msg.type=='movie'" href="" class="btn btn-second btn-block" @click.prevent="Push2(title_msg.id,title_msg.type)">
-                        بازگشت به صفحه فیلم
-                        <i class="fa fa-arrow-alt-circle-left" />
-                      </a>
-                      <a v-else-if="title_msg.type=='series'" class="btn btn-second btn-block" href="" @click.prevent="Push2(title_msg.id,title_msg.type)">
-                        بازگشت به صفحه سریال
-                        <i class="fa fa-arrow-alt-circle-left" />
-                      </a>
-                      <a v-else href="" class="btn btn-second btn-block" @click.prevent="Push2(title_msg.id,title_msg.type)">
-                        بازگشت به صفحه این قسمت سریال
-                        <i class="fa fa-arrow-alt-circle-left" />
-                      </a>
-                    </div>
+                      <div class="col-12">
+                        <a v-if="title_msg.type=='movie'" href="" class="btn btn-second btn-block" @click.prevent="Push2(title_msg.id,title_msg.type)">
+                          بازگشت به صفحه فیلم
+                          <i class="fa fa-arrow-alt-circle-left" />
+                        </a>
+                        <a v-else-if="title_msg.type=='series'" class="btn btn-second btn-block" href="" @click.prevent="Push2(title_msg.id,title_msg.type)">
+                          بازگشت به صفحه سریال
+                          <i class="fa fa-arrow-alt-circle-left" />
+                        </a>
+                        <a v-else href="" class="btn btn-second btn-block" @click.prevent="Push2(title_msg.id,title_msg.type)">
+                          بازگشت به صفحه این قسمت سریال
+                          <i class="fa fa-arrow-alt-circle-left" />
+                        </a>
+                      </div>
                     </div>
                   </div>
                 </div>
