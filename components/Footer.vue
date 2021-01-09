@@ -71,51 +71,49 @@
               </ul>
             </div>
             <div class="col-md-4 col-lg-4">
-              
-                <div class="d-flex justify-content-center position-relative">
-                  <div class="dl-app">
-                    <div class="d-flex align-items-center justify-content-center">
-                      <div class="dl-links-wrapper text-center pl-lg-5">
-                        <div class="text-invert mb-1 pb-1 d-inline-block dl-links-title">
-                          <nuxt-link to="/app">
-                          {{ $t('new.download_app') }}
-                          </nuxt-link>
-                        </div>
-                        <div class="dl-links d-flex justify-content-between">
-                          <a class="text-invert d-flex justify-content-center" href="" @click.prevent="install('https://play.google.com/store/apps/details?id=com.techera.upera')">
-                            <i class="icon-android" />
-                          </a>
-                          <nuxt-link to="/app" class="text-invert d-flex justify-content-center">
-                            <i class="icon-tv" />
-                          </nuxt-link>
-                          <nuxt-link to="/app" class="text-invert d-flex justify-content-center">
-                            <i class="icon-ios" />
-                          </nuxt-link>
-                        </div>
-                      </div>
-                      <div class="dl-qr hide-mobile hide-tablet">
+              <div class="d-flex justify-content-center position-relative">
+                <div class="dl-app">
+                  <div class="d-flex align-items-center justify-content-center">
+                    <div class="dl-links-wrapper text-center pl-lg-5">
+                      <div class="text-invert mb-1 pb-1 d-inline-block dl-links-title">
                         <nuxt-link to="/app">
-                        <img :src="'https://chart.apis.google.com/chart?cht=qr&chs=150x150&chld=L|0&chl=https://upera.tv/app?ref='+$cookiz.get('ref')">
+                          {{ $t('new.download_app') }}
+                        </nuxt-link>
+                      </div>
+                      <div class="dl-links d-flex justify-content-between">
+                        <a class="text-invert d-flex justify-content-center" href="" @click.prevent="install('https://play.google.com/store/apps/details?id=com.techera.upera')">
+                          <i class="icon-android" />
+                        </a>
+                        <nuxt-link to="/app" class="text-invert d-flex justify-content-center">
+                          <i class="icon-tv" />
+                        </nuxt-link>
+                        <nuxt-link to="/app" class="text-invert d-flex justify-content-center">
+                          <i class="icon-ios" />
                         </nuxt-link>
                       </div>
                     </div>
+                    <div class="dl-qr hide-mobile hide-tablet">
+                      <nuxt-link to="/app">
+                        <img :src="'https://chart.apis.google.com/chart?cht=qr&chs=150x150&chld=L|0&chl=https://upera.tv/app?ref='+$cookiz.get('ref')">
+                      </nuxt-link>
+                    </div>
                   </div>
                 </div>
-              
+              </div>
             </div>
             <div class="col-lg-4 hide-mobile hide-tablet">
               <div class="d-flex namad-wrapper">
                 <div class="namad pr-2">
                   <div class="namad-box-2">
- <img src="/images/enamad.svg" width="80">
+                    <img src="/images/enamad.svg" width="80">
                   </div>
                   <div class="namad-box-2">
-<img src="/images/enamad.svg" width="80">
+                    <img src="/images/enamad.svg" width="80">
                   </div>
                 </div>
                 <div class="namad pr-2">
                   <div class="namad-box">
-<img src="/images/enamad.svg" width="80">
+                    <img src="/images/enamad.svg" width="80">
                   </div>
                 </div>
               </div>

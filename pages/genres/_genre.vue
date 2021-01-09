@@ -1,5 +1,5 @@
 <template>
-    <div id="checkcontainer">
+  <div id="checkcontainer">
     <section v-if="data.movies!==null" id="slideshow" class="banner">
       <div class="swiper-container showcase main-slideshow">
         <div class="swiper-wrapper">
@@ -36,43 +36,42 @@
         </div>
       </div>
     </section>
-  <div id="episode">
-    <div v-if="data.movies!==null" id="actor" class="episodes_collection">
-
+    <div id="episode">
+      <div v-if="data.movies!==null" id="actor" class="episodes_collection">
         <div class="container-fluid pl-md-4 pr-md-5 mt-3  ">
           <div class="row">
-          <div v-for="(item,index) in data.movies" :key="index" class="col-4 col-xl-1 col-md-2 col-sm-3 mt-2 mt-lg-4">
-                <nuxt-link :to="{ name: item.type+'-id', params: { id: item.id }}" class="actor" :class="{'is-series': item.type!='movie'}">
-                  <img :src="'https://thumb.contentpanel.click/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
-                  <img v-if="item.type!='movie'" :src="'https://thumb.contentpanel.click/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
-                  <img v-if="item.type!='movie'" :src="'https://thumb.contentpanel.click/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
-                  <span v-if="!item.ir && item.persian" class="label label-rounded label-red label-1">دوبله</span>
-                  <span v-if="!item.ir && !item.persian" class="label label-rounded label-warning label-1">زیرنویس</span>
-                  <span v-if="item.free" class="label label-blue label-2">رایگان</span>
-                </nuxt-link>
-                <div class="mt-2">
-                  <h6 v-if="item.type!='episode'" class="mt-2 small font-weight-normal">
-                    {{ ChooseLang(item.name,item.name_fa) }}
-                  </h6>
-                  <h6 v-else class="mt-2 small font-weight-normal">
-                    {{ $t('show.episode') }} {{ item.episode_number }} {{ ChooseLang(item.series_name,item.series_name_fa) }}<span v-if="item.season_number>1"> {{ item.season_number }}</span>
-                  </h6>
-                </div>
+            <div v-for="(item,index) in data.movies" :key="index" class="col-4 col-xl-1 col-md-2 col-sm-3 mt-2 mt-lg-4">
+              <nuxt-link :to="{ name: item.type+'-id', params: { id: item.id }}" class="actor" :class="{'is-series': item.type!='movie'}">
+                <img :src="'https://thumb.contentpanel.click/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
+                <img v-if="item.type!='movie'" :src="'https://thumb.contentpanel.click/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
+                <img v-if="item.type!='movie'" :src="'https://thumb.contentpanel.click/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
+                <span v-if="!item.ir && item.persian" class="label label-rounded label-red label-1">دوبله</span>
+                <span v-if="!item.ir && !item.persian" class="label label-rounded label-warning label-1">زیرنویس</span>
+                <span v-if="item.free" class="label label-blue label-2">رایگان</span>
+              </nuxt-link>
+              <div class="mt-2">
+                <h6 v-if="item.type!='episode'" class="mt-2 small font-weight-normal">
+                  {{ ChooseLang(item.name,item.name_fa) }}
+                </h6>
+                <h6 v-else class="mt-2 small font-weight-normal">
+                  {{ $t('show.episode') }} {{ item.episode_number }} {{ ChooseLang(item.series_name,item.series_name_fa) }}<span v-if="item.season_number>1"> {{ item.season_number }}</span>
+                </h6>
+              </div>
+            </div>
           </div>
         </div>
       </div>
+      <div v-if="distance < 0 && data.last_page > 1" class="text-center p-2">
+        <button class="btn-load-more btn btn-main" @click="manualLoad">
+          {{ $t('home.load_more') }}
+        </button>
+      </div>
+      <infinite-loading v-else-if="data.last_page > 1" ref="infiniteLoading" @infinite="infiniteHandler">
+        <span slot="no-more" />
+        <span slot="no-results" />
+      </infinite-loading>
     </div>
-    <div v-if="distance < 0 && data.last_page > 1" class="text-center p-2">
-      <button class="btn-load-more btn btn-main" @click="manualLoad">
-        {{ $t('home.load_more') }}
-      </button>
-    </div>
-    <infinite-loading v-else-if="data.last_page > 1" ref="infiniteLoading" @infinite="infiniteHandler">
-      <span slot="no-more" />
-      <span slot="no-results" />
-    </infinite-loading>
   </div>
-</div>
 </template>
 
 <script>
