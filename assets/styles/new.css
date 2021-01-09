@@ -4827,6 +4827,10 @@ top: 40px;
     transition-property: opacity, visibility;
     transition-delay: 0s;
 }
+
+.jw-flag-play-rejected #flowplayer-rate {
+    visibility: hidden;
+}
 .jw-flag-user-inactive.jw-state-playing:not(.jw-flag-media-audio):not(.jw-flag-audio-player):not(.jw-flag-ads-vpaid-controls):not(.jw-flag-casting) #flowplayer-back-button, .jw-flag-user-inactive.jw-state-buffering:not(.jw-flag-media-audio):not(.jw-flag-audio-player):not(.jw-flag-ads-vpaid-controls):not(.jw-flag-casting) #flowplayer-back-button {
     visibility: hidden;
     pointer-events: none;
