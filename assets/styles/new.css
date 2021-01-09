@@ -388,6 +388,9 @@ input, button, select, optgroup, textarea {
   .count-down + .count-down {
     margin-right: 0.5rem;
   }
+.episodes_collection .label-2,.search_collection .label-2 {
+    left: 10% !important;
+}
 }
 
 .count-down .count-down-num {
@@ -1652,6 +1655,9 @@ a.title, a.subtitle {
   .title {
     font-size: 1.125rem;
   }
+.episodes_collection .label-2,.search_collection .label-2 {
+    left: 0.9rem !important;
+}
 }
 
 @media (min-width: 768px) {
@@ -7655,11 +7661,17 @@ body widget {
         opacity: 1 !important;
     }
 
+.episodes_collection .label-2,.search_collection .label-2 {
+    left: 10% !important;
+}
 
+.episodes_collection .label-1,.search_collection .label-1 {
+    right: 15% !important;
+}
 
-
-
-
+.episodes_collection .label,.search_collection .label {
+    font-size: 8px !important;
+}
 
 
     .app_container img {
@@ -8302,6 +8314,9 @@ body widget {
         margin: 0px 0px 0 0px;
     }
 
+.episodes_collection .label-2,.search_collection .label-2 {
+    left: 1.4rem !important;
+}
     #movie .banner .content .poster .viedomark {
         position: absolute;
         top: -11px;
@@ -8505,7 +8520,9 @@ body widget {
         padding: 0 0px 0 0px !important;
         margin: 0px 29px 0 29px;
     }
-
+.episodes_collection .label-2,.search_collection .label-2{
+    left:-2.5rem !important;
+}
     #actor > .container-fluid > .row_actor_movie > div {
         padding: 0 0px 0 0px !important;
         margin: 0px 25px 0 25px;
@@ -8593,6 +8610,9 @@ body widget {
         padding: 0 0px 0 0px !important;
         margin: 0px 18px 0 18px;
     }
+.episodes_collection .label-2,.search_collection .label-2{
+    left:-1.1rem !important;
+}
 }
 
 #Toastmsg_box {
@@ -9506,6 +9526,7 @@ color: #fff;
 .horizontal-list-container .movielabel{
 	overflow: hidden;
 }
+
   .label-1{
     position: absolute;
     top: 0.5rem;
@@ -9521,6 +9542,18 @@ color: #fff;
     border-radius: 0.4375rem 0.4375rem 2rem 0.4375rem;
     text-align: left;
   }
+
+
+.episodes_collection .label,.search_collection .label{
+    color: #fff !important;
+    font-size: 0.625rem;
+        display: inline-block;
+    padding: 0.25rem 0.5rem;
+}
+
+
+
+
 
   .movielabel .label-2{
 	top: 16px;
@@ -9569,7 +9602,7 @@ color: #fff;
 }
 
 @media (max-width: 500px) {
-  .label-1{
+  .horizontal-list-container .label-1{
     top: 1px;
     right: 1px;
   }
@@ -9578,7 +9611,7 @@ color: #fff;
 
 
 @media (max-width: 356px) {
-  .label-1{
+  .horizontal-list-container .label-1{
     top: 0;
     right: 0;
   }

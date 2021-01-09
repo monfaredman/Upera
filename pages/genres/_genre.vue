@@ -42,22 +42,22 @@
         <div class="container-fluid pl-md-4 pr-md-5 mt-3  ">
           <div class="row">
           <div v-for="(item,index) in data.movies" :key="index" class="col-4 col-xl-1 col-md-2 col-sm-3 mt-2 mt-lg-4">
-            <nuxt-link v-if="item.type=='movie'" :to="{ name: 'movie-id', params: { id: item.id }}" class="actor">
-              <img :src="'https://thumb.contentpanel.click/thumb?w=272&h=404&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
-              <span class="block">{{ ChooseLang(item.name,item.name_fa) }}</span>
-            </nuxt-link>
-            <nuxt-link v-else-if="item.type=='episode'" :to="{ name: 'episode-id', params: { id: item.id }}" class="actor is-series">
-              <img :src="'https://thumb.contentpanel.click/thumb?w=272&h=404&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
-              <img :src="'https://thumb.contentpanel.click/thumb?w=272&h=404&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
-              <img :src="'https://thumb.contentpanel.click/thumb?w=272&h=404&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
-              <span class="block">{{ ChooseLang(item.name,item.name_fa) }}</span>
-            </nuxt-link>
-            <nuxt-link v-else :to="{ name: 'series-id', params: { id: item.id }}" class="actor is-series">
-              <img :src="'https://thumb.contentpanel.click/thumb?w=272&h=404&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
-              <img :src="'https://thumb.contentpanel.click/thumb?w=272&h=404&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
-              <img :src="'https://thumb.contentpanel.click/thumb?w=272&h=404&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
-              <span class="block">{{ ChooseLang(item.name,item.name_fa) }}</span>
-            </nuxt-link>
+                <nuxt-link :to="{ name: item.type+'-id', params: { id: item.id }}" class="actor" :class="{'is-series': item.type!='movie'}">
+                  <img :src="'https://thumb.contentpanel.click/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
+                  <img v-if="item.type!='movie'" :src="'https://thumb.contentpanel.click/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
+                  <img v-if="item.type!='movie'" :src="'https://thumb.contentpanel.click/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
+                  <span v-if="!item.ir && item.persian" class="label label-rounded label-red label-1">دوبله</span>
+                  <span v-if="!item.ir && !item.persian" class="label label-rounded label-warning label-1">زیرنویس</span>
+                  <span v-if="item.free" class="label label-blue label-2">رایگان</span>
+                </nuxt-link>
+                <div class="mt-2">
+                  <h6 v-if="item.type!='episode'" class="mt-2 small font-weight-normal">
+                    {{ ChooseLang(item.name,item.name_fa) }}
+                  </h6>
+                  <h6 v-else class="mt-2 small font-weight-normal">
+                    {{ $t('show.episode') }} {{ item.episode_number }} {{ ChooseLang(item.series_name,item.series_name_fa) }}<span v-if="item.season_number>1"> {{ item.season_number }}</span>
+                  </h6>
+                </div>
           </div>
         </div>
       </div>
