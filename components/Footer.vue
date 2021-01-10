@@ -11,7 +11,7 @@
               <nuxt-link to="/profile/faq" class="nav-link">
                 {{ $t('new.FAQ') }}
               </nuxt-link>
-<!--               <nuxt-link to="/profile/internet" class="nav-link">
+              <!--               <nuxt-link to="/profile/internet" class="nav-link">
                 {{ $t('new.halfPrice') }}
               </nuxt-link> -->
               <a href="https://web.upera.tv/affiliate.html" target="_blank" class="nav-link">
@@ -62,12 +62,12 @@
                 <nuxt-link to="/profile/faq" class="nav-link text-black">
                   {{ $t('new.FAQ') }}
                 </nuxt-link>
-<!--                 <nuxt-link to="/profile/internet" class="nav-link text-black">
+                <!--                 <nuxt-link to="/profile/internet" class="nav-link text-black">
                   {{ $t('new.halfPrice') }}
                 </nuxt-link> -->
-              <a href="https://web.upera.tv/affiliate.html" target="_blank" class="nav-link text-black">
-                همکاری
-              </a>
+                <a href="https://web.upera.tv/affiliate.html" target="_blank" class="nav-link text-black">
+                  همکاری
+                </a>
                 <nuxt-link to="/profile/terms" class="nav-link text-black">
                   {{ $t('new.term') }}
                 </nuxt-link>

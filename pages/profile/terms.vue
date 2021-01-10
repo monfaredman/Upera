@@ -1,6 +1,6 @@
 <template>
   <div id="checkcontainer" class="container-fluid">
-    <div class="container mt-5 pt-lg-5 pt-md-5 mb-5 faq-page">
+    <div class="container mt-5 pt-lg-5 pt-md-5 mb-5 pt-1  faq-page">
       <section id="banner">
         <div class="container">
           <header class="headline mt-5">
@@ -15,7 +15,7 @@
       <span class="pl-2 title">{{ $t('new.term') }}</span>
     </h4> -->
       <!-- <hr> -->
-      <div class="body text-justify" v-html="data.terms" />
+      <div v-lazy-load="data.terms" class="body text-justify" />
 
       <section id="banner">
         <div class="container">
@@ -31,7 +31,7 @@
       <span class="pl-2 title">{{ $t('new.term') }}</span>
     </h4> -->
       <!-- <hr> -->
-      <div class="body text-justify" v-html="data.privacy" />
+      <div v-lazy-load="data.privacy" class="body text-justify" />
     </div>
   </div>
 </template>

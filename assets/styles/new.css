@@ -7025,6 +7025,8 @@ body widget {
 
 
 @media (min-width: 320px) {
+
+
     .feature > .title {
         font-size: 2em !important;
     }
@@ -9615,6 +9617,9 @@ color: #fff;
 
 
 @media (max-width: 356px) {
+  .app_container .btn{
+font-size: 0.8rem;
+  }
   .horizontal-list-container .label-1{
     top: 0;
     right: 0;
@@ -10072,3 +10077,5 @@ body .border-bottom-md-gray {
     #genre img {
         border-radius: 6% 6% 6% 6%;
     }
+
+

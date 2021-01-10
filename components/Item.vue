@@ -53,8 +53,8 @@
           <div class="row no-gutters">
             <div class="col-md-6 col-lg-5" />
             <div class="col-md-6 col-lg-7 showcase-pic">
-              <img data-not-lazy class="showcase-img d-none d-lg-block" :src="'https://thumb.contentpanel.click/thumb?w=1120&h=576&q=100&a=t&zc=1&src=https://cdn.upera.shop/s3/backdrops/'+ChooseLang(data.item.backdrop,data.item.backdrop_fa)" :alt="data.item.name">
-              <img data-not-lazy class="showcase-img d-lg-none" :src="'https://thumb.contentpanel.click/thumb?w=375&h=300&q=100&a=c&zc=1&src=https://cdn.upera.shop/s3/backdrops/'+ChooseLang(data.item.backdrop,data.item.backdrop_fa)" :alt="data.item.name">
+              <img data-back="https://placehold.it/1120x576" class="showcase-img d-none d-lg-block" :src="'https://thumb.contentpanel.click/thumb?w=1120&h=576&q=100&a=t&zc=1&src=https://cdn.upera.shop/s3/backdrops/'+ChooseLang(data.item.backdrop,data.item.backdrop_fa)" :alt="data.item.name">
+              <img data-back="https://placehold.it/375x300" class="showcase-img d-lg-none" :src="'https://thumb.contentpanel.click/thumb?w=375&h=300&q=100&a=c&zc=1&src=https://cdn.upera.shop/s3/backdrops/'+ChooseLang(data.item.backdrop,data.item.backdrop_fa)" :alt="data.item.name">
             </div>
           </div>
           <div id="showcase-thumbnail-wrapper-outter" class="showcase-thumbnail-wrapper-outter d-flex align-items-center justify-content-between pr-gutter p-lg-3 p-md-3">
@@ -62,7 +62,7 @@
               <div class="d-flex h-full align-items-end">
                 <div class="thumbnail">
                   <nuxt-link :to="{ name: type+'-id', params: { id: data.item.id }}">
-                    <img class="thumbnail" :src="'https://thumb.contentpanel.click/thumb?w=207&h=307&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+data.item.poster" :alt="data.item.name" @load="itemsize('e')" @error="itemsize('e')">
+                    <img data-back="https://placehold.it/207x307" class="thumbnail" :src="'https://thumb.contentpanel.click/thumb?w=207&h=307&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+data.item.poster" :alt="data.item.name" @load="itemsize('e')" @error="itemsize('e')">
                   </nuxt-link>
                 </div>
                 <div class="pr-md-4 pr-2 pr-0 mr-0 showcase-desc-wrapper h-full">
@@ -271,7 +271,7 @@
               نمایش تیزر
             </div>
             <div class="article-img-holder d-none d-lg-block">
-              <img class="article-img" :src="'https://thumb.contentpanel.click/thumb?w=413&h=258&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/'+Chooseback(data.item.backdrop_teaser,data.item.backdrop)" :alt="'تیزر '+data.item.name_fa">
+              <img data-back="https://placehold.it/413x558" class="article-img" :src="'https://thumb.contentpanel.click/thumb?w=413&h=258&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/'+Chooseback(data.item.backdrop_teaser,data.item.backdrop)" :alt="'تیزر '+data.item.name_fa">
               <a href="#" class="play-movie text-invert">
                 <i class="icon-play" />
               </a>
@@ -353,7 +353,7 @@
           <!-- Slides -->
           <div v-for="(item,index) in data.similar" :key="index" class="swiper-slide" :class="{'movielabel':true}">
             <nuxt-link :to="{ name: 'movie-id', params: { id: item.id }}" :class="{'is-series': false}">
-              <img :src="'https://thumb.contentpanel.click/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
+              <img data-back="https://placehold.it/142x212" :src="'https://thumb.contentpanel.click/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
               <!--               <img v-if="item.type!='movie'" :src="'https://thumb.contentpanel.click/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
               <img v-if="item.type!='movie'" :src="'https://thumb.contentpanel.click/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name"> -->
               <span v-if="!item.ir && item.persian" class="label label-rounded label-red label-1">دوبله</span>
@@ -376,8 +376,8 @@
         <div class="swiper-slide">
           <div class="row no-gutters">
             <div class="col-md-6 col-lg-7 showcase-pic">
-              <img data-not-lazy class="showcase-img d-none d-lg-block" :src="'https://thumb.contentpanel.click/thumb?w=1120&h=400&q=100&a=c&zc=1&src=https://cdn.upera.shop/s3/backdrops/'+data.last_episode.backdrop" :alt="data.last_episode.name">
-              <img data-not-lazy class="showcase-img d-lg-none" :src="'https://thumb.contentpanel.click/thumb?w=375&h=300&q=100&a=c&zc=1&src=https://cdn.upera.shop/s3/backdrops/'+data.last_episode.backdrop" :alt="data.last_episode.name">
+              <img data-back="https://placehold.it/1120x400" class="showcase-img d-none d-lg-block" :src="'https://thumb.contentpanel.click/thumb?w=1120&h=400&q=100&a=c&zc=1&src=https://cdn.upera.shop/s3/backdrops/'+data.last_episode.backdrop" :alt="data.last_episode.name">
+              <img data-back="https://placehold.it/375x300" class="showcase-img d-lg-none" :src="'https://thumb.contentpanel.click/thumb?w=375&h=300&q=100&a=c&zc=1&src=https://cdn.upera.shop/s3/backdrops/'+data.last_episode.backdrop" :alt="data.last_episode.name">
             </div>
             <div class="col-md-6 col-lg-5" />
           </div>

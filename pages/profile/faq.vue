@@ -1,7 +1,7 @@
 <template>
   <div id="checkcontainer" class="container-fluid">
-    <div class="container mt-5 pt-lg-5 pt-md-5 mb-5 faq-page">
-      <h4 class="font-weight-bold h6 mt-5 pt-2">
+    <div class="container mt-5 pt-lg-5 pt-md-5 mb-5 pt-1  faq-page">
+      <h4 class="font-weight-bold h6 mt-5  pt-2">
         <span class="pl-2 title">{{ $t('new.faqTitle') }}</span>
       </h4>
       <div class="input-group search-field with-filter my-4 insert_comment search_box_container">

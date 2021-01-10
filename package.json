@@ -49,6 +49,7 @@
     "vue-sweetalert2": "^4.1.1"
   },
   "devDependencies": {
+    "@nuxt/image": "^0.0.4",
     "babel-eslint": "^10.1.0",
     "eslint": "^7.15.0",
     "eslint-config-prettier": "^6.15.0",

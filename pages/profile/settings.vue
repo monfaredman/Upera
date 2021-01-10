@@ -1,6 +1,6 @@
 <template>
   <div id="checkcontainer" class="container-fluid">
-    <div class="container mt-5 pt-lg-5 pt-md-5 mb-5 faq-page">
+    <div class="container mt-5 pt-lg-5 pt-md-5 mb-5 pt-1  faq-page">
       <div class="app_container_pricing mt-4 p-2 mt-md-4 mb-5">
         <header class="headline py-md-5">
           <h5 class="title font-weight-bold">

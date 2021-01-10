@@ -1,6 +1,6 @@
 <template>
   <div class="container  pt-md-3 pt-lg-4 mb-5 faq-page">
-    <div class="app_container_pricing mt-4 p-2 mt-md-4 mb-5">
+    <div class="app_container_pricing mt-4 p-2  pt-1 mt-md-4 mb-5">
       <div class="mt-3 pt-2 mt-lg-5 pt-lg-5 font-weight-normal">
         <p class="pricing_ads_lable">
           با خرید اشتراک پف‌‌‌‌‌‌‌‌‌‌‌‌‌فیلم <strong>بدون پرداخت هیچ‌گونه هزینه‌ی دیگری</strong> بی‌‌وقفه فیلم ببین.

@@ -1,6 +1,6 @@
 <template>
   <div id="checkcontainer" class="container-fluid">
-    <div class="container mt-5 pt-lg-5 pt-md-5 mb-5 faq-page">
+    <div class="container mt-5 pt-lg-5 pt-md-5 mb-5 pt-1  faq-page">
       <section id="banner">
         <div class="container">
           <header class="headline mt-5">
@@ -15,7 +15,7 @@
       <span class="pl-2 title">{{ $t('footer.aboutus') }}</span>
     </h4> -->
       <!-- <hr> -->
-      <div class="body text-justify" v-html="data" />
+      <div v-lazy-load="data" class="body text-justify" />
     </div>
   </div>
 </template>
