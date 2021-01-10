@@ -211,6 +211,9 @@ export const mutations = {
                     state.divcount=state.play_button+2
                 else
                     state.divcount=state.play_button+1
+            }else{
+                if(state.ussd)
+                    state.divcount=state.play_button+1
             }
 
 
