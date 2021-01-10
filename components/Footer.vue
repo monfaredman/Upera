@@ -110,7 +110,7 @@
             <div class="col-lg-4 hide-mobile hide-tablet">
               <div class="d-flex namad-wrapper">
                 <div class="namad pr-2">
-                  <div class="namad-box-2">
+                  <div class="namad-box-2" @click="samandehi">
                     <img src="/images/enamad.svg" width="80">
                   </div>
                   <div class="namad-box-2">
@@ -342,7 +342,10 @@ return e
     },
     getapp(){
       this.$router.push({ name: 'app' })
-    }
+    },
+samandehi(){
+    window.open('https://logo.samandehi.ir/Verify.aspx?id=197123&p=nbpdbsiyyndtnbpdodrfqfti', 'Popup','toolbar=no, scrollbars=no, location=no, statusbar=no, menubar=no, resizable=0, width=450, height=630, top=30')
+  }
   }
 }
 </script>
