@@ -14,36 +14,6 @@
               <div>
                 <div class="download-links-body download-links-body-header" :class="{ 'download-links-2': backtoapp }">
                   <div class="download-links-items">
-                    <div class="col-12">
-                      <svg v-if="loading" id="L9" class="svg-loader" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 100 100" enable-background="new 0 0 0 0" xml:space="preserve"><path data-v-28f0b4cb="" fill="#373737" d="M73,50c0-12.7-10.3-23-23-23S27,37.3,27,50 M30.9,50c0-10.5,8.5-19.1,19.1-19.1S69.1,39.5,69.1,50" transform="rotate(109.69 50 50)"><animateTransform data-v-28f0b4cb="" attributeName="transform" attributeType="XML" type="rotate" dur="1s" from="0 50 50" to="360 50 50" repeatCount="indefinite" /></path></svg>
-
-
-                      <span v-if="error && !loading" class="text-danger h6 text-justify">{{ message }}<br><br></span>
-
-                      <span v-else-if="!loading" class="h6 text-justify">مدت زمان سانس :{{ screening.ekran_hour }} ساعت | زمان باقیمانده تا پایان سانس شما : {{ screening.owned_period_end }}<br><br></span>
-
-                      <span v-show="presale && !loading" class="text-danger h6">شما بلیط اکران را پیش خرید کرده اید، این به این معناست که شما برای مشاهده فیلم از طریق لینک پیامک شده که پس از خرید به شما ارسال شده است، از {{ presale_date }} می توانید فیلم را مشاهده کنید و در این روز از ساعتی که شروع به دیدن فیلم می کنید به مدت {{ screening.ekran_hour }} ساعت، وقت دارید تا فیلم را مشاهده نمایید.ما نیز از طریق پیامک در این روز شما را مطلع خواهیم کرد.<br><br></span>
-
-                      <span v-show="presale && !loading" class="text-danger h6">آخرین روز اکران: {{ screening.ekran_period_end }}<br><br></span>
-
-                      <span v-show="presale && !loading" class="text-danger h6 text-justify">برای تماشا از خانه، سانس سینمای آنلاین {{ screening.ekran_hour }} ساعته است، طوری تنظیم کنید که تماشای کامل فیلم را در سانس خود از دست ندهید.<br><br></span>
-                    </div>
-                    <div v-if="!loading && error">
-                      <div class="offset-2 col-8">
-                        <img class="img-fluid" src="@/assets/img/failed.png">
-                      </div>
-                      <div v-show="get_verification" class="form-group">
-                        <div class="col-12 col-sm-12">
-                          <label for="verification">کد تاییدیه</label>
-                          <input v-model="verification" name="verification"
-                                 class="form-control" type="text" placeholder="کد تاییدیه"
-                          >
-                        </div>
-                      </div>
-                    </div>
-
-
-
                     <client-only>
                       <countdown v-if="presale" :left-time="presale * 1000">
                         <div slot="process" slot-scope="{ timeObj }" class="d-flex align-items-center justify-content-center count-down-wrapper">
@@ -82,6 +52,37 @@
                         </div>
                       </countdown>
                     </client-only>
+
+                    <div class="col-12">
+                      <svg v-if="loading" id="L9" class="svg-loader" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 100 100" enable-background="new 0 0 0 0" xml:space="preserve"><path data-v-28f0b4cb="" fill="#373737" d="M73,50c0-12.7-10.3-23-23-23S27,37.3,27,50 M30.9,50c0-10.5,8.5-19.1,19.1-19.1S69.1,39.5,69.1,50" transform="rotate(109.69 50 50)"><animateTransform data-v-28f0b4cb="" attributeName="transform" attributeType="XML" type="rotate" dur="1s" from="0 50 50" to="360 50 50" repeatCount="indefinite" /></path></svg>
+
+
+                      <span v-if="error && !loading" class="text-danger h6 text-justify">{{ message }}<br><br></span>
+
+                      <span v-else-if="!loading" class="h6 text-justify">مدت زمان سانس :{{ screening.ekran_hour }} ساعت | زمان باقیمانده تا پایان سانس شما : {{ screening.owned_period_end }}<br><br></span>
+
+                      <span v-show="presale && !loading" class="text-danger h6">شما بلیط اکران را پیش خرید کرده اید، این به این معناست که شما برای مشاهده فیلم از طریق لینک پیامک شده که پس از خرید به شما ارسال شده است، از {{ presale_date }} می توانید فیلم را مشاهده کنید و در این روز از ساعتی که شروع به دیدن فیلم می کنید به مدت {{ screening.ekran_hour }} ساعت، وقت دارید تا فیلم را مشاهده نمایید.ما نیز از طریق پیامک در این روز شما را مطلع خواهیم کرد.<br><br></span>
+
+                      <span v-show="presale && !loading" class="text-danger h6">آخرین روز اکران: {{ screening.ekran_period_end }}<br><br></span>
+
+                      <span v-show="presale && !loading" class="text-danger h6 text-justify">برای تماشا از خانه، سانس سینمای آنلاین {{ screening.ekran_hour }} ساعته است، طوری تنظیم کنید که تماشای کامل فیلم را در سانس خود از دست ندهید.<br><br></span>
+                    </div>
+                    <div v-if="!loading && error">
+                      <div class="offset-2 col-8">
+                        <img class="img-fluid" src="@/assets/img/failed.png">
+                      </div>
+                      <div v-show="get_verification" class="form-group">
+                        <div class="col-12 col-sm-12">
+                          <label for="verification">کد تاییدیه</label>
+                          <input v-model="verification" name="verification"
+                                 class="form-control" type="text" placeholder="کد تاییدیه"
+                          >
+                        </div>
+                      </div>
+                    </div>
+
+
+
           
 
                     <div v-if="!loading" class="col-12 p-4 text-right">
@@ -215,7 +216,7 @@
         },
             player(){
                 this.$router.push({
-                    name: "movie-player",
+                    name: "movie-show-id",
                     params: {
                         id: this.id
                     },

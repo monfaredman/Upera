@@ -120,7 +120,7 @@
                 <div class="namad pr-2">
                   <div class="namad-box">
                     <a href="https://satra.ir/fa/licensed-media/" target="_blank">
-                    <img src="/images/satra.svg" width="80">
+                      <img src="/images/satra.svg" width="80">
                     </a>
                   </div>
                 </div>

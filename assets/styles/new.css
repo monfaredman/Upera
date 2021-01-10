@@ -3069,6 +3069,9 @@ width: 3rem;
   .showcase-theme-m-tn .showcase-thumbnail-wrapper-outter .showcase-button-wrapper .btn + .btn {
     margin-top: 0.5rem;
   }
+.callback .download-links .btn{
+font-size: 0.7rem !important;
+}
 }
 
 .main-slideshow .main-slideshow-prev,
@@ -10106,3 +10109,5 @@ body .border-bottom-md-gray {
 .download-links-body .h6 {
     font-size: 0.875rem;
 }
+
+

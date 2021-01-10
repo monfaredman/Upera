@@ -315,10 +315,8 @@
                 </div>
               </div>
               <div v-if="!cartloading && notes" class="col-12">
-
                 <span class="text-info h6 text-justify"><br>{{ notes }}<br><br></span>
               </div>
-
             </div>
             <div v-if="!cartloading" class="download-links-footer" :class="{ 'footer-0': divcount==0,'footer-1': divcount==1 }">
               <div v-show="play_button" class="download-links-item">
