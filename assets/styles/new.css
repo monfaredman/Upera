@@ -10103,4 +10103,6 @@ body .border-bottom-md-gray {
         border-radius: 6% 6% 6% 6%;
     }
 
-
+.download-links-body .h6 {
+    font-size: 0.875rem;
+}

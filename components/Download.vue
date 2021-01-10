@@ -191,16 +191,15 @@
                 <svg v-if="cartloading || downloadloading" id="L9" class="svg-loader" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 100 100" enable-background="new 0 0 0 0" xml:space="preserve"><path data-v-28f0b4cb="" fill="#373737" d="M73,50c0-12.7-10.3-23-23-23S27,37.3,27,50 M30.9,50c0-10.5,8.5-19.1,19.1-19.1S69.1,39.5,69.1,50" transform="rotate(109.69 50 50)"><animateTransform data-v-28f0b4cb="" attributeName="transform" attributeType="XML" type="rotate" dur="1s" from="0 50 50" to="360 50 50" repeatCount="indefinite" /></path></svg>
 
 
-                <span v-if="!screening.ekran && !cartloading" class="text-danger h6 text-justify">حجم مصرفی: {{ fullrate_data.fa.title }}<br><br></span>
+                <span v-if="!screening.ekran && !cartloading" class="text-info h6 text-justify">حجم مصرفی: {{ fullrate_data.fa.title }}<br><br></span>
                 <!-- !ftb2 &&  -->
                 <span v-if="!ftb2 && !cartloading && !owned && traffic && trafficoo && !(downloadslist.some(function(el){ return el.owned === 1}))" class="text-justify ">دسترسی رایگان به فیلم با اینترنت همراه اول و ایرانسل<br><button class="btn btn-secondary text-right" @click="SHOWAGAIN(0)">
                   بررسی اتصال اینترنت
                   <i class="fas fa-sync-alt" />
                 </button><br>و یا خرید با اینترنت فعلی شما:<br><br></span>
 
-                <span v-if="screening.ekran && !cartloading" class="text-danger h6 text-justify">مصرف اینترنت جهت تماشای آنلاین {{ fullrate_data.fa.title }} می باشد<br><br></span>
+                <span v-if="screening.ekran && !cartloading" class="text-info h6 text-justify">مصرف اینترنت جهت تماشای آنلاین {{ fullrate_data.fa.title }} می باشد<br><br></span>
 
-                <span v-if="!cartloading && notes" class="text-danger h6 text-justify">{{ notes }}<br><br></span>
 
 
                 <span v-if="!cartloading && screening.ekran && presale" class="text-danger h6 text-justify">برای تماشا از خانه، سانس سینمای آنلاین {{ screening.ekran_hour }} ساعته است، طوری تنظیم کنید که تماشای کامل فیلم را در سانس خود از دست ندهید.<br><br></span>
@@ -315,6 +314,11 @@
                   </div>
                 </div>
               </div>
+              <div v-if="!cartloading && notes" class="col-12">
+
+                <span class="text-info h6 text-justify"><br>{{ notes }}<br><br></span>
+              </div>
+
             </div>
             <div v-if="!cartloading" class="download-links-footer" :class="{ 'footer-0': divcount==0,'footer-1': divcount==1 }">
               <div v-show="play_button" class="download-links-item">
