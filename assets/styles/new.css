@@ -2739,7 +2739,7 @@ a.thumbnail-wrapper {
   }
 
   .showcase-theme-m-tn .count-down-wrapper {
-    margin-top: -37%;
+    margin-top: -30%;
   }
 
   .showcase-theme-m-tn .showcase-top .title {
@@ -2766,7 +2766,7 @@ a.thumbnail-wrapper {
   }
 
   .showcase-theme-m-tn .count-down-wrapper {
-    margin-top: -38%;
+    margin-top: -30%;
   }
   .showcase-theme-m-tn .showcase-button-wrapper .btn {
     height: 2.1rem;
@@ -2795,7 +2795,7 @@ a.thumbnail-wrapper {
   }
 
   .showcase-theme-m-tn .count-down-wrapper {
-    margin-top: -38%;
+    margin-top: -30%;
   }
 
   .showcase-theme-m-tn .showcase-top {
@@ -2829,7 +2829,7 @@ a.thumbnail-wrapper {
   }
 
   .showcase-theme-m-tn .count-down-wrapper {
-    margin-top: -38%;
+    margin-top: -30%;
   }
 
   .showcase-theme-m-tn .showcase-top {
@@ -2862,7 +2862,7 @@ a.thumbnail-wrapper {
   }
 
   .showcase-theme-m-tn .count-down-wrapper {
-    margin-top: -40%;
+    margin-top: -30%;
   }
 
   .showcase-theme-m-tn .showcase-top {
@@ -2901,7 +2901,7 @@ a.thumbnail-wrapper {
   }
 
   .showcase-theme-m-tn .count-down-wrapper {
-    margin-top: -40%;
+    margin-top: -30%;
   }
 
   .showcase-theme-m-tn .showcase-top {
@@ -2944,7 +2944,11 @@ a.thumbnail-wrapper {
   }
 
   .showcase-theme-m-tn .count-down-wrapper {
-    margin-top: -45%;
+    margin-top: -30%;
+  }
+  .showcase-theme-m-tn .count-down-wrapper .count-down{
+width: 3rem;
+    height: 3rem;
   }
 
   .showcase-theme-m-tn .showcase-top {
@@ -2998,7 +3002,10 @@ a.thumbnail-wrapper {
   .showcase-theme-m-tn .showcase-top .title {
     margin-bottom: 1rem!important;
   }
-
+  .showcase-theme-m-tn .count-down-wrapper .count-down{
+width: 3rem;
+    height: 3rem;
+  }
   .showcase-theme-m-tn .showcase-bottom .tag{
     font-size:0.3rem;
   }
@@ -3022,6 +3029,10 @@ a.thumbnail-wrapper {
   .showcase .showcase-thumbnail-wrapper .showcase-desc-wrapper{
     flex: 1 1 calc(100% - 90px);
     width: calc(100% - 90px); 
+  }
+  .showcase-theme-m-tn .count-down-wrapper .count-down{
+width: 3rem;
+    height: 3rem;
   }
   .showcase-theme-m-tn .showcase-thumbnail-wrapper-outter .thumbnail {
     width: 90px;
