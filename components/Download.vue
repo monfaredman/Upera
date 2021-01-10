@@ -543,10 +543,7 @@ import {mapGetters} from 'vuex'
 
       
 
-if(this.owned || (this.free && this.vod) || (this.vod && this.checkuser.access)){
-  this.play_button=1
-  this.$store.dispatch("download/ADD_DIVCOUNT")
-}
+
                 if (this.staticmodal) {
                 this.showModal()
                 $('.modal-content').removeAttr("tabindex")
@@ -657,6 +654,11 @@ $('.download-options-label').removeClass('btn')
         $('.default').addClass('blure')
 
 
+if(this.owned || (this.free && this.vod) || (this.vod && this.checkuser.access)){
+  this.play_button=1
+  this.$store.dispatch("download/ADD_DIVCOUNT")
+}
+
 this.$refs['downloadLinks'].$on('shown', () => {
     window.addEventListener("resize", this.Resize)
     this.Resize('e')
@@ -683,6 +685,7 @@ this.season_num=this.sizeofobj(this.season)
       hideModal() {
         this.$refs['downloadLinks'].hide()
         this.$emit("hide-modal", null)
+        this.$store.dispatch("download/RESET_DOWNLOAD")
         $('.default').removeClass('blure')
       },
 

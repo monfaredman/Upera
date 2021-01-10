@@ -27,6 +27,7 @@ import Download from "../../../components/Download"
       res = await context.app.$axios.get('/ghost/get/movie/'+context.params.id)
      }
 
+
     return {data:res.data.data}
   },
         data() {
@@ -39,7 +40,7 @@ import Download from "../../../components/Download"
     return { 
     bodyAttrs: {
       class: 'download'
-    },title: 'دانلود '+(this.ChooseLang(this.data.movie.name,this.data.movie.name_fa)) }
+    },title: ((this.data.movie.ekran==1) ? 'اکران ' : 'دانلود ')+(this.ChooseLang(this.data.movie.name,this.data.movie.name_fa)) }
   },
 
     methods: {

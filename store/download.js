@@ -191,6 +191,9 @@ export const mutations = {
 
             state.divcount = 0
             state.play_button = 0
+            state.show_buy=0
+            state.show_free=0
+            state.ussd=null
         },
         SET_DOWNLOAD(state, data){
             state.downloadslist = data.downloads
