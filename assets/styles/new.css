@@ -1611,7 +1611,10 @@ body {
   }
 }
 @media (max-width: 767.98px) {
-
+  .s-c #raychatBtn {
+    opacity: 1;
+    visibility: visible;
+  }
   .s-c .header-mobile {
     transition: opacity 0.2s ease-out;
     opacity: 0;
