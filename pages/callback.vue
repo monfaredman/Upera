@@ -145,9 +145,13 @@
                   <div v-else-if="files.length == 1" class="download-links-item">
                     <div v-for="(item,index) in files" :key="index" class="row">
                       <div class="col-6">
-                        <a :href="item.link1" class="btn btn-main btn-block">
+                        <a :href="item.link1" v-if="!item.screening.ekran" class="btn btn-main btn-block">
                           {{ $t('show.download') }}
                           <i class="icon-download" />
+                        </a>
+                        <a :href="item.link1" v-else class="btn btn-main btn-block">
+                            لینک مشاهده
+                          <i class="icon-play" />
                         </a>
                       </div>
                       <div class="col-6">
