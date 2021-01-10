@@ -76,10 +76,10 @@
       <div class="mb-5 mt-5 app_container">
         <div class="accordion">
           <h5 class="mb-1 mt-4 collapse-header ">
-            <b-button id="collapse-1" v-b-toggle="'accordion-1'" variant="link" class="app_container_title">
+            <span id="collapse-1" v-b-toggle="'accordion-1'" class="app_container_title">
               <i class="fa fa-angle-down pr-4 " />
-              <b>اپلیکیشن اندروید</b>
-            </b-button>
+              اپلیکیشن اندروید
+            </span>
           </h5>
           <b-collapse id="accordion-1" visible accordion="my-accordion" role="tabpanel" @shown="show(1)" @hide="hide(1)">
             <div class="pl-5 collapse-content row">
@@ -100,10 +100,10 @@
 
         <div class="accordion">
           <h2 class="mb-1 mt-4 collapse-header">
-            <b-button id="collapse-2" v-b-toggle="'accordion-2'" variant="link" class="app_container_title">
+            <span id="collapse-2" v-b-toggle="'accordion-2'" class="app_container_title">
               <i class="fa fa-angle-up pr-4" />
-              <b>اپلیکیشن iOS</b>
-            </b-button>
+             اپلیکیشن iOS
+            </span>
           </h2>
           <b-collapse id="accordion-2" accordion="my-accordion" role="tabpanel" @shown="show(2)" @hide="hide(2)">
             <div class="pl-5 collapse-content row">
@@ -154,10 +154,10 @@
 
         <div class="accordion">
           <h2 class="mb-1 mt-4 collapse-header">
-            <b-button id="collapse-3" v-b-toggle="'accordion-3'" variant="link" class="app_container_title">
+            <span id="collapse-3" v-b-toggle="'accordion-3'" class="app_container_title">
               <i class="fa fa-angle-up pr-4" />
-              <b>اپلیکیشن تلویزیون</b>
-            </b-button>
+              اپلیکیشن تلویزیون
+            </span>
           </h2>
           <b-collapse id="accordion-3" accordion="my-accordion" role="tabpanel" @shown="show(3)" @hide="hide(3)">
             <div class="pl-5 collapse-content row">
@@ -178,11 +178,11 @@
 
         <div class="accordion">
           <h2 class="mb-1 mt-4 collapse-header">
-            <b-button id="collapse-4" v-b-toggle="'accordion-4'" variant="link" class="app_container_title">
+            <span id="collapse-4" v-b-toggle="'accordion-4'" class="app_container_title">
               <i class="fa fa-angle-up pr-4" />
-              <b>دسترسی با مرورگر تلویزیون‌
-                و کنسول</b>
-            </b-button>
+              دسترسی با مرورگر تلویزیون‌
+                و کنسول
+            </span>
           </h2>
           <b-collapse id="accordion-4" accordion="my-accordion" role="tabpanel" @shown="show(4)" @hide="hide(4)">
             <div class="pl-5 collapse-content row">

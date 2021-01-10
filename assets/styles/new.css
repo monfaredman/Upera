@@ -9625,7 +9625,7 @@ color: #fff;
 
 
 @media (max-width: 356px) {
-  .app_container .btn{
+  .app_container .app_container_title{
 font-size: 0.8rem;
   }
   .horizontal-list-container .label-1{
