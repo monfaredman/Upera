@@ -344,7 +344,7 @@ return e
       this.$router.push({ name: 'app' })
     },
 samandehi(){
-    window.open('https://logo.samandehi.ir/Verify.aspx?id=197123&p=nbpdbsiyyndtnbpdodrfqfti', 'Popup','toolbar=no, scrollbars=no, location=no, statusbar=no, menubar=no, resizable=0, width=450, height=630, top=30')
+    window.open('https://logo.samandehi.ir/Verify.aspx?id=197123&p=rfthpfvljyoerfthuiwkxlao', 'Popup','toolbar=no, scrollbars=no, location=no, statusbar=no, menubar=no, resizable=0, width=450, height=630, top=30')
   }
   }
 }
