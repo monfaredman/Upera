@@ -10031,6 +10031,12 @@ body .border-bottom-md-gray {
 }
 
 @media (max-width: 767.98px){
+  .horizontal-list-container h4, .horizontal-list-container .h4 {
+    font-size: 1rem;
+}
+
+
+
 .w-sm-100 {
     width: 100% !important;
 }
@@ -10045,6 +10051,14 @@ body .border-bottom-md-gray {
 }
 
 @media (max-width: 320px){
+
+.logo img{
+  height:30px;
+}
+
+  .horizontal-list-container h4, .horizontal-list-container .h4 {
+    font-size: 0.875rem;
+}
 
 .header-mobile .smallsrm{
   font-size: 0.6rem;

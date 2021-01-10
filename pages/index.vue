@@ -398,20 +398,29 @@
         threshold: 2,
         countdown: {},
         breakpoints: {
+            200: {
+                slidesPerView: 2.5,
+            },
+            420: {
+                slidesPerView: 3.5,
+            },
             768: {
-                slidesPerView: 6.5,
+                slidesPerView: 4.5,
             },
             992: {
-                slidesPerView: 6.5,
+                slidesPerView: 5.5,
             },
             1024: {
-                slidesPerView: 7.5,
+                slidesPerView: 6.5,
+            },
+            1200: {
+                slidesPerView: 7,
             },
             1420: {
-                slidesPerView: 8.5,
+                slidesPerView: 8,
             },
             1670: {
-                slidesPerView: 9.5,
+                slidesPerView: 9,
             },
 
         }

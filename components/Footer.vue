@@ -78,7 +78,7 @@
             </div>
             <div class="col-md-4 col-lg-4">
               <div class="d-flex justify-content-center position-relative">
-                <div class="dl-app">
+                <div class="dl-app" @click="getapp">
                   <div class="d-flex align-items-center justify-content-center">
                     <div class="dl-links-wrapper text-center pl-lg-5">
                       <div class="text-invert mb-1 pb-1 d-inline-block dl-links-title">
@@ -337,6 +337,9 @@ return e
     cancelnotif(id){
       return id
       // $('#'+id+' .popover-3d').removeClass('show')
+    },
+    getapp(){
+      this.$router.push({ name: 'app' })
     }
   }
 }
