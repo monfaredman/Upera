@@ -928,7 +928,18 @@ if(this.user_claps_counter>=1){
 
 									this.DownloadButton=1
 								}else{
-									this.MainButton=1
+                  if(this.type=='series'){
+                    this.MainButton=9
+                    if(this.data.last_episode_seen)
+                      this.episode=this.data.last_episode_seen
+                    else if(this.data.first_episode)
+                       this.episode=this.data.first_episode
+
+                  }else{
+                    this.MainButton=1
+                  }
+
+									
 								}
 							}
 						}else{
