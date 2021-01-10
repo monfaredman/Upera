@@ -1591,10 +1591,7 @@ body {
 }
 
 @media (max-width: 767.98px) {
-  #raychatBtn,.chat-buttons {
-    opacity: 0;
-    visibility: hidden;
-  }
+
 
   .header-mobile {
     transition: opacity 0.2s ease-in;
@@ -1611,10 +1608,7 @@ body {
   }
 }
 @media (max-width: 767.98px) {
-  .s-c #raychatBtn,.s-c .chat-buttons {
-    opacity: 1;
-    visibility: visible;
-  }
+
   .s-c .header-mobile {
     transition: opacity 0.2s ease-out;
     opacity: 0;
