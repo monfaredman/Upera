@@ -46,7 +46,7 @@ export default {
     link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }], 
     script: [
       {
-        src: 'https://upera.tv/jwplayer?v1'
+        src: 'https://web.upera.tv/jwplayer?v1'
       }
     ],
   },
