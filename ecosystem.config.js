@@ -5,9 +5,9 @@ module.exports = {
       exec_mode: 'cluster',
       port: 3000,
       instances: '10', // Or a number of instances
+      max_memory_restart: '20G',
       script: './node_modules/nuxt/bin/nuxt.js',
-      args: 'start',
-      max_memory_restart: '20G'
+      args: 'start'
     }
   ]
 }
