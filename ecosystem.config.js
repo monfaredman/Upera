@@ -7,7 +7,7 @@ module.exports = {
       max_memory_restart: '20G',
       instances: '10', // Or a number of instances
       script: './node_modules/nuxt/bin/nuxt.js',
-      args: '--max-memory-restart 20G start'
+      args: 'start'
     }
   ]
 }
