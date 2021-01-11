@@ -432,7 +432,8 @@
   "speed": 500,
   "slidesToShow": 1,
   "slidesToScroll": 1,
-  "touchThreshold": 10
+  "touchThreshold": 10,
+  "autoplay": true
         },
         swiperOption2: {
         slidesPerView: 2.5,
