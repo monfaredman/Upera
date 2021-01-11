@@ -28,24 +28,24 @@
         </div>
         <!-- !owned && (!free || (free && (ftb || $route.query.force_to_buy))) &&  -->
         <div v-if="!cartloading && (!free || ftb2) && Object.keys(downloadslist).length > 0 && cart.length > 0 && cart.some(function(el){ return downloadslist.some(function(el2){ return el.itemid === el2.id})})">
-          <div class="download-links-body" :class="{ 'download-links-body2': (($auth.loggedIn || !totalamount) && !season)}">
-            <div v-if="season" class="row py-4 download-options-wrapper">
+          <div class="download-links-body" :class="{ 'download-links-body2': (($auth.loggedIn || !totalamount) && !lastseason)}">
+            <div v-if="lastseason" class="row py-4 download-options-wrapper">
               <div v-if="season_num>1" class="col-sm-6">
                 <b-dropdown block :text="seasontitle" variant="dark">
-                  <b-dropdown-item v-for="(item, index) in season" :key="index" href="#" :active="selectseriesid==index" @click.prevent="selectseries(index,season[index][0].id)">
+                  <b-dropdown-item v-for="(item, index) in lastseason" :key="index" href="#" :active="selectseriesid==index" @click.prevent="selectseries(index,lastseason[index][0].id)">
                     فصل {{ index }}
                   </b-dropdown-item>
                 </b-dropdown>
               </div>
               <div :class="{ 'col-sm-6': (season_num>1),'col-sm-12': (season_num<=1)}">
                 <b-dropdown block :text="episodetitle" variant="outline-dark" class="srmb">
-                  <b-dropdown-item v-for="(item, index) in season[selectseriesid]" :key="index" href="#" :active="type=='episode' && itemdata.episode_number==item.episode_number" @click.prevent="selectepisode(item.id)">
+                  <b-dropdown-item v-for="(item, index) in lastseason[selectseriesid]" :key="index" href="#" :active="type=='episode' && itemdata.episode_number==item.episode_number" @click.prevent="selectepisode(item.id)">
                     قسمت {{ item.episode_number }}
                   </b-dropdown-item>
                 </b-dropdown>
               </div>
             </div>
-            <div v-show="!$auth.loggedIn && totalamount" class="row download-options-wrapper" :class="{ 'py-4': !season}">
+            <div v-show="!$auth.loggedIn && totalamount" class="row download-options-wrapper" :class="{ 'py-4': !lastseason}">
               <div class="col-12">
                 <div class="position-relative">
                   <label for="premobile">{{ $t('new.enter_mobile') }}</label>                  
@@ -63,7 +63,7 @@
               </div>
             </div>
 
-            <div class="download-links-items" :class="{'download-links-items2': (!$auth.loggedIn && totalamount && !season),'download-links-season2': (!$auth.loggedIn && totalamount && season),'download-links-season':(($auth.loggedIn || !totalamount) && season),'download-links-season-num2':(season_num==1)}">
+            <div class="download-links-items" :class="{'download-links-items2': (!$auth.loggedIn && totalamount && !lastseason),'download-links-season2': (!$auth.loggedIn && totalamount && lastseason),'download-links-season':(($auth.loggedIn || !totalamount) && lastseason),'download-links-season-num2':(season_num==1)}">
               <div class="col-12">
                 <svg v-if="buyloading" id="L9" class="svg-loader" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 100 100" enable-background="new 0 0 0 0" xml:space="preserve"><path data-v-28f0b4cb="" fill="#373737" d="M73,50c0-12.7-10.3-23-23-23S27,37.3,27,50 M30.9,50c0-10.5,8.5-19.1,19.1-19.1S69.1,39.5,69.1,50" transform="rotate(109.69 50 50)"><animateTransform data-v-28f0b4cb="" attributeName="transform" attributeType="XML" type="rotate" dur="1s" from="0 50 50" to="360 50 50" repeatCount="indefinite" /></path></svg>
 
@@ -167,18 +167,18 @@
           </div>
         </div>
         <div v-else>
-          <div class="download-links-body" :class="{ 'download-links-body2': !season,'download-links-0': divcount==0,'download-links-2': divcount==2,'download-links-3': divcount==3 }">
-            <div v-if="season" class="row py-4 download-options-wrapper">
+          <div class="download-links-body" :class="{ 'download-links-body2': !lastseason,'download-links-0': divcount==0,'download-links-2': divcount==2,'download-links-3': divcount==3 }">
+            <div v-if="lastseason" class="row py-4 download-options-wrapper">
               <div v-if="season_num>1" class="col-sm-6">
                 <b-dropdown block :text="seasontitle" variant="dark">
-                  <b-dropdown-item v-for="(item, index) in season" :key="index" href="#" :active="selectseriesid==index" @click.prevent="selectseries(index,season[index][0].id)">
+                  <b-dropdown-item v-for="(item, index) in lastseason" :key="index" href="#" :active="selectseriesid==index" @click.prevent="selectseries(index,lastseason[index][0].id)">
                     فصل {{ index }}
                   </b-dropdown-item>
                 </b-dropdown>
               </div>
               <div :class="{ 'col-sm-6': (season_num>1),'col-sm-12': (season_num<=1)}">
                 <b-dropdown block :text="episodetitle" variant="outline-dark" class="srmb">
-                  <b-dropdown-item v-for="(item, index) in season[selectseriesid]" :key="index" href="#" :active="type=='episode' && itemdata.episode_number==item.episode_number" @click.prevent="selectepisode(item.id)">
+                  <b-dropdown-item v-for="(item, index) in lastseason[selectseriesid]" :key="index" href="#" :active="type=='episode' && itemdata.episode_number==item.episode_number" @click.prevent="selectepisode(item.id)">
                     قسمت {{ item.episode_number }}
                   </b-dropdown-item>
                 </b-dropdown>
@@ -477,6 +477,7 @@ import {mapGetters} from 'vuex'
         disable_button: false,
         play_button: 0,
         season_num: 0,
+        lastseason: {},
           showBoxAnimation: false,
           selectseriesid: 1,
           seasontitle: 'فصل 1',
@@ -539,8 +540,11 @@ import {mapGetters} from 'vuex'
 
 
 
-
-
+if(window.innerHeight<=500){
+this.lastseason=null
+}else{
+  this.lastseason=this.season
+}
       
 
 
@@ -662,7 +666,7 @@ if(this.owned || (this.free && this.vod) || (this.vod && this.checkuser.access))
 this.$refs['downloadLinks'].$on('shown', () => {
     window.addEventListener("resize", this.Resize)
     this.Resize('e')
-this.season_num=this.sizeofobj(this.season)
+this.season_num=this.sizeofobj(this.lastseason)
 
 })
 
