@@ -102,7 +102,7 @@
           <h2 class="mb-1 mt-4 collapse-header">
             <span id="collapse-2" v-b-toggle="'accordion-2'" class="app_container_title">
               <i class="fa fa-angle-up pr-4" />
-             اپلیکیشن iOS
+              اپلیکیشن iOS
             </span>
           </h2>
           <b-collapse id="accordion-2" accordion="my-accordion" role="tabpanel" @shown="show(2)" @hide="hide(2)">
@@ -181,7 +181,7 @@
             <span id="collapse-4" v-b-toggle="'accordion-4'" class="app_container_title">
               <i class="fa fa-angle-up pr-4" />
               دسترسی با مرورگر تلویزیون‌
-                و کنسول
+              و کنسول
             </span>
           </h2>
           <b-collapse id="accordion-4" accordion="my-accordion" role="tabpanel" @shown="show(4)" @hide="hide(4)">

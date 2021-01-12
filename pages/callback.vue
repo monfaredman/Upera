@@ -92,13 +92,19 @@
                       </div>
                       پرداخت شما موفقیت آمیز بود
 
-                      <br><br>
+
+
+                      <span v-for="(item,index) in files" :key="index">
+                        <span v-if="!item.screening.ekran">
+                          <br><br>
                     
-                      در گوشی های اندروید از برنامه adm جهت دانلود فیلم استفاده کنید ( <a href="https://play.google.com/store/apps/details?id=com.dv.adm&amp;hl=fa" target="_blank">نصب</a>)<br>
-                      در گوشی ios از برنامه Documents جهت دانلود فیلم استفاده کنید (<a href="https://itunes.apple.com/us/app/documents-by-readdle/id364901807?mt=8" target="_blank">آیتیونز</a>)<br>
-                      در کامپیوتر از برنامه Flash Get یا idm جهت دانلود فیلم استفاده نمایید
-                      <br><br>
-                      توجه داشته باشید که برای جلوگیری از دانلود ناقص یا آسیب دیدن به فایل های خریداری شده، حتما باید از نرم افزارهای دانلود منیجر استفاده شود. بدین صورت حتی اگر دانلود شما در هر زمانی و به هر دلیلی نیمه کاره متوقف شد، میتوانید در زمان دلخواه خود به راحتی به ادامه دانلود بپردازید.
+                          در گوشی های اندروید از برنامه adm جهت دانلود فیلم استفاده کنید ( <a href="https://play.google.com/store/apps/details?id=com.dv.adm&amp;hl=fa" target="_blank">نصب</a>)<br>
+                          در گوشی ios از برنامه Documents جهت دانلود فیلم استفاده کنید (<a href="https://itunes.apple.com/us/app/documents-by-readdle/id364901807?mt=8" target="_blank">آیتیونز</a>)<br>
+                          در کامپیوتر از برنامه Flash Get یا idm جهت دانلود فیلم استفاده نمایید
+                          <br><br>
+                          توجه داشته باشید که برای جلوگیری از دانلود ناقص یا آسیب دیدن به فایل های خریداری شده، حتما باید از نرم افزارهای دانلود منیجر استفاده شود. بدین صورت حتی اگر دانلود شما در هر زمانی و به هر دلیلی نیمه کاره متوقف شد، میتوانید در زمان دلخواه خود به راحتی به ادامه دانلود بپردازید.
+                        </span>
+                      </span>
                     </div>
                     <div v-else-if="!loading && !buyloading && checkagain" class="text-center">
                       <div class="offset-2 col-8">

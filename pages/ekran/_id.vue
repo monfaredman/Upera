@@ -68,9 +68,9 @@
                       <span v-show="presale && !loading" class="text-danger h6 text-justify">برای تماشا از خانه، سانس سینمای آنلاین {{ screening.ekran_hour }} ساعته است، طوری تنظیم کنید که تماشای کامل فیلم را در سانس خود از دست ندهید.<br><br></span>
                     </div>
                     <div v-if="!loading && error">
-                      <div class="offset-2 col-8">
+                      <!--                       <div class="offset-2 col-8">
                         <img class="img-fluid" src="@/assets/img/failed.png">
-                      </div>
+                      </div> -->
                       <div v-show="get_verification" class="form-group">
                         <div class="col-12 col-sm-12">
                           <label for="verification">کد تاییدیه</label>
