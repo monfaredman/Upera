@@ -745,7 +745,7 @@ return SRMdata
   jwp=window.jwplayer(block_id).setup({ 
     "playlist": [
       {
-        "file": res.data.file[0].file+'&app=1',
+        "file": res.data.file[0].file,
         "title": titlesm,
         "image": backdrop,
         "type": 'hls'
