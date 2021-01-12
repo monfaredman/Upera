@@ -540,11 +540,7 @@ import {mapGetters} from 'vuex'
 
 
 
-if(window.innerHeight<=500){
-this.lastseason=null
-}else{
-  this.lastseason=this.season
-}
+
       
 
 
@@ -657,7 +653,11 @@ $('.download-options-label').removeClass('btn')
         if(!this.staticmodal)
         $('.default').addClass('blure')
 
-
+if(window.innerHeight<=500){
+this.lastseason=null
+}else{
+  this.lastseason=this.season
+}
 if(this.owned || (this.free && this.vod) || (this.vod && this.checkuser.access)){
   this.play_button=1
   this.$store.dispatch("download/ADD_DIVCOUNT")

@@ -10109,4 +10109,6 @@ body .border-bottom-md-gray {
     font-size: 0.875rem;
 }
 
-
+.fade-leave-active .swiper-wrapper img{
+   visibility: hidden;
+}
