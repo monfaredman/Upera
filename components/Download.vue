@@ -2,12 +2,12 @@
   <div>
     <b-modal id="downloadLinks" ref="downloadLinks" :centered="staticmodal ? false : true" hide-footer hide-header size="lg" :no-close-on-backdrop="staticmodal ? true : false" :hide-backdrop="staticmodal ? true : false" :no-close-on-esc="staticmodal ? true : false" modal-class="modal-download-link" :static="staticmodal ? true : false" no-enforce-focus>
       <div class="download-links">
-        <!-- <div class="download-links-poster" :style="'background-image: url(\'https://thumb.contentpanel.click/thumb?w=800&h=300&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/'+backdrop+'\')'"> -->
+        <!-- <div class="download-links-poster" :style="'background-image: url(\'https://thumb.upera.tv/thumb?w=800&h=300&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/'+backdrop+'\')'"> -->
 
-        <div class="download-links-poster download-links-poster2" :style="'background-image: url(\'https://thumb.contentpanel.click/thumb?w=800&h=412&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/'+backdrop+'\')'">
+        <div class="download-links-poster download-links-poster2" :style="'background-image: url(\'https://thumb.upera.tv/thumb?w=800&h=412&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/'+backdrop+'\')'">
           <div class="download-links-info d-flex align-items-center">
             <div class="download-links-thumbnail">
-              <img class="download-links-thumbnail" :src="'https://thumb.contentpanel.click/thumb?w=70&h=103&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+posterf">
+              <img class="download-links-thumbnail" :src="'https://thumb.upera.tv/thumb?w=70&h=103&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+posterf">
             </div>
             <div v-if="type!='episode'" class="download-links-title font-weight-bold">
               <a href="" class="text-white" @click.prevent="Push(id,type)">
@@ -706,7 +706,7 @@ this.season_num=this.sizeofobj(this.lastseason)
         else
           name=this.ChooseLang(this.name,this.namefa)
 
-        this.$store.dispatch("download/ADD_NEW_TO_DOWNLOAD", {itemid: itemid,amount:amount,size:size,name:name,quality:quality,id: this.id,type:this.type,poster:'https://thumb.contentpanel.click/thumb?w=70&h=103&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+this.posterf })
+        this.$store.dispatch("download/ADD_NEW_TO_DOWNLOAD", {itemid: itemid,amount:amount,size:size,name:name,quality:quality,id: this.id,type:this.type,poster:'https://thumb.upera.tv/thumb?w=70&h=103&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+this.posterf })
         $('.modal-download-link .download-links-items').scrollTop(0)
       },
       REMOVEFROMCART(itemid,amount) {
