@@ -742,6 +742,15 @@ return SRMdata
                             }else{
                               commit('PLAYER_DOWNLOAD_FILE',res.data.download)
 
+
+                              if(this.$device.isTV){
+                                  if(res.data.file[0].file.includes("?")){
+                                    res.data.file[0].file=res.data.file[0].file+'&app=1'
+                                  }else{
+                                    res.data.file[0].file=res.data.file[0].file+'?app=1'
+                                  }
+                              }
+
   jwp=window.jwplayer(block_id).setup({ 
     "playlist": [
       {
@@ -1008,8 +1017,14 @@ export const mutations = {
             // Check and Sort Vidoe Link
             
             let jwp
-
-
+            
+                              if(this.$device.isTV){
+                                  if(data.data.video[0].video.includes("?")){
+                                    data.data.video[0].video=data.data.video[0].video+'&app=1'
+                                  }else{
+                                    data.data.video[0].video=data.data.video[0].video+'?app=1'
+                                  }
+                              }
 
   jwp=window.jwplayer('my-player').setup({ 
     "playlist": [
@@ -1426,7 +1441,13 @@ export const mutations = {
             // Check and Sort Video Link
             let jwp
 
-
+                              if(this.$device.isTV){
+                                  if(data.data.episode[0].video.includes("?")){
+                                    data.data.episode[0].video=data.data.episode[0].video+'&app=1'
+                                  }else{
+                                    data.data.episode[0].video=data.data.episode[0].video+'?app=1'
+                                  }
+                              }
 
   jwp=window.jwplayer('my-player').setup({ 
     "playlist": [
@@ -1942,7 +1963,13 @@ $('body').addClass('loaded')
             let jwp
 
             
-
+                              if(this.$device.isTV){
+                                  if(state.data.video[0].streaming_url.includes("?")){
+                                    state.data.video[0].streaming_url=state.data.video[0].streaming_url+'&app=1'
+                                  }else{
+                                    state.data.video[0].streaming_url=state.data.video[0].streaming_url+'?app=1'
+                                  }
+                              }
 
   jwp=window.jwplayer('my-player').setup({
     "playlist": [

@@ -52,6 +52,9 @@ export const actions = {
 
   async nuxtServerInit(store) {
 
+    if(this.$device.isTV){
+      this.app.context.redirect('https://tv.'+this.app.context.req.headers.host)
+    }
     
   	if(!store.state.auth.loggedIn){
   		let res

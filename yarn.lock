@@ -1371,6 +1371,10 @@
     "defu" "^3.2.2"
     "lodash.template" "^4.5.0"
 
+"@nuxtjs/device@github:UperaTV/device-module":
+  "resolved" "git+ssh://git@github.com/UperaTV/device-module.git#f70809d7e96400099d9bdf9005b67c8d1a546ff8"
+  "version" "1.2.7"
+
 "@nuxtjs/proxy@^2.1.0":
   "integrity" "sha512-/qtoeqXgZ4Mg6LRg/gDUZQrFpOlOdHrol/vQYMnKu3aN3bP90UfOUB3QSDghUUK7OISAJ0xp8Ld78aHyCTcKCQ=="
   "resolved" "https://registry.npmjs.org/@nuxtjs/proxy/-/proxy-2.1.0.tgz"

@@ -109,6 +109,7 @@ export default {
     "@nuxt/content",
     "bootstrap-vue/nuxt",
     "nuxt-clipboard2",
+    "@nuxtjs/device",
     ['cookie-universal-nuxt', { alias: 'cookiz' }],
     'vue-social-sharing/nuxt',
     // 'nuxt-sweetalert2',
