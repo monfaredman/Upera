@@ -9996,7 +9996,7 @@ transition-property:opacity,visibility;
 -webkit-transition-delay:0;
 transition-delay:0;
 position:absolute;
-right:-500px;
+right:0;
 top:0;
 height:100%;
 overflow:auto;
