@@ -71,6 +71,7 @@
     <div class="col-12 row" style="padding:0; margin: 0; height: 100%;">
       <div dir="ltr" class="col-12">
         <div id="flowplayer-player" class="is-closeable">
+          <div id="flowplayer-playlist" class="offset-3 col-6 my-5 py-2"></div>
           <div id="my-player" class="fp-full fp-mute fp-edgy flowplayer" />
         </div>
       </div>

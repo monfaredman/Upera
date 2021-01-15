@@ -1017,7 +1017,7 @@ export const mutations = {
             // Check and Sort Vidoe Link
             
             let jwp
-            
+
                               if(this.$device.isTV){
                                   if(data.data.video[0].video.includes("?")){
                                     data.data.video[0].video=data.data.video[0].video+'&app=1'
@@ -1812,71 +1812,32 @@ $('body').addClass('loaded')
 
                         if (data.data.episode[0].id == state.season[seasonOpened][index].id) {
 
-                            let md_backdrop_playlist
-                            md_backdrop_playlist = data.data.cdn.md_backdrop
-                            
+                            episodeList += `<a class="list-group-item active list-group-item-action flex-column align-items-start">
+    <div class="d-flex w-100 justify-content-between">
+      <h5 class="mb-1">قسمت ` + state.season[seasonOpened][index].episode_number + `</h5>
+      <small>` + state.season[seasonOpened][index].season_number + `</small>
+    </div>
+    <p class="mb-1">` + ((app.i18n.locale=="fa" && state.season[seasonOpened][index].overview_fa) ? state.season[seasonOpened][index].overview_fa : state.season[seasonOpened][index].overview) + `</p>
 
-
-                            episodeList += `<li class="current mt-2">
-                                                    <div class="image">
-
-                                                    <img src="` + md_backdrop_playlist + state.season[seasonOpened][index].backdrop + `" width="100%">
-
-                                                    <div class="ovarlay">
-                                                        <div class="number">
-                                                         <p>` + state.season[seasonOpened][index].episode_number + ` </p>
-                                                        </div>
-
-                                                        <div class="play">
-                                                             <h3>You watch</h3>
-                                                        </div>
-
-                                                    </div>
-
-                                                    </div>
-                                                    <div class="overview mt-1">
-                                                        <strong>` + ((this.app.i18n.locale=="fa" && state.season[seasonOpened][index].name_fa) ? state.season[seasonOpened][index].name_fa : state.season[seasonOpened][index].name) + `</strong>
-                                                         <hr>
-                                                        <p class="d-none d-sm-block">` + ((this.app.i18n.locale=="fa" && state.season[seasonOpened][index].overview_fa) ? state.season[seasonOpened][index].overview_fa : state.season[seasonOpened][index].overview) + `</p>
-                                                    </div>
-                                      </li>`
+  </a>`
 
                         } else {
-                            let md_backdrop_playlist
-                            md_backdrop_playlist = data.data.cdn.md_backdrop
 
-                            episodeList += `<li class="mt-2">
-                                                   <div class="image">
+                            episodeList += `<a id="` + state.season[seasonOpened][index].id + `" class="list-group-item playlist-play-button list-group-item-action flex-column align-items-start">
+    <div id="` + state.season[seasonOpened][index].id + `" class="d-flex w-100 justify-content-between">
+      <h5 id="` + state.season[seasonOpened][index].id + `" class="mb-1">قسمت ` + state.season[seasonOpened][index].episode_number + `</h5>
+      <small id="` + state.season[seasonOpened][index].id + `"class="d-none d-sm-block">` + state.season[seasonOpened][index].season_number + `</small>
+    </div>
+    <p id="` + state.season[seasonOpened][index].id + `" class="mb-1 d-none d-sm-block">` + ((app.i18n.locale=="fa" && state.season[seasonOpened][index].overview_fa) ? state.season[seasonOpened][index].overview_fa : state.season[seasonOpened][index].overview) + `</p>
 
-                                                    <img src="` + md_backdrop_playlist + state.season[seasonOpened][index].backdrop + `" width="100%"  id="` + state.season[seasonOpened][index].id + `">
-                                                    <div class="episode" id="` + state.season[seasonOpened][index].id + `"></div>
-                                                    <div class="ovarlay">
-
-                                                     <div class="number">
-                                                       <p>` + state.season[seasonOpened][index].episode_number + ` </p>
-                                                     </div>
-
-                                                     <div class="play">
-                                                         <div class="playlist-play-button" id="` + state.season[seasonOpened][index].id + `">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="0 0 294.843 294.843" style="enable-background:new 0 0 294.843 294.843;" xml:space="preserve" width="100%" id="` + state.season[seasonOpened][index].id + `" class="play-svg"> <g> <g> <path d="M278.527,79.946c-10.324-20.023-25.38-37.704-43.538-51.132c-2.665-1.97-6.421-1.407-8.392,1.257s-1.407,6.421,1.257,8.392 c16.687,12.34,30.521,28.586,40.008,46.983c9.94,19.277,14.98,40.128,14.98,61.976c0,74.671-60.75,135.421-135.421,135.421 S12,222.093,12,147.421S72.75,12,147.421,12c3.313,0,6-2.687,6-6s-2.687-6-6-6C66.133,0,0,66.133,0,147.421 s66.133,147.421,147.421,147.421s147.421-66.133,147.421-147.421C294.842,123.977,289.201,100.645,278.527,79.946z" data-original="#000000" class="active-path" data-old_color="#ffffff" fill="#ffffff" /> <path d="M109.699,78.969c-1.876,1.067-3.035,3.059-3.035,5.216v131.674c0,3.314,2.687,6,6,6s6-2.686,6-6V94.74l88.833,52.883 l-65.324,42.087c-2.785,1.795-3.589,5.508-1.794,8.293c1.796,2.786,5.508,3.59,8.294,1.794l73.465-47.333 c1.746-1.125,2.786-3.073,2.749-5.15c-0.037-2.077-1.145-3.987-2.93-5.05L115.733,79.029 C113.877,77.926,111.575,77.902,109.699,78.969z" data-original="#000000" class="active-path" data-old_color="#ffffff" fill="#ffffff" /> </g> </g> </svg>
-                                                         </div>
-                                                      </div>
-
-                                                   </div>
-                                                   </div>
-
-                                                    <div class="overview mt-1">
-                                                         <strong>` + ((this.app.i18n.locale=="fa" && state.season[seasonOpened][index].name_fa) ? state.season[seasonOpened][index].name_fa : state.season[seasonOpened][index].name) + `</strong>
-                                                          <hr>
-                                                         <p class="d-none d-sm-block" id="` + state.season[seasonOpened][index].id + `">` + ((this.app.i18n.locale=="fa" && state.season[seasonOpened][index].overview_fa) ? state.season[seasonOpened][index].overview_fa : state.season[seasonOpened][index].overview) + `</p>
-                                                    </div>
-                                        </li>`
+  </a>`
                         }
                     }
+                                                         // <p class="d-none d-sm-block" id="` + state.season[seasonOpened][index].id + `">` + ((app.i18n.locale=="fa" && state.season[seasonOpened][index].overview_fa) ? state.season[seasonOpened][index].overview_fa : state.season[seasonOpened][index].overview) + `</p>
 
 
                     // Add component
-                    seasonComponent.innerHTML = `<div class="playlist-content"> <div class="season-list">` + seasonList + `</div>` + `<div class="episode-list">` + episodeList + `</div></div> <div id="toggle-playlist-button"><div class="toggle-playlist-icon"></div></div> `
+                    seasonComponent.innerHTML = `<div class="playlist-content"> <div class="season-list">` + seasonList + `</div>` + `<div class="list-group">` + episodeList + `</div></div> <div id="toggle-playlist-button"><div class="toggle-playlist-icon"></div></div> `
 
                 }
 
@@ -1889,7 +1850,8 @@ $('body').addClass('loaded')
                     if(jwp){
                         jwp.remove()
                     }
-                    state.next_episode_playlist = e.target.id
+                    app.router.push({ name: 'episode-show-id' , params: {id: e.target.id }})
+
                 }
 
 
