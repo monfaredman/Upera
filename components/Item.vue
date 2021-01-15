@@ -53,7 +53,7 @@
           <div class="row no-gutters">
             <div class="col-md-6 col-lg-5" />
             <div class="col-md-6 col-lg-7 showcase-pic">
-              <img data-back="https://placehold.it/1120x576" class="showcase-img d-none d-lg-block" :src="'https://thumb.upera.tv/thumb?w=1120&h=576&q=90&a=t&zc=1&src=https://cdn.upera.shop/s3/backdrops/'+ChooseLang(data.item.backdrop,data.item.backdrop_fa)" :alt="data.item.name">
+              <img data-back="https://placehold.it/1120x576" class="showcase-img d-none d-lg-block" :src="'https://thumb.upera.tv/thumb?w=1120&h=576&q=95&a=t&zc=1&src=https://cdn.upera.shop/s3/backdrops/'+ChooseLang(data.item.backdrop,data.item.backdrop_fa)" :alt="data.item.name">
               <img data-back="https://placehold.it/375x300" class="showcase-img d-lg-none" :src="'https://thumb.upera.tv/thumb?w=375&h=300&q=100&a=c&zc=1&src=https://cdn.upera.shop/s3/backdrops/'+ChooseLang(data.item.backdrop,data.item.backdrop_fa)" :alt="data.item.name">
             </div>
           </div>
@@ -271,7 +271,7 @@
               نمایش تیزر
             </div>
             <div class="article-img-holder d-none d-lg-block">
-              <img data-back="https://placehold.it/413x558" class="article-img" :src="'https://thumb.upera.tv/thumb?w=413&h=258&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/'+Chooseback(data.item.back_teaser,data.item.backdrop)" :alt="'تیزر '+data.item.name_fa">
+              <img data-back="https://placehold.it/413x558" class="article-img" :src="Chooseback('https://thumb.upera.tv/thumb?w=413&h=258&q=100&a=c&src=https://cdn.upera.shop/s3/',data.item.back_teaser,data.item.backdrop)" :alt="'تیزر '+data.item.name_fa">
               <a href="#" class="play-movie text-invert">
                 <i class="icon-play" />
               </a>
@@ -376,7 +376,7 @@
         <div class="swiper-slide">
           <div class="row no-gutters">
             <div class="col-md-6 col-lg-7 showcase-pic">
-              <img data-back="https://placehold.it/1120x400" class="showcase-img d-none d-lg-block" :src="'https://thumb.upera.tv/thumb?w=1120&h=400&q=90&a=c&zc=1&src=https://cdn.upera.shop/s3/backdrops/'+data.last_episode.backdrop" :alt="data.last_episode.name">
+              <img data-back="https://placehold.it/1120x400" class="showcase-img d-none d-lg-block" :src="'https://thumb.upera.tv/thumb?w=1120&h=400&q=95&a=c&zc=1&src=https://cdn.upera.shop/s3/backdrops/'+data.last_episode.backdrop" :alt="data.last_episode.name">
               <img data-back="https://placehold.it/375x300" class="showcase-img d-lg-none" :src="'https://thumb.upera.tv/thumb?w=375&h=300&q=100&a=c&zc=1&src=https://cdn.upera.shop/s3/backdrops/'+data.last_episode.backdrop" :alt="data.last_episode.name">
             </div>
             <div class="col-md-6 col-lg-5" />
@@ -564,7 +564,7 @@
                       <i class="far fa-2x fa-play-circle"
                          style="color: white; position: absolute; top: 45%; left: 45%;"
                       />
-                      <img :src="'https://thumb.upera.tv/thumb?w=1920&h=1200&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/'+Chooseback(data.item.back_teaser,data.item.backdrop)" class="img-fluid" :alt="'تیزر '+data.item.name_fa">
+                      <img :src="Chooseback('https://thumb.upera.tv/thumb?w=1920&h=1200&q=100&a=c&src=https://cdn.upera.shop/s3/',data.item.back_teaser,data.item.backdrop)" class="img-fluid" :alt="'تیزر '+data.item.name_fa">
                     </a>
                   </div>
                 </div>
@@ -615,7 +615,7 @@
                       <i class="far fa-2x fa-play-circle"
                          style="color: white; position: absolute; top: 45%; left: 45%;"
                       />
-                      <img :src="'https://thumb.upera.tv/thumb?w=1920&h=1200&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/'+Chooseback(data.item.back_teaser,data.item.backdrop)" class="img-fluid" :alt="'تیزر '+data.item.name_fa">
+                      <img :src="Chooseback('https://thumb.upera.tv/thumb?w=1920&h=1200&q=100&a=c&src=https://cdn.upera.shop/s3/',data.item.back_teaser,data.item.backdrop)" class="img-fluid" :alt="'تیزر '+data.item.name_fa">
                     </a>
                   </div>
                 </div>
@@ -627,7 +627,7 @@
                       <i class="far fa-2x fa-play-circle"
                          style="color: white; position: absolute; top: 45%; left: 45%;"
                       />
-                      <img :src="'https://thumb.upera.tv/thumb?w=1920&h=1200&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/'+Chooseback(data.item.back_teaser,data.item.backdrop)" class="img-fluid" :alt="'تیزر '+data.item.name_fa">
+                      <img :src="Chooseback('https://thumb.upera.tv/thumb?w=1920&h=1200&q=100&a=c&src=https://cdn.upera.shop/s3/',data.item.back_teaser,data.item.backdrop)" class="img-fluid" :alt="'تیزر '+data.item.name_fa">
                     </a>
                   </div>
                 </div>
@@ -989,11 +989,11 @@ if(this.user_claps_counter>=1){
                 else
                     return en
             },
-            Chooseback(teaser,backdrop){
+            Chooseback(cdn,teaser,backdrop){
                 if(teaser)
-                    return teaser
+                    return cdn+'files/'+teaser
                 else
-                    return backdrop
+                    return cdn+'backdrops/'+backdrop
             },
     ChooseLangAllGenres(genres){
           if(!genres){
