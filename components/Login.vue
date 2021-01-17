@@ -145,7 +145,10 @@ import {mapGetters} from 'vuex'
 })
               }
         this.$refs['loginModal'].$on('hide', () => {
-          document.getElementsByClassName('default')[0].classList.remove('blure')
+          if(document.getElementsByClassName('default').length)
+            document.getElementsByClassName('default')[0].classList.remove('blure')
+          else
+            (window.history.length > 2) ? this.$router.go(-1) : this.$router.go()
           this.$emit("hide-modal", null)
         })
 
@@ -214,8 +217,8 @@ import {mapGetters} from 'vuex'
             },
       showModal() {
         this.$refs['loginModal'].show()
-        if(!this.staticmodal)
-        document.getElementsByClassName('default')[0].classList.add('blure')
+        if(!this.staticmodal && document.getElementsByClassName('default').length)
+          document.getElementsByClassName('default')[0].classList.add('blure')
         document.body.classList.remove('download')
         document.body.classList.remove('callback')
         this.LoginJquery()
@@ -237,7 +240,8 @@ import {mapGetters} from 'vuex'
 
         document.body.classList.add('callback')
 
-        document.getElementsByClassName('default')[0].classList.remove('blure')
+        if(document.getElementsByClassName('default').length)
+          document.getElementsByClassName('default')[0].classList.remove('blure')
       },
       LoginJquery() {
 this.$refs['loginModal'].$on('shown', function() {
