@@ -223,6 +223,7 @@ import {mapGetters} from 'vuex'
       showLoginAgain() {
         this.$store.dispatch('login/SET_MESSAGE_SENT_FALSE')
         this.sms_sent=false
+        this.$store.dispatch('login/REMOVE_PREMOBILE')
         this.$store.dispatch('validation/clearErrors')
         this.mobile=''
         this.LoginJquery()

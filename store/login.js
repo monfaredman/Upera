@@ -480,6 +480,10 @@ export const actions = {
             commit('HIDE_MODAL')
             return commit
         },
+        REMOVE_PREMOBILE({commit}) {
+            commit('REMOVE_PREMOBILE')
+            return commit
+        },
 }
 
 
@@ -581,5 +585,9 @@ export const mutations = {
             state.preredirect = null
             state.prerefresh = false
         },
+        REMOVE_PREMOBILE(state) {
+            state.premobile = null
+        },
+
 }
 
