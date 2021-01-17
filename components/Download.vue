@@ -877,6 +877,7 @@ this.season_num=this.sizeofobj(this.lastseason)
           this.mobile=this.mobile.replace(/۸/g, "8")
           this.mobile=this.mobile.replace(/۹/g, "9")
           this.mobile=this.mobile.replace(/۰/g, "0")
+          this.mobile=this.mobile.replace(/\D/g, '')
         }
 
         var ref=this.$cookiz.get('ref')
