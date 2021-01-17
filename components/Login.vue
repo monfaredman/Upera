@@ -11,7 +11,7 @@
         <fieldset>
           <div class="position-relative">
             <label for="mobile">{{ $t('new.enter_mobile') }}</label>                  
-            <b-form-input id="mobile" v-model.trim="mobile" dir="ltr" class="form-control large text-right mobile-input" maxlength="13" :placeholder="$t('new.enter_mobile')" :title="$t('new.your_mobile')" pattern="(\+98|0|98|0098)?([ ]|-|[()]){0,2}9[0-9]([ ]|-|[()]){0,2}(?:[0-9]([ ]|-|[()]){0,2}){8}" inputmode="numeric" autofocus />
+            <b-form-input id="mobile" v-model.trim="mobile" dir="ltr" class="form-control large text-right mobile-input" maxlength="13" :placeholder="$t('new.enter_mobile')" :title="$t('new.your_mobile')" pattern="(\+98|0|98|0098)?([ ]|-|[()]){0,2}9[0-9]([ ]|-|[()]){0,2}(?:[0-9]([ ]|-|[()]){0,2}){8}" inputmode="numeric" autofocus @paste="change_mobile" @keyup="change_mobile" @change="change_mobile" />
             <div v-if="typeof errors === 'string'" class="text-danger">
               {{ errors }}
             </div>
@@ -22,7 +22,7 @@
               {{ $t('new.enter_correctly') }}
             </div>
           </div>
-          <button id="submit-mobile" class="btn btn-main btn-block mt-5 mb-2" disabled>
+          <button id="submit-mobile" class="btn btn-main btn-block mt-5 mb-2" :disabled="isMobileDisabled">
             {{ $t('nav.login') }}
           </button>
           <div v-if="$i18n.locale=='fa'" class="text-center">
@@ -91,6 +91,7 @@ import {mapGetters} from 'vuex'
                 countdown: 90,
                 countdown_finished: false,
                 redirectTo: null,
+                isMobileDisabled: true,
                 app_mobile: this.$t('auth.mobile'),
                 app_password: this.$t('player.pass')
     }
@@ -140,11 +141,11 @@ import {mapGetters} from 'vuex'
       if (this.staticmodal) {
                 this.showModal()
   this.$refs['loginModal'].$on('show', function() {
-    $('.modal-content').removeAttr("tabindex")
+    document.getElementsByClassName('modal-content')[0].removeAttribute('tabindex')
 })
               }
         this.$refs['loginModal'].$on('hide', () => {
-          $('.default').removeClass('blure')
+          document.getElementsByClassName('default')[0].classList.remove('blure')
           this.$emit("hide-modal", null)
         })
 
@@ -174,7 +175,7 @@ import {mapGetters} from 'vuex'
                 }) 
             },
             async login() {
-              $('#submit-code').attr('disabled', true)
+              document.getElementById('submit-code').setAttribute('disabled', true)
               try {
                 let response = await this.$auth.loginWith('local', { data: {mobile:this.mobile.replace(/\s/g, ''),password:this.password} })
 
@@ -206,16 +207,17 @@ import {mapGetters} from 'vuex'
                 
                 return response
               } catch (err) {
-                $('#submit-code').attr('disabled', false)
+                document.getElementById('submit-code').setAttribute('disabled', false)
+
                 return err
               }
             },
       showModal() {
         this.$refs['loginModal'].show()
         if(!this.staticmodal)
-        $('.default').addClass('blure')
-        $('body').removeClass('download')
-        $('body').removeClass('callback')
+        document.getElementsByClassName('default')[0].classList.add('blure')
+        document.body.classList.remove('download')
+        document.body.classList.remove('callback')
         this.LoginJquery()
       },
       showLoginAgain() {
@@ -230,16 +232,15 @@ import {mapGetters} from 'vuex'
         this.$refs['loginModal'].hide()
         this.$emit("hide-modal", null)
 
-        $('body').addClass('download')
+        document.body.classList.add('download')
 
-        $('body').addClass('callback')
+        document.body.classList.add('callback')
 
-        $('.default').removeClass('blure')
+        document.getElementsByClassName('default')[0].classList.remove('blure')
       },
       LoginJquery() {
-        $(document).ready(function () {
-
-$('.modal-content').removeAttr("tabindex")
+this.$refs['loginModal'].$on('shown', function() {
+document.getElementsByClassName('modal-content')[0].removeAttribute('tabindex')
 
 if(!this.sms_sent){
               const isNumericInput = (event) => {
@@ -326,24 +327,26 @@ if(!this.sms_sent){
               if(inputElement){
               inputElement.addEventListener('keydown', enforceFormat)
               inputElement.addEventListener('keyup', formatToPhone)
-          $('#mobile').on("change paste keyup", function (e) {
-              e.preventDefault()
-              const v = $(this).val()
-              const input = event.target.value.replace(/\D/g, '').substring(0, 11)
-              const k = input.length   
-              if (/(\+98|0|98|0098)?([ ]|-|[()]){0,2}9[0-9]([ ]|-|[()]){0,2}(?:[0-9]([ ]|-|[()]){0,2}){8}/.test(v) && k == 11) {
-                  $(this).removeClass('is-invalid')
-                  $('#submit-mobile').attr('disabled', false)
-              } else if (k < 11) {
-                  $('#submit-mobile').attr('disabled', true)
-              } else {
-                  $(this).addClass('is-invalid')
-              }
-          })
+
               }
 }
-        })
+})
+
       },
+      change_mobile(){
+              const v = this.mobile
+              const input = v.replace(/\D/g, '').substring(0, 11)
+              const k = input.length
+              if (/(\+98|0|98|0098)?([ ]|-|[()]){0,2}9[0-9]([ ]|-|[()]){0,2}(?:[0-9]([ ]|-|[()]){0,2}){8}/.test(v) && k == 11) {
+
+                  document.getElementById("mobile").classList.remove('is-invalid')
+                  this.isMobileDisabled=false
+              } else if (k < 11) {
+                this.isMobileDisabled=true
+              } else {
+                  document.getElementById("mobile").classList.add('is-invalid')
+              }
+      }
     },
   }
 </script>

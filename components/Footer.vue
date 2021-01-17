@@ -328,17 +328,23 @@
 return e
             },
     notification(id){
-      var p=$('#'+id).offset().right
 
-      $('#'+id+' .popover-3d').css('right', p)
-      $('#'+id+' .popover-3d').toggleClass('show')
+      var p=document.getElementById(id).offsetWidth-document.getElementById(id).offsetLeft
+
+      var popover=document.getElementById(id).getElementsByClassName("popover-3d")
+
+      if(popover.length){
+        popover[0].style.right=`${p}px`
+        popover[0].classList.toggle('show')
+      }
+
     },
     addnotif(){
       this.$swal("این امکان به زودی افزوده می شود")
     },
     cancelnotif(id){
       return id
-      // $('#'+id+' .popover-3d').removeClass('show')
+
     },
     getapp(){
       this.$router.push({ name: 'app' })

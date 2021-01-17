@@ -1013,7 +1013,7 @@ export const mutations = {
 
             lg_backdrop = data.data.cdn.lg_backdrop
 
-
+            var myDiv
             // Check and Sort Vidoe Link
             
             let jwp
@@ -1201,20 +1201,24 @@ export const mutations = {
 
 
             window.jwplayer().on('play', (e) => {
-              $('#my-player').removeClass( "jw-state-idle" )
+              document.getElementById('my-player').classList.remove( "jw-state-idle" )
               return e
              })
             jwp.on('ready', (e) => {
-                if($('#my-player').length){
-                  $('body').addClass('loaded')
-                    $('#my-player').addClass( "jw-state-idle" )
-                    $( "body" ).addClass('playerback')
-                    $('#my-player').removeClass( "jw-flag-aspect-mode" )
+                if(document.getElementById('my-player')){
+                  document.body.classList.add('loaded')
+                    document.getElementById('my-player').classList.add( "jw-state-idle" )
+                    document.body.classList.add('playerback')
+                    document.getElementById('my-player').classList.remove( "jw-flag-aspect-mode" )
 
-                    $( ".jwplayer" ).append('<div id="flowplayer-back-button"><div class="icon-back"></div></div>')
+                    myDiv = document.createElement("div")
+                    
+                    myDiv.innerHTML = '<div id="flowplayer-back-button"><div class="icon-back"></div></div>'
+
+                    document.getElementsByClassName("jwplayer")[0].appendChild(myDiv)
 
 
-                    $("#flowplayer-back-button").click(function () {
+                    document.getElementById('flowplayer-back-button').addEventListener('click', () => {
                         if(jwp){
                             jwp.remove()
                         }
@@ -1233,8 +1237,11 @@ export const mutations = {
                         app.router.push({ name: 'movie-id' , params: {id: data.data.video[0].id }})
                     })
 
+
                     if(this.app.i18n.locale=="fa" && data.data.fullrate !== null){
-                      $( ".jwplayer" ).append('<div id="flowplayer-rate">حجم مصرفی: <button type="button" class="btn btn-info rounded-pill">'+data.data.fullrate_data.fa.title+'</button></div>')
+                      myDiv = document.createElement("span")
+                      myDiv.innerHTML = '<div id="flowplayer-rate">حجم مصرفی: <button type="button" class="btn btn-info rounded-pill">'+data.data.fullrate_data.fa.title+'</button></div>'
+                      document.getElementsByClassName("jwplayer")[0].appendChild(myDiv)
       
                         if(data.data.fullrate_data.message){
                           const flowplayerRate = document.getElementById('flowplayer-rate')
@@ -1297,7 +1304,10 @@ export const mutations = {
 
 
                     if(nextHTML){
-                      $( ".jw-media" ).append(nextHTML)
+                      myDiv = document.createElement("span")
+                      myDiv.innerHTML = nextHTML
+
+                      document.getElementsByClassName( "jw-media" )[0].appendChild(myDiv)
                     
                       const nextMovieButton = document.getElementById('play-next-movie')
 
@@ -1436,6 +1446,7 @@ export const mutations = {
 
             lg_backdrop = data.data.cdn.lg_backdrop
 
+            var myDiv
 
 
             // Check and Sort Video Link
@@ -1548,20 +1559,22 @@ var nextHTML =''
 
             // Check Recently
             window.jwplayer().on('play', (e) => {
-              $('#my-player').removeClass( "jw-state-idle" )
+              document.getElementById('my-player').classList.remove( "jw-state-idle" )
               return e
              })
             jwp.on('ready', (e) => {
-               if($('#my-player').length){
-$('body').addClass('loaded')
-                    $('#my-player').addClass( "jw-state-idle" )
-                    $( "body" ).addClass('playerback')
-                    $('#my-player').removeClass( "jw-flag-aspect-mode" )
+               if(document.getElementById('my-player')){
+document.body.classList.add('loaded')
+                    document.getElementById('my-player').classList.add( "jw-state-idle" )
+                    document.body.classList.add('playerback')
+                    document.getElementById('my-player').classList.remove( "jw-flag-aspect-mode" )
 
-                    $( ".jwplayer" ).append('<div id="flowplayer-back-button"><div class="icon-back"></div></div>')
+                    myDiv = document.createElement("div")
+                    myDiv.innerHTML = '<div id="flowplayer-back-button"><div class="icon-back"></div></div>'
+                    document.getElementsByClassName( "jwplayer" )[0].appendChild(myDiv)
 
 
-                    $("#flowplayer-back-button").click(function () {
+                    document.getElementById('flowplayer-back-button').addEventListener('click', () => {
                         if(jwp){
                             jwp.remove()
                         }
@@ -1580,8 +1593,11 @@ $('body').addClass('loaded')
                         app.router.push({ name: 'episode-id' , params: {id: data.data.episode[0].id }})
                     })
 
+
                     if(this.app.i18n.locale=="fa" && data.data.fullrate !== null){
-                      $( ".jwplayer" ).append('<div id="flowplayer-rate">حجم مصرفی: <button type="button" class="btn btn-info rounded-pill">'+data.data.fullrate_data.fa.title+'</button></div>')
+                      myDiv = document.createElement("span")
+                      myDiv.innerHTML ='<div id="flowplayer-rate">حجم مصرفی: <button type="button" class="btn btn-info rounded-pill">'+data.data.fullrate_data.fa.title+'</button></div>'
+                      document.getElementsByClassName( "jwplayer" )[0].appendChild(myDiv)
       
                         if(data.data.fullrate_data.message){
                           const flowplayerRate = document.getElementById('flowplayer-rate')
@@ -1644,7 +1660,9 @@ $('body').addClass('loaded')
                     }
 
                     if(nextHTML){
-                      $( ".jw-media" ).append(nextHTML)
+                      myDiv = document.createElement("span")
+                      myDiv.innerHTML = nextHTML
+                      document.getElementsByClassName("jw-media")[0].appendChild(myDiv)
     
                         if (state.next_episode !== null) {
                             const nextEpisodeButton = document.getElementById('play-next-episode')
@@ -1669,7 +1687,15 @@ $('body').addClass('loaded')
                      
                     }
 
-                    $('#flowplayer-playlist').prependTo($('#flowplayer-playlist').siblings(".jwplayer"))
+
+
+  var outerDiv = document.getElementById('flowplayer-playlist')
+  var innerDiv = document.getElementsByClassName('jwplayer')[0]
+
+  innerDiv.appendChild(outerDiv)
+
+
+  
 
                     if (data.data.episode[0].current_time !== null) {
                         jwp.seek(data.data.episode[0].current_time)
@@ -1892,7 +1918,7 @@ $('body').addClass('loaded')
 
 
 
-                jwp.addButton('/images/flowplayer-playlist.svg', 'Play List', function() {seasonComponent.classList.toggle("show");if($( "#flowplayer-playlist" ).hasClass( "show" )){jwp.pause()}else{jwp.play()}}, 'flowplayer-playlist-button', '')
+                jwp.addButton('/images/flowplayer-playlist.svg', 'Play List', function() {seasonComponent.classList.toggle("show");if(document.getElementById("flowplayer-playlist").classList.contains("show")){jwp.pause()}else{jwp.play()}}, 'flowplayer-playlist-button', '')
 
 
             }
@@ -1948,8 +1974,8 @@ $('body').addClass('loaded')
 
             jwp.on('ready', (e) => {
               
-               if(!$('#my-player').length){
-                $('body').addClass('loaded')
+               if(!document.getElementById('my-player')){
+                document.body.classList.add('loaded')
                   if(jwp){
                       jwp.remove()
                   }
@@ -2012,7 +2038,7 @@ $('body').addClass('loaded')
         PLAYER_MODAL_CLEAN(state) {
             state.showplyrmodal = false
            var playersm=window.jwplayer('my-files-player')
-            if($('#my-files-player').length && playersm){
+            if(document.getElementById('my-files-player') && playersm){
                 playersm.remove()
             }
         },
@@ -2028,15 +2054,6 @@ $('body').addClass('loaded')
             state.download_files = data
         }
 
-        // FLOWPLAYER_DESTORY(state, type) {
-        //    var playersm=window.jwplayer("my-player")
-        //     if($('#my-player').length && playersm){
-        //         playersm.remove()
-        //     }
-        //     $( "body" ).removeClass('playerback')
-        //     return {state,type}
-    
-        // }
 
 
 }

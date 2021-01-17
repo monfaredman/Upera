@@ -63,7 +63,7 @@
               </div>
             </div>
 
-            <div class="download-links-items" :class="{'download-links-items2': (!$auth.loggedIn && totalamount && !lastseason),'download-links-season2': (!$auth.loggedIn && totalamount && lastseason),'download-links-season':(($auth.loggedIn || !totalamount) && lastseason),'download-links-season-num2':(season_num==1)}">
+            <div id="download-links-items" class="download-links-items" :class="{'download-links-items2': (!$auth.loggedIn && totalamount && !lastseason),'download-links-season2': (!$auth.loggedIn && totalamount && lastseason),'download-links-season':(($auth.loggedIn || !totalamount) && lastseason),'download-links-season-num2':(season_num==1)}">
               <div class="col-12">
                 <svg v-if="buyloading" id="L9" class="svg-loader" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 100 100" enable-background="new 0 0 0 0" xml:space="preserve"><path data-v-28f0b4cb="" fill="#373737" d="M73,50c0-12.7-10.3-23-23-23S27,37.3,27,50 M30.9,50c0-10.5,8.5-19.1,19.1-19.1S69.1,39.5,69.1,50" transform="rotate(109.69 50 50)"><animateTransform data-v-28f0b4cb="" attributeName="transform" attributeType="XML" type="rotate" dur="1s" from="0 50 50" to="360 50 50" repeatCount="indefinite" /></path></svg>
 
@@ -186,7 +186,7 @@
             </div>
 
 
-            <div class="download-links-items" :class="{'download-links-season-num1':(season_num==1)}">
+            <div id="download-links-items" class="download-links-items" :class="{'download-links-season-num1':(season_num==1)}">
               <div class="col-12">
                 <svg v-if="cartloading || downloadloading" id="L9" class="svg-loader" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 100 100" enable-background="new 0 0 0 0" xml:space="preserve"><path data-v-28f0b4cb="" fill="#373737" d="M73,50c0-12.7-10.3-23-23-23S27,37.3,27,50 M30.9,50c0-10.5,8.5-19.1,19.1-19.1S69.1,39.5,69.1,50" transform="rotate(109.69 50 50)"><animateTransform data-v-28f0b4cb="" attributeName="transform" attributeType="XML" type="rotate" dur="1s" from="0 50 50" to="360 50 50" repeatCount="indefinite" /></path></svg>
 
@@ -546,7 +546,8 @@ import {mapGetters} from 'vuex'
 
                 if (this.staticmodal) {
                 this.showModal()
-                $('.modal-content').removeAttr("tabindex")
+
+                document.getElementsByClassName('modal-content')[0].removeAttribute('tabindex')
 
 
 
@@ -568,12 +569,14 @@ if(this.type=='episode'){
           window.removeEventListener('resize', this.Resize)
           this.$store.dispatch("download/RESET_DOWNLOAD")
 
-          $('.default').removeClass('blure')
+          document.getElementsByClassName('default')[0].classList.remove('blure')
           this.$emit("hide-modal", null)
         })
-$('.download-options-label').removeClass('btn')
+        if(document.getElementsByClassName('download-options-label').length)
+        document.getElementsByClassName('download-options-label')[0].classList.remove('btn')
 
-          $('body').addClass('loaded')
+
+          document.body.classList.add('loaded')
 
 
 
@@ -651,7 +654,7 @@ $('.download-options-label').removeClass('btn')
       showModal() {
         this.$refs['downloadLinks'].show()
         if(!this.staticmodal)
-        $('.default').addClass('blure')
+        document.getElementsByClassName('default')[0].classList.add('blure')
 
 if(window.innerHeight<=500){
 this.lastseason=null
@@ -690,7 +693,7 @@ this.season_num=this.sizeofobj(this.lastseason)
         this.$refs['downloadLinks'].hide()
         this.$emit("hide-modal", null)
         this.$store.dispatch("download/RESET_DOWNLOAD")
-        $('.default').removeClass('blure')
+        document.getElementsByClassName('default')[0].classList.remove('blure')
       },
 
       ADDTOCART(itemid,amount,size,quality) {
@@ -707,11 +710,12 @@ this.season_num=this.sizeofobj(this.lastseason)
           name=this.ChooseLang(this.name,this.namefa)
 
         this.$store.dispatch("download/ADD_NEW_TO_DOWNLOAD", {itemid: itemid,amount:amount,size:size,name:name,quality:quality,id: this.id,type:this.type,poster:'https://thumb.upera.tv/thumb?w=70&h=103&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+this.posterf })
-        $('.modal-download-link .download-links-items').scrollTop(0)
+
+        document.getElementById("download-links-items").scrollTop=0
       },
       REMOVEFROMCART(itemid,amount) {
         this.$store.dispatch("download/DELETE_FROM_DOWNLOAD", {itemid: itemid,amount:amount})
-        $('.modal-download-link .download-links-items').scrollTop(0)
+        document.getElementById("download-links-items").scrollTop=0
       },
       EKRAN(ekranid) {
         this.hideModal()

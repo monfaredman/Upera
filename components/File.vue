@@ -78,16 +78,16 @@ import {mapGetters} from 'vuex'
 
           if (this.staticmodal) {
             this.showModal()
-            $('.modal-content').removeAttr("tabindex")
+            document.getElementsByClassName('modal-content')[0].removeAttribute('tabindex')
           }
 
           this.$refs['FilePlayer'].$on('hide', () => {
-            $('.default').removeClass('blure')
+            document.getElementsByClassName('default')[0].classList.remove('blure')
             this.$emit("hide-modal", null)
           })
 
 
-          $('body').addClass('loaded')
+          document.body.classList.add('loaded')
 
         },
 
@@ -104,7 +104,7 @@ import {mapGetters} from 'vuex'
       showModal() {
         this.$refs['FilePlayer'].show()
         if(!this.staticmodal)
-        $('.default').addClass('blure')
+        document.getElementsByClassName('default')[0].classList.add('blure')
 
 
         this.$store.dispatch("player/LOAD_FILE_PLAYER", {loggedIn: this.$auth.loggedIn,id:this.id,type:this.type,content:this.content,backdrop:'https://thumb.upera.tv/thumb?w=1920&h=938&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/'+this.Chooseback(this.backdropteaser,this.backdrop),block_id:'my-files-player',name:this.ChooseLang(this.name,this.namefa)})
@@ -119,7 +119,7 @@ import {mapGetters} from 'vuex'
       hideModal() {
         this.$refs['FilePlayer'].hide()
         this.$emit("hide-modal", null)
-        $('.default').removeClass('blure')
+        document.getElementsByClassName('default')[0].classList.remove('blure')
       },
 
     },

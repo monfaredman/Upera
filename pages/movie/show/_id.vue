@@ -87,11 +87,11 @@
 
         beforeRouteLeave(to, from, next) {
            	var playersm=window.jwplayer('my-player')
-            if($('#my-player').length && playersm){
+            if(document.getElementById("my-player") && playersm){
                 playersm.remove()
             }
             next()
-            $( "body" ).removeClass('playerback')
+            document.body.classList.remove('playerback')
         },
 		layout: "empty",
         data() {
@@ -128,7 +128,7 @@
         },
 
         mounted() {
-        	$('body').removeClass('loaded')
+        	document.body.classList.remove('loaded')
             if (this.$auth.loggedIn) {
                 this.guest=false
                 this.$store.dispatch('player/LOAD_MOVIE_PLAYER', {id: this.$route.params.id, lg_backdrop: this.lg_backdrop, md_backdrop: this.md_backdrop,SRMdata: {}})

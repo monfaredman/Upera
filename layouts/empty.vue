@@ -31,7 +31,9 @@ export default {
         }
     },
     mounted() {
-       $('#raychatBtn'). remove()
+    if(document.getElementById("raychatBtn")){
+        document.getElementById("raychatBtn").remove()
+      }
 
         this.$i18n.locale=this.locale
     },

@@ -557,12 +557,12 @@ export const mutations = {
         // BUTTON load
         BUTTON_LOAD(state) {
             state.button_loading = true
-            $('#submit-mobile').attr('disabled', true)
+            document.getElementById('submit-mobile').setAttribute('disabled', true)
         },
 
         BUTTON_CLEAR(state) {
             state.button_loading = false
-            $('#submit-mobile').attr('disabled', false)
+             document.getElementById('submit-mobile').setAttribute('disabled', false)
         },
         SHOW_MODAL(state, { premessage,premobile,preredirect,prerefresh }) {
             state.showModal = true

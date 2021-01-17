@@ -29,18 +29,22 @@ export const mutations = {
       localStorage.setItem('lang', locale)
       state.locale = locale
     }
+    if(document.getElementById("srm")){
 
-      $( "#srm" ).removeClass( "srmrtl" )
+      document.getElementById("srm").classList.remove( "srmrtl" )
       if(state.locale=='fa')
-        $( "#srm" ).addClass( "srmrtl" )
+        document.getElementById("srm").classList.add( "srmrtl" )
+    }
   },
 	GET_LANG(state) {
 		if (localStorage.getItem('lang') && state.locales.includes(localStorage.getItem('lang'))) {
       state.locale = localStorage.getItem('lang')
     }
-      $( "#srm" ).removeClass( "srmrtl" )
+    if(document.getElementById("srm")){
+      document.getElementById("srm").classList.remove( "srmrtl" )
       if(state.locale=='fa')
-        $( "#srm" ).addClass( "srmrtl" )
+        document.getElementById("srm").classList.add( "srmrtl" )
+    }
   },
   EMPTY_LANG(state) {
     localStorage.removeItem('lang')

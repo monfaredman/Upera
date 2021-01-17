@@ -46,7 +46,7 @@ export default {
     link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }], 
     script: [
       {
-        src: 'https://web.upera.tv/jwplayer?v1'
+        src: 'https://web.upera.tv/jwplayer?v1', body: true
       }
     ],
   },
@@ -67,7 +67,6 @@ export default {
   //   "../assets/styles/Edited-Style-Dark.css",
   // ],
   css: [
-    "~/node_modules/bootstrap/dist/css/bootstrap.css",
     "../assets/styles/fa.css",
     "../assets/styles/new.css",
     "../assets/styles/rtl.css",
@@ -81,7 +80,7 @@ export default {
    ** Plugins to load before mounting the App
    ** https://nuxtjs.org/guide/plugins
    */
-  plugins: ["~plugins/bootstrap","~plugins/slick","~plugins/swiper",'~/plugins/i18n','~/plugins/swal',
+  plugins: ["~plugins/slick","~plugins/swiper",'~/plugins/i18n','~/plugins/swal',
     "./plugins/axios",
     "./plugins/mixins/validation","~/plugins/lightGallery.client","~/plugins/awesomeCountdown.client"],
   /*
@@ -191,12 +190,6 @@ colorMode: {
      * add external plugins
      */
     extractCSS: true,
-    vendor: ["jquery", "bootstrap"],
-    plugins: [
-      new webpack.ProvidePlugin({
-        $: "jquery"
-      })
-    ],
     /*
      ** Run ESLint on save
      */

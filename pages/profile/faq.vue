@@ -58,10 +58,20 @@ export default {
   },
     methods: {
     show(index) {
-      $("#collapse-"+index).find(".fa").addClass("fa-minus").removeClass("fa-plus")
+      var collapse=document.getElementById("collapse-"+index).getElementsByClassName("fa")
+
+      if(collapse.length){
+        collapse[0].classList.add('fa-minus')
+        collapse[0].classList.remove('fa-plus')
+      }
     },
     hide(index) {
-      $("#collapse-"+index).find(".fa").addClass("fa-plus").removeClass("fa-minus")
+      var collapse=document.getElementById("collapse-"+index).getElementsByClassName("fa")
+
+      if(collapse.length){
+        collapse[0].classList.add('fa-plus')
+        collapse[0].classList.remove('fa-minus')
+      }
     }
   }
 }

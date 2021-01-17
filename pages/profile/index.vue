@@ -335,13 +335,13 @@
     mounted() {
       if(this.data.recently!=null){
       
-          const watching = $('#watching')
-      if(this.watchSwip){
+          const watching = document.getElementById("watching")
+      if(this.watchSwip && watching){
     this.watchSwip.on('reachBeginning', () => {
-        watching.removeClass('swipe')
+        watching.classList.remove('swipe')
     })
     this.watchSwip.on('fromEdge', () => {
-        watching.addClass('swipe')
+        watching.classList.add('swipe')
     })
   }
 }

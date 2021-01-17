@@ -71,7 +71,7 @@
     <div class="col-12 row" style="padding:0; margin: 0; height: 100%;">
       <div dir="ltr" class="col-12">
         <div id="flowplayer-player" class="is-closeable">
-          <div id="flowplayer-playlist" class="offset-3 col-6 my-5 py-2"></div>
+          <div id="flowplayer-playlist" class="offset-3 col-6 my-5 py-2" />
           <div id="my-player" class="fp-full fp-mute fp-edgy flowplayer" />
         </div>
       </div>
@@ -87,11 +87,11 @@
 
         beforeRouteLeave(to, from, next) {
            	var playersm=window.jwplayer('my-player')
-            if($('#my-player').length && playersm){
+            if(document.getElementById("my-player") && playersm){
                 playersm.remove()
             }
             next()
-            $( "body" ).removeClass('playerback')
+            document.body.classList.remove('playerback')
         },
 		layout: "empty",
         data() {
@@ -128,7 +128,7 @@
         mounted() {
 
 
-        	$('body').removeClass('loaded')
+        	document.body.classList.remove('loaded')
             if (this.$auth.loggedIn) {
                 this.guest=false
                 this.$store.dispatch('player/LOAD_SERIES_PLAYER', {episode_id: this.$route.params.id,type:'sp',

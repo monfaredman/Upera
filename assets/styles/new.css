@@ -10004,12 +10004,14 @@ overflow:auto;
 transition:.5s;
 padding:0;
 line-height: 1.5em !important;
+    visibility: hidden;
 }
 
 #flowplayer-playlist.show {
 position:absolute;
 z-index:1;
 height:80%;
+    visibility: visible;
 }
 
 
@@ -10055,4 +10057,6 @@ color:#fff;
 outline:none;
 }
 
-
+.jwplayer #flowplayer-next-video p {
+  color:#fff;
+}

@@ -40,7 +40,7 @@
 
 
     <header id="header" class="page-header">
-      <div class="container-fluid trigger-menu-wrapper" :class="{'trigger-menu-wrapper2':bannerNav}">
+      <div id="trigger-menu-wrapper" class="container-fluid trigger-menu-wrapper" :class="{'trigger-menu-wrapper2':bannerNav}">
         <div
           class="d-flex justify-content-between align-items-center header trigger-menu w-full" :class="{'menu-open': MenuOpen}" @click="MenuOpen = !MenuOpen"
         >
@@ -534,12 +534,16 @@ document.body.classList.add("hfixed")
 this.Nav()
             },
             handleScroll(e){
+        var footer=document.getElementsByClassName('footer-sticky')
 
-        if ($(window).scrollTop() + $(window).height() >= $(document).height() - 100) {
-             $('.footer-sticky').addClass('d-none')
-        } else if ($(window).scrollTop() + $(window).height() < $(document).height() - 100) {
-             $('.footer-sticky').removeClass('d-none')
+
+if(footer.length){
+        if (document.documentElement.scrollTop + window.innerHeight >= document.documentElement.scrollHeight - 100) {
+          footer[0].classList.add('d-none')
+        } else if (document.documentElement.scrollTop + window.innerHeight < document.documentElement.scrollHeight - 100) {
+          footer[0].classList.remove('d-none')
         }
+}
     var delta
     if (this.scrollCheckTimer) {
         clearTimeout(this.scrollCheckTimer)
@@ -559,20 +563,22 @@ this.Nav()
         document.body.classList.remove('s-c')
         document.body.classList.remove('s-h')
         document.body.classList.add(delta > 0 ? 's-c' : 's-h')
+        if(document.getElementById("raychatBtn")){
         if(delta>0){
-          $('#raychatBtn').removeClass('raychatBtn_hide')
+          document.getElementById("raychatBtn").classList.remove('raychatBtn_hide')
         }else{
-          $('#raychatBtn').addClass('raychatBtn_hide')
+          document.getElementById("raychatBtn").classList.add('raychatBtn_hide')
         }
+      }
     }, 200)
 
 
-    let height = $( document ).width()
+    let height =  document.documentElement.scrollHeight
 
-if(height>780 || $(".trigger-menu-wrapper").hasClass("trigger-menu-wrapper2")===false){
+if(height>780 || !document.getElementById("trigger-menu-wrapper").classList.contains("trigger-menu-wrapper2")){
 
 
-    var scroll = $(window).scrollTop()
+    var scroll = document.documentElement.scrollTop
     if (scroll >= 100) {
         document.body.classList.add("header-fixed-collapsed")
     }

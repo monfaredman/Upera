@@ -186,17 +186,17 @@
           this.backtoapp=true
 
                 this.showModal()
-                $('.modal-content').removeAttr("tabindex")
+                document.getElementsByClassName('modal-content')[0].removeAttribute('tabindex')
 
 
         this.$refs['callbackModal'].$on('hide', () => {
           window.removeEventListener('resize', this.Resize)
-          $('.default').removeClass('blure')
+          document.getElementsByClassName('default')[0].classList.remove('blure')
           this.$emit("hide-modal", null)
         })
 
 
-          $('body').addClass('loaded')
+          document.body.classList.add('loaded')
 
     },
     methods: {
@@ -282,7 +282,7 @@ this.$refs['callbackModal'].$on('shown', () => {
       hideModal() {
         this.$refs['callbackModal'].hide()
         this.$emit("hide-modal", null)
-        $('.default').removeClass('blure')
+        document.getElementsByClassName('default')[0].classList.remove('blure')
       },
             SEND_VERIFICATION(verification,send_code) {
                 var api_url

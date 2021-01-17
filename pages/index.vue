@@ -105,7 +105,7 @@
             {{ ChooseLang(list.occasion,list.occasion_fa) }}
           </h4>
           <div class="position-relative w-full">
-            <div id="special-slides">
+            <div id="special-slides" class="special-slides">
               <div v-for="(item,index) in list.list" :key="index" class="special-slide" :class="{ active: index==0 }">
                 <div class="d-flex justify-content-start w-full special">
                   <img class="special-image spec-1" :src="'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
@@ -465,67 +465,103 @@
         }
       }
     },
+
+    destroyed () {
+if(this.data.occasions!=null){
+  let specials=document.getElementsByClassName('special-slides')
+  let k=specials.length
+  if(k){
+    window.removeEventListener('resize', this.specialsize)
+
+  }
+}
+  },
     mounted() {
 
 
       
 
     	if(this.data.recenlty!=null){
-    	    const watching = $('#watching')
-    	
+    	    const watching = document.getElementById("watching")
+    	if(watching){
     this.watchSwip.on('reachBeginning', () => {
-        watching.removeClass('swipe')
+        watching.classList.remove('swipe')
     })
     this.watchSwip.on('fromEdge', () => {
-        watching.addClass('swipe')
+        watching.classList.add('swipe')
     })
+  }
 }
 
 
 
 
 if(this.data.occasions!=null){
- $(document).ready(function () {
 
-    const spec = $('.special-slide')
-    $('#special').height(spec.height()+20)
 
-    $(window).resize(function () {
-        setTimeout(() => {
-            $('#special').height($('.special-slide').height())
-        }, 500)
-        // $(".modal:visible").each(alignModal);
-    })
 
+  let specials=document.getElementsByClassName('special-slides')
+  let k=specials.length
+  var spec
+
+  if(k){
+
+    window.addEventListener('resize', this.specialsize)
+    var h=0
     var cur = 0
-    var count = spec.length
+    var count=0
+    var curr
+    var l
+    var s
+    var na
 
-    $('.special-slide.active').find('.special-image').css({ transform: 'translate3d(-15px, 15px, 0)', zIndex: '9' })
-    spec.not('.active').each(function (index) {
-        $(this).find('.special-image').css({
-            transform: `translate3d(-${index * 5}px, ${index * 5}px, 0)`,
-            zIndex: index
-        })
-    })
+    for (var i = 0; i < k; i++) {
+      spec = specials[i].getElementsByClassName('special-slide')
+      count=spec.length
+      if(count){
+        h=h+spec[0].offsetHeight
 
-    setInterval(function () {
-        spec.eq(cur).removeClass('active')
-        cur = (cur + 1) % count
-        spec.eq(cur).addClass('active')
-        spec.eq(cur).find('.special-image').css({ transform: 'translate3d(-15px, 15px, 0)', zIndex: '9' })
-        let curr = cur
-        spec.not('.active').each(function (index) {
-            curr = (cur + (index + 1)) % count
-            spec.eq(curr).find('.special-image').css({
-                transform: `translate3d(${- index * 5}px, ${index * 5}px, 0)`,
-                zIndex: index + 1
-            })
-        })
-    }, 3000)
+        cur = 0
 
+        na=0
+        for (l = 0; l < count; l++) {
+          if(spec[l].classList.contains("active")===false){
+            spec[l].getElementsByClassName('special-image')[0].style.transform=`translate3d(-${na * 5}px, ${na * 5}px, 0)`
+            spec[l].getElementsByClassName('special-image')[0].style.zIndex=na
+            na++
+          }else{
+            spec[l].getElementsByClassName('special-image')[0].style.transform='translate3d(-15px, 15px, 0)'
+            spec[l].getElementsByClassName('special-image')[0].style.zIndex=9
+          }
+        }
 
+        setInterval(function () {
+            spec[cur].classList.remove('active')
+            cur = (cur + 1) % count
+            spec[cur].classList.add('active')
 
-})
+            spec[cur].getElementsByClassName('special-image')[0].style.transform='translate3d(-15px, 15px, 0)'
+            spec[cur].getElementsByClassName('special-image')[0].style.zIndex=9
+
+            curr = cur
+            na=0
+            for (s = 0; s < count; s++) {
+              if(spec[s].classList.contains("active")===false){
+                curr = (cur + (na + 1)) % count
+                spec[curr].getElementsByClassName('special-image')[0].style.transform=`translate3d(${- na * 5}px, ${na * 5}px, 0)`
+                spec[curr].getElementsByClassName('special-image')[0].style.zIndex= na + 1
+                na++
+              }
+            }
+        }, 3000)
+
+      }
+    }
+
+    document.getElementById('special').style.height=(h+20)+'px'
+
+  }
+
 }
     },
   methods: {
@@ -599,6 +635,23 @@ if(this.data.occasions!=null){
 
                 }
                 
+    },
+    specialsize(e){
+      let specials=document.getElementsByClassName('special-slides')
+      let k=specials.length
+      var spec
+
+      if(k){
+        var h=0
+        for (var i = 0; i < k; i++) {
+          spec = specials[i].getElementsByClassName('special-slide')
+          if(spec.length)
+            h=h+spec[0].offsetHeight
+        }
+
+        document.getElementById('special').style.height=(h+20)+'px'
+      }
+      return e
     }
   }
   }

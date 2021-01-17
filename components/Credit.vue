@@ -125,11 +125,13 @@ if (this.$auth.loggedIn && !this.prewallet){
 
         this.$refs['creditModal'].$on('hide', () => {
           window.removeEventListener('resize', this.Resize)
-          $('.default').removeClass('blure')
+          document.getElementsByClassName('default')[0].classList.remove('blure')
+
+
           this.$emit("hide-modal", null)
         })
 
-          $('body').addClass('loaded')
+          document.body.classList.add('loaded')
 
 
 
@@ -160,7 +162,7 @@ if (this.$auth.loggedIn && !this.prewallet){
           },
       showModal() {
         this.$refs['creditModal'].show()
-        $('.default').addClass('blure')
+        document.getElementsByClassName('default')[0].classList.add('blure')
 
 this.$refs['creditModal'].$on('shown', () => {
     window.addEventListener("resize", this.Resize)
@@ -181,7 +183,7 @@ this.$refs['creditModal'].$on('shown', () => {
       hideModal() {
         this.$refs['creditModal'].hide()
         this.$emit("hide-modal", null)
-        $('.default').removeClass('blure')
+        document.getElementsByClassName('default')[0].classList.remove('blure')
       },
     },
 

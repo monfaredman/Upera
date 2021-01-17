@@ -271,7 +271,7 @@
               نمایش تیزر
             </div>
             <div class="article-img-holder d-none d-lg-block">
-              <img data-back="https://placehold.it/413x558" class="article-img" :src="Chooseback('https://thumb.upera.tv/thumb?w=413&h=258&q=100&a=c&src=https://cdn.upera.shop/s3/',data.item.back_teaser,data.item.backdrop)" :alt="'تیزر '+data.item.name_fa">
+              <img data-back="https://placehold.it/413x258" class="article-img" :src="Chooseback('https://thumb.upera.tv/thumb?w=413&h=258&q=100&a=c&src=https://cdn.upera.shop/s3/',data.item.back_teaser,data.item.backdrop)" :alt="'تیزر '+data.item.name_fa">
               <a href="#" class="play-movie text-invert">
                 <i class="icon-play" />
               </a>

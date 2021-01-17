@@ -239,10 +239,20 @@
   },
   methods: {
     show(index) {
-      $("#collapse-"+index).find(".fa").addClass("fa-angle-down").removeClass("fa-angle-up")
+      var collapse=document.getElementById("collapse-"+index).getElementsByClassName("fa")
+
+      if(collapse.length){
+        collapse[0].classList.add('fa-angle-down')
+        collapse[0].classList.remove('fa-angle-up')
+      }
     },
     hide(index) {
-      $("#collapse-"+index).find(".fa").addClass("fa-angle-up").removeClass("fa-angle-down")
+      var collapse=document.getElementById("collapse-"+index).getElementsByClassName("fa")
+
+      if(collapse.length){
+        collapse[0].classList.add('fa-angle-up')
+        collapse[0].classList.remove('fa-angle-down')
+      }
     },
     install(url){
       if (this.$auth.loggedIn || !this.$cookiz.get('ref')) {
