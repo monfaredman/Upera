@@ -104,8 +104,6 @@ export default {
     '@nuxtjs/auth',
     "@nuxtjs/pwa",
     '@nuxtjs/color-mode',
-    // Doc: https://github.com/nuxt/content
-    "@nuxt/content",
     "bootstrap-vue/nuxt",
     "nuxt-clipboard2",
     "@nuxtjs/device",
@@ -158,11 +156,6 @@ export default {
     baseURL: "http://web.upera.tv/api/v1",
     browserBaseURL: "https://web.upera.tv/api/v1",
   },
-  /*
-   ** Content module configuration
-   ** See https://content.nuxtjs.org/configuration
-   */
-  content: {},
   /*
    ** Build configuration
    ** See https://nuxtjs.org/api/configuration-build/
