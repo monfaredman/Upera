@@ -31,8 +31,8 @@ export default {
         }
     },
     mounted() {
-    if(document.getElementById("raychatBtn")){
-        document.getElementById("raychatBtn").remove()
+    if(document.getElementById("goftino_w")){
+        document.getElementById("goftino_w").remove()
       }
 
         this.$i18n.locale=this.locale

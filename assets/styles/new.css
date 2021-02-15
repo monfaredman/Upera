@@ -1591,7 +1591,7 @@ body {
 }
 
 @media (max-width: 767.98px) {
-  #raychatBtn:not(.active) {
+  #goftino_w:not(.fadeInUp) {
     opacity: 0;
     visibility: hidden;
   }
@@ -1611,7 +1611,7 @@ body {
   }
 }
 @media (max-width: 767.98px) {
-  .s-c #raychatBtn:not(.active) {
+  .s-c #goftino_w:not(.fadeInUp) {
     opacity: 1;
     visibility: visible;
   }
@@ -5592,7 +5592,7 @@ div.download-links-poster::after
     {
         top: 5rem;
     }
-    .callback .raychat_main_button{margin-bottom: 100px;}
+    .callback #goftino_w{margin-bottom: 100px !important;}
     .download-links-0 .download-links-items
     {
         bottom: 0;
@@ -7321,7 +7321,7 @@ body widget {
         height: 135px !important;
     }
 
-    .raychatBtn_hide:not(.active) {
+    .goftino_w_hide:not(.fadeInUp) {
         opacity: 0 !important;
         display: none !important;
     }
@@ -8275,7 +8275,7 @@ body widget {
         height: 320px !important;
     }
 
-    .raychatBtn_hide:not(.active) {
+    .goftino_w_hide:not(.fadeInUp) {
         opacity: 1 !important;
         display: block !important;
     }
@@ -10059,4 +10059,9 @@ outline:none;
 
 .jwplayer #flowplayer-next-video p {
   color:#fff;
+}
+
+.animate-bottom{
+      bottom: 6px !important;
+    right: 3px !important;
 }

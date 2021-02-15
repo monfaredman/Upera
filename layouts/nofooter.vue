@@ -30,7 +30,11 @@ created: function() {
 
   this.$i18n.locale=this.locale
 
-      !function(){function t(){var t=document.createElement("script");t.type="text/javascript",t.async=!0,localStorage.getItem("rayToken")?t.src="https://app.raychat.io/scripts/js/"+o+"?rid="+localStorage.getItem("rayToken")+"&href="+window.location.href:t.src="https://app.raychat.io/scripts/js/"+o+"?href="+window.location.href;var e=document.getElementsByTagName("script")[0];e.parentNode.insertBefore(t,e)}var e=document,a=window,o="44894d7d-07f8-401a-95de-20428073f7c6";"complete"==e.readyState?t():a.attachEvent?a.attachEvent("onload",t):a.addEventListener("load",t,!1)}()
+      !function(){var a=window,d=document
+      function g(){var g=d.createElement("script"),s="https://www.goftino.com/widget/gLKqpv",l=localStorage.getItem("goftino")
+      g.type="text/javascript",g.async=!0,g.referrerPolicy="no-referrer-when-downgrade",g.src=l?s+"?o="+l:s
+      d.getElementsByTagName("head")[0].appendChild(g)
+    }"complete"===d.readyState?g():a.attachEvent?a.attachEvent("onload",g):a.addEventListener("load",g,!1)}()
 }
 }
 </script>

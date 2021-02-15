@@ -563,11 +563,11 @@ if(footer.length){
         document.body.classList.remove('s-c')
         document.body.classList.remove('s-h')
         document.body.classList.add(delta > 0 ? 's-c' : 's-h')
-        if(document.getElementById("raychatBtn")){
+        if(document.getElementById("goftino_w")){
         if(delta>0){
-          document.getElementById("raychatBtn").classList.remove('raychatBtn_hide')
+          document.getElementById("goftino_w").classList.remove('goftino_w_hide')
         }else{
-          document.getElementById("raychatBtn").classList.add('raychatBtn_hide')
+          document.getElementById("goftino_w").classList.add('goftino_w_hide')
         }
       }
     }, 200)
