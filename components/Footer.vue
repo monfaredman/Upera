@@ -111,10 +111,12 @@
               <div class="d-flex namad-wrapper">
                 <div class="namad pr-2">
                   <div class="namad-box-2" @click="samandehi">
-                    <img src="/images/enamad.svg" width="80">
+                    <img src="/images/samandehi.png" width="80">
                   </div>
                   <div class="namad-box-2">
-                    <img src="/images/enamad.svg" width="80">
+                    <a href="https://tehran.irannsr.org/index.php?module=web_directory&wd_id=104375&query=21014457" target="_blank">
+                      <img src="/images/irannsr.png" width="80">
+                    </a>
                   </div>
                 </div>
                 <div class="namad pr-2">
