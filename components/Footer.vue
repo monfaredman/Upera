@@ -114,15 +114,15 @@
                     <img src="/images/samandehi.png" width="80">
                   </div>
                   <div class="namad-box-2">
-                    <a href="https://tehran.irannsr.org/index.php?module=web_directory&wd_id=104375&query=21014457" target="_blank">
+                    <a href="https://tehran.irannsr.org/fa/page/104366-%D9%85%D8%B4%D8%A7%D9%87%D8%AF%D9%87-%D8%A7%D8%B9%D8%B6%D8%A7.html?ctp_id=1086&id=25122" target="_blank">
                       <img src="/images/irannsr.png" width="80">
                     </a>
                   </div>
                 </div>
                 <div class="namad pr-2">
                   <div class="namad-box">
-                    <a href="https://satra.ir/fa/licensed-media/" target="_blank">
-                      <img src="/images/satra.svg" width="80">
+                    <a onclick="window.open('https://trustseal.enamad.ir/?id=204904&amp;Code=ipcUNmaUZGludD970sgm', 'Popup','toolbar=no, location=no, statusbar=no, menubar=no, scrollbars=1, resizable=0, width=580, height=600, top=30')">
+                      <img src="/images/enamad.png" width="80">
                     </a>
                   </div>
                 </div>
