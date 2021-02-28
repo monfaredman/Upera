@@ -1,6 +1,6 @@
 <template>
   <div id="checkcontainer" class="container-fluid">
-    <section class="login mt-5 pt-lg-5 pt-md-5">
+    <section class="text-center mt-5 pt-lg-5 pt-md-5">
       <div>
 <a referrerpolicy="origin" target="_blank" href="https://trustseal.enamad.ir/?id=204904&amp;Code=ipcUNmaUZGludD970sgm"><img referrerpolicy="origin" src="https://Trustseal.eNamad.ir/logo.aspx?id=204904&amp;Code=ipcUNmaUZGludD970sgm" alt="" style="cursor:pointer" id="ipcUNmaUZGludD970sgm"></a>
 
