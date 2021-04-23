@@ -192,7 +192,7 @@
                       <div class="col-12">
                         <a href="" class="btn btn-main btn-block" @click.prevent="Login()">
                           ورود به سایت
-                          <i class="fa fa-money-bill pr-2" />
+                          <i class="fa fa-sign-in-alt pr-2" />
                         </a>
                       </div>
                     </div>
