@@ -188,6 +188,14 @@
                         </a>
                       </div>
                     </div>
+                    <div v-else-if="show_login" class="row">
+                      <div class="col-12">
+                        <a href="" class="btn btn-main btn-block" @click.prevent="Login()">
+                          ورود به سایت
+                          <i class="fa fa-money-bill pr-2" />
+                        </a>
+                      </div>
+                    </div>
                     <div v-else class="row">
                       <div class="col-6">
                         <a href="" class="btn btn-main btn-block" @click.prevent="CHECK()">
@@ -414,6 +422,9 @@ this.$refs['callbackModal'].$on('shown', () => {
     
     return e
   },
+  Login() {
+  this.$store.dispatch('login/SHOW_MODAL',{premessage: null,premobile: null,preredirect: null,prerefresh: false})
+},
     async COPY(text) {
       try {
         await this.$copyText(text)

@@ -110,7 +110,7 @@ export const mutations = {
         SUCCESS_CALLBACK(state, data) {
             state.check = null
             state.error = null
-            state.show_login = null
+            state.show_login = 0
             if (data.ref) {
                 state.msg = this.app.i18n.t('payment.code') + data.ref
             } else {
