@@ -93,12 +93,12 @@ export const actions = {
                     commit('SUCCESS_CALLBACK', response.data.data)
                 } else {
                     response.data.data.msg=this.app.i18n.t('payment.error')
-                    commit('FAILTURE_CALLBACK', response.data.data) 
+                    commit('FAILTURE_CALLBACK3', response.data.data) 
                 }
                 
                 commit('SPINER_CLEAN')
             }).catch(error => {
-                commit('FAILTURE_CALLBACK2', error.response.data)
+                commit('FAILTURE_CALLBACK4', error.response.data)
                 commit('SPINER_CLEAN')
             })
         },
@@ -122,6 +122,19 @@ export const mutations = {
         FAILTURE_CALLBACK(state, data) {            
             state.title = this.app.i18n.t('payment.error')
             state.error = data.msg
+            if(data.title)
+            state.title_msg = data.title
+        },
+
+        FAILTURE_CALLBACK2(state, data) {            
+            state.title = this.app.i18n.t('payment.error')
+            state.error = data.message
+            if(data.title)
+            state.title_msg = data.title
+        },
+        FAILTURE_CALLBACK3(state, data) {            
+            state.title = this.app.i18n.t('payment.error')
+            state.error = data.msg
             if(data.show_login)
                 state.show_login = data.show_login
             else
@@ -130,7 +143,7 @@ export const mutations = {
             state.title_msg = data.title
         },
 
-        FAILTURE_CALLBACK2(state, data) {            
+        FAILTURE_CALLBACK4(state, data) {            
             state.title = this.app.i18n.t('payment.error')
             state.error = data.message
             if(data.show_login)
