@@ -116,7 +116,7 @@
                     
                       اگر مبلغی از حساب شما کسر شده است، نهایتا ظرف ۷۲ ساعت آینده به حساب شما برگشت داده خواهد شد
                     </div>
-                    <div v-else-if="!loading && !buyloading" class="text-center">
+                    <div v-else-if="!loading && !buyloading && show_login==0" class="text-center">
                       <div class="offset-2 col-8">
                         <img class="img-fluid" src="@/assets/img/check.png">
                       </div>
@@ -128,6 +128,18 @@
                       می توانید پرداخت خود را بررسی کنید و یا نسبت به پرداخت مجدد اقدام کنید
                     </div>
 
+
+                    <div v-else-if="!loading && !buyloading && show_login==1" class="text-center">
+                      <div class="offset-2 col-8">
+                        <img class="img-fluid" src="@/assets/img/check.png">
+                      </div>
+                      <b>پرداخت شما موفقیت آمیز بوده است</b><br>
+                      اما برای دانلود فایل باید وارد سایت شوید
+
+                      <br><br> <br><br>
+                    
+                      
+                    </div>
 
 
                     <div v-if="!loading && !buyloading" class="col-12 p-4 text-right">
@@ -261,6 +273,7 @@ import {mapGetters} from 'vuex'
         ...mapGetters({title: "payment/title"}),
         ...mapGetters({files: "payment/files"}),
         ...mapGetters({error: "payment/error"}),
+        ...mapGetters({show_login: "payment/show_login"}),
         ...mapGetters({msg: "payment/msg"}),
         ...mapGetters({title_msg: "payment/title_msg"})
     },

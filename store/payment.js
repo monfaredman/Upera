@@ -2,6 +2,7 @@ export const state = () => ({
         title: '',
         files: [],
         error: null,
+        show_login: 0,
         msg: null,
         title_msg: {
             type: null,
@@ -22,6 +23,9 @@ export const getters = {
   },
   error(state) {
     return state.error
+  },
+  show_login(state) {
+    return state.show_login
   },
   files(state) {
     return state.files
@@ -106,6 +110,7 @@ export const mutations = {
         SUCCESS_CALLBACK(state, data) {
             state.check = null
             state.error = null
+            state.show_login = null
             if (data.ref) {
                 state.msg = this.app.i18n.t('payment.code') + data.ref
             } else {
@@ -117,6 +122,10 @@ export const mutations = {
         FAILTURE_CALLBACK(state, data) {            
             state.title = this.app.i18n.t('payment.error')
             state.error = data.msg
+            if(data.show_login)
+                state.show_login = data.show_login
+            else
+                state.show_login = 0
             if(data.title)
             state.title_msg = data.title
         },
@@ -124,6 +133,10 @@ export const mutations = {
         FAILTURE_CALLBACK2(state, data) {            
             state.title = this.app.i18n.t('payment.error')
             state.error = data.message
+            if(data.show_login)
+                state.show_login = data.show_login
+            else
+                state.show_login = 0
             if(data.title)
             state.title_msg = data.title
         },
