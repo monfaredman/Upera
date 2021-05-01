@@ -61,35 +61,70 @@
           </div>
         </div>
       </div>
+      <div v-if="distance < 0 && data.last_page > 1" class="text-center p-2">
+        <button class="btn-load-more btn btn-main" @click="manualLoad">
+          {{ $t('home.load_more') }}
+        </button>
+      </div>
+      <infinite-loading v-else-if="data.last_page > 1" ref="infiniteLoading" @infinite="infiniteHandler">
+        <span slot="no-more" />
+        <span slot="no-results" />
+      </infinite-loading>
     </div>
   </div>
 </template>
 
 <script>
+import InfiniteLoading from 'vue-infinite-loading'
   export default {
-
+        components: {
+            InfiniteLoading
+        },
   async asyncData (context) {
+
     let res
+    let finded=0
+
+  if(context.params.list==="offer" || context.params.list==="soon" || context.params.list==="free" || context.params.list==="new_titles"){
+    
     if (context.app.$auth.loggedIn) {
-        res = await context.app.$axios.get('/get/discover')
+        res = await context.app.$axios.get('/get/get_list/'+context.params.list)
      }else{
-      res = await context.app.$axios.get('/ghost/get/discover')
+      res = await context.app.$axios.get('/ghost/get/get_list/'+context.params.list)
      }
-     let finded=0
-     if(context.params.list==="offer" || context.params.list==="new_titles" || context.params.list==="free" || context.params.list==="soon"){
-     	res.data.data.movies=res.data.data[context.params.list]
-     	finded=1
-   	 }else if(res.data.data.occasions!==null){
-        for (var key = 0, len = res.data.data.occasions.length; key < len; key++) {
-        	if(res.data.data.occasions[key].occasion==context.params.list){
-		    	res.data.data.movies=res.data.data.occasions[key].list
-		    	finded=1
-		    	res.data.data.titles[context.params.list]=res.data.data.occasions[key].occasion_fa
-		    	res.data.data.titles_en[context.params.list]=context.params.list
-		    	break
-        	}
-		}
-	}
+     res.data.data.titles_en=res.data.data[context.params.list].list
+     res.data.data.titles=res.data.data[context.params.list].list_fa
+     res.data.data.movies=res.data.data[context.params.list].data
+     res.data.data.last_page=res.data.data[context.params.list].last_page
+     res.data.data.per_page=res.data.data[context.params.list].per_page
+
+     res.data.data[context.params.list]=null
+      finded=1
+     
+
+  }else{
+
+      if (context.app.$auth.loggedIn) {
+          res = await context.app.$axios.get('/get/discover')
+       }else{
+        res = await context.app.$axios.get('/ghost/get/discover')
+       }
+       finded=0
+       if(context.params.list==="offer" || context.params.list==="new_titles" || context.params.list==="free" || context.params.list==="soon"){
+       	res.data.data.movies=res.data.data[context.params.list]
+       	finded=1
+     	 }else if(res.data.data.occasions!==null){
+          for (var key = 0, len = res.data.data.occasions.length; key < len; key++) {
+          	if(res.data.data.occasions[key].occasion==context.params.list){
+  		    	res.data.data.movies=res.data.data.occasions[key].list
+  		    	finded=1
+  		    	res.data.data.titles[context.params.list]=res.data.data.occasions[key].occasion_fa
+  		    	res.data.data.titles_en[context.params.list]=context.params.list
+  		    	break
+          	}
+  		}
+  	 }
+  }
 
 	if(!finded){
 		return context.redirect(404, '/404')
@@ -99,8 +134,10 @@
   data () {
     return {
       data:{},
-      userApi:'/get/discover',
-      ghostApi:'/ghost/get/discover'
+      page: 1,
+      distance: -Infinity,
+      userApi:'/get/get_list/'+this.$route.params.list,
+      ghostApi:'/ghost/get/get_list/'+this.$route.params.list
     }
   },
   head() {
@@ -120,6 +157,37 @@
         }else
            return genre 
     },
+            infiniteHandler($state) {
+                var apiurl
+                if (this.$auth.loggedIn) {
+                        apiurl=this.userApi
+                } else {
+                        apiurl=this.ghostApi
+                }
+                    this.$axios.get(apiurl,{params: {page: this.page + 1}}).then(response => {
+                        if (response.status === 200) {
+                             response.data.data.movies=response.data.data[this.$route.params.list].data
+                             response.data.data.last_page=response.data.data[this.$route.params.list].last_page
+                             response.data.data.per_page=response.data.data[this.$route.params.list].per_page
+                            if (response.data.data.movies.length) {
+                              this.data.movies = this.data.movies.concat(response.data.data.movies)
+                              if(response.data.data.last_page==this.page)
+                                $state.complete()
+                              else
+                                $state.loaded()
+                            } else {
+                              $state.complete()
+                            }
+                        }
+                    })
+                this.page = this.page + 1
+            },
+            manualLoad() {
+              this.distance = 100
+              this.$nextTick(() => {
+                this.$refs.infiniteLoading.attemptLoad()
+              })
+            },
     hasHistory () { return window.history.length > 2 },
   }
   }

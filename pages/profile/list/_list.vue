@@ -92,6 +92,8 @@ import InfiniteLoading from 'vue-infinite-loading'
      res.data.data.titles_en=res.data.data[context.params.list].list
      res.data.data.titles=res.data.data[context.params.list].list_fa
      res.data.data.movies=res.data.data[context.params.list].data
+     res.data.data.last_page=res.data.data[context.params.list].last_page
+     res.data.data.per_page=res.data.data[context.params.list].per_page
 
      res.data.data[context.params.list]=null
 
@@ -136,6 +138,9 @@ import InfiniteLoading from 'vue-infinite-loading'
                 }
                     this.$axios.get(apiurl,{params: {page: this.page + 1}}).then(response => {
                         if (response.status === 200) {
+                             response.data.data.movies=response.data.data[this.$route.params.list].data
+                             response.data.data.last_page=response.data.data[this.$route.params.list].last_page
+                             response.data.data.per_page=response.data.data[this.$route.params.list].per_page
                             if (response.data.data.movies.length) {
                               this.data.movies = this.data.movies.concat(response.data.data.movies)
                               if(response.data.data.last_page==this.page)
