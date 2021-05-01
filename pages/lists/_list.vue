@@ -19,7 +19,7 @@
                   <div class="pr-md-4 pr-md-2 showcase-desc-wrapper">
                     <div class="showcase-desc">
                       <div class="h2 text-invert mb-1 mb-md-3">
-                        {{ ChooseLang(data.titles_en[$route.params.list],data.titles[$route.params.list]) }}
+                        {{ ChooseLang(data.titles_en,data.titles) }}
                       </div>
                     </div>
                   </div>
@@ -93,9 +93,8 @@ import InfiniteLoading from 'vue-infinite-loading'
       res = await context.app.$axios.get('/ghost/get/get_list/'+context.params.list)
      }
 
-            res.data.data.titles[context.params.list]=res.data.data[context.params.list].list
-            res.data.data.titles_en[context.params.list]=res.data.data[context.params.list].list_fa
-            
+     res.data.data.titles_en=res.data.data[context.params.list].list
+     res.data.data.titles=res.data.data[context.params.list].list_fa
      res.data.data.movies=res.data.data[context.params.list].data
      res.data.data.last_page=res.data.data[context.params.list].last_page
      res.data.data.per_page=res.data.data[context.params.list].per_page
@@ -120,8 +119,8 @@ import InfiniteLoading from 'vue-infinite-loading'
           	if(res.data.data.occasions[key].occasion==context.params.list){
   		    	res.data.data.movies=res.data.data.occasions[key].list
   		    	finded=1
-  		    	res.data.data.titles[context.params.list]=res.data.data.occasions[key].occasion_fa
-  		    	res.data.data.titles_en[context.params.list]=context.params.list
+  		    	res.data.data.titles=res.data.data.occasions[key].occasion_fa
+  		    	res.data.data.titles_en=context.params.list
   		    	break
           	}
   		}
@@ -144,7 +143,7 @@ import InfiniteLoading from 'vue-infinite-loading'
   },
   head() {
 
-    return { title:  this.ChooseLang(this.data.titles_en[this.$route.params.list],this.data.titles[this.$route.params.list]) }
+    return { title:  this.ChooseLang(this.data.titles_en,this.data.titles) }
   },
     methods: {
     ChooseLang(en,fa){
