@@ -92,8 +92,10 @@ import InfiniteLoading from 'vue-infinite-loading'
      }else{
       res = await context.app.$axios.get('/ghost/get/get_list/'+context.params.list)
      }
-     res.data.data.titles_en=res.data.data[context.params.list].list
-     res.data.data.titles=res.data.data[context.params.list].list_fa
+
+            res.data.data.titles[context.params.list]=res.data.data[context.params.list].list
+            res.data.data.titles_en[context.params.list]=res.data.data[context.params.list].list_fa
+            
      res.data.data.movies=res.data.data[context.params.list].data
      res.data.data.last_page=res.data.data[context.params.list].last_page
      res.data.data.per_page=res.data.data[context.params.list].per_page
