@@ -9,9 +9,7 @@ export const state = () => ({
         showplyrmodal: false,
         showDownloadModal: false,
         next: null,
-        next_episode: null,
         next_season: null,
-        next_is: null,
         next_playlist: null,
         download_files: [],
         next_episode_playlist: null,
@@ -1348,9 +1346,8 @@ export const mutations = {
             state.data = data.data.episode[0]
             state.season = data.data.season
             state.next_season = null
-            state.next_episode = null
+            state.suggestion = data.data.suggestion
             state.next = null
-            state.next_is = null
             state.next_playlist = null
             state.season_playlist_active = data.data.episode[0].season_number
 
@@ -1465,7 +1462,7 @@ export const mutations = {
   jwp=window.jwplayer('my-player').setup({ 
     "playlist": [
       {
-        "file": data.data.episode[0].video,
+        "file": data.data.episode[0].video+'&app=1',
         "tracks": TextTrack,
         "image": lg_backdrop + data.data.episode[0].backdrop,
         "title": (this.app.i18n.locale=="fa" && data.data.episode[0].name_fa) ? data.data.episode[0].name_fa : data.data.episode[0].name,
@@ -1495,14 +1492,14 @@ export const mutations = {
                RecentlyTime = e.offset.toFixed()
             })
 
-            if (state.next_episode == null) {
+            if (state.suggestion == null) {
               if(data.data.season.length){
                 for (let i = 0; i < data.data.season[data.data.episode[0].season_number].length; i++) {
                     if (data.data.episode[0].episode_number === data.data.season[data.data.episode[0].season_number][i].episode_number) {
                         if ({}.hasOwnProperty.call(data.data.season[data.data.episode[0].season_number], i + 1)) {
-                            state.next_episode = data.data.season[data.data.episode[0].season_number][i + 1]
+                            state.suggestion = data.data.season[data.data.episode[0].season_number][i + 1]
                         } else {
-                            state.next_episode = null
+                            state.suggestion = null
                         }
                     }
                 }
@@ -1516,16 +1513,16 @@ export const mutations = {
             }
 
 var nextHTML =''
-            if (state.next_episode !== null) {
+            if (state.suggestion !== null) {
                      nextHTML = `
                     <div id="flowplayer-next-video" class="col-12"><div class="col-12 col-sm-4 col-xl-3 content hide-play-next-episode" id="play-next-episode">
                     
                       <div class="title">
-                        <p> <span>` + this.app.i18n.t('player.play_next_episode') + ` </span> S` + state.next_episode.season_number + `E` + state.next_episode.episode_number + ': ' + ((this.app.i18n.locale=="fa" && state.next_episode.name_fa) ? state.next_episode.name_fa : state.next_episode.name) + `</p> 
+                        <p> <span>` + this.app.i18n.t('player.play_next_episode') + ` </span> S` + state.suggestion.season_number + `E` + state.suggestion.episode_number + ': ' + ((this.app.i18n.locale=="fa" && state.suggestion.name_fa) ? state.suggestion.name_fa : state.suggestion.name) + `</p> 
                      </div>
                      
                      <div class="backdrop">
-                          <img src="`+ data.data.cdn.md_backdrop + state.next_episode.backdrop + `" width="100%" >
+                          <img src="`+ data.data.cdn.md_backdrop + state.suggestion.backdrop + `" width="100%" >
                      </div>
                      
                      <div class="play-next-movie-button">
@@ -1667,23 +1664,25 @@ document.body.classList.add('loaded')
                       myDiv.innerHTML = nextHTML
                       document.getElementsByClassName("jw-media")[0].appendChild(myDiv)
     
-                        if (state.next_episode !== null) {
+                        if (state.suggestion !== null) {
                             const nextEpisodeButton = document.getElementById('play-next-episode')
                         
                             nextEpisodeButton.addEventListener('click', () => {
                                 if(jwp){
                                     jwp.remove()
                                 }
-                                state.next_is = 'episode'
+                                this.$store.state.next = 'episode'
                             })
                         }else{
                             const nextSeasonButton = document.getElementById('play-next-season')
+
+                            state.suggestion=state.next_season
 
                             nextSeasonButton.addEventListener('click', () => {
                                 if(jwp){
                                     jwp.remove()
                                 }
-                                state.next_is = 'season'
+                                this.$store.state.next = 'episode'
                             })
                         }
 
@@ -1760,7 +1759,7 @@ document.body.classList.add('loaded')
                 // Auto play next movie
                 if (parseInt(e.duration.toFixed()) - 3 <= e.position.toFixed()) {
 
-                    if (state.next_episode !== null) {
+                    if (state.suggestion !== null) {
                         if(jwp){
                             jwp.remove()
                         }
@@ -1769,7 +1768,8 @@ document.body.classList.add('loaded')
                         if(jwp){
                             jwp.remove()
                         }
-                        state.next = 'season'
+                        state.suggestion=state.next_season
+                        state.next = 'episode'
 
                     }
 
