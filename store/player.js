@@ -1462,7 +1462,7 @@ export const mutations = {
   jwp=window.jwplayer('my-player').setup({ 
     "playlist": [
       {
-        "file": data.data.episode[0].video+'&app=1',
+        "file": data.data.episode[0].video,
         "tracks": TextTrack,
         "image": lg_backdrop + data.data.episode[0].backdrop,
         "title": (this.app.i18n.locale=="fa" && data.data.episode[0].name_fa) ? data.data.episode[0].name_fa : data.data.episode[0].name,
