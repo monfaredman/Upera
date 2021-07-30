@@ -71,14 +71,14 @@
         خارجی ببینید
       </h5> -->
       <h4 class="font-weight-bold h6 mt-3  pt-2">
-        <span class="pl-2 title">دانلود اپلیکیشن</span>
+        <span class="pl-2 title">{{ $t('new.download_app') }}</span>
       </h4>
       <div class="mb-5 mt-5 app_container">
         <div class="accordion">
           <h5 class="mb-1 mt-4 collapse-header ">
             <span id="collapse-1" v-b-toggle="'accordion-1'" class="app_container_title">
               <i class="fa fa-angle-down pr-4 " />
-              اپلیکیشن اندروید
+              {{ $t('new.android_app') }}
             </span>
           </h5>
           <b-collapse id="accordion-1" visible accordion="my-accordion" role="tabpanel" @shown="show(1)" @hide="hide(1)">
@@ -102,7 +102,7 @@
           <h2 class="mb-1 mt-4 collapse-header">
             <span id="collapse-2" v-b-toggle="'accordion-2'" class="app_container_title">
               <i class="fa fa-angle-up pr-4" />
-              اپلیکیشن iOS
+              {{ $t('new.ios_app') }}
             </span>
           </h2>
           <b-collapse id="accordion-2" accordion="my-accordion" role="tabpanel" @shown="show(2)" @hide="hide(2)">
@@ -156,7 +156,7 @@
           <h2 class="mb-1 mt-4 collapse-header">
             <span id="collapse-3" v-b-toggle="'accordion-3'" class="app_container_title">
               <i class="fa fa-angle-up pr-4" />
-              اپلیکیشن تلویزیون
+              {{ $t('new.tv_app') }}
             </span>
           </h2>
           <b-collapse id="accordion-3" accordion="my-accordion" role="tabpanel" @shown="show(3)" @hide="hide(3)">
@@ -180,8 +180,7 @@
           <h2 class="mb-1 mt-4 collapse-header">
             <span id="collapse-4" v-b-toggle="'accordion-4'" class="app_container_title">
               <i class="fa fa-angle-up pr-4" />
-              دسترسی با مرورگر تلویزیون‌
-              و کنسول
+              {{ $t('new.webtv_app') }}
             </span>
           </h2>
           <b-collapse id="accordion-4" accordion="my-accordion" role="tabpanel" @shown="show(4)" @hide="hide(4)">
@@ -189,7 +188,7 @@
               <div class="col-6 col-sm-4 col-lg-2 col-md-3 mb-3 mb-4 pr-0 mr-lg-3">
                 <a href="" class="btn btn-lg btn-danger btn-block" @click.prevent="install('https://tv.upera.tv/')">
                   
-                  ورود به WEBTV
+                  {{ $t('new.goto_webtv_app') }}
                 </a>
               </div>
             </div>
@@ -235,7 +234,7 @@
   },
   head() {
 
-    return { title:  'نصب اپلیکیشن فیلم و سریال' }
+    return { title:  this.ChooseLang('Install Movie and TV Series Application','نصب اپلیکیشن فیلم و سریال') }
   },
   methods: {
     show(index) {
@@ -254,6 +253,12 @@
         collapse[0].classList.remove('fa-angle-down')
       }
     },
+            ChooseLang(en,fa){
+                if(fa && this.$i18n.locale=="fa")
+                    return fa
+                else
+                    return en
+            },
     install(url){
       if (this.$auth.loggedIn || !this.$cookiz.get('ref')) {
         window.location.href = url

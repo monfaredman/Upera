@@ -25,6 +25,7 @@
     "bootstrap-vue": "^2.21.2",
     "cookie-universal-nuxt": "^2.1.4",
     "klona": "^2.0.4",
+    "node-gyp": "^8.1.0",
     "nuxt": "^2.14.11",
     "nuxt-clipboard2": "^0.2.1",
     "nuxt-i18n": "^6.16.0",

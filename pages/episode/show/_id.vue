@@ -17,7 +17,7 @@
         <div class="body">
           <h1>
             {{ $t('report.what_happening') }}
-            <b v-if="this.$i18n.locale=='fa'" style="color:dodgerblue">؟</b>
+            <b v-if="$i18n.locale=='fa'" style="color:dodgerblue">؟</b>
             <b v-else style="color:dodgerblue">?</b>
           </h1>
           <div class="form-check">

@@ -1600,10 +1600,10 @@ body {
     transition: opacity 0.2s ease-in;
   }
 
-	.trigger-menu-wrapper2 {
-	    background: none !important;
-	    box-shadow: none !important;
-	}
+  .trigger-menu-wrapper2 {
+      background: none !important;
+      box-shadow: none !important;
+  }
 }
 @media (max-width: 767.98px) and (prefers-reduced-motion: reduce) {
   .header-mobile {
@@ -9200,11 +9200,11 @@ small, .small {
   /* IE6-9 */
 }
 .trigger-header{
-	transition: transform .4s;
+  transition: transform .4s;
     box-shadow: 0 1px 10px -2px hsla(0,0%,80%,.88);
 }
 .trigger-header2{
-	box-shadow: none !important;
+  box-shadow: none !important;
 }
 
 
@@ -9224,9 +9224,9 @@ color: #fff;
     z-index: 999999999;
 }
 @media (max-width: 1299px) {
-	#slideshow .back2 {
-	    left: 1rem;
-	}
+  #slideshow .back2 {
+      left: 1rem;
+  }
 }
 
 
@@ -9394,21 +9394,21 @@ color: #fff;
     display: block;
   }
   .btn{
-  	font-size: 1rem;
+    font-size: 1rem;
     line-height: 1.5;
     font-weight: 400;
 
   }
 
   .btn [class^=icon-], .btn [class*=" icon-"]{
-  	top: 0.5rem !important;
+    top: 0.5rem !important;
   }
 /*.horizontal-list-container .swiper-slide{
-	overflow: hidden;
+  overflow: hidden;
 }*/
 
 .horizontal-list-container .movielabel{
-	overflow: hidden;
+  overflow: hidden;
 }
 
   .label-1{
@@ -9440,17 +9440,17 @@ color: #fff;
 
 
   .movielabel .label-2{
-	top: 16px;
+  top: 16px;
     left: -23px;
-	padding-left: 2.375rem;
+  padding-left: 2.375rem;
     padding-right: 2.375rem;
     border-radius:unset;
     text-align: center;
   }
 
   .label-warning{
-	  color: #fff;
-	  background-color: #f0ad4e;
+    color: #fff;
+    background-color: #f0ad4e;
   }
 
 @media (max-width: 1180px) {
@@ -9704,7 +9704,7 @@ font-size: 0.8rem;
     border-bottom: 2px solid #979797;
 }
 .page-payment .btn-secondary-light {
-	border: 1px solid transparent;
+  border: 1px solid transparent;
     background-color: #cdcdfd;
     border-color: #6b6bfa !important;
     color: #000;
@@ -9718,7 +9718,7 @@ body .accordion > .card:nth-of-type(odd) .card-header {
 }
 
 .page-payment .card-header{
-	text-align: right
+  text-align: right
 }
 
 .page-payment .font-weight-bold,.credit .font-weight-bold {
@@ -10065,3 +10065,5 @@ outline:none;
       bottom: 6px !important;
     right: 3px !important;
 }
+
+#goftino_w{right: 4px !important;bottom: 5px !important;}

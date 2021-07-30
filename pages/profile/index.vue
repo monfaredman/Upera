@@ -1,6 +1,6 @@
 <template>
   <div id="checkcontainer">
-    <div v-if="!this.$auth.loggedIn" class="container-fluid">
+    <div v-if="!$auth.loggedIn" class="container-fluid">
       <section id="banner" class="mt-5 pt-lg-5 pt-md-5">
         <div class="container">
           <header class="headline mt-5">

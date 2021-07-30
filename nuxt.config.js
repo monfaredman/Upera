@@ -1,4 +1,3 @@
-const webpack = require("webpack")
 //import fs from 'fs'
 
 export default {

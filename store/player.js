@@ -762,6 +762,7 @@ return SRMdata
     ],
     "height": "100%",
     "width": "100%",
+    "pipIcon": "disabled",
     "autostart": true
   })
 
@@ -1038,6 +1039,7 @@ export const mutations = {
     ],
     "height": "100%",
     "width": "100%",
+    "pipIcon": "disabled",
     "displaytitle": true
   })
 
@@ -1472,6 +1474,7 @@ export const mutations = {
     ],
     "height": "100%",
     "width": "100%",
+    "pipIcon": "disabled",
     "displaytitle": true
   })
 
@@ -1968,6 +1971,7 @@ document.body.classList.add('loaded')
     ],
     "height": "100%",
     "width": "100%",
+    "pipIcon": "disabled",
     "autostart": true
   })
 
