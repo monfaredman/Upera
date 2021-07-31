@@ -1671,7 +1671,7 @@ document.body.classList.add('loaded')
                                 if(jwp){
                                     jwp.remove()
                                 }
-                                this.$store.state.next = 'episode'
+                                state.next = 'episode'
                             })
                         }else{
                             const nextSeasonButton = document.getElementById('play-next-season')
@@ -1682,7 +1682,7 @@ document.body.classList.add('loaded')
                                 if(jwp){
                                     jwp.remove()
                                 }
-                                this.$store.state.next = 'episode'
+                                state.next = 'episode'
                             })
                         }
 
