@@ -89,7 +89,7 @@
                 </a>
               </div>
               <div class="col-6 col-sm-4 col-lg-2 col-md-3 mb-3 mb-4 pr-0 mr-lg-3">
-                <a href="" @click.prevent="install('http://app.upera.tv/get_app/apk')">
+                <a href="" @click.prevent="install('https://app.upera.tv/get_app/apk')">
                   <img class="" src="@/assets/img/app/Group 580@3x.png" alt="">
                 </a>
               </div>
@@ -167,7 +167,7 @@
                 </a>
               </div>
               <div class="col-6 col-sm-4 col-lg-2 col-md-3 mb-3 mb-4 pr-0 mr-lg-3">
-                <a href="" @click.prevent="install('http://app.upera.tv/get_app/android_tv')">
+                <a href="" @click.prevent="install('https://app.upera.tv/get_app/android_tv')">
                   <img class="" src="@/assets/img/app/Group 580@3x.png" alt="">
                 </a>
               </div>
