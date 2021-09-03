@@ -7,6 +7,11 @@ export default {
   //     cert: fs.readFileSync("ssl/ssl.crt")
   //   }
   // },
+  // loadingIndicator: {
+  //   name: 'circle',
+  //   color: '#f63',
+  //   background: 'white'
+  // },
   loading: {
     color: '#f63',
     height: '6px',
@@ -69,7 +74,8 @@ export default {
     "../assets/styles/fa.css",
     "../assets/styles/new.css",
     "../assets/styles/rtl.css",
-    "vue-slick-carousel/dist/vue-slick-carousel.css"
+    "vue-slick-carousel/dist/vue-slick-carousel.css",
+    "../assets/styles/dark.css"
   ],
     router: {
       linkActiveClass: 'active',
@@ -169,8 +175,8 @@ pwa: {
 colorMode: {
   classPrefix: 'theme-',
   classSuffix: '',
-  preference: 'light',
-  fallback: 'light'
+  preference: 'system',
+  fallback: 'system'
 },
 
   transition: {
