@@ -5,7 +5,7 @@
         <div class="container-fluid px-0">
           <div class="d-flex align-items-center justify-content-between">
             <ul class="nav nav-separator">
-              <nuxt-link to="/app" class="nav-link">
+              <nuxt-link v-if="$config.envname=='upera'" to="/app" class="nav-link">
                 {{ $t('new.download_app') }}
               </nuxt-link>
               <nuxt-link to="/profile/faq" class="nav-link">
@@ -78,11 +78,11 @@
             </div>
             <div class="col-md-4 col-lg-4">
               <div class="d-flex justify-content-center position-relative">
-                <div class="dl-app" @click="getapp">
+                <div v-if="$config.envname=='upera'" class="dl-app" @click="getapp">
                   <div class="d-flex align-items-center justify-content-center">
                     <div class="dl-links-wrapper text-center pl-lg-5">
                       <div class="text-invert mb-1 pb-1 d-inline-block dl-links-title">
-                        <nuxt-link to="/app">
+                        <nuxt-link v-if="$config.envname=='upera'" to="/app">
                           {{ $t('new.download_app') }}
                         </nuxt-link>
                       </div>
@@ -108,7 +108,7 @@
               </div>
             </div>
             <div class="col-lg-4 hide-mobile hide-tablet">
-              <div class="d-flex namad-wrapper">
+              <div v-if="$config.envname=='upera'" class="d-flex namad-wrapper">
                 <div class="namad pr-2">
                   <div class="namad-box-2" @click="samandehi">
                     <img src="/images/samandehi.png" width="80">

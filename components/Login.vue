@@ -27,7 +27,7 @@
           </button>
           <div v-if="$i18n.locale=='fa'" class="text-center">
             <small>
-              <span>با ثبت نام در آپرا، </span>
+              <span>با ثبت نام در {{ $config.name_fa }}، </span>
               <nuxt-link to="/profile/terms">قوانین و شرایط استفاده و حریم خصوصی</nuxt-link>
               <span>را میپذیرم</span>
             </small>

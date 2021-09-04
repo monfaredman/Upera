@@ -18,7 +18,7 @@ export default {
     Footer,
   },
   head: {
-    title: 'آپرا, سینمای آنلاین شما',
+    title: process.env.APP_NAME_DESC,
     meta: [
       {description: 'تماشای آنلاین فیلم ها و سریال ها در تلویزیون هوشمند , کنسول بازی , کامپیوتر , لپتاپ , تبلت و ... همین امروز شروع کنید'}
     ]

@@ -3,9 +3,13 @@
     <div v-if="!itemmenu.includes($route.name)" class="d-flex header-mobile d-md-none">
       <div class="show-mobile header-home">
         <nuxt-link to="/" class="header-link d-flex flex-column align-items-center justify-content-center text-nowrap active">
-          <i class="icon-upera-logo" />
+          <i v-if="$config.envname=='upera'" class="icon-upera-logo" />
+          <i v-if="$config.envname=='igapp'" class="icon-home" />
           <span>
-            <i class="icon-upera-fa-logotype" />
+            <i v-if="$config.envname=='upera'" class="icon-upera-fa-logotype" />
+            <!-- <i v-if="$config.envname=='igapp'" class="icon-upera-fa-logotype">'خانه</i> -->
+            <span v-if="$config.envname=='igapp'">خانه </span>
+
           </span>
         </nuxt-link>
       </div>
@@ -50,9 +54,10 @@
               <i class="icon-upera-logo" />
             </nuxt-link>
             <nuxt-link v-else to="/" class="logo">
-              <img src="@/assets/img/logo.svg" :class="{'d-none d-md-block':bannerNav}" alt="آپرا">
-
-              <img v-if="bannerNav" src="/images/logo-mobile.svg" class="d-md-none" alt="آپرا">
+              <img v-if="$config.envname=='upera'" src="@/assets/img/logo.svg" :class="{'d-none d-md-block':bannerNav}" :alt="$config.name_fa">
+              <img v-else src="@/assets/img/_logo.png" :class="{'d-none d-md-block':bannerNav}" :alt="$config.name_fa">
+              <img v-if="bannerNav && $config.envname=='upera' " src="/images/logo-mobile.svg" class="d-md-none" :alt="$config.name_fa">
+              <img v-if="bannerNav && $config.envname=='igapp' " src="@/assets/images/_logo-mobile.png" class="d-md-none" :alt="$config.name_fa">
             </nuxt-link>
             <div class="d-none d-md-flex align-items-center h-full">
               <div class="header-search">
@@ -402,7 +407,7 @@
             </div>
           </div>
           <div class="header-buttons">
-            <nuxt-link to="/app" class="btn btn-second px-lg-4 py-1 ml-1 btn-app">
+            <nuxt-link v-if="$config.envname=='upera'" to="/app" class="btn btn-second px-lg-4 py-1 ml-1 btn-app">
               {{ $t('new.download_app') }}
             </nuxt-link>
             <b-button v-if="!$auth.loggedIn && $route.name !=='login'" variant="main" class="py-1 px-lg-4" @click="SHOW_MODAL()">
@@ -496,7 +501,8 @@ import Login from "../components/Login"
     }
   },
     computed: {
-        ...mapGetters({showModal: "login/showModal"})
+        ...mapGetters({showModal: "login/showModal"}),
+        
     },
 
   watch: {
@@ -623,7 +629,7 @@ document.body.classList.add("header-fixed-collapsed")
 
             return
         }else{
-           document.body.classList.add("scroll-down")
+           document.body.classList.add("scroll-down") 
 
             return
           }

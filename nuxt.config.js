@@ -1,6 +1,10 @@
 //import fs from 'fs'
 
 export default {
+  publicRuntimeConfig: {
+    envname: process.env.ENV || 'upera',
+    name_fa: process.env.APP_NAME_FA || 'آپرا'
+  },
   // server: {
   //   https: {
   //     key: fs.readFileSync("ssl/sslprivate.key"),
@@ -47,7 +51,7 @@ export default {
         content: process.env.npm_package_description || "",
       },
     ],
-    link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }], 
+    link: [{ rel: "icon", type: "image/x-icon", href: "/favicon-"+process.env.ENV+"upera.ico"}],
     script: [
       {
         src: 'https://web.upera.tv/jwplayer?v1', body: true
@@ -74,6 +78,7 @@ export default {
     "../assets/styles/fa.css",
     "../assets/styles/new.css",
     "../assets/styles/rtl.css",
+    ...process.env.ENV=='igapp'?["assets/styles/theme.css"]:[],
     "vue-slick-carousel/dist/vue-slick-carousel.css",
     "../assets/styles/dark.css"
   ],
@@ -96,7 +101,9 @@ export default {
   /*
    ** Nuxt.js dev-modules
    */
-  buildModules: [],
+   buildModules: [ ['@nuxtjs/dotenv', { filename: '.env.' + process.env.ENV }], ],
+
+
     eslint: {
     fix: true
   },
@@ -166,8 +173,11 @@ export default {
    ** See https://nuxtjs.org/api/configuration-build/
    */
 pwa: {
+  icon: {
+    fileName:'icon-'+process.env.ENV+'.png'
+  },
   manifest: {
-    name: 'آپرا',
+    name: process.env.ENV=='upera'?'آپرا':'آی گپ',
     lang: 'fa',
     description: 'سینمای آنلاین شما'
   }
@@ -176,7 +186,7 @@ colorMode: {
   classPrefix: 'theme-',
   classSuffix: '',
   preference: 'system',
-  fallback: 'system'
+  fallback: 'light'
 },
 
   transition: {
