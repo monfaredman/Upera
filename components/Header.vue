@@ -7,7 +7,6 @@
           <i v-if="$config.envname=='igapp'" class="icon-home" />
           <span>
             <i v-if="$config.envname=='upera'" class="icon-upera-fa-logotype" />
-            <!-- <i v-if="$config.envname=='igapp'" class="icon-upera-fa-logotype">'خانه</i> -->
             <span v-if="$config.envname=='igapp'">خانه </span>
 
           </span>
@@ -55,7 +54,8 @@
             </nuxt-link>
             <nuxt-link v-else to="/" class="logo">
               <img v-if="$config.envname=='upera'" src="@/assets/img/logo.svg" :class="{'d-none d-md-block':bannerNav}" :alt="$config.name_fa">
-              <img v-else src="@/assets/img/_logo.png" :class="{'d-none d-md-block':bannerNav}" :alt="$config.name_fa">
+              <img v-if="$config.envname=='igapp' && $colorMode.value=='light'" src="@/assets/img/_logo.png" :class="{'d-none d-md-block':bannerNav}" :alt="$config.name_fa">
+              <img v-if="$config.envname=='igapp' && $colorMode.value=='dark'" src="@/assets/images/_logo-mobile.png" :class="{'d-none d-md-block':bannerNav}" :alt="$config.name_fa">
               <img v-if="bannerNav && $config.envname=='upera' " src="/images/logo-mobile.svg" class="d-md-none" :alt="$config.name_fa">
               <img v-if="bannerNav && $config.envname=='igapp' " src="@/assets/images/_logo-mobile.png" class="d-md-none" :alt="$config.name_fa">
             </nuxt-link>
