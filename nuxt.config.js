@@ -11,13 +11,13 @@ export default {
   //     cert: fs.readFileSync("ssl/ssl.crt")
   //   }
   // },
-  // loadingIndicator: {
-  //   name: 'circle',
-  //   color: '#f63',
-  //   background: 'white'
-  // },
+  loadingIndicator: {
+    name: 'circle',
+    color: process.env.ENV=='igapp'?'#18c7dd':'#f63',
+    background: 'white'
+  },
   loading: {
-    color: '#f63',
+    color: process.env.ENV=='igapp'?'#18c7dd':'#f63',
     height: '6px',
     rtl: true,
     continuous: true,
@@ -27,7 +27,7 @@ export default {
    ** Nuxt rendering mode
    ** See https://nuxtjs.org/api/configuration-mode
    */
-  mode: "universal",
+  mode: process.env.ENV=='igapp'?'spa':'universal',
   /*
    ** Nuxt target
    ** See https://nuxtjs.org/api/configuration-target
