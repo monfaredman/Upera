@@ -49,8 +49,10 @@
         >
           <div class="d-flex align-items-center h-full">
             <nuxt-link v-if="(categories.includes($route.path) || profile.includes($route.path))" to="/" class="logo logo_another_pages">
-              <i class="icon-upera-fa-logotype" />
-              <i class="icon-upera-logo" />
+              <i v-if="$config.envname=='upera'" class="icon-upera-fa-logotype" />
+              <i v-if="$config.envname=='upera'" class="icon-upera-logo" />
+              <img v-if="$config.envname=='igapp' && $colorMode.value=='light'" src="@/assets/img/_logo.png" :class="{'d-none d-md-block':bannerNav}" :alt="$config.name_fa">
+              <img v-if="$config.envname=='igapp' && $colorMode.value=='dark'" src="@/assets/images/_logo-mobile.png" :class="{'d-none d-md-block':bannerNav}" :alt="$config.name_fa">
             </nuxt-link>
             <nuxt-link v-else to="/" class="logo">
               <img v-if="$config.envname=='upera'" src="@/assets/img/logo.svg" :class="{'d-none d-md-block':bannerNav}" :alt="$config.name_fa">
