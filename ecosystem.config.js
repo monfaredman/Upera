@@ -1,3 +1,4 @@
+require('dotenv').config({ path: __dirname + '/.env.upera' })
 module.exports = {
   apps: [
     {
@@ -7,13 +8,7 @@ module.exports = {
       max_memory_restart: '20G',
       instances: '10', // Or a number of instances
       script: './node_modules/nuxt/bin/nuxt.js',
-      args: 'start',
-      env: {
-        NODE_ENV: "upera"
-      },
-      env_production: {
-        NODE_ENV: "upera"
-      }
+      args: 'start'
     }
   ]
 }
