@@ -28,7 +28,7 @@ export default {
    ** Nuxt rendering mode
    ** See https://nuxtjs.org/api/configuration-mode
    */
-  ssr: process.env.SSR,
+  mode: process.env.SSR,
   /*
    ** Nuxt target
    ** See https://nuxtjs.org/api/configuration-target
