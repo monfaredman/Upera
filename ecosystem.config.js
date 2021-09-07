@@ -6,7 +6,7 @@ module.exports = {
       port: 3000,
       max_memory_restart: '20G',
       instances: '10', // Or a number of instances
-      script: './node_modules/nuxt/bin/nuxt.js',
+      script: 'ENV=upera ./node_modules/nuxt/bin/nuxt.js',
       args: 'start'
     }
   ]
