@@ -126,7 +126,7 @@
                         پرداخت ها
                       </nuxt-link>
                     </li>
-                    <!--                     <li>
+                    <!--                                         <li>
                       <nuxt-link to="/profile/settings">
                         {{ $t('setting.app_setting') }}
                       </nuxt-link>
@@ -144,39 +144,22 @@
                   </ul>
                 </div>
               </div>
-
-
-              <div class="header-buttons d-flex align-items-center h-full">
-                <div
-                  class="header-links header-links-profile-setting d-md-flex align-items-center h-full ml-lg-3 mr-lg-3 dropdown"
-                >
-                  <a class="d-flex align-items-center header-link hide-mobile" href="#">
-                    <i class="icon-setting ml-2" />
-                    <span>تنظیمات</span>
-                  </a>
-
-                  <ul class="dropdown-menu">
-                    <li class="page-tab">
-                      <ul class="nav nav-tabs page-tabs-nav show-mobile">
-                        <li class="nav-item">
-                          <a class="nav-link" data-toggle="tab" href="#tabsetting">
-                            <i class="icon-setting" />
-                          </a>
-                        </li>
-                        <li class="nav-item">
-                          <a class="nav-link active" data-toggle="tab" href="#tabprofile">پروفایل</a>
-                        </li>
-                        <li class="nav-item nav-item-last">
-                          <button type="button" class="btn btn-sm btn-main">
-                            ورود | ثبت نام
-                          </button>
-                        </li>
-                      </ul>
-                    </li>
-                    <li class="px-3 py-2">
-                      <div class="tab-content">
-                        <div id="tabsetting" class="tab-pane">
-                          <div class="d-flex align-items-center justify-content-between pb-2 border-bottom-gray">
+            </div>
+          </div>
+          <div class="header-buttons">
+            <div
+              class="header-links header-links-profile-setting d-md-flex align-items-center h-full ml-lg-3 mr-lg-3 dropdown float-left"
+            >
+              <b-link id="popover-settings" class="d-flex align-items-center header-link hide-mobile">
+                <i class="icon-setting ml-2" />
+                <span>{{ $t('setting.app_setting') }}</span>
+              </b-link>
+              <b-popover id="popover-d-settings" target="popover-settings" triggers="hover" placement="bottom" fallback-placement="flip" boundary-padding="1">
+                <ul class="dropdown-menu show">
+                  <li class="px-3 py-2">
+                    <div class="tab-content active">
+                      <div id="tabsetting" class="tab-pane active">
+                        <!--                           <div class="d-flex align-items-center justify-content-between pb-2 border-bottom-gray">
                             <div class="d-flex align-items-center">
                               <div class="avatar avatar-sm ml-2">
                                 <img src="images/users/unnamed.jpg">
@@ -186,238 +169,54 @@
                             <a class="text-muted p-fs-larger">
                               <i class="icon-edit" />
                             </a>
+                          </div> -->
+                        <div class="d-flex align-items-center justify-content-between pt-3 py-4 border-bottom-gray">
+                          <div class="text-black">
+                            حالت شب 
                           </div>
-                          <div class="d-flex align-items-center justify-content-between pt-3">
-                            <div class="text-black">
-                              حالت شب <div class="text-muted font-weight-lighter mt-1">
-                                تا
-                                15%
-                                کاهش
-                                مصرف
-                                باطری
-                              </div>
-                            </div>
-                            <div class="custom-control custom-switch">
-                              <input id="nightMode" type="checkbox" class="custom-control-input">
-                              <label class="custom-control-label" for="nightMode" />
-                            </div>
-                          </div>
-                          <div class="d-flex align-items-center justify-content-between py-3 border-bottom-gray">
-                            <div class="text-black">
-                              دستگاه های متصل
-                            </div>
-                            <button class="btn btn-dark btn-sm btn-pill">
-                              اتصال به تلویزیون <i
-                                class="icon-tv p-fs-medium mr-1"
-                              />
-                            </button>
-                          </div>
-                          <div class="d-flex align-items-center justify-content-between pt-4">
-                            <div class="text-black">
-                              اطلاع رسانی فیلم های جدید
-                            </div>
-                            <div class="custom-control custom-switch">
-                              <input id="" checked type="checkbox" class="custom-control-input">
-                              <label class="custom-control-label" for="" />
-                            </div>
-                          </div>
-                          <div class="d-flex align-items-center justify-content-between pt-4">
-                            <div class="text-black">
-                              زبان سایت
-                            </div>
-                            <div class="text-muted">
-                              فارسی
-                            </div>
-                          </div>
-                          <div class="d-flex align-items-center justify-content-between pt-4">
-                            <div class="text-black">
-                              فقط نمایش زبان فارسی ها
-                            </div>
-                            <div class="custom-control custom-switch">
-                              <input id="" type="checkbox" class="custom-control-input">
-                              <label class="custom-control-label" for="" />
-                            </div>
-                          </div>
-                          <div class="d-flex align-items-center justify-content-between py-4 border-bottom-gray">
-                            <div class="text-black">
-                              نسخه کودکان
-                            </div>
-                            <div class="custom-control custom-switch">
-                              <input id="" type="checkbox" class="custom-control-input">
-                              <label class="custom-control-label" for="" />
-                            </div>
-                          </div>
-                          <div class="d-flex align-items-center justify-content-between pt-4">
-                            <div class="text-black">
-                              افزایش موجودی
-                            </div>
-                          </div>
-                          <div class="d-flex align-items-center justify-content-between pt-4">
-                            <div class="text-black">
-                              سوابق پرداخت
-                            </div>
-                          </div>
-                          <div class="d-flex align-items-center justify-content-between py-4 border-bottom-gray">
-                            <div class="text-black">
-                              دعوت دوستان
-                            </div>
-                          </div>
-                          <div class="d-flex align-items-center justify-content-between py-4">
-                            <div class="text-black">
-                              خروج از حساب کاربری
-                            </div>
+                          <div class="custom-control custom-switch">
+                            <input id="nightMode" type="checkbox" class="custom-control-input" :checked="$colorMode.value==='dark'" @change="nightmode($event.target.checked)">
+                            <label class="custom-control-label" for="nightMode" />
                           </div>
                         </div>
-                        <div id="tabprofile" class="tab-pane active">
-                          <section class="horizontal-list-container mt-3 d-none">
-                            <div class="d-flex justify-content-between align-items-center mb-2 px-3">
-                              <div class="title">
-                                براساس سلیقه شما
-                              </div>
-                              <a class="text-dark" href="#">نمایش همه <i class="icon-see-more mr-1" /></a>
-                            </div>
-                            <div class="swiper-container horizontal-list" dir="rtl">
-                              <div class="swiper-wrapper">
-                                <div class="swiper-slide">
-                                  <a href="#" class="horizontal-list-item d-block">
-                                    <div class="lazyload-wrapper">
-                                      <img class="horizontal-list-img" src="images/thumbnail/thumb1.jpg">
-                                    </div>
-                                    <div class="p-fs font-weight-normal ellipsis mt-2 text-black">شبی که ماه کامل شد
-                                    </div>
-                                  </a>
-                                </div>
-                                <div class="swiper-slide">
-                                  <a href="#" class="horizontal-list-item d-block">
-                                    <div class="lazyload-wrapper">
-                                      <img class="horizontal-list-img" src="images/thumbnail/thumb2.jpg">
-                                    </div>
-                                    <div class="p-fs font-weight-normal ellipsis mt-2 text-black
-                                            "
-                                    >شبی که ماه کامل شد</div>
-                                  </a>
-                                </div>
-                                <div class="swiper-slide">
-                                  <a href="#" class="horizontal-list-item d-block">
-                                    <div class="lazyload-wrapper">
-                                      <img class="horizontal-list-img" src="images/thumbnail/thumb1.jpg">
-                                    </div>
-                                    <div class="p-fs font-weight-normal ellipsis mt-2 text-black">شبی که ماه کامل شد
-                                    </div>
-                                  </a>
-                                </div>
-                                <div class="swiper-slide">
-                                  <a href="#" class="horizontal-list-item d-block">
-                                    <div class="lazyload-wrapper">
-                                      <img class="horizontal-list-img" src="images/thumbnail/thumb2.jpg">
-                                    </div>
-                                    <div class="p-fs font-weight-normal ellipsis mt-2 text-black
-                                            "
-                                    >شبی که ماه کامل شد</div>
-                                  </a>
-                                </div>
-                                <div class="swiper-slide">
-                                  <a href="#" class="horizontal-list-item d-block">
-                                    <div class="lazyload-wrapper">
-                                      <img class="horizontal-list-img" src="images/thumbnail/thumb1.jpg">
-                                    </div>
-                                    <div class="p-fs font-weight-normal ellipsis mt-2 text-black">شبی که ماه کامل شد
-                                    </div>
-                                  </a>
-                                </div>
-                                <div class="swiper-slide">
-                                  <a href="#" class="horizontal-list-item d-block">
-                                    <div class="lazyload-wrapper">
-                                      <img class="horizontal-list-img" src="images/thumbnail/thumb2.jpg">
-                                    </div>
-                                    <div class="p-fs font-weight-normal ellipsis mt-2 text-black
-                                            "
-                                    >شبی که ماه کامل شد</div>
-                                  </a>
-                                </div>
-                                <div class="swiper-slide">
-                                  <a href="#" class="horizontal-list-item d-block">
-                                    <div class="lazyload-wrapper">
-                                      <img class="horizontal-list-img" src="images/thumbnail/thumb1.jpg">
-                                    </div>
-                                    <div class="p-fs font-weight-normal ellipsis mt-2 text-black">شبی که ماه کامل شد
-                                    </div>
-                                  </a>
-                                </div>
-                                <div class="swiper-slide">
-                                  <a href="#" class="horizontal-list-item d-block">
-                                    <div class="lazyload-wrapper">
-                                      <img class="horizontal-list-img" src="images/thumbnail/thumb2.jpg">
-                                    </div>
-                                    <div class="p-fs font-weight-normal ellipsis mt-2 text-black
-                                            "
-                                    >شبی که ماه کامل شد</div>
-                                  </a>
-                                </div>
-                                <div class="swiper-slide">
-                                  <a href="#" class="horizontal-list-item d-block">
-                                    <div class="lazyload-wrapper">
-                                      <img class="horizontal-list-img" src="images/thumbnail/thumb1.jpg">
-                                    </div>
-                                    <div class="p-fs font-weight-normal ellipsis mt-2 text-black">شبی که ماه کامل شد
-                                    </div>
-                                  </a>
-                                </div>
-                                <div class="swiper-slide">
-                                  <a href="#" class="horizontal-list-item d-block">
-                                    <div class="lazyload-wrapper">
-                                      <img class="horizontal-list-img" src="images/thumbnail/thumb2.jpg">
-                                    </div>
-                                    <div class="p-fs font-weight-normal ellipsis mt-2 text-black
-                                            "
-                                    >شبی که ماه کامل شد</div>
-                                  </a>
-                                </div>
-                                <div class="swiper-slide">
-                                  <a href="#" class="horizontal-list-item d-block">
-                                    <div class="lazyload-wrapper">
-                                      <img class="horizontal-list-img" src="images/thumbnail/thumb1.jpg">
-                                    </div>
-                                    <div class="p-fs font-weight-normal ellipsis mt-2 text-black">شبی که ماه کامل شد
-                                    </div>
-                                  </a>
-                                </div>
-                                <div class="swiper-slide">
-                                  <a href="#" class="horizontal-list-item d-block">
-                                    <div class="lazyload-wrapper">
-                                      <img class="horizontal-list-img" src="images/thumbnail/thumb2.jpg">
-                                    </div>
-                                    <div class="p-fs font-weight-normal ellipsis mt-2 text-black
-                                            "
-                                    >شبی که ماه کامل شد</div>
-                                  </a>
-                                </div>
-                              </div>
-                            </div>
-                          </section>
-                          <section class="container-fluid mt-3">
-                            <div class="d-flex align-items-center justify-content-center">
-                              <img class="w-full round" src="images/login.jpg">
-                            </div>
-                          </section>
+                        <div :class="{ 'border-bottom-gray' : $auth.loggedIn}" class="d-flex align-items-center justify-content-between py-4 pt-3">
+                          <div class="text-black">
+                            زبان فارسی 
+                          </div>
+                          <div class="custom-control custom-switch">
+                            <input id="language" disabled type="checkbox" class="custom-control-input" :checked="$i18n.locale==='fa'" @change="language($event.target.checked)">
+                            <label class="custom-control-label" for="language" />
+                          </div>
+                        </div>
+                        <div v-if="$auth.loggedIn" class="d-flex align-items-center justify-content-between pt-4">
+                          <a class="text-black" @click="SHOW_MODAL_CREDIT();$root.$emit('bv::hide::popover')">افزایش موجودی</a>
+                        </div>
+                        <div v-if="$auth.loggedIn" :class="{ 'border-bottom-gray' : $config.envname=='upera'}" class="d-flex align-items-center justify-content-between pt-4 py-4">
+                          <nuxt-link class="text-black" to="/payments">
+                            پرداخت ها
+                          </nuxt-link>
+                        </div>
+                        <div v-if="$config.envname=='upera' && $auth.loggedIn" class="d-flex align-items-center justify-content-between py-4">
+                          <b-link class="text-black" @click="logout()">
+                            خروج از حساب کاربری
+                          </b-link>
                         </div>
                       </div>
-                    </li>
-                  </ul>
-                </div>
-              </div>
+                    </div>
+                  </li>
+                </ul>
+              </b-popover>
             </div>
-          </div>
-          <div class="header-buttons">
+
             <nuxt-link v-if="$config.envname=='upera'" to="/app" class="btn btn-second px-lg-4 py-1 ml-1 btn-app">
               {{ $t('new.download_app') }}
             </nuxt-link>
-            <b-button v-if="!$auth.loggedIn && $route.name !=='login'" variant="main" class="py-1 px-lg-4" @click="SHOW_MODAL()">
+            <b-button v-if="$config.envname=='upera' && !$auth.loggedIn && $route.name !=='login'" variant="main" class="py-1 px-lg-4" @click="SHOW_MODAL()">
               {{ $t('new.login_register') }}
             </b-button>
-            <b-button v-else-if="$route.name !=='login'" variant="main" class="py-1 px-lg-4" @click="logout()">
+            <!--             <b-button v-else-if="$route.name !=='login'" variant="main" class="py-1 px-lg-4" @click="logout()">
               {{ $t('nav.logout') }}
-            </b-button>
+            </b-button> -->
           </div>
         </div>
       </div>
@@ -454,11 +253,11 @@
             پرداخت ها
           </nuxt-link>
         </li>
-        <!--         <li class="mr-3">
+        <li class="mr-3">
           <nuxt-link to="/profile/settings">
             {{ $t('setting.app_setting') }}
           </nuxt-link>
-        </li> -->
+        </li>
         <li v-if="checkuser.subscription==1" class="mr-3">
           <nuxt-link to="/profile/plans">
             {{ $t('new.prices') }}
@@ -471,18 +270,20 @@
         </li> -->
       </ul>
     </header>
-
     <Login v-if="!$auth.loggedIn && $route.name !=='login'" :show="showModal" :staticmodal="false" @hide-modal="HIDE_MODAL" />
+    <Credit v-if="$auth.loggedIn" :show="showCreditModal" @hide-modal="HIDE_MODAL_CREDIT" />
   </div>
 </template>
 
 <script>
 import {mapGetters} from 'vuex'
 import Login from "../components/Login"
+import Credit from "../components/Credit"
 
   export default {
   components: {
-    Login
+    Login,
+    Credit
   },
   
   data() {
@@ -504,7 +305,7 @@ import Login from "../components/Login"
   },
     computed: {
         ...mapGetters({showModal: "login/showModal"}),
-        
+        ...mapGetters({showCreditModal: "credit/showModal"}),
     },
 
   watch: {
@@ -521,6 +322,7 @@ import Login from "../components/Login"
   },
   mounted() {
 
+
       this.Nav()
       window.addEventListener('scroll', this.handleScroll)
 
@@ -529,8 +331,9 @@ if(this.$route.params.search)
 
 
 document.body.classList.add("hfixed")
+// document.body.classList.add("header-fixed")
 
-
+// document.body.classList.add("scroll-up")
     },
     methods: {
             categoriesHover() {
@@ -570,16 +373,30 @@ if(footer.length){
     this.scrollCheckTimer = setTimeout(() => {
         document.body.classList.remove('s-c')
         document.body.classList.remove('s-h')
-        document.body.classList.add(delta > 0 ? 's-c' : 's-h')
-        if(document.getElementById("goftino_w")){
-        if(delta>0){
-          document.getElementById("goftino_w").classList.remove('goftino_w_hide')
+        document.getElementById("goftino_w").classList.remove('goftino_w_hide')
+        
+        // document.body.classList.add(delta > 0 ? 's-c' : 's-h')
+
+        //console.log(document.documentElement.scrollHeight-document.documentElement.clientHeight)
+
+        if(document.documentElement.scrollHeight-document.documentElement.clientHeight<=20){
+          document.body.classList.add('s-h')
+        }else if ((window.innerHeight + window.pageYOffset) >= document.body.offsetHeight) {
+            document.body.classList.add('s-c')
+            if(document.getElementById("goftino_w")){
+              if(delta>0){
+                document.getElementById("goftino_w").classList.remove('goftino_w_hide')
+              }else{
+                document.getElementById("goftino_w").classList.add('goftino_w_hide')
+              }
+            } 
         }else{
           document.getElementById("goftino_w").classList.add('goftino_w_hide')
+          document.body.classList.add('s-h')
         }
-      }
-    }, 200)
 
+
+    }, 200)
 
     let height =  document.documentElement.scrollHeight
 
@@ -638,6 +455,7 @@ document.body.classList.add("header-fixed-collapsed")
       }
 
               return e
+
             },
             Nav() {
 
@@ -689,6 +507,28 @@ document.body.classList.add("header-fixed-collapsed")
       },
       SHOW_MODAL() {
         this.$store.dispatch('login/SHOW_MODAL',{premessage: null,premobile: null,preredirect: null,prerefresh: false})
+      },
+
+            SHOW_MODAL_CREDIT() {
+              this.$store.dispatch('credit/SHOW_MODAL',{prewallet: null})
+            },
+            HIDE_MODAL_CREDIT() {
+              this.$store.dispatch('credit/HIDE_MODAL')
+            },
+      nightmode(e) {
+        if(e==true)
+          this.$colorMode.preference='dark'
+        else
+          this.$colorMode.preference='light'
+      },
+      language(e) {
+        if(e==true){
+          this.$store.dispatch('SET_LANG','fa')
+          this.$i18n.locale = 'fa'
+        }else{
+          this.$store.dispatch('SET_LANG','en')
+          this.$i18n.locale = 'en'
+        }
       },
       async logout() {
 

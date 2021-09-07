@@ -362,7 +362,7 @@ textarea {
   cursor: pointer;
 }
 .custom-switch .custom-control-label::before {
-  width: 2rem;
+  width: 2.25rem;
   height: 0.875rem;
 }
 .custom-switch .custom-control-label::after {
@@ -2367,8 +2367,7 @@ a.thumbnail-wrapper {
   }
   .header-links .header-link .icon-categories,
   .header-links .header-link .icon-profile-setting,
-  .header-links .header-link .icon-profile,
-  .header-links .header-link .icon-setting {
+  .header-links .header-link .icon-profile {
     margin-top: -0.25rem;
     margin-left: 0.5rem;
   }
@@ -2445,6 +2444,17 @@ a.thumbnail-wrapper {
     left: 0.625rem;
   }
 }
+@media (min-width: 1196px) {
+
+  .header-links .header-link .icon-setting {
+    margin-top: -0.25rem;
+  }
+}
+@media (min-width: 768px) and (max-width: 1196px) {
+  .header-links .header-link .icon-setting {
+    margin-top: -0.5rem;
+  }
+}
 @media (min-width: 768px) and (max-width: 1112px) {
   .header-links.header-links-profile-setting {
     margin-left: 0.25rem !important;
@@ -2454,10 +2464,10 @@ a.thumbnail-wrapper {
     display: none;
   }
 }
-.header-links.header-links-profile-setting .header-link {
+/*.header-links.header-links-profile-setting .header-link {
   opacity: 0;
   visibility: hidden;
-}
+}*/
 @media (min-width: 992px) {
   .header-links.header-links-profile-setting .header-link .icon-setting {
     margin-left: auto;
@@ -9771,25 +9781,25 @@ small,
     transform: scale(1);
   }
 }
-.popover-3d {
+.footer-sticky .popover-3d,#footer .popover-3d {
   display: none;
   top: auto;
   bottom: 100%;
   right: auto !important;
   left: 0 !important;
 }
-.popover-3d .popover-footer {
+.footer-sticky .popover-3d .popover-footer,#footer .popover-3d .popover-footer {
   padding-top: 0.5rem;
 }
-.popover-3d .popover-footer > div {
+.footer-sticky .popover-3d .popover-footer > div,#footer .popover-3d .popover-footer > div {
   width: 50%;
 }
 
-.popover-3d.show {
+.footer-sticky .popover-3d.show,#footer .popover-3d.show {
   display: block;
 }
 
-.popover {
+.footer-sticky .popover,#footer .popover {
   border: none;
   font-family: "dana VF";
   padding: 1rem;
@@ -9798,7 +9808,7 @@ small,
   margin-left: -9.25rem;
 }
 
-.popover.show {
+.footer-sticky .popover.show,#footer .popover.show {
   -webkit-animation: popover-note 800ms ease-in-out forwards;
   animation: popover-note 800ms ease-in-out forwards;
   -webkit-transform-origin: center 60px;
@@ -9810,6 +9820,7 @@ small,
   padding: 0;
 }
 
+
 .popover-header {
   background: none;
   border: none;
@@ -9817,6 +9828,23 @@ small,
   padding-bottom: 0.5rem;
   color: #121212;
 }
+#popover-d-settings .popover-header{
+  visibility: hidden;
+}
+
+#popover-d-settings .arrow {visibility:hidden !important;display: none !important;}
+#popover-d-settings{z-index: 999999999999999999!important}
+
+#popover-d-settings {
+  border: none;
+  font-family: "dana VF";
+
+}
+
+#popover-d-settings .dropdown-menu{
+  min-width: 17rem;
+}
+
 .download-links-poster2 {
   /*  background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) 59%, rgba(0, 0, 0, 0.65) 100%);
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgba(0, 0, 0, 0)), color-stop(59%, rgba(0, 0, 0, 0)), color-stop(100%, rgba(0, 0, 0, 0.65)));
@@ -10294,4 +10322,9 @@ body .accordion > .card:nth-of-type(odd) .card-header {
 #goftino_w {
   right: 4px !important;
   bottom: 5px !important;
+}
+
+.bs-popover-bottom, .bs-popover-auto[x-placement^="bottom"] {
+    padding-top: 0.5rem;
+    margin-top: 0;
 }

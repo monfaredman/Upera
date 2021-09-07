@@ -1,9 +1,10 @@
 //import fs from 'fs'
+require('dotenv').config({ path: __dirname + '/.env.' + process.env.ENV })
 
 export default {
   publicRuntimeConfig: {
-    envname: process.env.ENV || 'upera',
-    name_fa: process.env.APP_NAME_FA || 'آپرا'
+    envname: process.env.ENV,
+    name_fa: process.env.APP_NAME_FA
   },
   // server: {
   //   https: {
@@ -13,11 +14,11 @@ export default {
   // },
   loadingIndicator: {
     name: 'circle',
-    color: process.env.ENV=='igapp'?'#18c7dd':'#f63',
+    color: process.env.COLOR,
     background: 'white'
   },
   loading: {
-    color: process.env.ENV=='igapp'?'#18c7dd':'#f63',
+    color: process.env.COLOR,
     height: '6px',
     rtl: true,
     continuous: true,
@@ -27,7 +28,7 @@ export default {
    ** Nuxt rendering mode
    ** See https://nuxtjs.org/api/configuration-mode
    */
-  mode: process.env.ENV=='igapp'?'spa':'universal',
+  ssr: process.env.SSR,
   /*
    ** Nuxt target
    ** See https://nuxtjs.org/api/configuration-target
@@ -41,7 +42,7 @@ export default {
    ** See https://nuxtjs.org/api/configuration-head
    */
   head: {
-    title: process.env.npm_package_name || "",
+    title: process.env.APP_NAME_FA,
     meta: [
       { charset: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
@@ -51,7 +52,7 @@ export default {
         content: process.env.npm_package_description || "",
       },
     ],
-    link: [{ rel: "icon", type: "image/x-icon", href: "/favicon-"+process.env.ENV+"upera.ico"}],
+    link: [{ rel: "icon", type: "image/x-icon", href: "/favicon-"+process.env.ENV+".ico"}],
     script: [
       {
         src: 'https://web.upera.tv/jwplayer?v1', body: true
@@ -82,7 +83,7 @@ export default {
     "vue-slick-carousel/dist/vue-slick-carousel.css",
     "../assets/styles/dark.css"
   ],
-    router: {
+  router: {
       linkActiveClass: 'active',
     middleware: ["clearValidationErrors"]
   },
@@ -102,8 +103,6 @@ export default {
    ** Nuxt.js dev-modules
    */
    buildModules: [ ['@nuxtjs/dotenv', { filename: '.env.' + process.env.ENV }], ],
-
-
     eslint: {
     fix: true
   },
@@ -165,8 +164,8 @@ export default {
    ** See https://axios.nuxtjs.org/options
    */
   axios: {
-    baseURL: "http://web.upera.tv/api/v1",
-    browserBaseURL: "https://web.upera.tv/api/v1",
+    baseURL: process.env.URL,
+    browserBaseURL: process.env.BURL,
   },
   /*
    ** Build configuration
@@ -177,7 +176,7 @@ pwa: {
     fileName:'icon-'+process.env.ENV+'.png'
   },
   manifest: {
-    name: process.env.ENV=='upera'?'آپرا':'آی گپ',
+    name: process.env.APP_NAME_FA,
     lang: 'fa',
     description: 'سینمای آنلاین شما'
   }

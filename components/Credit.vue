@@ -5,9 +5,9 @@
         <div class="download-links-body  download-links-body-header">
           <div class="download-links-items download-links-items-credit">
             <div class="tenor tenor-m">
-              <button class="btn btn-light text-secondary show-mobile text-center btn-block mb-3" @click="$router.push({ name: 'payments' })">
+              <nuxt-link class="btn btn-light text-secondary show-mobile text-center btn-block mb-3" to="/payments" @click.native="hideModal()">
                 پرداخت&zwnj;های قبلی
-              </button>
+              </nuxt-link>
               <div class="mt-sm-5 d-flex align-items-center justify-content-between border-bottom-md-gray pb-md-5">
                 <div class="d-flex align-items-center justify-content-between w-sm-100">
                   <div class="subtitle">
@@ -20,9 +20,9 @@
                     <svg id="L9" class="svg-loader" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 100 100" enable-background="new 0 0 0 0" xml:space="preserve"><path data-v-28f0b4cb="" fill="#373737" d="M73,50c0-12.7-10.3-23-23-23S27,37.3,27,50 M30.9,50c0-10.5,8.5-19.1,19.1-19.1S69.1,39.5,69.1,50" transform="rotate(109.69 50 50)"><animateTransform data-v-28f0b4cb="" attributeName="transform" attributeType="XML" type="rotate" dur="1s" from="0 50 50" to="360 50 50" repeatCount="indefinite" /></path></svg>
                   </div>
                 </div>
-                <button class="btn btn-light text-secondary hide-mobile">
+                <nuxt-link class="btn btn-light text-secondary hide-mobile" to="/payments" @click.native="hideModal()">
                   پرداخت&zwnj;های قبلی
-                </button>
+                </nuxt-link>
               </div>
               <div class="mt-5 form-group d-md-flex align-items-center justify-content-between mb-md-5 form-inline">
                 <label>مبلغ مورد نظر خود را وارد کنید</label>

@@ -34,13 +34,13 @@
           </div>
           <div class="show-mobile mt-3">
             در حال حاضر موجودی کیف پول شما <span class="text-secondary">{{ wallet }}</span> است. با <span
-              class="text-secondary" @click="showCreditModal=true"
+              class="text-secondary" @click="SHOW_MODAL_CREDIT()"
             >پرداخت بانکی</span>
             می&zwnj;توانید اعتبار خود را افزایش دهید
           </div>
           <div class="d-md-flex hide-mobile">
-            <button class="btn btn-primary-dark mr-2" @click="showCreditModal=true">
-              افزایش اعتبار <i class="icon-plus" />
+            <button class="btn btn-primary-dark mr-2" @click="SHOW_MODAL_CREDIT()">
+              افزایش موجودی <i class="icon-plus" />
             </button>
             <div class="btn btn-secondary-light">
               موجودی کیف پول: <span
@@ -129,16 +129,12 @@
         </div>
       </div>
     </section>
-    <Credit v-if="$auth.loggedIn" :show="showCreditModal" :prewallet="wallet" @hide-modal="HIDE_MODAL" />
   </div>
 </template>
 <script>
 
-import Credit from "../components/Credit"
   export default {
-  components: {
-    Credit
-  },
+
 
         filters: {
             // Cut word
@@ -168,7 +164,6 @@ import Credit from "../components/Credit"
         data() {
             return {
               data:{},
-              showCreditModal: false,
               wallet: '0 تومان'
             }
         },
@@ -180,7 +175,10 @@ import Credit from "../components/Credit"
 
     methods: {
             HIDE_MODAL() {
-              this.showCreditModal=false
+              this.$store.dispatch('credit/HIDE_MODAL')
+            },
+            SHOW_MODAL_CREDIT() {
+              this.$store.dispatch('credit/SHOW_MODAL',{prewallet: this.wallet})
             },
     SHOW_MODAL(){
       this.$store.dispatch('login/SHOW_MODAL',{premessage: null,premobile: null,preredirect: null,prerefresh: false})

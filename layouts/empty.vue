@@ -7,6 +7,7 @@
       <div class="loader-section section-right" />
     </div>
     <Login v-if="!$auth.loggedIn" :show="showModal" :staticmodal="false" @hide-modal="HIDE_MODAL" />
+    <Credit v-if="$auth.loggedIn" :show="showCreditModal" @hide-modal="HIDE_MODAL_CREDIT" />
     <nuxt />
   </div>
 </template>
@@ -19,7 +20,8 @@ export default {
   },
         computed: {
             ...mapGetters({locale: "locale"}),
-            ...mapGetters({showModal: "login/showModal"})
+            ...mapGetters({showModal: "login/showModal"}),
+            ...mapGetters({showCreditModal: "credit/showModal"})
         },
     created: function() {
 
@@ -41,6 +43,9 @@ export default {
     methods: {
             HIDE_MODAL() {
               this.$store.dispatch('login/HIDE_MODAL')
+            },
+            HIDE_MODAL_CREDIT() {
+              this.$store.dispatch('credit/HIDE_MODAL')
             },
         }
 }
