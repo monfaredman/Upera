@@ -177,8 +177,21 @@ pwa: {
   },
   manifest: {
     name: process.env.APP_NAME_FA,
+    short_name: process.env.APP_NAME_EN,
     lang: 'fa',
     description: 'سینمای آنلاین شما'
+  },
+  workbox: {
+   runtimeCaching: [
+     {
+       strategyPlugins: [{
+          use: 'Expiration',
+          config: {
+            maxAgeSeconds: 1000
+          }
+        }]
+     }
+   ]
   }
 },
 colorMode: {
