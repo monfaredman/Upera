@@ -181,19 +181,19 @@ pwa: {
     lang: 'fa',
     description: 'سینمای آنلاین شما'
   },
-  workbox: {
-   runtimeCaching: [
-     {
-       strategyPlugins: [{
-          use: 'Expiration',
-          config: {
-            maxEntries: 1000,
-            maxAgeSeconds: 1000
-          }
-        }]
-     }
-   ]
-  }
+  // workbox: {
+  //  runtimeCaching: [
+  //    {
+  //      strategyPlugins: [{
+  //         use: 'Expiration',
+  //         config: {
+  //           maxEntries: 1000,
+  //           maxAgeSeconds: 1000
+  //         }
+  //       }]
+  //    }
+  //  ]
+  // }
 },
 colorMode: {
   classPrefix: 'theme-',
