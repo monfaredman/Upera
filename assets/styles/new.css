@@ -9708,6 +9708,10 @@ small,
   .btn-app {
     visibility: visible;
   }
+  .logo_another_pages {
+    height: 50px;
+    padding-top: 10px;
+  }
 }
 
 @media (max-width: 767.98px) {
@@ -10327,4 +10331,8 @@ body .accordion > .card:nth-of-type(odd) .card-header {
 .bs-popover-bottom, .bs-popover-auto[x-placement^="bottom"] {
     padding-top: 0.5rem;
     margin-top: 0;
+}
+
+.jw-state-idle #flowplayer-rate{
+  visibility: hidden;
 }

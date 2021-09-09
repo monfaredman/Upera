@@ -187,6 +187,7 @@ pwa: {
        strategyPlugins: [{
           use: 'Expiration',
           config: {
+            maxEntries: 1000,
             maxAgeSeconds: 1000
           }
         }]

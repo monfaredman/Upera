@@ -755,7 +755,8 @@ return SRMdata
         "file": res.data.file[0].file,
         "title": titlesm,
         "image": backdrop,
-        "type": 'hls'
+        "type": 'hls',
+        "autostart": true
       }
     ],
     "height": "100%",
@@ -1032,13 +1033,15 @@ export const mutations = {
         "tracks": TextTrack,
         "image": lg_backdrop + data.data.video[0].backdrop,
         "title": (this.app.i18n.locale=="fa" && data.data.video[0].name_fa) ? data.data.video[0].name_fa : data.data.video[0].name,
-        "type": 'hls'
+        "type": 'hls',
+        "autostart": true
       }
     ],
     "height": "100%",
     "width": "100%",
     "pipIcon": "disabled",
-    "displaytitle": true
+    "displaytitle": true,
+    "autostart": true
   })
 
 
@@ -1466,13 +1469,15 @@ export const mutations = {
         "tracks": TextTrack,
         "image": lg_backdrop + data.data.episode[0].backdrop,
         "title": (this.app.i18n.locale=="fa" && data.data.episode[0].name_fa) ? data.data.episode[0].name_fa : data.data.episode[0].name,
-        "type": 'hls'
+        "type": 'hls',
+        "autostart": true
       }
     ],
     "height": "100%",
     "width": "100%",
     "pipIcon": "disabled",
-    "displaytitle": true
+    "displaytitle": true,
+    "autostart": true
   })
 
             /***********************************/
@@ -1966,7 +1971,8 @@ document.body.classList.add('loaded')
     "playlist": [
       {
         "file": state.data.video[0].streaming_url,
-        "type": 'hls'
+        "type": 'hls',
+        "autostart": true
       }
     ],
     "height": "100%",
