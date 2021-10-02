@@ -30,8 +30,16 @@
             <i class="icon-expand-arrow hide-mobile" />
           </nuxt-link>
         </div>
-        <div
-          class="header-links header-links-profile d-md-flex align-items-center mr-md-2 mr-lg-3 h-full"
+        <div v-if="$config.envname=='igapp'"
+             class="header-links header-links-profile d-md-flex align-items-center mr-md-2 mr-lg-3 h-full"
+        >
+          <nuxt-link to="/profile/settings" class="d-flex align-items-center header-link">
+            <i class="icon-profile-setting" />
+            <span class="ml-md-2">تنظیمات</span>
+          </nuxt-link>
+        </div>
+        <div v-else
+             class="header-links header-links-profile d-md-flex align-items-center mr-md-2 mr-lg-3 h-full"
         >
           <nuxt-link to="/profile" class="d-flex align-items-center header-link">
             <i class="icon-profile-setting" />
@@ -106,7 +114,7 @@
                 </ul>
               </div>
 
-              <div class="category header-buttons d-flex align-items-center h-full" :class="{ 'open': profileNav }">
+              <div v-if="$config.envname!='igapp'" class="category header-buttons d-flex align-items-center h-full" :class="{ 'open': profileNav }">
                 <div class="header-links header-links-profile d-md-flex align-items-center mr-md-2 mr-lg-3 h-full">
                   <nuxt-link to="/profile" class="profile d-flex align-items-center header-link">
                     <i class="icon-profile-setting ml-2" />
@@ -243,12 +251,12 @@
         </li>
       </ul>
       <ul v-if="profile.includes($route.path)" class="container d-md-none category-menu-mobile category-menu-mobile-setting mt-5  pt-md-3 pt-lg-5 p- app_container_pricing_res">
-        <li class="mr-3">
+        <li v-if="$config.envname!='igapp'" class="mr-3">
           <nuxt-link to="/profile">
             {{ $t('setting.profile') }}
           </nuxt-link>
         </li>
-        <li class="mr-3">
+        <li v-if="$config.envname!='igapp'" class="mr-3">
           <nuxt-link to="/payments">
             پرداخت ها
           </nuxt-link>
@@ -373,7 +381,9 @@ if(footer.length){
     this.scrollCheckTimer = setTimeout(() => {
         document.body.classList.remove('s-c')
         document.body.classList.remove('s-h')
-        document.getElementById("goftino_w").classList.remove('goftino_w_hide')
+        var goftino_w=document.getElementById("goftino_w")
+        if(goftino_w)
+          goftino_w.classList.remove('goftino_w_hide')
         
         // document.body.classList.add(delta > 0 ? 's-c' : 's-h')
 
@@ -383,15 +393,16 @@ if(footer.length){
           document.body.classList.add('s-h')
         }else if ((window.innerHeight + window.pageYOffset) >= document.body.offsetHeight) {
             document.body.classList.add('s-c')
-            if(document.getElementById("goftino_w")){
+            if(goftino_w){
               if(delta>0){
-                document.getElementById("goftino_w").classList.remove('goftino_w_hide')
+                goftino_w.classList.remove('goftino_w_hide')
               }else{
-                document.getElementById("goftino_w").classList.add('goftino_w_hide')
+                goftino_w.classList.add('goftino_w_hide')
               }
             } 
         }else{
-          document.getElementById("goftino_w").classList.add('goftino_w_hide')
+          if(goftino_w)
+           goftino_w.classList.add('goftino_w_hide')
           document.body.classList.add('s-h')
         }
 

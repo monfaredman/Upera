@@ -1241,7 +1241,7 @@ export const mutations = {
                     })
 
 
-                    if(this.app.i18n.locale=="fa" && data.data.fullrate !== null){
+                    if(this.app.$config.envname=='upera' && this.app.i18n.locale=="fa" && data.data.fullrate !== null){
                       myDiv = document.createElement("span")
                       myDiv.innerHTML = '<div id="flowplayer-rate">حجم مصرفی: <button type="button" class="btn btn-info rounded-pill">'+data.data.fullrate_data.fa.title+'</button></div>'
                       document.getElementsByClassName("jwplayer")[0].appendChild(myDiv)
@@ -1599,7 +1599,7 @@ document.body.classList.add('loaded')
                     })
 
 
-                    if(this.app.i18n.locale=="fa" && data.data.fullrate !== null){
+                    if(this.app.$config.envname=='upera' && this.app.i18n.locale=="fa" && data.data.fullrate !== null){
                       myDiv = document.createElement("span")
                       myDiv.innerHTML ='<div id="flowplayer-rate">حجم مصرفی: <button type="button" class="btn btn-info rounded-pill">'+data.data.fullrate_data.fa.title+'</button></div>'
                       document.getElementsByClassName( "jwplayer" )[0].appendChild(myDiv)
