@@ -102,7 +102,7 @@ export default {
   /*
    ** Nuxt.js dev-modules
    */
-   buildModules: [ ['@nuxtjs/dotenv', { filename: '.env.' + process.env.ENV }],'@nuxtjs/google-analytics' ],
+   buildModules: [ ['@nuxtjs/dotenv', { filename: '.env.' + process.env.ENV }], ],
     eslint: {
     fix: true
   },
