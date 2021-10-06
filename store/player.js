@@ -1303,6 +1303,10 @@ export const mutations = {
                               })
                             })
                           }
+                    }else if(this.app.$config.envname=='igapp'){
+                      myDiv = document.createElement("span")
+                      myDiv.innerHTML ='<div id="flowplayer-rate">حجم مصرفی: <button type="button" class="btn btn-info rounded-pill">تمام بها</button></div>'
+                      document.getElementsByClassName( "jwplayer" )[0].appendChild(myDiv)
                     }
 
 
@@ -1662,6 +1666,10 @@ document.body.classList.add('loaded')
                             })
                           }
                         
+                    }else if(this.app.$config.envname=='igapp'){
+                      myDiv = document.createElement("span")
+                      myDiv.innerHTML ='<div id="flowplayer-rate">حجم مصرفی: <button type="button" class="btn btn-info rounded-pill">تمام بها</button></div>'
+                      document.getElementsByClassName( "jwplayer" )[0].appendChild(myDiv)
                     }
 
                     if(nextHTML){

@@ -178,7 +178,7 @@
               <img v-if="item.type!='movie'" data-back="/images/142x212.png" :src="'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
               <span v-if="!item.ir && item.persian" class="label label-rounded label-red label-1">دوبله</span>
               <span v-if="!item.ir && !item.persian" class="label label-rounded label-warning label-1">زیرنویس</span>
-              <span v-if="item.free" class="label label-blue label-2" :class="{'label-rotated':item.type=='movie'}">رایگان</span>
+              <span v-if="item.free && $config.envname!='igapp'" class="label label-blue label-2" :class="{'label-rotated':item.type=='movie'}">رایگان</span>
             </nuxt-link>
             <div class="mt-2">
               <h6 v-if="item.type!='episode'" class="mt-2 small font-weight-normal">
@@ -213,7 +213,7 @@
               <img v-if="item.type!='movie'" data-back="/images/142x212.png" :src="'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
               <span v-if="!item.ir && item.persian" class="label label-rounded label-red label-1">دوبله</span>
               <span v-if="!item.ir && !item.persian" class="label label-rounded label-warning label-1">زیرنویس</span>
-              <span v-if="item.free" class="label label-blue label-2" :class="{'label-rotated':item.type=='movie'}">رایگان</span>
+              <span v-if="item.free && $config.envname!='igapp'" class="label label-blue label-2" :class="{'label-rotated':item.type=='movie'}">رایگان</span>
             </nuxt-link>
             <div class="mt-2">
               <h6 v-if="item.type!='episode'" class="mt-2 small font-weight-normal">
@@ -248,7 +248,7 @@
               <img v-if="item.type!='movie'" data-back="/images/142x212.png" :src="'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
               <span v-if="!item.ir && item.persian" class="label label-rounded label-red label-1">دوبله</span>
               <span v-if="!item.ir && !item.persian" class="label label-rounded label-warning label-1">زیرنویس</span>
-              <span v-if="item.free" class="label label-blue label-2" :class="{'label-rotated':item.type=='movie'}">رایگان</span>
+              <span v-if="item.free && $config.envname!='igapp'" class="label label-blue label-2" :class="{'label-rotated':item.type=='movie'}">رایگان</span>
             </nuxt-link>
             <div class="mt-2">
               <h6 v-if="item.type!='episode'" class="mt-2 small font-weight-normal">
@@ -283,7 +283,7 @@
               <img v-if="item.type!='movie'" data-back="/images/142x212.png" :src="'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
               <span v-if="!item.ir && item.persian" class="label label-rounded label-red label-1">دوبله</span>
               <span v-if="!item.ir && !item.persian" class="label label-rounded label-warning label-1">زیرنویس</span>
-              <span v-if="item.free" class="label label-blue label-2" :class="{'label-rotated':item.type=='movie'}">رایگان</span>
+              <span v-if="item.free && $config.envname!='igapp'" class="label label-blue label-2" :class="{'label-rotated':item.type=='movie'}">رایگان</span>
             </nuxt-link>
             <div class="mt-2">
               <h6 v-if="item.type!='episode'" class="mt-2 small font-weight-normal">
@@ -348,7 +348,7 @@
                   <img v-if="item.type!='movie'" data-back="/images/142x212.png" :src="'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
                   <span v-if="!item.ir && item.persian" class="label label-rounded label-red label-1">دوبله</span>
                   <span v-if="!item.ir && !item.persian" class="label label-rounded label-warning label-1">زیرنویس</span>
-                  <span v-if="item.free" class="label label-blue label-2" :class="{'label-rotated':item.type=='movie'}">رایگان</span>
+                  <span v-if="item.free && $config.envname!='igapp'" class="label label-blue label-2" :class="{'label-rotated':item.type=='movie'}">رایگان</span>
                 </nuxt-link>
                 <div class="mt-2">
                   <h6 v-if="item.type!='episode'" class="mt-2 small font-weight-normal">
