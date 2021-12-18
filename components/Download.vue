@@ -192,7 +192,6 @@
 
 
                 <span v-if="!screening.ekran && !cartloading" class="text-info h6 text-justify">حجم مصرفی: <span v-if="$config.envname!='igapp'">{{ fullrate_data.fa.title }}</span><span v-else>تمام بها</span><br><br></span>
-                <span v-if="$config.envname=='upera' && !screening.ekran && !cartloading" class="text-info h6 text-justify">حجم مصرفی: {{ fullrate_data.fa.title }}<br><br></span>
                 <!-- !ftb2 &&  -->
                 <span v-if="!ftb2 && !cartloading && !owned && traffic && trafficoo && !(downloadslist.some(function(el){ return el.owned === 1}))" class="text-justify ">دسترسی رایگان به فیلم با اینترنت همراه اول و ایرانسل<br><button class="btn btn-secondary text-right" @click="SHOWAGAIN(0)">
                   بررسی اتصال اینترنت
