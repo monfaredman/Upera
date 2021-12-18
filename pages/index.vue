@@ -105,7 +105,7 @@
           <div class="container-fluid">
             <div class="special d-flex flex-column justify-content-start align-items-start align-items-lg-center flex-lg-row">
               <h4 class="font-weight-bold text-nowrap mr-lg-5 mb-4 mb-lg-0 special-title">
-                {{ ChooseLang(list.list,list.list_fa) }}
+                {{ ChooseLang(list.list_en,list.list_fa) }}
               </h4>
               <div class="position-relative w-full">
                 <div id="special-slides" class="special-slides">
@@ -166,7 +166,7 @@
         <section class="horizontal-list-container  mt-5 reach-begin">
           <div class="d-flex justify-content-between align-items-center mb-2 container-fluid">
             <h4 class="font-weight-bold">
-              {{ ChooseLang(list.list,list.list_fa) }}
+              {{ ChooseLang(list.list_en,list.list_fa) }}
               <!--               <small v-if="list.type === 'Movies'" class="text-muted"> - {{ $t('home.movies') }} </small>
               <small v-else class="text-muted"> - {{ $t('home.series') }} </small> -->
             </h4>
@@ -226,10 +226,18 @@
         </div>
       </section>
     </div>
+    <infinite-loading v-if="data.last_page > 1" @infinite="infiniteHandler">
+      <span slot="no-more" />
+      <span slot="no-results" />
+    </infinite-loading>
   </div>
 </template>
 <script>
+  import InfiniteLoading from 'vue-infinite-loading'
     export default {
+        components: {
+            InfiniteLoading
+        },
   filters: {
     // Cut word
     truncate(string, value) {
@@ -252,6 +260,10 @@
     data () {
       return {
       	data:{},
+      page: 1,
+      distance: -Infinity,
+      userApi:'/get/discoverV2',
+      ghostApi:'/ghost/get/discoverV2',
         swiperOption: {
         spaceBetween: 10,
         slidesPerView: 3.3,
@@ -285,7 +297,7 @@
                 slidesPerView: 9,
             },
 
-        }
+        },
         },
         swiperOption3: {
  "dots": false,
@@ -514,7 +526,31 @@ if(this.data.occasions!=null){
         document.getElementById('special').style.height=(h+20)+'px'
       }
       return e
-    }
+    },
+
+               infiniteHandler($state) {
+                var apiurl
+                if (this.$auth.loggedIn) {
+                        apiurl=this.userApi
+                } else {
+                        apiurl=this.ghostApi
+                }
+                    this.$axios.get(apiurl,{params: {discover_page: this.page + 1}}).then(response => {
+
+                        if (response.status === 200) {
+                            if (response.data.data.data.length) {
+                              this.data.data = this.data.data.concat(response.data.data.data)
+                              if(response.data.data.last_page==this.page)
+                                $state.complete()
+                              else
+                                $state.loaded()
+                            } else {
+                              $state.complete()
+                            }
+                        }
+                    })
+                this.page = this.page + 1
+            },
   }
   }
 </script>
