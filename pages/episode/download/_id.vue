@@ -17,7 +17,13 @@ import Download from "../../../components/Download"
   components: {
     Download
   },
-    layout: "nofooter",
+
+  layout(context) {
+    if(context.query.ref)
+      return 'body'
+    else
+      return 'nofooter'
+  },
 
   async asyncData (context) {
     let res

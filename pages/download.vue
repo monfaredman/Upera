@@ -3,7 +3,7 @@
     <section id="banner" class="mt-5 pt-lg-5 pt-md-5">
       <div class="container">
         <div>
-          <Download :id="data.movie.id" :show="true" :ftb="false" :staticmodal="true" :owned="data.movie.owned" :traffic="data.movie.traffic" :trafficoo="data.movie.traffic_oo" :vod="data.movie.vod" :free="data.movie.free" :name="data.movie.name" :namefa="data.movie.name_fa" :posterf="data.movie.poster" :backdrop="data.movie.backdrop" type="movie" @hide-modal="HIDE_MODAL" />
+          <Download :show="true" @hide-modal="HIDE_MODAL" />
         </div>
       </div>
     </section>
@@ -12,30 +12,17 @@
 
 <script>
 
-import Download from "../../../components/Download"
+import Download from "../components/SiteDL"
   export default {
+colorMode: 'dark',
+  	
   components: {
     Download
   },
-  layout(context) {
-    if(context.query.ref)
-      return 'body'
-    else
-      return 'nofooter'
-  },
-    // layout: "nofooter",
 
-  async asyncData (context) {
-    let res
-    if (context.app.$auth.loggedIn) {
-        res = await context.app.$axios.get('/get/movie/'+context.params.id)
-     }else{
-      res = await context.app.$axios.get('/ghost/get/movie/'+context.params.id)
-     }
+  layout: "body",
 
 
-    return {data:res.data.data}
-  },
         data() {
             return {
               data:{},
@@ -45,9 +32,10 @@ import Download from "../../../components/Download"
 
     return { 
     bodyAttrs: {
-      class: 'download'
-    },title: ((this.data.movie.ekran==1) ? 'اکران ' : 'دانلود ')+(this.ChooseLang(this.data.movie.name,this.data.movie.name_fa)) }
+      class: 'download sitedl'
+    },title: 'دانلود' }
   },
+
 
     methods: {
             HIDE_MODAL() {
@@ -70,4 +58,5 @@ import Download from "../../../components/Download"
 .download .modal{top:50px !important;height:100% !important;}
 .download #downloadLinks___BV_modal_outer_{position:relative  !important;height:100% !important;}
 // .download .modal .modal-content{bottom:25px !important;}
+
 </style>

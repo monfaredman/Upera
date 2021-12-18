@@ -28,6 +28,10 @@ export default function(context) {
 
 
 
+
+
+	}
+
 if (context.route.query.ref){
   const num = context.route.query.ref
   const limit = num.length
@@ -47,8 +51,6 @@ if (context.route.query.ref){
 
   }
 }
-
-	}
 
 	context.app.$axios.onError(error => {
 		if (error.response && error.response.status !== 200) {

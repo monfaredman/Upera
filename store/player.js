@@ -55,7 +55,7 @@ export const actions = {
          * @param {any} id
          */
 
-        LOAD_MOVIE_PLAYER({commit}, {id, lg_backdrop, md_backdrop,SRMdata}) {
+        LOAD_MOVIE_PLAYER({commit}, {id, lg_backdrop, md_backdrop,SRMdata,refi}) {
             var ref=this.$cookiz.get('ref')
             if(!ref || isNaN(ref))
               ref=''
@@ -64,6 +64,7 @@ export const actions = {
             this.$axios.get('/get/watch/movie-hls/' + id + '/1'+ref).then(response => {
                 if (response.status === 200) {
                     response.data.data.guest=0
+                    response.data.data.refi=refi
                     commit('SET_MOVIE', {data:response.data.data, lg_backdrop, md_backdrop})
                 }
             }, error => {
@@ -116,8 +117,11 @@ export const actions = {
                           switch (value) {
                          
                             case "back":
-                              
-                              (window.history.length > 2) ? this.$router.go(-1) : this.$router.push({ name: 'movie-id' , params: {id: id }})
+                              if(refi){
+                                (window.history.length > 2) ? this.$router.go(-1) : this.$router.push({ name: 'movie-download-id' , params: {id: id }, query: { ref: refi }})
+                              }else{
+                                (window.history.length > 2) ? this.$router.go(-1) : this.$router.push({ name: 'movie-id' , params: {id: id }})
+                              }
                               //commit('FLOWPLAYER_DESTORY', 'movie')
                               break
                          
@@ -144,7 +148,11 @@ export const actions = {
                         dangerMode: true,
                         button: this.app.i18n.t('player.back'),
                     }).then(() => {
-                        (window.history.length > 2) ? this.$router.go(-1) : this.$router.push({ name: 'movie-id' , params: {id: id }})
+                        if(refi){
+                          (window.history.length > 2) ? this.$router.go(-1) : this.$router.push({ name: 'movie-download-id' , params: {id: id }, query: { ref: refi }})
+                        }else{
+                          (window.history.length > 2) ? this.$router.go(-1) : this.$router.push({ name: 'movie-id' , params: {id: id }})
+                        }
                         //commit('FLOWPLAYER_DESTORY', 'movie')
                     })
                 }
@@ -152,7 +160,7 @@ export const actions = {
             return SRMdata
         },
 
-        LOAD_GHOST_MOVIE_PLAYER({commit}, {id, lg_backdrop, md_backdrop,SRMdata,ekran_unique_id}) {
+        LOAD_GHOST_MOVIE_PLAYER({commit}, {id, lg_backdrop, md_backdrop,SRMdata,ekran_unique_id,refi}) {
           var ref=this.$cookiz.get('ref')
 
             if(ekran_unique_id){
@@ -175,6 +183,7 @@ export const actions = {
             this.$axios.get('/ghost/get/watch/movie-hls/' + id + '/1'+ekran_unique_id+ref).then(response => {
                 if (response.status === 200) {
                     response.data.data.guest=1
+                    response.data.data.refi=refi
                     commit('SET_MOVIE', {data:response.data.data, lg_backdrop, md_backdrop})
                 }
             }, error => {
@@ -236,7 +245,11 @@ export const actions = {
                           switch (value) {
                          
                             case "back":
-                              (window.history.length > 2) ? this.$router.go(-1) :this.$router.push({ name: 'movie-id' , params: {id: id }})
+                              if(refi){
+                                (window.history.length > 2) ? this.$router.go(-1) :this.$router.push({ name: 'movie-download-id' , params: {id: id }, query: { ref: refi }})
+                              }else{
+                                (window.history.length > 2) ? this.$router.go(-1) :this.$router.push({ name: 'movie-id' , params: {id: id }})
+                              }
                               //commit('FLOWPLAYER_DESTORY', 'movie')
                               break
                          
@@ -273,7 +286,11 @@ export const actions = {
                         dangerMode: true,
                         button: this.app.i18n.t('player.back'),
                     }).then(() => {
-                        (window.history.length > 2) ? this.$router.go(-1) : this.$router.push({ name: 'movie-id' , params: {id: id }})
+                        if(refi){
+                          (window.history.length > 2) ? this.$router.go(-1) : this.$router.push({ name: 'movie-download-id' , params: {id: id }, query: { ref: refi }})
+                        }else{
+                          (window.history.length > 2) ? this.$router.go(-1) : this.$router.push({ name: 'movie-id' , params: {id: id }})
+                        }
                         //commit('FLOWPLAYER_DESTORY', 'movie')
                     })
                 }
@@ -285,7 +302,7 @@ export const actions = {
          * @param {*}  commit
          * @param {uuid,string,uuid}  Array
          */
-        LOAD_SERIES_PLAYER({commit}, {episode_id, type, series_id, lg_backdrop,md_backdrop,SRMdata}) {
+        LOAD_SERIES_PLAYER({commit}, {episode_id, type, series_id, lg_backdrop,md_backdrop,SRMdata,refi}) {
             var ref=this.$cookiz.get('ref')
             if(!ref || isNaN(ref))
               ref=0
@@ -299,6 +316,7 @@ export const actions = {
                 .then(response => {
                     if (response.data.status === 'success') {
                         response.data.data.guest=0
+                        response.data.data.refi=refi
                         commit('SET_SERIES', {data:response.data.data, lg_backdrop, md_backdrop})
                     }
                 }, error => {
@@ -349,10 +367,18 @@ export const actions = {
                             switch (value) {
                            
                               case "back":
-                                if(type!='cur'){
-                                  (window.history.length > 2) ? this.$router.go(-1) :this.$router.push({ name: 'episode-id' , params: {id: episode_id }})
+                                if(refi){
+                                  if(type!='cur'){
+                                    (window.history.length > 2) ? this.$router.go(-1) :this.$router.push({ name: 'episode-download-id' , params: {id: episode_id }, query: { ref: refi }})
+                                  }else{
+                                    (window.history.length > 2) ? this.$router.go(-1) :this.$router.push({ name: 'episode-download-id' , params: {id: error.response.data.episode_id }, query: { ref: refi }})
+                                  }
                                 }else{
-                                  (window.history.length > 2) ? this.$router.go(-1) :this.$router.push({ name: 'episode-id' , params: {id: error.response.data.episode_id }})
+                                  if(type!='cur'){
+                                    (window.history.length > 2) ? this.$router.go(-1) :this.$router.push({ name: 'episode-id' , params: {id: episode_id }})
+                                  }else{
+                                    (window.history.length > 2) ? this.$router.go(-1) :this.$router.push({ name: 'episode-id' , params: {id: error.response.data.episode_id }})
+                                  }
                                 }
                                 //commit('FLOWPLAYER_DESTORY', 'series')
                               break
@@ -388,18 +414,26 @@ export const actions = {
                             dangerMode: true,
                             button: this.app.i18n.t('player.back'),
                         }).then(() => {
+                              if(refi){
+                                if(type!='cur'){
+                                  (window.history.length > 2) ? this.$router.go(-1) :this.$router.push({ name: 'episode-download-id' , params: {id: episode_id }, query: { ref: refi }})
+                                }else{
+                                  (window.history.length > 2) ? this.$router.go(-1) :this.$router.push({ name: 'episode-download-id' , params: {id: error.response.data.episode_id }, query: { ref: refi }})
+                                }
+                              }else{
                                 if(type!='cur'){
                                   (window.history.length > 2) ? this.$router.go(-1) :this.$router.push({ name: 'episode-id' , params: {id: episode_id }})
                                 }else{
                                   (window.history.length > 2) ? this.$router.go(-1) :this.$router.push({ name: 'episode-id' , params: {id: error.response.data.episode_id }})
                                 }
+                              }
                             //commit('FLOWPLAYER_DESTORY', 'series')
                         })
                     }
                 })
 return SRMdata
         },
-        LOAD_GHOST_SERIES_PLAYER({commit}, {episode_id, type, series_id, lg_backdrop,md_backdrop,SRMdata}) {
+        LOAD_GHOST_SERIES_PLAYER({commit}, {episode_id, type, series_id, lg_backdrop,md_backdrop,SRMdata,refi}) {
                       var ref=this.$cookiz.get('ref')
             if(!ref || isNaN(ref))
               ref=0
@@ -413,6 +447,7 @@ return SRMdata
                 .then(response => {
                     if (response.data.status === 'success') {
                         response.data.data.guest=1
+                        response.data.data.refi=refi
                         commit('SET_SERIES', {data:response.data.data, lg_backdrop, md_backdrop})
                     }
                 }, error => {
@@ -471,10 +506,18 @@ return SRMdata
                             switch (value) {
                            
                               case "back":
-                                if(type!='cur'){
-                                  (window.history.length > 2) ? this.$router.go(-1) :this.$router.push({ name: 'episode-id' , params: {id: episode_id }})
+                                if(refi){
+                                  if(type!='cur'){
+                                    (window.history.length > 2) ? this.$router.go(-1) :this.$router.push({ name: 'episode-download-id' , params: {id: episode_id }, query: { ref: refi }})
+                                  }else{
+                                    (window.history.length > 2) ? this.$router.go(-1) :this.$router.push({ name: 'episode-download-id' , params: {id: error.response.data.episode_id }, query: { ref: refi }})
+                                  }
                                 }else{
-                                  (window.history.length > 2) ? this.$router.go(-1) :this.$router.push({ name: 'episode-id' , params: {id: error.response.data.episode_id }})
+                                  if(type!='cur'){
+                                    (window.history.length > 2) ? this.$router.go(-1) :this.$router.push({ name: 'episode-id' , params: {id: episode_id }})
+                                  }else{
+                                    (window.history.length > 2) ? this.$router.go(-1) :this.$router.push({ name: 'episode-id' , params: {id: error.response.data.episode_id }})
+                                  }
                                 }
                                 //commit('FLOWPLAYER_DESTORY', 'series')
                                 break
@@ -521,10 +564,18 @@ return SRMdata
                             dangerMode: true,
                             button: this.app.i18n.t('player.back'),
                         }).then(() => {
-                                if(type!='cur'){
-                                  (window.history.length > 2) ? this.$router.go(-1) :this.$router.push({ name: 'episode-id' , params: {id: episode_id }})
+                                if(refi){
+                                  if(type!='cur'){
+                                    (window.history.length > 2) ? this.$router.go(-1) :this.$router.push({ name: 'episode-download-id' , params: {id: episode_id }, query: { ref: refi }})
+                                  }else{
+                                    (window.history.length > 2) ? this.$router.go(-1) :this.$router.push({ name: 'episode-download-id' , params: {id: error.response.data.episode_id }, query: { ref: refi }})
+                                  }
                                 }else{
-                                  (window.history.length > 2) ? this.$router.go(-1) :this.$router.push({ name: 'episode-id' , params: {id: error.response.data.episode_id }})
+                                  if(type!='cur'){
+                                    (window.history.length > 2) ? this.$router.go(-1) :this.$router.push({ name: 'episode-id' , params: {id: episode_id }})
+                                  }else{
+                                    (window.history.length > 2) ? this.$router.go(-1) :this.$router.push({ name: 'episode-id' , params: {id: error.response.data.episode_id }})
+                                  }
                                 }
                                 //commit('FLOWPLAYER_DESTORY', 'series')
                         })
@@ -917,6 +968,7 @@ export const mutations = {
 
         SET_MOVIE(state, data) {
             var app=this.app
+            var refi=data.data.refi
             state.next = null
             state.suggestion = data.data.suggestion
 
@@ -1236,8 +1288,10 @@ export const mutations = {
 
                                                 if(window.history.length > 2) 
                          app.router.go(-1) 
-                       else
-                        app.router.push({ name: 'movie-id' , params: {id: data.data.video[0].id }})
+                       else if(refi)
+                        app.router.push({ name: 'movie-download-id' , params: {id: data.data.video[0].id }, query: { ref: refi }})
+                        else
+                          app.router.push({ name: 'movie-id' , params: {id: data.data.video[0].id }})
                     })
 
 
@@ -1350,6 +1404,7 @@ export const mutations = {
          */
         SET_SERIES(state, data) {
             var app=this.app
+            var refi=data.data.refi
             state.data = data.data.episode[0]
             state.season = data.data.season
             state.next_season = null
@@ -1598,8 +1653,10 @@ document.body.classList.add('loaded')
                             </div>`
                                                 if(window.history.length > 2) 
                          app.router.go(-1) 
-                       else
-                        app.router.push({ name: 'episode-id' , params: {id: data.data.episode[0].id }})
+                       else if(refi)
+                        app.router.push({ name: 'episode-download-id' , params: {id: data.data.episode[0].id }, query: { ref: refi }})
+                        else
+                          app.router.push({ name: 'episode-id' , params: {id: data.data.episode[0].id }})
                     })
 
 

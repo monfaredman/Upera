@@ -131,9 +131,9 @@
         	document.body.classList.remove('loaded')
             if (this.$auth.loggedIn) {
                 this.guest=false
-                this.$store.dispatch('player/LOAD_MOVIE_PLAYER', {id: this.$route.params.id, lg_backdrop: this.lg_backdrop, md_backdrop: this.md_backdrop,SRMdata: {}})
+                this.$store.dispatch('player/LOAD_MOVIE_PLAYER', {id: this.$route.params.id, lg_backdrop: this.lg_backdrop, md_backdrop: this.md_backdrop,SRMdata: {},refi:this.$route.query.ref})
             }else{
-                this.$store.dispatch('player/LOAD_GHOST_MOVIE_PLAYER', {id: this.$route.params.id, lg_backdrop: this.lg_backdrop, md_backdrop: this.md_backdrop,SRMdata: {},ekran_unique_id:this.$route.query.ekran_unique_id})
+                this.$store.dispatch('player/LOAD_GHOST_MOVIE_PLAYER', {id: this.$route.params.id, lg_backdrop: this.lg_backdrop, md_backdrop: this.md_backdrop,SRMdata: {},ekran_unique_id:this.$route.query.ekran_unique_id,refi:this.$route.query.ref})
             }
         },
         methods: {

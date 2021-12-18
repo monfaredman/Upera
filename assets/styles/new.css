@@ -10336,3 +10336,43 @@ body .accordion > .card:nth-of-type(odd) .card-header {
 .jw-state-idle #flowplayer-rate{
   visibility: hidden;
 }
+
+.sitedl .download-links{
+
+    background-color: #232323;
+}
+
+.sitedl .traffic-hint {
+    font-size: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 30px;
+    margin: auto;
+    background-color: rgba(255,255,255,0.2);
+    /* padding: 5px 30px; */
+    padding-left: 5px;
+    border-radius: 5px;
+    color:  #fff;
+}
+
+.sitedl .download-links-title .text-white{
+  color: #26dec8 !important;
+  word-wrap: break-word;
+}
+
+
+.sitedl .btn-secondary {
+  background-color:#17c7dd !important;
+  color: #fff;
+}
+
+.sitedl .btn-copy {
+  background-color:#267680 !important;
+  color:  #b5d1d4;
+}
+@media (min-width: 996px) {
+  .sitedl .download-links-title .text-white{
+    font-size: 1.5rem !important;
+  }
+}

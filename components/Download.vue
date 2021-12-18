@@ -602,6 +602,9 @@ if(this.type=='episode'){
                 return en
         },
         Push(id,type){
+          if(this.$route.query.ref){
+            return
+          }
           if(this.staticmodal || id!=this.id){
             this.hideModal()
 
@@ -625,12 +628,24 @@ if(this.type=='episode'){
         Push2(id,type){
             this.hideModal()
 
-            this.$router.push({
-                name: type+"-show-id",
-                params: {
-                    id: id
-                }
-            })
+            if(this.$route.query.ref){
+              this.$router.push({
+                  name: type+"-show-id",
+                  params: {
+                      id: id
+                  },
+                  query: {
+                      ref: this.$route.query.ref
+                  }
+              })
+            }else{
+              this.$router.push({
+                  name: type+"-show-id",
+                  params: {
+                      id: id
+                  }
+              })
+            }
         },
         charAt2(string){
             string=String(string)
@@ -749,8 +764,15 @@ this.season_num=this.sizeofobj(this.lastseason)
         }else{
           traffic_button='دانلود'
         }
+
+        var ref=this.$cookiz.get('ref')
+        if(!ref || isNaN(ref))
+          ref=0
+
         this.$axios.post(api_url, {
-            itemid: itemid
+            itemid: itemid,
+            ref: ref,
+            content: this.$route.query.content
         }).then((res) => {
           this.downloadloading=false
           if(res.status === 200){
@@ -828,8 +850,14 @@ this.season_num=this.sizeofobj(this.lastseason)
         } else {
             api_url='/ghost/get/download'
         }
+        var ref=this.$cookiz.get('ref')
+        if(!ref || isNaN(ref))
+          ref=0
+
         this.$axios.post(api_url, {
-            itemid: itemid
+            itemid: itemid,
+            ref: ref,
+            content: this.$route.query.content
         }).then((res) => {
           this.downloadloading=false
           if(res.status === 200){
@@ -851,8 +879,13 @@ this.season_num=this.sizeofobj(this.lastseason)
         } else {
             api_url='/ghost/get/download'
         }
+        var ref=this.$cookiz.get('ref')
+        if(!ref || isNaN(ref))
+          ref=0
         this.$axios.post(api_url, {
-            itemid: itemid
+            itemid: itemid,
+            ref: ref,
+            content: this.$route.query.content
         }).then((res) => {
           this.downloadloading=false
           if(res.status === 200){
@@ -928,12 +961,26 @@ this.season_num=this.sizeofobj(this.lastseason)
           if(num && num!=this.id){
             this.hideModal()
 
-            this.$router.push({
-                name:"episode-download-id",
-                params: {
-                    id: num
-                }
-            })
+
+            if(this.$route.query.ref){
+              this.$router.push({
+                  name:"episode-download-id",
+                  params: {
+                      id: num
+                  },
+                  query: {
+                      ref: this.$route.query.ref,
+                      content: this.$route.query.content
+                  }
+              })
+            }else{
+              this.$router.push({
+                  name:"episode-download-id",
+                  params: {
+                      id: num
+                  }
+              })
+            }
           }else{
       this.selectseriesid=id
 
@@ -946,13 +993,25 @@ this.season_num=this.sizeofobj(this.lastseason)
     selectepisode(id){
       if(id!=this.id){
             this.hideModal()
-
-            this.$router.push({
-                name:"episode-download-id",
-                params: {
-                    id: id
-                }
-            })
+            if(this.$route.query.ref){
+              this.$router.push({
+                  name:"episode-download-id",
+                  params: {
+                      id: id
+                  },
+                  query: {
+                      ref: this.$route.query.ref,
+                      content: this.$route.query.content
+                  }
+              })
+            }else{
+              this.$router.push({
+                  name:"episode-download-id",
+                  params: {
+                      id: id
+                  }
+              })
+            }
           }
     },
     },
