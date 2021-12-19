@@ -108,11 +108,16 @@
           this.filename=this.$route.query.f.split(/(\\|\/)/g).pop()
         }
 
-        this.$axios.get('/ghost/getmd5').then((res) => {
+        this.$axios.post('/ghost/getmd5', {token: this.$route.query.token,expires: this.$route.query.expires}).then((res) => {
           if(res.status === 200){
             this.md5 = res.data.md5
             this.expires = res.data.expires
-          }
+          }else{
+              this.$swal("لینک منقضی شده است.")
+            }
+        }, (error) => {
+          this.$swal("لینک منقضی شده است.")
+          return error
         })
 
 
@@ -156,32 +161,36 @@ this.$refs['downloadLinks'].$on('shown', () => {
 
       LINK_DOWNLOAD() {
 
-        if(!this.md5 || !this.expires)
-          this.$axios.get('/ghost/getmd5').then((res) => {
-            if(res.status === 200){
-              this.md5 = res.data.md5
-              this.expires = res.data.expires
-            }
-        })
-
-
-        if(this.$route.query.sub && this.$route.query.f && this.$route.query.dl){
+        if(this.md5 && this.expires && this.$route.query.sub && this.$route.query.f && this.$route.query.dl){
           if(this.$route.query.s)
             window.location.href = 'https://'+this.$route.query.sub+'.igap.net'+this.$route.query.f+'?s='+this.$route.query.s+'&dl='+this.$route.query.dl+'&mdr='+this.md5+'&expiresr='+this.expires
           else
             window.location.href = 'https://'+this.$route.query.sub+'.igap.net'+this.$route.query.f+'?dl='+this.$route.query.dl+'&mdr='+this.md5+'&expiresr='+this.expires
+        }else if(this.$route.query.sub && this.$route.query.f && this.$route.query.dl){
+          if(!this.md5 || !this.expires)
+            this.$axios.post('/ghost/getmd5', {token: this.$route.query.token,expires: this.$route.query.expires}).then((res) => {
+              if(res.status === 200){
+                this.md5 = res.data.md5
+                this.expires = res.data.expires
+
+                if(this.$route.query.s)
+                  window.location.href = 'https://'+this.$route.query.sub+'.igap.net'+this.$route.query.f+'?s='+this.$route.query.s+'&dl='+this.$route.query.dl+'&mdr='+this.md5+'&expiresr='+this.expires
+                else
+                  window.location.href = 'https://'+this.$route.query.sub+'.igap.net'+this.$route.query.f+'?dl='+this.$route.query.dl+'&mdr='+this.md5+'&expiresr='+this.expires
+              }else{
+                this.$swal("لینک منقضی شده است.")
+              }
+          }, (error) => {
+            this.$swal("لینک منقضی شده است.")
+            return error
+          })
+        }else{
+          this.$swal("صفحه را مجددا باز نمایید.")
         }
       },
       COPY_DOWNLOAD() {
-        if(!this.md5 || !this.expires)
-          this.$axios.get('/ghost/getmd5').then((res) => {
-            if(res.status === 200){
-              this.md5 = res.data.md5
-              this.expires = res.data.expires
-            }
-        })
 
-        if(this.$route.query.sub && this.$route.query.f && this.$route.query.dl){
+        if(this.md5 && this.expires && this.$route.query.sub && this.$route.query.f && this.$route.query.dl){
           var url
           if(this.$route.query.s)
             url = 'https://'+this.$route.query.sub+'.igap.net'+this.$route.query.f+'?s='+this.$route.query.s+'&dl='+this.$route.query.dl+'&mdr='+this.md5+'&expiresr='+this.expires
@@ -189,7 +198,32 @@ this.$refs['downloadLinks'].$on('shown', () => {
             url = 'https://'+this.$route.query.sub+'.igap.net'+this.$route.query.f+'?dl='+this.$route.query.dl+'&mdr='+this.md5+'&expiresr='+this.expires
 
           this.copy(url)
+        }else if(this.$route.query.sub && this.$route.query.f && this.$route.query.dl){
+          if(!this.md5 || !this.expires)
+            this.$axios.post('/ghost/getmd5', {token: this.$route.query.token,expires: this.$route.query.expires}).then((res) => {
+              if(res.status === 200){
+                this.md5 = res.data.md5
+                this.expires = res.data.expires
+
+                var url
+                if(this.$route.query.s)
+                  url = 'https://'+this.$route.query.sub+'.igap.net'+this.$route.query.f+'?s='+this.$route.query.s+'&dl='+this.$route.query.dl+'&mdr='+this.md5+'&expiresr='+this.expires
+                else
+                  url = 'https://'+this.$route.query.sub+'.igap.net'+this.$route.query.f+'?dl='+this.$route.query.dl+'&mdr='+this.md5+'&expiresr='+this.expires
+
+                this.copy(url)
+              }else{
+                this.$swal("لینک منقضی شده است.")
+              }
+          }, (error) => {
+            this.$swal("لینک منقضی شده است.")
+            return error
+          })
+        }else{
+          this.$swal("صفحه را مجددا باز نمایید.")
         }
+
+      
 
       },
  
