@@ -67,10 +67,12 @@
           {{ $t('home.load_more') }}
         </button>
       </div>
-      <infinite-loading v-else-if="data.last_page > 1" ref="infiniteLoading" @infinite="infiniteHandler">
-        <span slot="no-more" />
-        <span slot="no-results" />
-      </infinite-loading>
+      <client-only v-else-if="data.last_page > 1">
+        <infinite-loading ref="infiniteLoading" @infinite="infiniteHandler">
+          <span slot="no-more" />
+          <span slot="no-results" />
+        </infinite-loading>
+      </client-only>
     </div>
   </div>
 </template>

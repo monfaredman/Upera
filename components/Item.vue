@@ -342,33 +342,7 @@
         </div>
       </div>
     </section>
-    <section v-if="data.similar!=null" class="horizontal-list-container mt-4 reach-begin">
-      <div class="d-flex justify-content-between align-items-center mb-2 container-fluid">
-        <h4 class="title">
-          {{ $t('show.similar') }}
-        </h4>
-      </div>
-      <div v-swiper:offerSwiper="swiperOption" class="newset-slider">
-        <div class="swiper-wrapper py-1">
-          <!-- Slides -->
-          <div v-for="(item,index) in data.similar" :key="index" class="swiper-slide" :class="{'movielabel':true}">
-            <nuxt-link :to="{ name: 'movie-id', params: { id: item.id }}" :class="{'is-series': false}">
-              <img data-back="/images/142x212.png" :src="'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
-              <!--               <img v-if="item.type!='movie'" :src="'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
-              <img v-if="item.type!='movie'" :src="'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name"> -->
-              <span v-if="!item.ir && item.persian" class="label label-rounded label-red label-1">دوبله</span>
-              <span v-if="!item.ir && !item.persian" class="label label-rounded label-warning label-1">زیرنویس</span>
-              <span v-if="item.free" class="label label-blue label-2" :class="{'label-rotated':true}">رایگان</span>
-            </nuxt-link>
-            <div class="mt-2">
-              <h6 class="mt-2 small font-weight-normal">
-                {{ ChooseLang(item.name,item.name_fa) }}
-              </h6>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+
 
 
     <section v-if="type=='series' && data.last_episode" id="slideshow" dir="ltr">
@@ -514,6 +488,33 @@
     </section>
 
 
+    <section v-if="data.similar!=null" class="horizontal-list-container mt-4 reach-begin">
+      <div class="d-flex justify-content-between align-items-center mb-2 container-fluid">
+        <h4 class="title">
+          {{ $t('show.similar') }}
+        </h4>
+      </div>
+      <div v-swiper:offerSwiper="swiperOption" class="newset-slider">
+        <div class="swiper-wrapper py-1">
+          <!-- Slides -->
+          <div v-for="(item,index) in data.similar" :key="index" class="swiper-slide" :class="{'movielabel':item.type=='movie'}">
+            <nuxt-link :to="{ name: item.type+'-id', params: { id: item.id }}" :class="{'is-series': item.type!='movie'}">
+              <img data-back="/images/142x212.png" :src="'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
+              <img v-if="item.type!='movie'" :src="'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
+              <img v-if="item.type!='movie'" :src="'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
+              <span v-if="!item.ir && item.persian" class="label label-rounded label-red label-1">دوبله</span>
+              <span v-if="!item.ir && !item.persian" class="label label-rounded label-warning label-1">زیرنویس</span>
+              <span v-if="item.free" class="label label-blue label-2" :class="{'label-rotated':true}">رایگان</span>
+            </nuxt-link>
+            <div class="mt-2">
+              <h6 class="mt-2 small font-weight-normal">
+                {{ ChooseLang(item.name,item.name_fa) }}
+              </h6>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
     <section v-if="data.showtabs" class="horizontal-list-container mt-4">
       <div class="swiper-container horizontal-list">
         <div id="movie-tabs" class="border-top border-dark">
@@ -816,7 +817,6 @@ if(this.user_claps_counter>=1){
             if(this.type=="series"){
               this.season_num=this.sizeofobj(this.season)
 
-              console.log(this.season_num)
 
 
 

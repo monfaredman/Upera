@@ -226,10 +226,12 @@
         </div>
       </section>
     </div>
-    <infinite-loading v-if="data.last_page > 1" @infinite="infiniteHandler">
-      <span slot="no-more" />
-      <span slot="no-results" />
-    </infinite-loading>
+    <client-only>
+      <infinite-loading v-if="data.last_page > 1" @infinite="infiniteHandler">
+        <span slot="no-more" />
+        <span slot="no-results" />
+      </infinite-loading>
+    </client-only>
   </div>
 </template>
 <script>

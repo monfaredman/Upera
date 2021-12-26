@@ -97,7 +97,7 @@ export const actions = {
                     }).then(info => {
 
                         this.$axios
-                            .get('/api/v1/get/check/user', {
+                            .get('/api/v1/get'+this.$config.check_url, {
                                 headers: {
                                     Authorization: 'Bearer ' + response.data.access_token
                                 }

@@ -3,10 +3,10 @@
     <div v-if="!itemmenu.includes($route.name)" class="d-flex header-mobile d-md-none">
       <div class="show-mobile header-home">
         <nuxt-link to="/" class="header-link d-flex flex-column align-items-center justify-content-center text-nowrap active">
-          <i v-if="$config.envname=='upera'" class="icon-upera-logo" />
+          <i v-if="$config.envname!='igapp'" class="icon-upera-logo" />
           <i v-if="$config.envname=='igapp'" class="icon-home" />
           <span>
-            <i v-if="$config.envname=='upera'" class="icon-upera-fa-logotype" />
+            <i v-if="$config.envname!='igapp'" class="icon-upera-fa-logotype" />
             <span v-if="$config.envname=='igapp'">خانه </span>
 
           </span>
@@ -57,16 +57,16 @@
         >
           <div class="d-flex align-items-center h-full">
             <nuxt-link v-if="(categories.includes($route.path) || profile.includes($route.path))" to="/" class="logo logo_another_pages">
-              <i v-if="$config.envname=='upera'" class="icon-upera-fa-logotype" />
-              <i v-if="$config.envname=='upera'" class="icon-upera-logo" />
+              <i v-if="$config.envname!='igapp'" class="icon-upera-fa-logotype" />
+              <i v-if="$config.envname!='igapp'" class="icon-upera-logo" />
               <img v-if="$config.envname=='igapp' && $colorMode.value=='light'" src="@/assets/img/_logo.png" :class="{'d-none d-md-block':bannerNav}" :alt="$config.name_fa">
               <img v-if="$config.envname=='igapp' && $colorMode.value=='dark'" src="@/assets/images/_logo-mobile.png" :class="{'d-none d-md-block':bannerNav}" :alt="$config.name_fa">
             </nuxt-link>
             <nuxt-link v-else to="/" class="logo">
-              <img v-if="$config.envname=='upera'" src="@/assets/img/logo.svg" :class="{'d-none d-md-block':bannerNav}" :alt="$config.name_fa">
+              <img v-if="$config.envname!='igapp'" src="@/assets/img/logo.svg" :class="{'d-none d-md-block':bannerNav}" :alt="$config.name_fa">
               <img v-if="$config.envname=='igapp' && $colorMode.value=='light'" src="@/assets/img/_logo.png" :class="{'d-none d-md-block':bannerNav}" :alt="$config.name_fa">
               <img v-if="$config.envname=='igapp' && $colorMode.value=='dark'" src="@/assets/images/_logo-mobile.png" :class="{'d-none d-md-block':bannerNav}" :alt="$config.name_fa">
-              <img v-if="bannerNav && $config.envname=='upera' " src="/images/logo-mobile.svg" class="d-md-none" :alt="$config.name_fa">
+              <img v-if="bannerNav && $config.envname!='igapp' " src="/images/logo-mobile.svg" class="d-md-none" :alt="$config.name_fa">
               <img v-if="bannerNav && $config.envname=='igapp' " src="@/assets/images/_logo-mobile.png" class="d-md-none" :alt="$config.name_fa">
             </nuxt-link>
             <div class="d-none d-md-flex align-items-center h-full">
@@ -199,12 +199,12 @@
                         <div v-if="$auth.loggedIn" class="d-flex align-items-center justify-content-between pt-4">
                           <a class="text-black" @click="SHOW_MODAL_CREDIT();$root.$emit('bv::hide::popover')">افزایش موجودی</a>
                         </div>
-                        <div v-if="$auth.loggedIn" :class="{ 'border-bottom-gray' : $config.envname=='upera'}" class="d-flex align-items-center justify-content-between pt-4 py-4">
+                        <div v-if="$auth.loggedIn" :class="{ 'border-bottom-gray' : $config.envname!='igapp'}" class="d-flex align-items-center justify-content-between pt-4 py-4">
                           <nuxt-link class="text-black" to="/payments">
                             پرداخت ها
                           </nuxt-link>
                         </div>
-                        <div v-if="$config.envname=='upera' && $auth.loggedIn" class="d-flex align-items-center justify-content-between py-4">
+                        <div v-if="$config.envname!='igapp' && $auth.loggedIn" class="d-flex align-items-center justify-content-between py-4">
                           <b-link class="text-black" @click="logout()">
                             خروج از حساب کاربری
                           </b-link>
@@ -216,10 +216,10 @@
               </b-popover>
             </div>
 
-            <nuxt-link v-if="$config.envname=='upera'" to="/app" class="btn btn-second px-lg-4 py-1 ml-1 btn-app">
+            <nuxt-link v-if="checkuser.show_app" to="/app" class="btn btn-second px-lg-4 py-1 ml-1 btn-app">
               {{ $t('new.download_app') }}
             </nuxt-link>
-            <b-button v-if="$config.envname=='upera' && !$auth.loggedIn && $route.name !=='login'" variant="main" class="py-1 px-lg-4" @click="SHOW_MODAL()">
+            <b-button v-if="$config.envname!='igapp' && !$auth.loggedIn && $route.name !=='login'" variant="main" class="py-1 px-lg-4" @click="SHOW_MODAL()">
               {{ $t('new.login_register') }}
             </b-button>
             <!--             <b-button v-else-if="$route.name !=='login'" variant="main" class="py-1 px-lg-4" @click="logout()">

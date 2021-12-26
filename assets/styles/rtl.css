@@ -1982,3 +1982,8 @@ left:auto;
   right: -2rem;
   left: auto;
 }
+
+
+  .modal-fullscreen .modal-body {
+    direction: rtl;
+  }

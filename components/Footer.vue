@@ -5,23 +5,23 @@
         <div class="container-fluid px-0">
           <div class="d-flex align-items-center justify-content-between">
             <ul class="nav nav-separator">
-              <nuxt-link v-if="$config.envname=='upera'" to="/app" class="nav-link">
+              <nuxt-link v-if="checkuser.show_app" to="/app" class="nav-link">
                 {{ $t('new.download_app') }}
               </nuxt-link>
-              <nuxt-link v-if="$config.envname=='upera'" to="/profile/faq" class="nav-link">
+              <nuxt-link v-if="$config.envname!='igapp'" to="/profile/faq" class="nav-link">
                 {{ $t('new.FAQ') }}
               </nuxt-link>
               <!--               <nuxt-link to="/profile/internet" class="nav-link">
                 {{ $t('new.halfPrice') }}
               </nuxt-link> -->
-              <a v-if="$config.envname=='upera'" href="https://web.upera.tv/affiliate.html" target="_blank" class="nav-link">
+              <a v-if="$config.envname=='upera' || checkuser.domain=='plus.upera.tv'" href="https://web.upera.tv/affiliate.html" target="_blank" class="nav-link">
                 همکاری
               </a>
             </ul>
             <div class="d-flex align-items-center">
               <ul class="nav">
-                <a v-if="$config.envname=='igapp'" class="nav-link dir-ltr footer-sticky-link" href="tel:0212043924">۰۲۱ - ۲۰۴ ۳۹ ۲۴</a>
-                <a v-else class="nav-link dir-ltr footer-sticky-link" href="tel:02191079979">۰۲۱ - ۹۱۰ ۷۹۹ ۷۹</a>
+                <a v-if="$config.envname=='igapp'" class="nav-link dir-ltr footer-sticky-link" href="tel:0212043924">0212043924</a>
+                <a v-else-if="checkuser.phone" class="nav-link dir-ltr footer-sticky-link" :href="'tel:'+checkuser.phone">{{ checkuser.phone }}</a>
               </ul>
               <div class="socials d-flex align-items-center text-center text-md-left">
                 <a v-if="shownotification" id="notif1" class="notification mr-3" href="" @click.prevent="notification('notif1')">
@@ -45,7 +45,13 @@
                 <a v-if="$config.envname=='upera'" href="https://instagram.com/uperashop" class="mr-3">
                   <i class="icon-instagram" />
                 </a>
+                <a v-else-if="checkuser.instagram" :href="checkuser.instagram" class="mr-3">
+                  <i class="icon-instagram" />
+                </a>
                 <a v-if="$config.envname=='upera'" href="https://t.me/shop_upera" class="mr-3">
+                  <i class="icon-telegram" />
+                </a>
+                <a v-else-if="checkuser.telegram" :href="checkuser.telegram" class="mr-3">
                   <i class="icon-telegram" />
                 </a>
               </div>
@@ -60,13 +66,13 @@
           <div class="row align-items-center">
             <div class="col-md-8 col-lg-4">
               <ul class="nav nav-separator">
-                <nuxt-link v-if="$config.envname=='upera'" to="/profile/faq" class="nav-link text-black">
+                <nuxt-link v-if="$config.envname!='igapp'" to="/profile/faq" class="nav-link text-black">
                   {{ $t('new.FAQ') }}
                 </nuxt-link>
                 <!--                 <nuxt-link to="/profile/internet" class="nav-link text-black">
                   {{ $t('new.halfPrice') }}
                 </nuxt-link> -->
-                <a v-if="$config.envname=='upera'" href="https://web.upera.tv/affiliate.html" target="_blank" class="nav-link text-black">
+                <a v-if="$config.envname=='upera' || checkuser.domain=='plus.upera.tv'" href="https://web.upera.tv/affiliate.html" target="_blank" class="nav-link text-black">
                   همکاری
                 </a>
                 <nuxt-link to="/profile/terms" class="nav-link text-black">
@@ -79,16 +85,19 @@
             </div>
             <div class="col-md-4 col-lg-4">
               <div class="d-flex justify-content-center position-relative">
-                <div v-if="$config.envname=='upera'" class="dl-app" @click="getapp">
+                <div v-if="checkuser.show_app" class="dl-app" @click="getapp">
                   <div class="d-flex align-items-center justify-content-center">
                     <div class="dl-links-wrapper text-center pl-lg-5">
                       <div class="text-invert mb-1 pb-1 d-inline-block dl-links-title">
-                        <nuxt-link v-if="$config.envname=='upera'" to="/app">
+                        <nuxt-link to="/app">
                           {{ $t('new.download_app') }}
                         </nuxt-link>
                       </div>
                       <div class="dl-links d-flex justify-content-between">
-                        <a class="text-invert d-flex justify-content-center" href="" @click.prevent="install('https://play.google.com/store/apps/details?id=com.techera.upera')">
+                        <nuxt-link v-if="$config.envname!='upera' && checkuser.domain!='plus.upera.tv'" to="/app" class="text-invert d-flex justify-content-center">
+                          <i class="icon-android" />
+                        </nuxt-link>
+                        <a v-else class="text-invert d-flex justify-content-center" href="" @click.prevent="install('https://play.google.com/store/apps/details?id=com.techera.upera')">
                           <i class="icon-android" />
                         </a>
                         <nuxt-link to="/app" class="text-invert d-flex justify-content-center">
@@ -101,7 +110,8 @@
                     </div>
                     <div class="dl-qr hide-mobile hide-tablet">
                       <nuxt-link to="/app">
-                        <img :src="'https://chart.apis.google.com/chart?cht=qr&chs=150x150&chld=L|0&chl=https://upera.tv/app?ref='+$cookiz.get('ref')">
+                        <img v-if="$config.envname=='upera'" :src="'https://chart.apis.google.com/chart?cht=qr&chs=150x150&chld=L|0&chl=https://upera.tv/app?ref='+$cookiz.get('ref')">
+                        <img v-else :src="'https://chart.apis.google.com/chart?cht=qr&chs=150x150&chld=L|0&chl=https://'+checkuser.domain+'/app?ref='+$cookiz.get('ref')">
                       </nuxt-link>
                     </div>
                   </div>
@@ -109,7 +119,7 @@
               </div>
             </div>
             <div class="col-lg-4 hide-mobile hide-tablet">
-              <div v-if="$config.envname=='upera'" class="d-flex namad-wrapper">
+              <div v-if="$config.envname=='upera' || checkuser.domain=='plus.upera.tv'" class="d-flex namad-wrapper">
                 <div class="namad pr-2">
                   <div class="namad-box-2" @click="samandehi">
                     <img src="/images/samandehi.png" width="80">
@@ -122,7 +132,7 @@
                 </div>
                 <div class="namad pr-2">
                   <div class="namad-box">
-                    <a onclick="window.open('https://trustseal.enamad.ir/?id=204904&amp;Code=ipcUNmaUZGludD970sgm', 'Popup','toolbar=no, location=no, statusbar=no, menubar=no, scrollbars=1, resizable=0, width=580, height=600, top=30')">
+                    <a @click="enamad">
                       <img src="/images/enamad.png" width="80">
                     </a>
                   </div>
@@ -144,11 +154,11 @@
             </div>
             <div class="col-md-4">
               <div class="footer-info text-center">
-                <a v-if="$config.envname=='upera'" class="text-darker font-weight-normal" href="mailto:info@upera.tv">info@upera.tv</a>
-                <a v-else-if="$config.envname=='igapp'" class="text-darker font-weight-normal" href="mailto:info@igap.net">info@igap.net</a>
-                <span v-if="$config.envname=='upera' || $config.envname=='igapp'" class="divider" />
-                <a v-if="$config.envname=='igapp'" class="text-darker font-weight-normal" href="tel:0212043924">۰۲۱ - ۲۰۴ ۳۹ ۲۴</a>
-                <a v-else class="text-darker font-weight-normal" href="tel:02191079979">۰۲۱ - ۹۱۰ ۷۹۹ ۷۹</a>
+                <a v-if="$config.envname=='igapp'" class="text-darker font-weight-normal" href="mailto:info@igap.net">info@igap.net</a>
+                <a v-else-if="checkuser.email" class="text-darker font-weight-normal" :href="'mailto:'+checkuser.email">{{ checkuser.email }}</a>
+                <span v-if="$config.envname=='igapp' || (checkuser.email && checkuser.phone)" class="divider" />
+                <a v-if="$config.envname=='igapp'" class="text-darker font-weight-normal" href="tel:0212043924">0212043924</a>
+                <a v-else-if="checkuser.phone" class="text-darker font-weight-normal" :href="'tel:'+checkuser.phone">{{ checkuser.phone }}</a>
               </div>
             </div>
             <div class="col-md-4">
@@ -177,7 +187,13 @@
                 <a v-if="$config.envname=='upera'" class="text-darker mr-3" href="https://instagram.com/uperashop">
                   <i class="icon-instagram" />
                 </a>
+                <a v-else-if="checkuser.instagram" class="text-darker mr-3" :href="checkuser.instagram">
+                  <i class="icon-instagram" />
+                </a>
                 <a v-if="$config.envname=='upera'" class="text-darker mr-3" href="https://t.me/shop_upera">
+                  <i class="icon-telegram" />
+                </a>
+                <a v-else-if="checkuser.telegram" class="text-darker mr-3" :href="checkuser.telegram">
                   <i class="icon-telegram" />
                 </a>
                 <!--                 <a class="text-darker mr-3" href="#">
@@ -195,11 +211,11 @@
             <div class="d-flex justify-content-end">
               <div class="">
                 <div class="footer-info text-center">
-                  <a v-if="$config.envname=='upera'" class="text-darker font-weight-normal" href="mailto:info@upera.tv">info@upera.tv</a>
-                  <a v-else-if="$config.envname=='igapp'" class="text-darker font-weight-normal" href="mailto:info@igap.net">info@igap.net</a>
-                  <span v-if="$config.envname=='upera' || $config.envname=='igapp'" class="divider" />
-                  <a v-if="$config.envname=='igapp'" class="text-darker font-weight-normal" href="tel:0212043924">۰۲۱ - ۲۰۴ ۳۹ ۲۴</a>
-                  <a v-else class="text-darker font-weight-normal" href="tel:02191079979">۰۲۱ - ۹۱۰ ۷۹۹ ۷۹</a>
+                  <a v-if="$config.envname=='igapp'" class="text-darker font-weight-normal" href="mailto:info@igap.net">info@igap.net</a>
+                  <a v-else-if="checkuser.email" class="text-darker font-weight-normal" :href="'mailto:'+checkuser.email">{{ checkuser.email }}</a>
+                  <span v-if="$config.envname=='igapp' || (checkuser.email && checkuser.phone)" class="divider" />
+                  <a v-if="$config.envname=='igapp'" class="text-darker font-weight-normal" href="tel:0212043924">0212043924</a>
+                  <a v-else-if="checkuser.phone" class="text-darker font-weight-normal" :href="'tel:'+checkuser.phone">{{ checkuser.phone }}</a>
                 </div>
               </div>
               <div class="">
@@ -224,7 +240,13 @@
                   <a v-if="$config.envname=='upera'" class="text-darker mr-2" href="https://instagram.com/uperashop">
                     <i class="icon-instagram" />
                   </a>
+                  <a v-else-if="checkuser.instagram" class="text-darker mr-2" :href="checkuser.instagram">
+                    <i class="icon-instagram" />
+                  </a>
                   <a v-if="$config.envname=='upera'" class="text-darker mr-2" href="https://t.me/shop_upera">
+                    <i class="icon-telegram" />
+                  </a>
+                  <a v-else-if="checkuser.telegram" class="text-darker mr-2" :href="checkuser.telegram">
                     <i class="icon-telegram" />
                   </a>
                   <!--                   <a class="text-darker mr-2" href="#">
@@ -237,11 +259,11 @@
           <div class="row align-items-center show-mobile">
             <div class="col-md-4 mb-3">
               <div class="footer-info text-center">
-                <a v-if="$config.envname=='upera'" class="text-darker font-weight-normal" href="mailto:info@upera.tv">info@upera.tv</a>
                 <a v-if="$config.envname=='igapp'" class="text-darker font-weight-normal" href="mailto:info@igap.net">info@igap.net</a>
-                <span v-if="$config.envname=='upera' || $config.envname=='igapp'" class="divider" />
-                <a v-if="$config.envname=='igapp'" class="text-darker font-weight-normal" href="tel:0212043924">۰۲۱ - ۲۰۴ ۳۹ ۲۴</a>
-                <a v-else class="text-darker font-weight-normal" href="tel:02191079979">۰۲۱ - ۹۱۰ ۷۹۹ ۷۹</a>
+                <a v-else-if="checkuser.email" class="text-darker font-weight-normal" :href="'mailto:'+checkuser.email">{{ checkuser.email }}</a>
+                <span v-if="$config.envname=='igapp' || (checkuser.email && checkuser.phone)" class="divider" />
+                <a v-if="$config.envname=='igapp'" class="text-darker font-weight-normal" href="tel:0212043924">0212043924</a>
+                <a v-else-if="checkuser.phone" class="text-darker font-weight-normal" :href="'tel:'+checkuser.phone">{{ checkuser.phone }}</a>
               </div>
             </div>
             <div class="col-md-4 mb-3">
@@ -266,7 +288,13 @@
                 <a v-if="$config.envname=='upera'" class="text-darker mr-2" href="https://instagram.com/uperashop">
                   <i class="icon-instagram" />
                 </a>
+                <a v-else-if="checkuser.instagram" class="text-darker mr-2" :href="checkuser.instagram">
+                  <i class="icon-instagram" />
+                </a>
                 <a v-if="$config.envname=='upera'" class="text-darker mr-2" href="https://t.me/shop_upera">
+                  <i class="icon-telegram" />
+                </a>
+                <a v-else-if="checkuser.telegram" class="text-darker mr-2" :href="checkuser.telegram">
                   <i class="icon-telegram" />
                 </a>
                 <!--                 <a class="text-darker mr-2" href="#">
@@ -359,7 +387,16 @@ return e
       this.$router.push({ name: 'app' })
     },
 samandehi(){
+  if(this.$config.envname=='upera')
     window.open('https://logo.samandehi.ir/Verify.aspx?id=197123&p=rfthpfvljyoerfthuiwkxlao', 'Popup','toolbar=no, scrollbars=no, location=no, statusbar=no, menubar=no, resizable=0, width=450, height=630, top=30')
+  else
+    window.open('https://upera.tv/namad', '_blank')
+  },
+enamad(){
+  if(this.$config.envname=='upera')
+    window.open('https://trustseal.enamad.ir/?id=204904&amp;Code=ipcUNmaUZGludD970sgm', 'Popup','toolbar=no, location=no, statusbar=no, menubar=no, scrollbars=1, resizable=0, width=580, height=600, top=30')
+  else
+    window.open('https://upera.tv/namad', '_blank')
   }
   }
 }

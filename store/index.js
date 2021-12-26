@@ -62,12 +62,23 @@ export const actions = {
     
   	if(!store.state.auth.loggedIn){
   		let res
-    	res=await this.$axios.get('/ghost/get/check/user')
+    	res=await this.$axios.get('/ghost/get'+this.$config.check_url)
         store.commit('SET_USER',res.data)
 
     }else{
 
       store.commit('SET_USER',store.state.auth.user)
+    }
+  },
+  async SPA_INIT(store) {
+    if(this.$config.envmode=='spa' && this.$config.envname!='igapp'){
+      if(!store.state.auth.loggedIn){
+        let res
+        res=await this.$axios.get('/ghost/get'+this.$config.check_url)
+          store.commit('SET_USER',res.data)
+      }else{
+        store.commit('SET_USER',store.state.auth.user)
+      }
     }
   },
   SET_LANG({commit},lang) {
@@ -77,7 +88,7 @@ export const actions = {
     commit('GET_LANG')
   },
   logout(store) {
-        this.$axios.get('/ghost/get/check/user').then((response) => {
+        this.$axios.get('/ghost/get'+this.$config.check_url).then((response) => {
             if (response.status === 200) {
                 store.commit('SET_USER',response.data)
             }

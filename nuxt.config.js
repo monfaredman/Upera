@@ -4,6 +4,8 @@ require('dotenv').config({ path: __dirname + '/.env.' + process.env.ENV })
 export default {
   publicRuntimeConfig: {
     envname: process.env.ENV,
+    envmode: process.env.SSR,
+    check_url: process.env.CHECKURL,
     name_fa: process.env.APP_NAME_FA
   },
   // server: {
@@ -150,8 +152,9 @@ export default {
       endpoints: {
         login: { url: '/login', method: 'post', propertyName: 'token' },
         logout: { url: '/logout', method: 'post' },
-        user: { url: '/get/user', method: 'get', propertyName: 'user' }
+        user: { url: process.env.USERURL, method: 'get', propertyName: 'user' }
       },
+      autoLogout: true,
       // tokenRequired: true,
       // tokenType: 'bearer',
       // globalToken: true,

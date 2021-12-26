@@ -26,7 +26,7 @@
             <label class="custom-control-label" for="language" />
           </div>
         </div>
-        <div v-if="$config.envname=='upera'" class="d-flex justify-content-between align-items-center mb-3">
+        <div v-if="$config.envname!='igapp'" class="d-flex justify-content-between align-items-center mb-3">
           <div class="setting_lable">
             {{ $t('new.socialMedia') }}
           </div>
@@ -54,7 +54,7 @@
           </nuxt-link>
         </div> -->
 
-        <div v-if="$config.envname=='upera'" class="d-flex justify-content-between align-items-center mb-3 setting_lable">
+        <div v-if="$config.envname!='igapp'" class="d-flex justify-content-between align-items-center mb-3 setting_lable">
           <nuxt-link to="/profile/faq">
             {{ $t('new.FAQ') }}
           </nuxt-link>
@@ -69,7 +69,7 @@
             {{ $t('new.term') }}
           </nuxt-link>
         </div>
-        <div v-if="$config.envname=='upera'" class="d-flex justify-content-between align-items-center mb-3 setting_lable">
+        <div v-if="$config.envname!='igapp'" class="d-flex justify-content-between align-items-center mb-3 setting_lable">
           <b-link class="text-danger" @click="logout()">
             خروج از حساب کاربری
           </b-link>

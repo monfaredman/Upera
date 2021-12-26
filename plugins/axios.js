@@ -26,10 +26,6 @@ export default function(context) {
 		if(country)
 			context.app.$axios.setHeader('Nuxt_Country', country)
 
-
-
-
-
 	}
 
 if (context.route.query.ref){
@@ -60,6 +56,23 @@ if (context.route.query.ref){
 					context.store.dispatch("validation/setErrors", error.response.data.message_fa)
 				else
 					context.store.dispatch("validation/setErrors", error.response.data.message)
+		}
+		if(error.response && error.response.status === 401){
+			context.app.$axios.get('/logout?2').then(response => {
+				context.app.$cookiz.removeAll()
+				if (process.browser) {
+					localStorage.clear()
+					location.reload()
+				}
+				return response
+			}, (error) => {
+				context.app.$cookiz.removeAll()
+				if (process.browser) {
+					localStorage.clear()
+					location.reload()
+				}
+          return error
+        })
 		}
 	})
 
