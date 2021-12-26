@@ -768,6 +768,10 @@ this.season_num=this.sizeofobj(this.lastseason)
         if(!ref || isNaN(ref))
           ref=0
 
+        if(ref==0 && this.checkuser.owner){
+          ref=this.checkuser.owner
+        }
+
         this.$axios.post(api_url, {
             itemid: itemid,
             ref: ref,
@@ -853,6 +857,10 @@ this.season_num=this.sizeofobj(this.lastseason)
         if(!ref || isNaN(ref))
           ref=0
 
+        if(ref==0 && this.checkuser.owner){
+          ref=this.checkuser.owner
+        }
+
         this.$axios.post(api_url, {
             itemid: itemid,
             ref: ref,
@@ -881,6 +889,12 @@ this.season_num=this.sizeofobj(this.lastseason)
         var ref=this.$cookiz.get('ref')
         if(!ref || isNaN(ref))
           ref=0
+
+        if(ref==0 && this.checkuser.owner){
+          ref=this.checkuser.owner
+        }
+
+
         this.$axios.post(api_url, {
             itemid: itemid,
             ref: ref,
@@ -917,6 +931,10 @@ this.season_num=this.sizeofobj(this.lastseason)
         if(!ref || isNaN(ref))
           ref=0
 
+        if(ref==0 && this.checkuser.owner){
+          ref=this.checkuser.owner
+        }
+        
         var api_url
         if (this.$auth.loggedIn) {
             api_url='/get/buy'

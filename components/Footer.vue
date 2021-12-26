@@ -335,7 +335,7 @@
     window.removeEventListener('resize', this.itemsize)
   },
     mounted() {
-      if(!this.$cookiz.get('ref'))
+      if(!this.$cookiz.get('ref') || this.checkuser.owner)
         this.shownotification=true
 
       this.itemsize('e')
@@ -343,7 +343,11 @@
     },
   methods: {
     install(url){
-      if (this.$auth.loggedIn || !this.$cookiz.get('ref')) {
+      if (checkuser.show_app==3) {
+        window.location.href = url
+      } else if (!this.checkuser.owner && (this.$auth.loggedIn || !this.$cookiz.get('ref'))) {
+        window.location.href = url
+      } else if (this.checkuser.owner && this.$auth.loggedIn) {
         window.location.href = url
       }else{
         this.$store.dispatch('login/SHOW_MODAL',{premessage: null,premobile: null,preredirect: null,prerefresh: false})
