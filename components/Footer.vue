@@ -335,7 +335,9 @@
     window.removeEventListener('resize', this.itemsize)
   },
     mounted() {
-      if(!this.$cookiz.get('ref') || this.checkuser.owner)
+      if(this.$config.envname!='upera' && this.checkuser.domain!='plus.upera.tv')
+        this.shownotification=true
+      else if(!this.$cookiz.get('ref'))
         this.shownotification=true
 
       this.itemsize('e')
@@ -343,11 +345,9 @@
     },
   methods: {
     install(url){
-      if (checkuser.show_app==3) {
+      if (this.checkuser.show_app==3) {
         window.location.href = url
-      } else if (!this.checkuser.owner && (this.$auth.loggedIn || !this.$cookiz.get('ref'))) {
-        window.location.href = url
-      } else if (this.checkuser.owner && this.$auth.loggedIn) {
+      } else if (this.$auth.loggedIn || !this.$cookiz.get('ref')) {
         window.location.href = url
       }else{
         this.$store.dispatch('login/SHOW_MODAL',{premessage: null,premobile: null,preredirect: null,prerefresh: false})

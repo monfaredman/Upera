@@ -79,6 +79,11 @@ export const actions = {
       }else{
         store.commit('SET_USER',store.state.auth.user)
       }
+      if (store.state.checkuser.ref){
+        if (this.$cookiz.get('ref')!=store.state.checkuser.ref) {
+          this.$cookiz.set('ref', store.state.checkuser.ref)
+        }
+      }
     }
   },
   SET_LANG({commit},lang) {

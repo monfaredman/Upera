@@ -279,7 +279,9 @@
                     return en
             },
     install(url){
-      if (this.$auth.loggedIn || !this.$cookiz.get('ref')) {
+      if (this.checkuser.show_app==3) {
+        window.location.href = url
+      } else if (this.$auth.loggedIn || !this.$cookiz.get('ref')) {
         window.location.href = url
       }else{
         this.$store.dispatch('login/SHOW_MODAL',{premessage: null,premobile: null,preredirect: null,prerefresh: false})

@@ -28,9 +28,6 @@ export default function(context) {
 
 	}
 
-
-console.log(context.app.checkuser)
-
 if (context.route.query.ref){
   const num = context.route.query.ref
   const limit = num.length
