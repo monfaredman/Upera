@@ -10221,6 +10221,13 @@ body .accordion > .card:nth-of-type(odd) .card-header {
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 }
 
+.item .progress,
+.item .watching-slider .progress {
+  left: 1.5rem !important;
+  bottom: 2.5rem !important;
+  right: 1.5rem !important;
+}
+
 #watching .progress-bar,
 .watching-slider .progress-bar {
   background-color: var(--primary);
@@ -10454,4 +10461,28 @@ body .accordion > .card:nth-of-type(odd) .card-header {
 .modal-fullscreen .tenor-m {
   left: 1rem;
   right: 1rem;
+}
+.subscription .modal-header{
+  border: none;
+}
+
+
+.subscription {
+  direction: rtl;
+  text-align: right;
+}
+
+.subscription .modal-body {
+  direction: rtl;
+}
+.subscription .modal-content {
+  border: none;
+  box-shadow: 0px 0px 5px rgba(151, 151, 151, 0.5) !important;
+}
+.tooltip{
+  z-index: 999999;
+}
+
+.sub_dl #subscriptionModal.modal{
+  overflow: scroll;
 }

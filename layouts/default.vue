@@ -29,7 +29,6 @@ export default {
 created: function() {
   if (process.browser) {
     this.$store.dispatch('GET_LANG')
-    this.$store.dispatch('SPA_INIT')
   }
 },
     mounted() {

@@ -10,7 +10,11 @@
 
       <div class="tenor tenor-m">
         <div class="text-center mt-4 mb-2">
-          <img src="images/logo.svg">
+          <img v-if="$config.envname=='upera'" src="@/assets/img/logo.svg" :alt="$config.name_fa">
+          <img v-if="$config.envname=='igapp' && $colorMode.value=='light'" width="140px" src="@/assets/img/_logo.png" :alt="$config.name_fa">
+          <img v-if="$config.envname=='igapp' && $colorMode.value=='dark'" width="140px" src="@/assets/images/_logo-mobile.png" :alt="$config.name_fa">
+          <img v-if="$config.envname=='plus' && $colorMode.value=='light'" width="140px" :src="'https://cdn.upera.shop/s3/vods/'+checkuser.logo" :alt="$config.name_fa">
+          <img v-if="$config.envname=='plus' && $colorMode.value=='dark'" width="140px" :src="'https://cdn.upera.shop/s3/vods/'+checkuser.logo_dark" :alt="$config.name_fa">
         </div>
         <h3 class="title2 text-center mb-6">
           نصب وب&zwnj;اپلیکیشن

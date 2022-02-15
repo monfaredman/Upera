@@ -15,7 +15,8 @@
       <span class="pl-2 title">{{ $t('footer.aboutus') }}</span>
     </h4> -->
       <!-- <hr> -->
-      <div v-lazy-load="data" class="body text-justify" />
+      <div v-if="!checkuser.about" v-lazy-load="data" class="body text-justify" />
+      <div v-else v-lazy-load="checkuser.about" class="body text-justify" />
     </div>
   </div>
 </template>

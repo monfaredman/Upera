@@ -1,64 +1,62 @@
 <template>
-  <div>
-    <b-modal id="creditModal" ref="creditModal" centered hide-footer size="lg" modal-class="modal-download-link credit" title="افزایش موجودی">
-      <div class="download-links">
-        <div class="download-links-body  download-links-body-header">
-          <div class="download-links-items download-links-items-credit">
-            <div class="tenor tenor-m">
-              <nuxt-link class="btn btn-light text-secondary show-mobile text-center btn-block mb-3" to="/payments" @click.native="hideModal()">
+  <b-modal id="creditModal" ref="creditModal" centered hide-footer size="lg" modal-class="modal-download-link credit" title="افزایش موجودی">
+    <div class="download-links">
+      <div class="download-links-body  download-links-body-header">
+        <div class="download-links-items download-links-items-credit">
+          <div class="tenor tenor-m">
+            <nuxt-link class="btn btn-light text-secondary show-mobile text-center btn-block mb-3" to="/payments" @click.native="hideModal()">
+              پرداخت&zwnj;های قبلی
+            </nuxt-link>
+            <div class="mt-sm-5 d-flex align-items-center justify-content-between border-bottom-md-gray pb-md-5">
+              <div class="d-flex align-items-center justify-content-between w-sm-100">
+                <div class="subtitle">
+                  موجودی فعلی:
+                </div>
+                <div v-if="!walletloading" class="font-weight-bold">
+                  {{ wallet }}
+                </div>
+                <div v-else>
+                  <svg id="L9" class="svg-loader" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 100 100" enable-background="new 0 0 0 0" xml:space="preserve"><path data-v-28f0b4cb="" fill="#373737" d="M73,50c0-12.7-10.3-23-23-23S27,37.3,27,50 M30.9,50c0-10.5,8.5-19.1,19.1-19.1S69.1,39.5,69.1,50" transform="rotate(109.69 50 50)"><animateTransform data-v-28f0b4cb="" attributeName="transform" attributeType="XML" type="rotate" dur="1s" from="0 50 50" to="360 50 50" repeatCount="indefinite" /></path></svg>
+                </div>
+              </div>
+              <nuxt-link class="btn btn-light text-secondary hide-mobile" to="/payments" @click.native="hideModal()">
                 پرداخت&zwnj;های قبلی
               </nuxt-link>
-              <div class="mt-sm-5 d-flex align-items-center justify-content-between border-bottom-md-gray pb-md-5">
-                <div class="d-flex align-items-center justify-content-between w-sm-100">
-                  <div class="subtitle">
-                    موجودی فعلی:
-                  </div>
-                  <div v-if="!walletloading" class="font-weight-bold">
-                    {{ wallet }}
-                  </div>
-                  <div v-else>
-                    <svg id="L9" class="svg-loader" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 100 100" enable-background="new 0 0 0 0" xml:space="preserve"><path data-v-28f0b4cb="" fill="#373737" d="M73,50c0-12.7-10.3-23-23-23S27,37.3,27,50 M30.9,50c0-10.5,8.5-19.1,19.1-19.1S69.1,39.5,69.1,50" transform="rotate(109.69 50 50)"><animateTransform data-v-28f0b4cb="" attributeName="transform" attributeType="XML" type="rotate" dur="1s" from="0 50 50" to="360 50 50" repeatCount="indefinite" /></path></svg>
-                  </div>
-                </div>
-                <nuxt-link class="btn btn-light text-secondary hide-mobile" to="/payments" @click.native="hideModal()">
-                  پرداخت&zwnj;های قبلی
-                </nuxt-link>
-              </div>
-              <div class="mt-5 form-group d-md-flex align-items-center justify-content-between mb-md-5 form-inline">
-                <label>مبلغ مورد نظر خود را وارد کنید</label>
-                <input v-model="charge" type="text" class="form-control form-control-lg form-control-bk text-center mb-md-0" autofocus>
-              </div>
-              <div class="mb-3 mb-md-6 d-flex overflow-x-auto overflow-buttons">
-                <button class="btn btn-light font-weight-bold text-nowrap" @click="charge=10000">
-                  ۱۰.۰۰۰ تومان
-                </button>
-                <button class="btn btn-light font-weight-bold text-nowrap" @click="charge=20000">
-                  ۲۰.۰۰۰ تومان
-                </button>
-                <button class="btn btn-light font-weight-bold text-nowrap" @click="charge=30000">
-                  ۳۰.۰۰۰ تومان
-                </button>
-              </div>
+            </div>
+            <div class="mt-5 form-group d-md-flex align-items-center justify-content-between mb-md-5 form-inline">
+              <label>مبلغ مورد نظر خود را وارد کنید</label>
+              <input v-model="charge" type="text" class="form-control form-control-lg form-control-bk text-center mb-md-0" autofocus>
+            </div>
+            <div class="mb-3 mb-md-6 d-flex overflow-x-auto overflow-buttons">
+              <button class="btn btn-light font-weight-bold text-nowrap" @click="charge=10000">
+                ۱۰.۰۰۰ تومان
+              </button>
+              <button class="btn btn-light font-weight-bold text-nowrap" @click="charge=20000">
+                ۲۰.۰۰۰ تومان
+              </button>
+              <button class="btn btn-light font-weight-bold text-nowrap" @click="charge=30000">
+                ۳۰.۰۰۰ تومان
+              </button>
             </div>
           </div>
+        </div>
 
 
-          <div class="download-links-footer footer-1">
-            <div class="download-links-item">
-              <div class="row">
-                <div class="col-12">
-                  <a href="" class="btn btn-danger btn-block" @click.prevent="BUY()">
-                    پرداخت
-                    <i class="fa fa-money-bill pr-2" />
-                  </a>
-                </div>
+        <div class="download-links-footer footer-1">
+          <div class="download-links-item">
+            <div class="row">
+              <div class="col-12">
+                <a href="" class="btn btn-danger btn-block" @click.prevent="BUY()">
+                  پرداخت
+                  <i class="fa fa-money-bill pr-2" />
+                </a>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </b-modal>
-  </div>
+    </div>
+  </b-modal>
 </template>
 
 <script>
@@ -164,6 +162,14 @@ if (this.$auth.loggedIn && !this.prewallet){
         this.$refs['creditModal'].show()
         document.getElementsByClassName('default')[0].classList.add('blure')
 
+        if(document.getElementsByClassName('download').length){
+          document.body.classList.remove('download')
+          document.body.classList.add('cre_dl')
+        } else if(document.getElementsByClassName('callback').length){
+          document.body.classList.remove('callback')
+          document.body.classList.add('cre_call')
+        }
+
 this.$refs['creditModal'].$on('shown', () => {
     window.addEventListener("resize", this.Resize)
     this.Resize('e')
@@ -183,6 +189,15 @@ this.$refs['creditModal'].$on('shown', () => {
       hideModal() {
         this.$refs['creditModal'].hide()
         this.$emit("hide-modal", null)
+
+        if(document.getElementsByClassName('cre_dl').length){
+          document.body.classList.add('download')
+          document.body.classList.remove('cre_dl')
+        }else if(document.getElementsByClassName('cre_call').length){
+          document.body.classList.add('callback')
+          document.body.classList.remove('cre_call')
+        }
+
         document.getElementsByClassName('default')[0].classList.remove('blure')
       },
     },

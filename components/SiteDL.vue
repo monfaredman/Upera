@@ -112,12 +112,31 @@
           if(res.status === 200){
             this.md5 = res.data.md5
             this.expires = res.data.expires
+          }else if(res.status === 404){
+              this.$swal({
+                  icon: 'error',
+                  title: 'لطفا جهت دسترسی، با اینترنت همراه اول یا ایرانسل وارد شوید',
+                  dangerMode: true,
+                  button: 'بررسی اتصال اینترنت',
+              }).then(() => {
+                  this.$router.go()
+              })
           }else{
               this.$swal("لینک منقضی شده است.")
-            }
+          }
         }, (error) => {
-          this.$swal("لینک منقضی شده است.")
-          return error
+          if(error.response.status === 404){
+            this.$swal({
+                icon: 'error',
+                title: 'لطفا جهت دسترسی، با اینترنت همراه اول یا ایرانسل وارد شوید',
+                dangerMode: true,
+                button: 'بررسی اتصال اینترنت',
+            }).then(() => {
+                this.$router.go()
+            })
+          }else{
+            this.$swal("لینک منقضی شده است.")
+          }
         })
 
 
@@ -177,12 +196,31 @@ this.$refs['downloadLinks'].$on('shown', () => {
                   window.location.href = 'https://'+this.$route.query.sub+'.igap.net'+this.$route.query.f+'?s='+this.$route.query.s+'&dl='+this.$route.query.dl+'&mdr='+this.md5+'&expiresr='+this.expires
                 else
                   window.location.href = 'https://'+this.$route.query.sub+'.igap.net'+this.$route.query.f+'?dl='+this.$route.query.dl+'&mdr='+this.md5+'&expiresr='+this.expires
+              }else if(res.status === 404){
+                  this.$swal({
+                      icon: 'error',
+                      title: 'لطفا جهت دسترسی، با اینترنت همراه اول یا ایرانسل وارد شوید',
+                      dangerMode: true,
+                      button: 'بررسی اتصال اینترنت',
+                  }).then(() => {
+                      this.$router.go()
+                  })
               }else{
-                this.$swal("لینک منقضی شده است.")
+                  this.$swal("لینک منقضی شده است.")
               }
           }, (error) => {
-            this.$swal("لینک منقضی شده است.")
-            return error
+            if(error.response.status === 404){
+              this.$swal({
+                  icon: 'error',
+                  title: 'لطفا جهت دسترسی، با اینترنت همراه اول یا ایرانسل وارد شوید',
+                  dangerMode: true,
+                  button: 'بررسی اتصال اینترنت',
+              }).then(() => {
+                  this.$router.go()
+              })
+            }else{
+              this.$swal("لینک منقضی شده است.")
+            }
           })
         }else{
           this.$swal("صفحه را مجددا باز نمایید.")
@@ -212,12 +250,31 @@ this.$refs['downloadLinks'].$on('shown', () => {
                   url = 'https://'+this.$route.query.sub+'.igap.net'+this.$route.query.f+'?dl='+this.$route.query.dl+'&mdr='+this.md5+'&expiresr='+this.expires
 
                 this.copy(url)
+              }else if(res.status === 404){
+                  this.$swal({
+                      icon: 'error',
+                      title: 'لطفا جهت دسترسی، با اینترنت همراه اول یا ایرانسل وارد شوید',
+                      dangerMode: true,
+                      button: 'بررسی اتصال اینترنت',
+                  }).then(() => {
+                      this.$router.go()
+                  })
               }else{
-                this.$swal("لینک منقضی شده است.")
+                  this.$swal("لینک منقضی شده است.")
               }
           }, (error) => {
-            this.$swal("لینک منقضی شده است.")
-            return error
+            if(error.response.status === 404){
+              this.$swal({
+                  icon: 'error',
+                  title: 'لطفا جهت دسترسی، با اینترنت همراه اول یا ایرانسل وارد شوید',
+                  dangerMode: true,
+                  button: 'بررسی اتصال اینترنت',
+              }).then(() => {
+                  this.$router.go()
+              })
+            }else{
+              this.$swal("لینک منقضی شده است.")
+            }
           })
         }else{
           this.$swal("صفحه را مجددا باز نمایید.")

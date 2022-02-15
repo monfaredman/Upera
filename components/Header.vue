@@ -3,11 +3,11 @@
     <div v-if="!itemmenu.includes($route.name)" class="d-flex header-mobile d-md-none">
       <div class="show-mobile header-home">
         <nuxt-link to="/" class="header-link d-flex flex-column align-items-center justify-content-center text-nowrap active">
-          <i v-if="$config.envname!='igapp'" class="icon-upera-logo" />
-          <i v-if="$config.envname=='igapp'" class="icon-home" />
+          <i v-if="$config.envname=='upera'" class="icon-upera-logo" />
+          <i v-else class="icon-home" />
           <span>
-            <i v-if="$config.envname!='igapp'" class="icon-upera-fa-logotype" />
-            <span v-if="$config.envname=='igapp'">خانه </span>
+            <i v-if="$config.envname=='upera'" class="icon-upera-fa-logotype" />
+            <span v-else>خانه </span>
 
           </span>
         </nuxt-link>
@@ -30,16 +30,8 @@
             <i class="icon-expand-arrow hide-mobile" />
           </nuxt-link>
         </div>
-        <div v-if="$config.envname=='igapp'"
-             class="header-links header-links-profile d-md-flex align-items-center mr-md-2 mr-lg-3 h-full"
-        >
-          <nuxt-link to="/profile/settings" class="d-flex align-items-center header-link">
-            <i class="icon-profile-setting" />
-            <span class="ml-md-2">تنظیمات</span>
-          </nuxt-link>
-        </div>
-        <div v-else
-             class="header-links header-links-profile d-md-flex align-items-center mr-md-2 mr-lg-3 h-full"
+        <div
+          class="header-links header-links-profile d-md-flex align-items-center mr-md-2 mr-lg-3 h-full"
         >
           <nuxt-link to="/profile" class="d-flex align-items-center header-link">
             <i class="icon-profile-setting" />
@@ -57,17 +49,23 @@
         >
           <div class="d-flex align-items-center h-full">
             <nuxt-link v-if="(categories.includes($route.path) || profile.includes($route.path))" to="/" class="logo logo_another_pages">
-              <i v-if="$config.envname!='igapp'" class="icon-upera-fa-logotype" />
-              <i v-if="$config.envname!='igapp'" class="icon-upera-logo" />
+              <i v-if="$config.envname=='upera'" class="icon-upera-fa-logotype" />
+              <i v-if="$config.envname=='upera'" class="icon-upera-logo" />
               <img v-if="$config.envname=='igapp' && $colorMode.value=='light'" src="@/assets/img/_logo.png" :class="{'d-none d-md-block':bannerNav}" :alt="$config.name_fa">
               <img v-if="$config.envname=='igapp' && $colorMode.value=='dark'" src="@/assets/images/_logo-mobile.png" :class="{'d-none d-md-block':bannerNav}" :alt="$config.name_fa">
+              <img v-if="$config.envname=='plus' && $colorMode.value=='light'" :src="'https://cdn.upera.shop/s3/vods/'+checkuser.logo" :class="{'d-none d-md-block':bannerNav}" :alt="$config.name_fa">
+              <img v-if="$config.envname=='plus' && $colorMode.value=='dark'" :src="'https://cdn.upera.shop/s3/vods/'+checkuser.logo_dark" :class="{'d-none d-md-block':bannerNav}" :alt="$config.name_fa">
             </nuxt-link>
             <nuxt-link v-else to="/" class="logo">
-              <img v-if="$config.envname!='igapp'" src="@/assets/img/logo.svg" :class="{'d-none d-md-block':bannerNav}" :alt="$config.name_fa">
+              <img v-if="$config.envname=='upera'" src="@/assets/img/logo.svg" :class="{'d-none d-md-block':bannerNav}" :alt="$config.name_fa">
               <img v-if="$config.envname=='igapp' && $colorMode.value=='light'" src="@/assets/img/_logo.png" :class="{'d-none d-md-block':bannerNav}" :alt="$config.name_fa">
               <img v-if="$config.envname=='igapp' && $colorMode.value=='dark'" src="@/assets/images/_logo-mobile.png" :class="{'d-none d-md-block':bannerNav}" :alt="$config.name_fa">
-              <img v-if="bannerNav && $config.envname!='igapp' " src="/images/logo-mobile.svg" class="d-md-none" :alt="$config.name_fa">
-              <img v-if="bannerNav && $config.envname=='igapp' " src="@/assets/images/_logo-mobile.png" class="d-md-none" :alt="$config.name_fa">
+              <img v-if="$config.envname=='plus' && $colorMode.value=='light'" :src="'https://cdn.upera.shop/s3/vods/'+checkuser.logo" :class="{'d-none d-md-block':bannerNav}" :alt="$config.name_fa">
+              <img v-if="$config.envname=='plus' && $colorMode.value=='dark'" :src="'https://cdn.upera.shop/s3/vods/'+checkuser.logo_dark" :class="{'d-none d-md-block':bannerNav}" :alt="$config.name_fa">
+              <img v-if="bannerNav && $config.envname=='upera'" src="/images/logo-mobile.svg" class="d-md-none" :alt="$config.name_fa">
+              <img v-if="bannerNav && $config.envname=='igapp'" src="@/assets/images/_logo-mobile.png" class="d-md-none" :alt="$config.name_fa">
+              <img v-if="bannerNav && $config.envname=='plus' && checkuser.domain=='plus.upera.tv'" src="@/assets/images/mobile.png" class="d-md-none" :alt="$config.name_fa">
+              <img v-if="bannerNav && $config.envname=='plus' && checkuser.domain!='plus.upera.tv'" :src="'https://cdn.upera.shop/s3/vods/'+checkuser.logo_dark" class="d-md-none" :alt="$config.name_fa">
             </nuxt-link>
             <div class="d-none d-md-flex align-items-center h-full">
               <div class="header-search">
@@ -114,7 +112,7 @@
                 </ul>
               </div>
 
-              <div v-if="$config.envname!='igapp'" class="category header-buttons d-flex align-items-center h-full" :class="{ 'open': profileNav }">
+              <div class="category header-buttons d-flex align-items-center h-full" :class="{ 'open': profileNav }">
                 <div class="header-links header-links-profile d-md-flex align-items-center mr-md-2 mr-lg-3 h-full">
                   <nuxt-link to="/profile" class="profile d-flex align-items-center header-link">
                     <i class="icon-profile-setting ml-2" />
@@ -139,11 +137,11 @@
                         {{ $t('setting.app_setting') }}
                       </nuxt-link>
                     </li> -->
-                    <li v-if="checkuser.subscription==1">
+                    <!--                     <li v-if="checkuser.subscription==1">
                       <nuxt-link to="/profile/plans">
                         {{ $t('new.prices') }}
                       </nuxt-link>
-                    </li>
+                    </li> -->
                     <!--                   <li v-if="$i18n.locale=='fa'">
                     <nuxt-link to="/profile/internet">
                       {{ $t('new.internet') }}
@@ -199,12 +197,12 @@
                         <div v-if="$auth.loggedIn" class="d-flex align-items-center justify-content-between pt-4">
                           <a class="text-black" @click="SHOW_MODAL_CREDIT();$root.$emit('bv::hide::popover')">افزایش موجودی</a>
                         </div>
-                        <div v-if="$auth.loggedIn" :class="{ 'border-bottom-gray' : $config.envname!='igapp'}" class="d-flex align-items-center justify-content-between pt-4 py-4">
+                        <div v-if="$auth.loggedIn" class="d-flex align-items-center justify-content-between pt-4 py-4 border-bottom-gray">
                           <nuxt-link class="text-black" to="/payments">
                             پرداخت ها
                           </nuxt-link>
                         </div>
-                        <div v-if="$config.envname!='igapp' && $auth.loggedIn" class="d-flex align-items-center justify-content-between py-4">
+                        <div v-if="$auth.loggedIn" class="d-flex align-items-center justify-content-between py-4">
                           <b-link class="text-black" @click="logout()">
                             خروج از حساب کاربری
                           </b-link>
@@ -219,8 +217,14 @@
             <nuxt-link v-if="checkuser.show_app" to="/app" class="btn btn-second px-lg-4 py-1 ml-1 btn-app">
               {{ $t('new.download_app') }}
             </nuxt-link>
-            <b-button v-if="$config.envname!='igapp' && !$auth.loggedIn && $route.name !=='login'" variant="main" class="py-1 px-lg-4" @click="SHOW_MODAL()">
+            <b-button v-if="checkuser.subscription!=1 && !$auth.loggedIn && $route.name !=='login'" variant="main" class="py-1 px-lg-4" @click="SHOW_MODAL()">
               {{ $t('new.login_register') }}
+            </b-button>
+            <b-button v-else-if="checkuser.subscription==1 && !checkuser.access" variant="main" class="py-1 px-lg-4" @click="SHOW_MODAL_SUBSCRIPTION()">
+              خرید اشتراک
+            </b-button>
+            <b-button v-else-if="checkuser.subscription==1 && checkuser.access" v-b-tooltip.hover :title="checkuser.days_period_to_end+' روز از اشتراک شما باقیمانده است'" variant="success" class="py-1 px-lg-4" @click="SHOW_MODAL_SUBSCRIPTION()">
+              تمدید اشتراک
             </b-button>
             <!--             <b-button v-else-if="$route.name !=='login'" variant="main" class="py-1 px-lg-4" @click="logout()">
               {{ $t('nav.logout') }}
@@ -251,12 +255,12 @@
         </li>
       </ul>
       <ul v-if="profile.includes($route.path)" class="container d-md-none category-menu-mobile category-menu-mobile-setting mt-5  pt-md-3 pt-lg-5 p- app_container_pricing_res">
-        <li v-if="$config.envname!='igapp'" class="mr-3">
+        <li class="mr-3">
           <nuxt-link to="/profile">
             {{ $t('setting.profile') }}
           </nuxt-link>
         </li>
-        <li v-if="$config.envname!='igapp'" class="mr-3">
+        <li class="mr-3">
           <nuxt-link to="/payments">
             پرداخت ها
           </nuxt-link>
@@ -266,11 +270,11 @@
             {{ $t('setting.app_setting') }}
           </nuxt-link>
         </li>
-        <li v-if="checkuser.subscription==1" class="mr-3">
+        <!--         <li v-if="checkuser.subscription==1" class="mr-3">
           <nuxt-link to="/profile/plans">
             {{ $t('new.prices') }}
           </nuxt-link>
-        </li>
+        </li> -->
         <!--         <li v-if="$i18n.locale=='fa'" class="mr-3">
           <nuxt-link to="/profile/internet">
             {{ $t('new.internet') }}
@@ -280,6 +284,7 @@
     </header>
     <Login v-if="!$auth.loggedIn && $route.name !=='login'" :show="showModal" :staticmodal="false" @hide-modal="HIDE_MODAL" />
     <Credit v-if="$auth.loggedIn" :show="showCreditModal" @hide-modal="HIDE_MODAL_CREDIT" />
+    <Subscription v-if="checkuser.subscription==1" :show="showSubscriptionModal" @hide-modal="HIDE_MODAL_SUBSCRIPTION" />
   </div>
 </template>
 
@@ -287,11 +292,13 @@
 import {mapGetters} from 'vuex'
 import Login from "../components/Login"
 import Credit from "../components/Credit"
+import Subscription from "../components/Subscription"
 
   export default {
   components: {
     Login,
-    Credit
+    Credit,
+    Subscription
   },
   
   data() {
@@ -314,6 +321,7 @@ import Credit from "../components/Credit"
     computed: {
         ...mapGetters({showModal: "login/showModal"}),
         ...mapGetters({showCreditModal: "credit/showModal"}),
+        ...mapGetters({showSubscriptionModal: "subscription/showModal"}),
     },
 
   watch: {
@@ -525,6 +533,12 @@ document.body.classList.add("header-fixed-collapsed")
             },
             HIDE_MODAL_CREDIT() {
               this.$store.dispatch('credit/HIDE_MODAL')
+            },
+            SHOW_MODAL_SUBSCRIPTION() {
+              this.$store.dispatch('subscription/SHOW_MODAL',{content_type: '',content_id: ''})
+            },
+            HIDE_MODAL_SUBSCRIPTION() {
+              this.$store.dispatch('subscription/HIDE_MODAL')
             },
       nightmode(e) {
         if(e==true)

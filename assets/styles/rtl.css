@@ -1966,6 +1966,11 @@ left:auto;
   right:auto;
 }
 
+.tooltip{
+  font-family: "dana VF", serif !important;
+  direction: rtl;
+}
+
 .showcase-thumbnail-wrapper .btn-download{
   padding: 0.375rem 0.75rem;
 }

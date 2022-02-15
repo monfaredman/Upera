@@ -219,8 +219,16 @@ import {mapGetters} from 'vuex'
         this.$refs['loginModal'].show()
         if(!this.staticmodal && document.getElementsByClassName('default').length)
           document.getElementsByClassName('default')[0].classList.add('blure')
-        document.body.classList.remove('download')
-        document.body.classList.remove('callback')
+
+        if(document.getElementsByClassName('download').length){
+          document.body.classList.remove('download')
+          document.body.classList.add('login_dl')
+        } else if(document.getElementsByClassName('callback').length){
+          document.body.classList.remove('callback')
+          document.body.classList.add('login_call')
+        }
+
+
         this.LoginJquery()
       },
       showLoginAgain() {
@@ -236,9 +244,13 @@ import {mapGetters} from 'vuex'
         this.$refs['loginModal'].hide()
         this.$emit("hide-modal", null)
 
-        document.body.classList.add('download')
-
-        document.body.classList.add('callback')
+        if(document.getElementsByClassName('login_dl').length){
+          document.body.classList.add('download')
+          document.body.classList.remove('login_dl')
+        }else if(document.getElementsByClassName('login_call').length){
+          document.body.classList.add('callback')
+          document.body.classList.remove('login_call')
+        }
 
         if(document.getElementsByClassName('default').length)
           document.getElementsByClassName('default')[0].classList.remove('blure')

@@ -71,15 +71,19 @@ export const actions = {
     }
   },
   async SPA_INIT(store) {
-    if(this.$config.envmode=='spa' && this.$config.envname!='igapp'){
+    if(this.$config.envmode=='spa'){
       if(!store.state.auth.loggedIn){
-        let res
-        res=await this.$axios.get('/ghost/get'+this.$config.check_url)
-          store.commit('SET_USER',res.data)
+        if(this.$config.envname!='igapp'){
+          let res
+          res=await this.$axios.get('/ghost/get'+this.$config.check_url)
+            store.commit('SET_USER',res.data)
+        }else{
+          store.commit('SET_USER',{subscription: 1})
+        }
       }else{
         store.commit('SET_USER',store.state.auth.user)
       }
-      if (store.state.checkuser.ref){
+      if (this.$config.envname!='igapp' && store.state.checkuser.ref){
         if (this.$cookiz.get('ref')!=store.state.checkuser.ref) {
           this.$cookiz.set('ref', store.state.checkuser.ref)
         }

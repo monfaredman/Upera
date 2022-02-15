@@ -15,7 +15,8 @@
       <span class="pl-2 title">{{ $t('new.term') }}</span>
     </h4> -->
       <!-- <hr> -->
-      <div v-lazy-load="data.terms" class="body text-justify" />
+      <div v-if="!checkuser.terms" v-lazy-load="data.terms" class="body text-justify" />
+      <div v-else v-lazy-load="checkuser.terms" class="body text-justify" />
 
       <section id="banner">
         <div class="container">
@@ -31,7 +32,8 @@
       <span class="pl-2 title">{{ $t('new.term') }}</span>
     </h4> -->
       <!-- <hr> -->
-      <div v-lazy-load="data.privacy" class="body text-justify" />
+      <div v-if="!checkuser.privacy" v-lazy-load="data.privacy" class="body text-justify" />
+      <div v-else v-lazy-load="checkuser.privacy" class="body text-justify" />
     </div>
   </div>
 </template>

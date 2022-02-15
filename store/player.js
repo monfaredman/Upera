@@ -85,6 +85,7 @@ export const actions = {
                               className: 'swal-back'
                             }}
 
+                    
                     if(error.response.data.show_download === 1){
                         Object.assign(dlsmbuttons, {download: {
                               text: this.app.i18n.t('player.download'),
@@ -92,6 +93,7 @@ export const actions = {
                               closeModal: true
                         }})
                     }
+
                     if(error.response.data.show_ekran === 1){
                         Object.assign(dlsmbuttons, {download: {
                               text: this.app.i18n.t('show.buy_ticket'),
@@ -99,7 +101,6 @@ export const actions = {
                               closeModal: true
                         }})
                     }
-
                     if(error.response.data.show_subscription === 1){
                         Object.assign(dlsmbuttons, {subscribe: {
                               text: this.app.i18n.t('player.subscribe'),
@@ -126,13 +127,35 @@ export const actions = {
                               break
                          
                             case "subscribe":
-                                  this.$router.push({ name: 'change-plan' })
-                              //commit('FLOWPLAYER_DESTORY', 'movie')
+                                if(refi && this.app.$config.envname=='igapp'){
+                                  this.app.$swal({
+                                      icon: 'error',
+                                      title: 'لطفا جهت دسترسی بدون خرید اشتراک، با اینترنت همراه اول یا ایرانسل وارد شوید',
+                                      dangerMode: true,
+                                      button: 'بررسی اتصال اینترنت',
+                                  }).then(() => {
+                                      this.$router.go()
+                                  })
+                                }else{
+                                  this.dispatch('subscription/SHOW_MODAL',{content_type: 'movie',content_id: id})
+                                }
                               break
 
                             case "download":
-                            this.$router.push({ name: 'movie-download-id', params: {id: id }, query: { force_to_buy: 1 } })
-
+                              if(refi && this.app.$config.envname=='igapp'){
+                                  this.app.$swal({
+                                      icon: 'error',
+                                      title: 'لطفا جهت دسترسی بدون خرید اشتراک، با اینترنت همراه اول یا ایرانسل وارد شوید',
+                                      dangerMode: true,
+                                      button: 'بررسی اتصال اینترنت',
+                                  }).then(() => {
+                                      this.$router.go()
+                                  })
+                              }else if(this.app.$config.envname=='igapp'){
+                                this.dispatch('subscription/SHOW_MODAL',{content_type: 'movie',content_id: id})
+                              }else{
+                                this.$router.push({ name: 'movie-download-id', params: {id: id }, query: { force_to_buy: 1 } })
+                              }
                               break
 
                             default:
@@ -209,6 +232,7 @@ export const actions = {
                               closeModal: true
                         }})
                     }
+
                     if(error.response.data.show_ekran === 1){
                         Object.assign(dlsmbuttons, {download: {
                               text: this.app.i18n.t('show.buy_ticket'),
@@ -220,19 +244,21 @@ export const actions = {
                     if(error.response.data.show_subscription === 1){
                         Object.assign(dlsmbuttons, {signup: {
                               text: this.app.i18n.t('player.subscribe'),
-                              value: "signup",
+                              value: "subscribe",
                               closeModal: true
                         }})
                     }
 
-                    if(error.response.data.show_login === 1){
-                      Object.assign(dlsmbuttons, {login: {
-                            text: this.app.i18n.t('nav.login'),
-                            value: "login",
-                            closeModal: true
-                      }})
-                    }
 
+                    if(!refi || this.app.$config.envname!='igapp'){
+                      if(error.response.data.show_login === 1){
+                        Object.assign(dlsmbuttons, {login: {
+                              text: this.app.i18n.t('nav.login'),
+                              value: "login",
+                              closeModal: true
+                        }})
+                      }
+                    }
 
 
                     this.app.$swal({
@@ -254,23 +280,50 @@ export const actions = {
                               break
                          
                             case "subscribe":
-                                  this.$router.push({ name: 'change-plan-after-signup' })
+                                if(refi && this.app.$config.envname=='igapp'){
+                                  this.app.$swal({
+                                      icon: 'error',
+                                      title: 'لطفا جهت دسترسی بدون خرید اشتراک، با اینترنت همراه اول یا ایرانسل وارد شوید',
+                                      dangerMode: true,
+                                      button: 'بررسی اتصال اینترنت',
+                                  }).then(() => {
+                                      this.$router.go()
+                                  })
+                                }else{
+                                  this.dispatch('subscription/SHOW_MODAL',{content_type: "movie",content_id: id})
+                                }
 
                               //commit('FLOWPLAYER_DESTORY', 'movie')
                               break
 
                             case "signup":
-                              this.$router.push({ name: 'signup-with-plan' })
+                              this.dispatch('login/SHOW_MODAL',{premessage: null,premobile: null,preredirect: null,prerefresh: false})
                               //commit('FLOWPLAYER_DESTORY', 'movie')
                               break
 
 
                             case "login":
-                              this.dispatch('login/SHOW_MODAL',{premessage: null,premobile: null,preredirect: null,prerefresh: false})
+  
+                                  this.dispatch('login/SHOW_MODAL',{premessage: null,premobile: null,preredirect: null,prerefresh: false})
+                                
                               break
 
                             case "download":
-                              this.$router.push({ name: 'movie-download-id', params: {id: id }, query: { force_to_buy: 1 } })
+                              if(refi && this.app.$config.envname=='igapp'){
+                                  this.app.$swal({
+                                      icon: 'error',
+                                      title: 'لطفا جهت دسترسی بدون خرید اشتراک، با اینترنت همراه اول یا ایرانسل وارد شوید',
+                                      dangerMode: true,
+                                      button: 'بررسی اتصال اینترنت',
+                                  }).then(() => {
+                                      this.$router.go()
+                                  })
+                                }else if(this.app.$config.envname=='igapp'){
+                                  this.dispatch('subscription/SHOW_MODAL',{content_type: "movie",content_id: id})
+                                }else{
+
+                                  this.$router.push({ name: 'movie-download-id', params: {id: id }, query: { force_to_buy: 1 } })
+                                }
                               break
 
                             default:
@@ -341,6 +394,7 @@ export const actions = {
                               closeModal: true
                         }})
                     }
+
                     if(error.response.data.show_ekran === 1){
                         Object.assign(dlsmbuttons, {download: {
                               text: this.app.i18n.t('show.buy_ticket'),
@@ -384,17 +438,51 @@ export const actions = {
                               break
                            
                               case "subscribe":
-                                  this.$router.push({ name: 'change-plan' })
+                                if(refi && this.app.$config.envname=='igapp'){
+                                  this.app.$swal({
+                                      icon: 'error',
+                                      title: 'لطفا جهت دسترسی بدون خرید اشتراک، با اینترنت همراه اول یا ایرانسل وارد شوید',
+                                      dangerMode: true,
+                                      button: 'بررسی اتصال اینترنت',
+                                  }).then(() => {
+                                      this.$router.go()
+                                  })
+                                }else{
+                                  if(type!='cur'){
+                                    this.dispatch('subscription/SHOW_MODAL',{content_type: "episode",content_id: episode_id})
+                                  }else{
+                                    this.dispatch('subscription/SHOW_MODAL',{content_type: "episode",content_id: error.response.data.episode_id})
+                                  }
+                                }
+
                                 //commit('FLOWPLAYER_DESTORY', 'series')
                                 break
 
 
                               case "download":
-                                if(type!='cur'){
-                                  this.$router.push({ name: 'episode-download-id', params: {id: episode_id }, query: { force_to_buy: 1 } })
+                                if(refi && this.app.$config.envname=='igapp'){
+                                  this.app.$swal({
+                                      icon: 'error',
+                                      title: 'لطفا جهت دسترسی بدون خرید اشتراک، با اینترنت همراه اول یا ایرانسل وارد شوید',
+                                      dangerMode: true,
+                                      button: 'بررسی اتصال اینترنت',
+                                  }).then(() => {
+                                      this.$router.go()
+                                  })
+                                }else if(this.app.$config.envname=='igapp'){
+                                  if(type!='cur'){
+                                    this.dispatch('subscription/SHOW_MODAL',{content_type: "episode",content_id: episode_id})
+                                  }else{
+                                    this.dispatch('subscription/SHOW_MODAL',{content_type: "episode",content_id: error.response.data.episode_id})
+                                  }
                                 }else{
-                                  this.$router.push({ name: 'episode-download-id', params: {id: error.response.data.episode_id }, query: { force_to_buy: 1 } })
+                                  if(type!='cur'){
+                                    this.$router.push({ name: 'episode-download-id', params: {id: episode_id }, query: { force_to_buy: 1 } })
+                                  }else{
+                                    this.$router.push({ name: 'episode-download-id', params: {id: error.response.data.episode_id }, query: { force_to_buy: 1 } })
+                                  }
                                 }
+
                                 break
 
                               default:
@@ -466,12 +554,14 @@ return SRMdata
                             }}
 
                     if(error.response.data.show_download === 1){
-                        Object.assign(dlsmbuttons, {download: {
-                              text: this.app.i18n.t('player.download'),
-                              value: "download",
-                              closeModal: true
-                        }})
+                          Object.assign(dlsmbuttons, {download: {
+                                text: this.app.i18n.t('player.download'),
+                                value: "download",
+                                closeModal: true
+                          }})
                     }
+
+
                     if(error.response.data.show_ekran === 1){
                         Object.assign(dlsmbuttons, {download: {
                               text: this.app.i18n.t('show.buy_ticket'),
@@ -483,17 +573,20 @@ return SRMdata
                     if(error.response.data.show_subscription === 1){
                         Object.assign(dlsmbuttons, {signup: {
                               text: this.app.i18n.t('player.subscribe'),
-                              value: "signup",
+                              value: "subscribe",
                               closeModal: true
                         }})
                     }
 
-                    if(error.response.data.show_login === 1){
-                      Object.assign(dlsmbuttons, {login: {
-                            text: this.app.i18n.t('nav.login'),
-                            value: "login",
-                            closeModal: true
-                      }})
+                    if(!refi || this.app.$config.envname!='igapp'){
+
+                      if(error.response.data.show_login === 1){
+                        Object.assign(dlsmbuttons, {login: {
+                              text: this.app.i18n.t('nav.login'),
+                              value: "login",
+                              closeModal: true
+                        }})
+                      }
                     }
 
                       this.app.$swal({
@@ -523,14 +616,29 @@ return SRMdata
                                 break
                            
                               case "subscribe":
-                                  this.$router.push({ name: 'change-plan-after-signup' })
+                                if(refi && this.app.$config.envname=='igapp'){
+                                  this.app.$swal({
+                                      icon: 'error',
+                                      title: 'لطفا جهت دسترسی بدون خرید اشتراک، با اینترنت همراه اول یا ایرانسل وارد شوید',
+                                      dangerMode: true,
+                                      button: 'بررسی اتصال اینترنت',
+                                  }).then(() => {
+                                      this.$router.go()
+                                  })
+                                }else{
+                                  if(type!='cur'){
+                                    this.dispatch('subscription/SHOW_MODAL',{content_type: "episode",content_id: episode_id})
+                                  }else{
+                                    this.dispatch('subscription/SHOW_MODAL',{content_type: "episode",content_id: error.response.data.episode_id})
+                                  }
+                                }
+
 
                                 //commit('FLOWPLAYER_DESTORY', 'series')
                                 break
 
                               case "signup":
-                                this.$router.push({ name: 'signup-with-plan' })
-                                //commit('FLOWPLAYER_DESTORY', 'series')
+                                this.dispatch('login/SHOW_MODAL',{premessage: null,premobile: null,preredirect: null,prerefresh: false})
                                 break
 
 
@@ -539,11 +647,29 @@ return SRMdata
                                 break
 
                               case "download":
-                                if(type!='cur'){
-                                  this.$router.push({ name: 'episode-download-id', params: {id: episode_id }, query: { force_to_buy: 1 } })
+                                if(refi && this.app.$config.envname=='igapp'){
+                                  this.app.$swal({
+                                      icon: 'error',
+                                      title: 'لطفا جهت دسترسی بدون خرید اشتراک، با اینترنت همراه اول یا ایرانسل وارد شوید',
+                                      dangerMode: true,
+                                      button: 'بررسی اتصال اینترنت',
+                                  }).then(() => {
+                                      this.$router.go()
+                                  })
+                                }else if(this.app.$config.envname=='igapp'){
+                                  if(type!='cur'){
+                                    this.dispatch('subscription/SHOW_MODAL',{content_type: "episode",content_id: episode_id})
+                                  }else{
+                                    this.dispatch('subscription/SHOW_MODAL',{content_type: "episode",content_id: error.response.data.episode_id})
+                                  }
                                 }else{
-                                  this.$router.push({ name: 'episode-download-id', params: {id: error.response.data.episode_id }, query: { force_to_buy: 1 } })
+                                  if(type!='cur'){
+                                    this.$router.push({ name: 'episode-download-id', params: {id: episode_id }, query: { force_to_buy: 1 } })
+                                  }else{
+                                    this.$router.push({ name: 'episode-download-id', params: {id: error.response.data.episode_id }, query: { force_to_buy: 1 } })
+                                  }
                                 }
+
                                 //commit('FLOWPLAYER_DESTORY', 'series')
                                 break
 
@@ -680,7 +806,7 @@ return SRMdata
                       if(SRMdata.subscription){
                           Object.assign(dlsmbuttons, {signup: {
                               text: this.app.i18n.t('player.subscribe'),
-                              value: "signup",
+                              value: "subscribe",
                               closeModal: true
                           }})
                       }
@@ -882,7 +1008,7 @@ commit('PLAYER_MODAL_CLEAN')
                             if(error.response.data.presale === 0 && this.getters.checkuser.subscription){
                                 Object.assign(dlsmbuttons, {signup: {
                                       text: this.app.i18n.t('player.subscribe'),
-                                      value: "signup",
+                                      value: "subscribe",
                                       closeModal: true
                                 }})
                             }
@@ -907,11 +1033,12 @@ commit('PLAYER_MODAL_CLEAN')
                                   break
                              
                                 case "subscribe":
-                                  this.$router.push({ name: 'change-plan' })
+
+                                  this.dispatch('subscription/SHOW_MODAL',{content_type: '',content_id: ''})
                                   break
 
                                 case "signup":
-                                  this.$router.push({ name: 'signup-with-plan' })
+                                  this.dispatch('login/SHOW_MODAL',{premessage: null,premobile: null,preredirect: null,prerefresh: false})
                                   break
 
 
@@ -1294,13 +1421,13 @@ export const mutations = {
                           app.router.push({ name: 'movie-id' , params: {id: data.data.video[0].id }})
                     })
 
-
-                    if(this.app.$config.envname!='igapp' && this.app.i18n.locale=="fa" && data.data.fullrate !== null){
+//this.app.$config.envname!='igapp' && 
+                    if(this.app.i18n.locale=="fa" && data.data.fullrate !== null){
                       myDiv = document.createElement("span")
                       myDiv.innerHTML = '<div id="flowplayer-rate">حجم مصرفی: <button type="button" class="btn btn-info rounded-pill">'+data.data.fullrate_data.fa.title+'</button></div>'
                       document.getElementsByClassName("jwplayer")[0].appendChild(myDiv)
       
-                        if(data.data.fullrate_data.message){
+                        if(data.data.fullrate_data.message && this.app.$config.envname!='igapp'){
                           const flowplayerRate = document.getElementById('flowplayer-rate')
                           flowplayerRate.addEventListener('click', () => {
                               var dlsmbuttons={back: {
@@ -1310,6 +1437,7 @@ export const mutations = {
                                 className: 'swal-back'
                               }}
 
+
                               if(data.data.fullrate_data.show_download === 1){
                                   Object.assign(dlsmbuttons, {download: {
                                         text: this.app.i18n.t('player.download'),
@@ -1317,6 +1445,7 @@ export const mutations = {
                                         closeModal: true
                                   }})
                               }
+
                               if(data.data.fullrate_data.show_subscription === 1){
                                   Object.assign(dlsmbuttons, {subscribe: {
                                         text: this.app.i18n.t('player.subscribe'),
@@ -1339,10 +1468,7 @@ export const mutations = {
                                         break
                                    
                                       case "subscribe":
-                                if(data.data.guest)
-                                  app.router.push({ name: 'change-plan-after-signup' })
-                                else
-                                  app.router.push({ name: 'change-plan' })
+                                          app.router.push({ name: 'movie-id', params: {id: data.data.video[0].id }})
                                         break
 
 
@@ -1357,11 +1483,12 @@ export const mutations = {
                               })
                             })
                           }
-                    }else if(this.app.$config.envname=='igapp'){
-                      myDiv = document.createElement("span")
-                      myDiv.innerHTML ='<div id="flowplayer-rate">حجم مصرفی: <button type="button" class="btn btn-info rounded-pill">تمام بها</button></div>'
-                      document.getElementsByClassName( "jwplayer" )[0].appendChild(myDiv)
                     }
+                    // else{
+                    //   myDiv = document.createElement("span")
+                    //   myDiv.innerHTML ='<div id="flowplayer-rate">حجم مصرفی: <button type="button" class="btn btn-info rounded-pill">تمام بها</button></div>'
+                    //   document.getElementsByClassName( "jwplayer" )[0].appendChild(myDiv)
+                    // }
 
 
                     if(nextHTML){
@@ -1659,13 +1786,13 @@ document.body.classList.add('loaded')
                           app.router.push({ name: 'episode-id' , params: {id: data.data.episode[0].id }})
                     })
 
-
-                    if(this.app.$config.envname!='igapp' && this.app.i18n.locale=="fa" && data.data.fullrate !== null){
+//this.app.$config.envname!='igapp' && 
+                    if(this.app.i18n.locale=="fa" && data.data.fullrate !== null){
                       myDiv = document.createElement("span")
                       myDiv.innerHTML ='<div id="flowplayer-rate">حجم مصرفی: <button type="button" class="btn btn-info rounded-pill">'+data.data.fullrate_data.fa.title+'</button></div>'
                       document.getElementsByClassName( "jwplayer" )[0].appendChild(myDiv)
       
-                        if(data.data.fullrate_data.message){
+                        if(data.data.fullrate_data.message && this.app.$config.envname!='igapp'){
                           const flowplayerRate = document.getElementById('flowplayer-rate')
                           flowplayerRate.addEventListener('click', () => {
                               var dlsmbuttons={back: {
@@ -1675,17 +1802,17 @@ document.body.classList.add('loaded')
                                 className: 'swal-back'
                               }}
 
-                              if(data.data.fullrate_data.show_download === 1){
-                                  Object.assign(dlsmbuttons, {download: {
-                                        text: this.app.i18n.t('player.download'),
-                                        value: "download",
-                                        closeModal: true
-                                  }})
-                              }
+
                               if(data.data.fullrate_data.show_subscription === 1){
                                   Object.assign(dlsmbuttons, {subscribe: {
                                         text: this.app.i18n.t('player.subscribe'),
                                         value: "subscribe",
+                                        closeModal: true
+                                  }})
+                              } else if(data.data.fullrate_data.show_download === 1){
+                                  Object.assign(dlsmbuttons, {download: {
+                                        text: this.app.i18n.t('player.download'),
+                                        value: "download",
                                         closeModal: true
                                   }})
                               }
@@ -1704,15 +1831,11 @@ document.body.classList.add('loaded')
                                         break
                                    
                                       case "subscribe":
-                                if(data.data.guest)
-                                  app.router.push({ name: 'change-plan-after-signup' })
-                                else
-                                  app.router.push({ name: 'change-plan' })
+                                        app.router.push({ name: 'episode-id', params: {id: data.data.episode[0].id } })
                                         break
 
                                       case "download":
-                                      app.router.push({ name: 'episode-download-id', params: {id: data.data.episode[0].id }, query: { force_to_buy: 1 } })
-
+                                        app.router.push({ name: 'episode-download-id', params: {id: data.data.episode[0].id }, query: { force_to_buy: 1 } })
                                         break
 
                                       default:
@@ -1723,11 +1846,12 @@ document.body.classList.add('loaded')
                             })
                           }
                         
-                    }else if(this.app.$config.envname=='igapp'){
-                      myDiv = document.createElement("span")
-                      myDiv.innerHTML ='<div id="flowplayer-rate">حجم مصرفی: <button type="button" class="btn btn-info rounded-pill">تمام بها</button></div>'
-                      document.getElementsByClassName( "jwplayer" )[0].appendChild(myDiv)
                     }
+                    // else if(this.app.$config.envname=='igapp'){
+                    //   myDiv = document.createElement("span")
+                    //   myDiv.innerHTML ='<div id="flowplayer-rate">حجم مصرفی: <button type="button" class="btn btn-info rounded-pill">تمام بها</button></div>'
+                    //   document.getElementsByClassName( "jwplayer" )[0].appendChild(myDiv)
+                    // }
 
                     if(nextHTML){
                       myDiv = document.createElement("span")

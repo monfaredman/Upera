@@ -48,6 +48,8 @@ if (context.route.query.ref){
   }
 }
 
+
+
 	context.app.$axios.onError(error => {
 		if (error.response && error.response.status !== 200) {
 				if(error.response.data.errors)

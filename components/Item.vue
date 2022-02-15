@@ -462,7 +462,7 @@
     </div>
     </section> -->
 
-
+    <!-- 
 
 
     <section v-if="type!='movie' && data.season">
@@ -485,6 +485,37 @@
           </swiper-slide>
         </swiper>
       </div>
+    </section> -->
+
+
+
+    <section v-if="type!='movie' && data.season" id="watching" class="horizontal-list-container item mt-lg-2 pt-3">
+      <div class="container-fluid mb-2">
+        <div class="row">
+          <b-dropdown class="col-lg-2 col-md-3 col-4" block :text="seasontitle" variant="dark">
+            <b-dropdown-item v-for="(item, index) in season" :key="index" href="#" :active="selectseriesid==index" @click.prevent="selectseries(index)">
+              فصل {{ index }}
+            </b-dropdown-item>
+          </b-dropdown>
+        </div>
+      </div>
+      <div class="container-fluid">
+        <div class="row">
+          <div v-for="(item2,index2) in data.season[selectseriesid]" :key="index2" class="col-lg-3 col-md-4 col-6">
+            <nuxt-link :to="{ name: 'episode-id', params: { id: item2.id }}">
+              <img data-back="/images/364x190.png" :src="'https://thumb.upera.tv/thumb?w=364&h=190&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/'+item2.backdrop" :alt="item2.name" class="rounded" width="100%">
+              <div v-if="$auth.loggedIn" class="progress">
+                <div class="progress-bar" :style="'width: '+(item2.current_time/item2.duration_time)*100+'%'" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" />
+              </div>
+            </nuxt-link>
+            <div class="mt-2">
+              <h6 class="mt-2 small font-weight-normal">
+                قسمت {{ item2.episode_number }}
+              </h6>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
 
 
@@ -504,7 +535,7 @@
               <img v-if="item.type!='movie'" :src="'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
               <span v-if="!item.ir && item.persian" class="label label-rounded label-red label-1">دوبله</span>
               <span v-if="!item.ir && !item.persian" class="label label-rounded label-warning label-1">زیرنویس</span>
-              <span v-if="item.free" class="label label-blue label-2" :class="{'label-rotated':true}">رایگان</span>
+              <span v-if="item.free && $config.envname=='upera'" class="label label-blue label-2" :class="{'label-rotated':true}">رایگان</span>
             </nuxt-link>
             <div class="mt-2">
               <h6 class="mt-2 small font-weight-normal">
@@ -680,11 +711,15 @@ import Comments from "@/components/Comments"
               MainButton:0,
               ftb:false,
               DownloadButton:0,
+              main_download:0,
+              main_free:0,
               ShowPresale:0,
               modalcontent: 0,
               showcomment: false,
               season: null,
               season_num: 0,
+          selectseriesid: 1,
+          seasontitle: 'فصل 1',
               episode_num: 0,
               episode: {
                 id: null
@@ -834,7 +869,18 @@ if(this.user_claps_counter>=1){
 
           this.is_watchlist=this.data.item.is_watchlist
 
-                if(this.data.item.free){
+this.main_free=this.data.item.free
+this.main_download=this.data.item.download
+
+if(location.host=='igaptv.com'){
+  this.main_download=0
+  if(!this.$auth.loggedIn){
+    this.main_free=0
+  }
+}
+
+
+                if(this.main_free){
 
                   if(this.data.item.vod || this.data.item.owned){
           					this.MainButton=9
@@ -850,7 +896,7 @@ if(this.user_claps_counter>=1){
                   }else{
                     this.MainButton=8
                   }
-            		if(this.data.item.upera && this.data.item.download){
+            		if(this.data.item.upera && this.main_download){
 						      this.DownloadButton=2
             		}
                 }else{
@@ -895,18 +941,21 @@ if(this.user_claps_counter>=1){
                        this.episode=this.data.first_episode
 
                   }
+                  if(this.data.item.upera && this.main_download){
+                    this.DownloadButton=1
+                  }
 								}else{
 									this.MainButton=3
 								}
 							}
-							if(this.data.item.upera && this.data.item.download && !this.data.item.owned){
+							if(this.data.item.upera && this.main_download && !this.data.item.owned){
 								if(this.data.item.presale){
 									this.DownloadButton=4
 								}else{
 									this.DownloadButton=3
 								}
 							}
-            }else if(this.data.item.upera && this.data.item.download){
+            }else if(this.data.item.upera && this.main_download){
 							if(this.data.item.presale){
 								if(this.data.item.owned){
 									this.MainButton=7
@@ -958,6 +1007,24 @@ if(this.user_claps_counter>=1){
 						}
                 	}
                 }
+
+              if(this.$route.query.force_subscription==1){
+
+                this.$store.dispatch('subscription/SHOW_MODAL',{content_type: this.type,content_id: this.data.item.id})
+              }
+              if(this.type!='movie' && this.data.season){
+
+                if(this.type=='episode'){
+                  this.selectseriesid=this.data.item.season_number
+                  this.seasontitle='فصل '+this.selectseriesid
+                }else if(this.type=='series'){
+                  if(this.data.last_episode)
+                    this.selectseriesid=this.data.last_episode.season_number
+                  else
+                    this.selectseriesid=Object.keys(this.data.season)[0]
+                  this.seasontitle='فصل '+this.selectseriesid
+                }
+              }
         },
 
         methods: {
@@ -975,6 +1042,9 @@ if(this.user_claps_counter>=1){
                 else
                   this.ftb=false
                 this.$store.dispatch('player/DOWNLOAD_MODAL_LOAD')
+              }else if(this.MainButton==3){
+                this.$store.dispatch('subscription/SHOW_MODAL',{content_type: this.type,content_id: this.data.item.id})
+                //this.$store.dispatch('player/DOWNLOAD_MODAL_LOAD')
               }
             },
             HIDE_MODAL2() {
@@ -1173,6 +1243,11 @@ this.clapCheckTimer = setTimeout(function(scope) {
     }
     return e
   },
+    selectseries(id){
+       this.selectseriesid=id
+       this.seasontitle='فصل '+id
+
+    },
     LoadImages() {
 if(!this.lightimages.length){
         this.imagesloading=true

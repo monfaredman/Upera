@@ -8,26 +8,29 @@
     </div>
     <Login v-if="!$auth.loggedIn" :show="showModal" :staticmodal="false" @hide-modal="HIDE_MODAL" />
     <Credit v-if="$auth.loggedIn" :show="showCreditModal" @hide-modal="HIDE_MODAL_CREDIT" />
+    <Subscription v-if="checkuser.subscription==1" :show="showSubscriptionModal" @hide-modal="HIDE_MODAL_SUBSCRIPTION" />
     <nuxt />
   </div>
 </template>
 <script>
 import {mapGetters} from 'vuex'
 import Login from "../components/Login"
+import Subscription from "../components/Subscription"
 export default {
   components: {
-    Login
+    Login,
+    Subscription
   },
         computed: {
             ...mapGetters({locale: "locale"}),
             ...mapGetters({showModal: "login/showModal"}),
-            ...mapGetters({showCreditModal: "credit/showModal"})
+            ...mapGetters({showCreditModal: "credit/showModal"}),
+            ...mapGetters({showSubscriptionModal: "subscription/showModal"})
         },
     created: function() {
 
         if (process.browser) {
             this.$store.dispatch('GET_LANG')
-            this.$store.dispatch('SPA_INIT')
         }
     },
     mounted() {
@@ -44,6 +47,12 @@ export default {
             },
             HIDE_MODAL_CREDIT() {
               this.$store.dispatch('credit/HIDE_MODAL')
+            },
+            SHOW_MODAL_SUBSCRIPTION() {
+              this.$store.dispatch('subscription/SHOW_MODAL',{content_type: '',content_id: ''})
+            },
+            HIDE_MODAL_SUBSCRIPTION() {
+              this.$store.dispatch('subscription/HIDE_MODAL')
             }
         }
 }

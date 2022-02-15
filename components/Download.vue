@@ -191,9 +191,9 @@
                 <svg v-if="cartloading || downloadloading" id="L9" class="svg-loader" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 100 100" enable-background="new 0 0 0 0" xml:space="preserve"><path data-v-28f0b4cb="" fill="#373737" d="M73,50c0-12.7-10.3-23-23-23S27,37.3,27,50 M30.9,50c0-10.5,8.5-19.1,19.1-19.1S69.1,39.5,69.1,50" transform="rotate(109.69 50 50)"><animateTransform data-v-28f0b4cb="" attributeName="transform" attributeType="XML" type="rotate" dur="1s" from="0 50 50" to="360 50 50" repeatCount="indefinite" /></path></svg>
 
 
-                <span v-if="!screening.ekran && !cartloading" class="text-info h6 text-justify">حجم مصرفی: <span v-if="$config.envname!='igapp'">{{ fullrate_data.fa.title }}</span><span v-else>تمام بها</span><br><br></span>
+                <span v-if="!screening.ekran && !cartloading" class="text-info h6 text-justify">حجم مصرفی: {{ fullrate_data.fa.title }}<br><br></span>
                 <!-- !ftb2 &&  -->
-                <span v-if="!ftb2 && !cartloading && !owned && traffic && trafficoo && !(downloadslist.some(function(el){ return el.owned === 1}))" class="text-justify ">دسترسی رایگان به فیلم با اینترنت همراه اول و ایرانسل<br><button class="btn btn-secondary text-right" @click="SHOWAGAIN(0)">
+                <span v-if="!ftb2 && !cartloading && !owned && traffic && trafficoo && !(downloadslist.some(function(el){ return el.owned === 1}))" class="text-justify ">دسترسی بدون خرید، با اینترنت همراه اول یا ایرانسل<br><button class="btn btn-secondary text-right" @click="SHOWAGAIN(0)">
                   بررسی اتصال اینترنت
                   <i class="fas fa-sync-alt" />
                 </button><br>و یا خرید با اینترنت فعلی شما:<br><br></span>
@@ -231,7 +231,7 @@
                           <div class="download-quality font-weight-bold">
                             {{ item.quality }}
                           </div>
-                          <div class="download-suitable">
+                          <div v-show="showinfo" class="download-suitable">
                             {{ item.info }}
                           </div>
                         </div>
@@ -342,6 +342,21 @@
                   </div>
                 </div>
               </div>
+              <div v-show="uperaplus_button" class="download-links-item">
+                <div class="row">
+                  <div class="col-sm-6">
+                    <div class="font-weight-bold d-none d-sm-block">
+                      دسترسی همزمان به ۳۰۰۰ عنوان فیلم و اپیزود
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <a href="" class="btn btn-main btn-block" @click.prevent="UPERAPLUS(id,type)">
+                      خرید اشتراک<span v-if="fullrate_data.rate==1"> (حجم مصرفی: نیم بها)</span>
+                      <i class="fa fa-money-bill pr-2" />
+                    </a>
+                  </div>
+                </div>
+              </div>
               <div v-show="show_free" class="download-links-item">
                 <div class="row">
                   <div class="col-sm-6">
@@ -361,12 +376,12 @@
                 <div class="row">
                   <div class="col-sm-6">
                     <div class="font-weight-bold d-none d-sm-block">
-                      خرید و دانلود
+                      خرید<span v-if="$config.envname!='igapp'"> تکی</span> و دانلود
                     </div>
                   </div>
                   <div class="col-sm-6">
                     <button class="btn btn-danger btn-block" @click="SHOWAGAIN(1)">
-                      خرید و دانلود با حجم {{ fullrate_data.fa.alternative }}
+                      خرید<span v-if="$config.envname!='igapp'"> تکی</span> و دانلود با حجم {{ fullrate_data.fa.alternative }}
                       <i class="fa fa-money-bill pr-2" />
                     </button>
                   </div>
@@ -381,7 +396,7 @@
                   </div>
                   <div class="col-sm-6">
                     <a :href="'tel:' + ussd" class="btn btn-danger btn-block">
-                      خرید از طریق هف هشتاد
+                      خرید<span v-if="$config.envname!='igapp'"> تکی</span> از طریق هف هشتاد
                       <i class="fa fa-money-bill pr-2" />
                     </a>
                   </div>
@@ -476,7 +491,9 @@ import {mapGetters} from 'vuex'
         buyloading: null,
         disable_button: false,
         play_button: 0,
+        uperaplus_button: 0,
         season_num: 0,
+        showinfo: true,
         lastseason: {},
           showBoxAnimation: false,
           selectseriesid: 1,
@@ -561,6 +578,9 @@ if(this.type=='episode'){
   this.selectseriesid=this.itemdata.season_number
   this.seasontitle='فصل '+this.selectseriesid
   this.episodetitle='قسمت '+this.itemdata.episode_number
+}else if(this.type=='series' && this.season){
+  this.selectseriesid=Object.keys(this.season)[0]
+  this.seasontitle='فصل '+this.selectseriesid
 }
 
 
@@ -613,6 +633,25 @@ if(this.type=='episode'){
                     id: id
                 }
             })
+          }
+        },
+        UPERAPLUS(id,type){
+          if(this.checkuser.subscription){
+            this.$store.dispatch('subscription/SHOW_MODAL',{content_type: this.type,content_id: this.id})
+          }else{
+            var ref=this.$cookiz.get('refb')
+            if(!ref || isNaN(ref))
+              ref=0
+
+            var url
+            if(this.$route.query.ref)
+              url='https://plus.upera.tv/'+type+'/'+id+'?force_subscription=1&ref='+this.$route.query.ref
+            else if(ref)
+              url='https://plus.upera.tv/'+type+'/'+id+'?force_subscription=1&ref='+ref
+            else
+              url='https://plus.upera.tv/'+type+'/'+id+'?force_subscription=1'
+
+            window.location.href = url
           }
         },
         sizeofobj(obj) {
@@ -681,6 +720,14 @@ if(this.owned || (this.free && this.vod) || (this.vod && this.checkuser.access))
   this.$store.dispatch("download/ADD_DIVCOUNT")
 }
 
+
+if(!this.owned && this.vod && !this.checkuser.access && (!this.free || this.fullrate_data.rate==1)){
+  this.uperaplus_button=1
+  this.$store.dispatch("download/ADD_DIVCOUNT")
+}
+
+
+
 this.$refs['downloadLinks'].$on('shown', () => {
     window.addEventListener("resize", this.Resize)
     this.Resize('e')
@@ -701,6 +748,11 @@ this.season_num=this.sizeofobj(this.lastseason)
             } else {
                 this.$store.dispatch("download/GET_GHOST_DOWNLOAD", {id: this.id,type:this.type,quality:this.$route.query.quality,force_to_buy:this.ftb2})
             }
+
+            if(this.$route.query.quality){
+              this.showinfo=false
+            }
+            
             this.$route.query.quality=0
             this.$route.query.force_to_buy=0
       },
@@ -712,21 +764,36 @@ this.season_num=this.sizeofobj(this.lastseason)
       },
 
       ADDTOCART(itemid,amount,size,quality) {
+        if(this.checkuser.subscription && this.$route.query.ref && this.$config.envname=='igapp'){
+              this.$swal({
+                  icon: 'error',
+                  title: 'لطفا جهت دسترسی بدون خرید اشتراک، با اینترنت همراه اول یا ایرانسل وارد شوید',
+                  dangerMode: true,
+                  button: 'بررسی اتصال اینترنت',
+              }).then(() => {
+                  this.SHOWAGAIN(0)
+                  this.$swal.close()
+              })
+        }else if(this.checkuser.subscription && this.$config.envname=='igapp'){
+            this.$store.dispatch('subscription/SHOW_MODAL',{content_type: this.type,content_id: this.id})
+          
+        }else{
 
-        var name
+          var name
 
-        if(this.type=='episode'){
-          if(this.itemdata.season_number==1)
-            name=this.ChooseLang(this.itemdata.series_name,this.itemdata.series_name_fa)+',قسمت '+this.itemdata.episode_number
+          if(this.type=='episode'){
+            if(this.itemdata.season_number==1)
+              name=this.ChooseLang(this.itemdata.series_name,this.itemdata.series_name_fa)+',قسمت '+this.itemdata.episode_number
+            else
+              name=this.ChooseLang(this.itemdata.series_name,this.itemdata.series_name_fa)+',قسمت '+this.itemdata.episode_number+' فصل '+this.itemdata.season_number
+          }
           else
-            name=this.ChooseLang(this.itemdata.series_name,this.itemdata.series_name_fa)+',قسمت '+this.itemdata.episode_number+' فصل '+this.itemdata.season_number
+            name=this.ChooseLang(this.name,this.namefa)
+
+          this.$store.dispatch("download/ADD_NEW_TO_DOWNLOAD", {itemid: itemid,amount:amount,size:size,name:name,quality:quality,id: this.id,type:this.type,poster:'https://thumb.upera.tv/thumb?w=70&h=103&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+this.posterf })
+
+          document.getElementById("download-links-items").scrollTop=0
         }
-        else
-          name=this.ChooseLang(this.name,this.namefa)
-
-        this.$store.dispatch("download/ADD_NEW_TO_DOWNLOAD", {itemid: itemid,amount:amount,size:size,name:name,quality:quality,id: this.id,type:this.type,poster:'https://thumb.upera.tv/thumb?w=70&h=103&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+this.posterf })
-
-        document.getElementById("download-links-items").scrollTop=0
       },
       REMOVEFROMCART(itemid,amount) {
         this.$store.dispatch("download/DELETE_FROM_DOWNLOAD", {itemid: itemid,amount:amount})
@@ -742,12 +809,16 @@ this.season_num=this.sizeofobj(this.lastseason)
         })
       },
       SHOWAGAIN(force_to_buy) {
+        if(force_to_buy==1 && this.checkuser.subscription && this.$config.envname=='igapp'){
+          this.$store.dispatch('subscription/SHOW_MODAL',{content_type: this.type,content_id: this.id})
+        }else{
           this.ftb2=force_to_buy
           if (this.$auth.loggedIn) {
               this.$store.dispatch("download/GET_DOWNLOAD", {id: this.id,type:this.type,quality:0,force_to_buy:force_to_buy})
           } else {
               this.$store.dispatch("download/GET_GHOST_DOWNLOAD", {id: this.id,type:this.type,quality:0,force_to_buy:force_to_buy})
           }
+        }
       },
       DOWNLOAD(itemid) {
         this.downloadloading=true

@@ -160,7 +160,8 @@ export default {
       // globalToken: true,
       // autoFetchUser: true
     }
-  }
+  },
+  plugins: [ '~/plugins/auth.js' ]
 },
   /*
    ** Axios module configuration
