@@ -64,8 +64,8 @@
               <img v-if="$config.envname=='plus' && $colorMode.value=='dark'" :src="'https://cdn.upera.shop/s3/vods/'+checkuser.logo_dark" :class="{'d-none d-md-block':bannerNav}" :alt="$config.name_fa">
               <img v-if="bannerNav && $config.envname=='upera'" src="/images/logo-mobile.svg" class="d-md-none" :alt="$config.name_fa">
               <img v-if="bannerNav && $config.envname=='igapp'" src="@/assets/images/_logo-mobile.png" class="d-md-none" :alt="$config.name_fa">
-              <img v-if="bannerNav && $config.envname=='plus' && checkuser.domain=='plus.upera.tv'" src="@/assets/images/mobile.png" class="d-md-none" :alt="$config.name_fa">
-              <img v-if="bannerNav && $config.envname=='plus' && checkuser.domain!='plus.upera.tv'" :src="'https://cdn.upera.shop/s3/vods/'+checkuser.logo_dark" class="d-md-none" :alt="$config.name_fa">
+              <img v-if="bannerNav && $config.envname=='plus' && checkuser.ref<=5" src="@/assets/images/mobile.png" class="d-md-none" :alt="$config.name_fa">
+              <img v-if="bannerNav && $config.envname=='plus' && checkuser.ref>5" :src="'https://cdn.upera.shop/s3/vods/'+checkuser.logo_dark" class="d-md-none" :alt="$config.name_fa">
             </nuxt-link>
             <div class="d-none d-md-flex align-items-center h-full">
               <div class="header-search">

@@ -17,7 +17,7 @@
               <a v-if="$config.envname=='upera'" href="https://web.upera.tv/affiliate.html" target="_blank" class="nav-link">
                 همکاری
               </a>
-              <a v-else-if="checkuser.domain=='plus.upera.tv' || checkuser.domain=='upera.plus'" href="https://web.upera.tv/affiliate.html" target="_blank" class="nav-link">
+              <a v-else-if="checkuser.ref<=5" href="https://web.upera.tv/affiliate.html" target="_blank" class="nav-link">
                 همکاری
               </a>
             </ul>
@@ -78,7 +78,7 @@
                 <a v-if="$config.envname=='upera'" href="https://web.upera.tv/affiliate.html" target="_blank" class="nav-link text-black">
                   همکاری
                 </a>
-                <a v-else-if="checkuser.domain=='plus.upera.tv' || checkuser.domain=='upera.plus'" href="https://web.upera.tv/affiliate.html" target="_blank" class="nav-link text-black">
+                <a v-else-if="checkuser.ref<=5" href="https://web.upera.tv/affiliate.html" target="_blank" class="nav-link text-black">
                   همکاری
                 </a>
                 <nuxt-link to="/profile/terms" class="nav-link text-black">
@@ -103,7 +103,7 @@
                         <a v-if="$config.envname=='upera'" class="text-invert d-flex justify-content-center" href="" @click.prevent="install('https://play.google.com/store/apps/details?id=com.techera.upera')">
                           <i class="icon-android" />
                         </a>
-                        <a v-else-if="checkuser.domain=='plus.upera.tv' || checkuser.domain=='upera.plus'" class="text-invert d-flex justify-content-center" href="" @click.prevent="install('https://play.google.com/store/apps/details?id=com.techera.upera')">
+                        <a v-else-if="checkuser.ref<=5" class="text-invert d-flex justify-content-center" href="" @click.prevent="install('https://play.google.com/store/apps/details?id=com.techera.upera')">
                           <i class="icon-android" />
                         </a>
                         <nuxt-link v-else to="/app" class="text-invert d-flex justify-content-center">
@@ -147,12 +147,12 @@
                   </div>
                 </div>
               </div>
-              <div v-else-if="checkuser.domain=='plus.upera.tv' || checkuser.domain=='upera.plus' || checkuser.enamad_id || checkuser.samandehi_id" class="d-flex namad-wrapper">
+              <div v-else-if="checkuser.ref<=5 || checkuser.enamad_id || checkuser.samandehi_id" class="d-flex namad-wrapper">
                 <div class="namad pr-2">
                   <div class="namad-box-2" @click="samandehi">
                     <img src="/images/samandehi.png" width="80">
                   </div>
-                  <div v-if="checkuser.domain=='plus.upera.tv' || checkuser.domain=='upera.plus'" class="namad-box-2">
+                  <div v-if="checkuser.ref<=5" class="namad-box-2">
                     <a href="https://tehran.irannsr.org/fa/page/104366-%D9%85%D8%B4%D8%A7%D9%87%D8%AF%D9%87-%D8%A7%D8%B9%D8%B6%D8%A7.html?ctp_id=1086&id=25122" target="_blank">
                       <img src="/images/irannsr.png" width="80">
                     </a>
@@ -363,7 +363,7 @@
     window.removeEventListener('resize', this.itemsize)
   },
     mounted() {
-      if(this.$config.envname!='upera' && this.checkuser.domain!='plus.upera.tv')
+      if(this.$config.envname!='upera' && this.checkuser.ref>5)
         this.shownotification=true
       else if(!this.$cookiz.get('ref'))
         this.shownotification=true
@@ -423,7 +423,7 @@ samandehi(){
       window.open('https://logo.samandehi.ir/Verify.aspx?id=197123&p=rfthpfvljyoerfthuiwkxlao', 'Popup','toolbar=no, scrollbars=no, location=no, statusbar=no, menubar=no, resizable=0, width=450, height=630, top=30')
     }else if(this.checkuser.samandehi_id){
       window.open('https://logo.samandehi.ir/Verify.aspx?id='+this.checkuser.samandehi_id+'&p='+this.checkuser.samandehi_p, 'Popup','toolbar=no, scrollbars=no, location=no, statusbar=no, menubar=no, resizable=0, width=450, height=630, top=30')
-    }else if(this.checkuser.domain=='plus.upera.tv' || this.checkuser.domain=='upera.plus'){
+    }else if(this.checkuser.ref<=5){
       window.open('https://upera.tv/namad', '_blank')
     }
   },
@@ -432,7 +432,7 @@ enamad(){
       window.open('https://trustseal.enamad.ir/?id=204904&amp;Code=ipcUNmaUZGludD970sgm', 'Popup','toolbar=no, location=no, statusbar=no, menubar=no, scrollbars=1, resizable=0, width=580, height=600, top=30')
     }else if(this.checkuser.enamad_id){
       window.open('https://trustseal.enamad.ir/?id='+this.checkuser.enamad_id+'&amp;Code='+this.checkuser.enamad_code, 'Popup','toolbar=no, location=no, statusbar=no, menubar=no, scrollbars=1, resizable=0, width=580, height=600, top=30')
-    }else if(this.checkuser.domain=='plus.upera.tv' || this.checkuser.domain=='upera.plus'){
+    }else if(this.checkuser.ref<=5){
       window.open('https://upera.tv/namad', '_blank')
     }
   }
