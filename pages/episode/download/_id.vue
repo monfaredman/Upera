@@ -28,9 +28,23 @@ import Download from "../../../components/Download"
   async asyncData (context) {
     let res
     if (context.app.$auth.loggedIn) {
-        res = await context.app.$axios.get('/get/episode/'+context.params.id)
+        await context.app.$axios.get('/get/episode/'+context.params.id)
+        .then((result) => {
+          res = result
+        })
+        .catch((e) => {
+          context.redirect('/')
+          return e
+        })
      }else{
-      res = await context.app.$axios.get('/ghost/get/episode/'+context.params.id)
+        await context.app.$axios.get('/ghost/get/episode/'+context.params.id)
+        .then((result) => {
+          res = result
+        })
+        .catch((e) => {
+          context.redirect('/')
+          return e
+        })
      }
 
     return {data:res.data.data}

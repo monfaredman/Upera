@@ -13,10 +13,27 @@ import Item from "@/components/Item"
   async asyncData (context) {
   	let res
   	if (context.app.$auth.loggedIn) {
-  	    res = await context.app.$axios.get('/get/series/'+context.params.id)
+        await context.app.$axios.get('/get/series/'+context.params.id)
+        .then((result) => {
+          res = result
+        })
+        .catch((e) => {
+          context.redirect('/')
+          return e
+        })
   	 }else{
-  	 	res = await context.app.$axios.get('/ghost/get/series/'+context.params.id)
+        await context.app.$axios.get('/ghost/get/series/'+context.params.id)
+        .then((result) => {
+          res = result
+        })
+        .catch((e) => {
+          context.redirect('/')
+          return e
+        })
   	 }
+
+
+
 
 
      res.data.data.item=res.data.data.series
