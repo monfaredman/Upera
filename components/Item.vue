@@ -510,7 +510,7 @@
             </nuxt-link>
             <div class="mt-2">
               <h6 class="mt-2 small font-weight-normal">
-                قسمت {{ item2.episode_number }}
+                قسمت {{ item2.episode_number }}<span v-if="item2.season_number!=1"> - فصل {{ item2.season_number }}</span>
               </h6>
             </div>
           </div>

@@ -342,7 +342,7 @@
                   </div>
                 </div>
               </div>
-              <div v-show="uperaplus_button" class="download-links-item">
+              <div v-show="sub_button" class="download-links-item">
                 <div class="row">
                   <div class="col-sm-6">
                     <div class="font-weight-bold d-none d-sm-block">
@@ -376,12 +376,12 @@
                 <div class="row">
                   <div class="col-sm-6">
                     <div class="font-weight-bold d-none d-sm-block">
-                      خرید<span v-if="$config.envname!='igapp'"> تکی</span> و دانلود
+                      خرید و دانلود
                     </div>
                   </div>
                   <div class="col-sm-6">
                     <button class="btn btn-danger btn-block" @click="SHOWAGAIN(1)">
-                      خرید<span v-if="$config.envname!='igapp'"> تکی</span> و دانلود با حجم {{ fullrate_data.fa.alternative }}
+                      خرید و دانلود با حجم {{ fullrate_data.fa.alternative }}
                       <i class="fa fa-money-bill pr-2" />
                     </button>
                   </div>
@@ -490,8 +490,6 @@ import {mapGetters} from 'vuex'
         premessage: null,
         buyloading: null,
         disable_button: false,
-        play_button: 0,
-        uperaplus_button: 0,
         season_num: 0,
         showinfo: true,
         lastseason: {},
@@ -514,6 +512,8 @@ import {mapGetters} from 'vuex'
           ...mapGetters({ussd: "download/ussd"}),
           ...mapGetters({fullrate_data: "download/fullrate_data"}),
           ...mapGetters({show_free: "download/show_free"}),
+          ...mapGetters({play_button: "download/play_button"}),
+          ...mapGetters({sub_button: "download/sub_button"}),
           ...mapGetters({show_buy: "download/show_buy"}),
           ...mapGetters({notes: "download/notes"}),
           ...mapGetters({totalamount: "download/total_amount"}),
@@ -528,6 +528,12 @@ import {mapGetters} from 'vuex'
         }else{
           this.hideModal()
         }
+      },
+      show_free() {
+        this.checkdiv()
+      },
+      show_buy() {
+        this.checkdiv()
       },
       // id(val) {
       //     if (val !== null && this.id && this.show) {
@@ -574,14 +580,16 @@ import {mapGetters} from 'vuex'
 
 
 
-if(this.type=='episode'){
-  this.selectseriesid=this.itemdata.season_number
-  this.seasontitle='فصل '+this.selectseriesid
-  this.episodetitle='قسمت '+this.itemdata.episode_number
-}else if(this.type=='series' && this.season){
-  this.selectseriesid=Object.keys(this.season)[0]
-  this.seasontitle='فصل '+this.selectseriesid
-}
+
+  if(this.type=='episode'){
+    this.selectseriesid=this.itemdata.season_number
+    this.seasontitle='فصل '+this.selectseriesid
+    this.episodetitle='قسمت '+this.itemdata.episode_number
+  }else if(this.type=='series' && this.season){
+    this.selectseriesid=Object.keys(this.season)[0]
+    this.seasontitle='فصل '+this.selectseriesid
+  }
+
 
 
 
@@ -705,7 +713,7 @@ if(this.type=='episode'){
             else
               return string.substring(3)
         },
-      showModal() {
+       showModal() {
         this.$refs['downloadLinks'].show()
         if(!this.staticmodal)
         document.getElementsByClassName('default')[0].classList.add('blure')
@@ -715,16 +723,8 @@ this.lastseason=null
 }else{
   this.lastseason=this.season
 }
-if(this.owned || (this.free && this.vod) || (this.vod && this.checkuser.access)){
-  this.play_button=1
-  this.$store.dispatch("download/ADD_DIVCOUNT")
-}
 
 
-if(!this.owned && this.vod && !this.checkuser.access && (!this.free || this.fullrate_data.rate==1)){
-  this.uperaplus_button=1
-  this.$store.dispatch("download/ADD_DIVCOUNT")
-}
 
 
 
@@ -744,10 +744,13 @@ this.season_num=this.sizeofobj(this.lastseason)
           this.ftb2=1
 
             if (this.$auth.loggedIn) {
-                this.$store.dispatch("download/GET_DOWNLOAD", {id: this.id,type:this.type,quality:this.$route.query.quality,force_to_buy:this.ftb2})
+                 this.$store.dispatch("download/GET_DOWNLOAD", {id: this.id,type:this.type,quality:this.$route.query.quality,force_to_buy:this.ftb2})
             } else {
-                this.$store.dispatch("download/GET_GHOST_DOWNLOAD", {id: this.id,type:this.type,quality:this.$route.query.quality,force_to_buy:this.ftb2})
+                 this.$store.dispatch("download/GET_GHOST_DOWNLOAD", {id: this.id,type:this.type,quality:this.$route.query.quality,force_to_buy:this.ftb2})
             }
+
+this.checkdiv()
+
 
             if(this.$route.query.quality){
               this.showinfo=false
@@ -813,12 +816,41 @@ this.season_num=this.sizeofobj(this.lastseason)
           this.$store.dispatch('subscription/SHOW_MODAL',{content_type: this.type,content_id: this.id})
         }else{
           this.ftb2=force_to_buy
+
+
           if (this.$auth.loggedIn) {
               this.$store.dispatch("download/GET_DOWNLOAD", {id: this.id,type:this.type,quality:0,force_to_buy:force_to_buy})
           } else {
               this.$store.dispatch("download/GET_GHOST_DOWNLOAD", {id: this.id,type:this.type,quality:0,force_to_buy:force_to_buy})
           }
+
+
+          this.checkdiv()
         }
+        
+      },
+      checkdiv() {
+        var free
+        free=this.free
+        if(this.show_free==1)
+          free=0
+
+        if(this.show_buy==1)
+          free=1
+
+
+          if(this.show_free==0 && (this.owned || (free && this.vod) || (this.vod && this.checkuser.access))){
+            this.$store.dispatch("download/ADD_DIVCOUNT")
+          }else{
+            this.$store.dispatch("download/MIN_DIVCOUNT")
+          }
+
+
+          if(!this.owned && this.vod && !this.checkuser.access && (!free || this.show_free==1)){
+            this.$store.dispatch("download/ADD_DIVCOUNT2")
+          }else{
+            this.$store.dispatch("download/MIN_DIVCOUNT2")
+          }
       },
       DOWNLOAD(itemid) {
         this.downloadloading=true

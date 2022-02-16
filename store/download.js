@@ -33,6 +33,7 @@ export const state = () => ({
         loading: false,
         divcount: 0,
         play_button: 0,
+        sub_button: 0,
         cartloading: false
 })
 
@@ -82,6 +83,12 @@ export const getters = {
   },
   pass(state) {
     return state.pass
+  },
+  play_button(state) {
+    return state.play_button
+  },
+  sub_button(state) {
+    return state.sub_button
   }
 }
 
@@ -164,6 +171,15 @@ export const actions = {
         ADD_DIVCOUNT({ commit }) {
             commit('ADD_DIVCOUNT')
         },
+        ADD_DIVCOUNT2({ commit }) {
+            commit('ADD_DIVCOUNT2')
+        },
+        MIN_DIVCOUNT({ commit }) {
+            commit('MIN_DIVCOUNT')
+        },
+        MIN_DIVCOUNT2({ commit }) {
+            commit('MIN_DIVCOUNT2')
+        },
         RESET_DOWNLOAD({ commit }) {
             commit('RESET_DOWNLOAD')
         },
@@ -183,14 +199,34 @@ export const mutations = {
             state.total_amount = copy_cart.amount
         },
         ADD_DIVCOUNT(state){
-
-            state.divcount = state.divcount+1
-            state.play_button=1
+            if(state.play_button==0){
+                state.divcount = state.divcount+1
+                state.play_button=1
+            }
+        },
+        ADD_DIVCOUNT2(state){
+            if(state.sub_button==0){
+                state.divcount = state.divcount+1
+                state.sub_button=1
+            }
+        },
+        MIN_DIVCOUNT(state){
+            if(state.play_button==1){
+                state.divcount = state.divcount-1
+                state.play_button=0
+            }
+        },
+        MIN_DIVCOUNT2(state){
+            if(state.sub_button==1){
+                state.divcount = state.divcount-1
+                state.sub_button=0
+            }
         },
         RESET_DOWNLOAD(state){
 
             state.divcount = 0
             state.play_button = 0
+            state.sub_button = 0
             state.show_buy=0
             state.show_free=0
             state.ussd=null
@@ -211,12 +247,14 @@ export const mutations = {
 
             if(state.show_buy || state.show_free){
                 if(state.ussd)
-                    state.divcount=state.play_button+2
+                    state.divcount=state.play_button+state.sub_button+2
                 else
-                    state.divcount=state.play_button+1
+                    state.divcount=state.play_button+state.sub_button+1
             }else{
                 if(state.ussd)
-                    state.divcount=state.play_button+1
+                    state.divcount=state.play_button+state.sub_button+1
+                else
+                    state.divcount=state.play_button+state.sub_button
             }
 
 
