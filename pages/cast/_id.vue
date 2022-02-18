@@ -7,8 +7,11 @@
             <div class="row no-gutters">
               <div class="col-md-6 col-lg-9" />
               <div class="col-md-6 col-lg-3 showcase-pic">
-                <img class="showcase-img d-none d-lg-block" :src="'https://thumb.upera.tv/thumb?w=800&h=400&zc=3&q=100&a=t&src=https://cdn.upera.shop/s3/casts/'+data.cast.image" :alt="data.cast.name_fa">
-                <img class="showcase-img d-lg-none" :src="'https://thumb.upera.tv/thumb?w=400&h=300&zc=3&q=100&a=c&src=https://cdn.upera.shop/s3/casts/'+data.cast.image" :alt="data.cast.name_fa">
+                <b-img class="showcase-img d-none d-lg-block" v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 800,height: 400,show:true}" :src="'https://thumb.upera.tv/thumb?w=800&h=400&zc=3&q=100&a=t&src=https://cdn.upera.shop/s3/casts/'+data.cast.image" :alt="data.cast.name_fa" />
+                <b-img class="showcase-img d-lg-none" v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 400,height: 300,show:true}" :src="'https://thumb.upera.tv/thumb?w=400&h=300&zc=3&q=100&a=c&src=https://cdn.upera.shop/s3/casts/'+data.cast.image" :alt="data.cast.name_fa" />
+
+                <!--                <img class="showcase-img d-none d-lg-block" :src="'https://thumb.upera.tv/thumb?w=800&h=400&zc=3&q=100&a=t&src=https://cdn.upera.shop/s3/casts/'+data.cast.image" :alt="data.cast.name_fa">
+                <img class="showcase-img d-lg-none" :src="'https://thumb.upera.tv/thumb?w=400&h=300&zc=3&q=100&a=c&src=https://cdn.upera.shop/s3/casts/'+data.cast.image" :alt="data.cast.name_fa"> -->
               </div>
             </div>
             <div
@@ -43,9 +46,13 @@
           <div class="row">
             <div v-for="(item,index) in data.filmography" :key="index" class="col-4 col-xl-1 col-md-2 col-sm-3 mt-2 mt-lg-4">
               <nuxt-link :to="{ name: item.type+'-id', params: { id: item.id }}" class="actor" :class="{'is-series': item.type!='movie'}">
-                <img :src="'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
+                <b-img v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 142,height: 212,show:true}" :src="'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name" />
+                <b-img v-if="item.type!='movie'" v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 142,height: 212,show:true}" :src="'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name" />
+                <b-img v-if="item.type!='movie'" v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 142,height: 212,show:true}" :src="'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name" />
+
+                <!--                 <img :src="'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
                 <img v-if="item.type!='movie'" :src="'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
-                <img v-if="item.type!='movie'" :src="'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
+                <img v-if="item.type!='movie'" :src="'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name"> -->
                 <span v-if="!item.ir && item.persian" class="label label-rounded label-red label-1">دوبله</span>
                 <span v-if="!item.ir && !item.persian" class="label label-rounded label-warning label-1">زیرنویس</span>
                 <span v-if="item.free && $config.envname=='upera'" class="label label-blue label-2">رایگان</span>

@@ -16,7 +16,8 @@
         </div>
         <div class="col-8 p-lg-4 p-md-2 p-sm-0">
           <nuxt-link :to="{ name: 'genres-genre', params: { genre: item.en.toLowerCase() }}">
-            <img data-back="/images/988x395.png" :src="'https://thumb.upera.tv/thumb?w=988&h=395&q=100&src='+item.cover" :alt="item.fa">
+            <b-img v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 988,height: 395,show:true}" :src="'https://thumb.upera.tv/thumb?w=988&h=395&q=100&src='+item.cover" :alt="item.fa" />
+            <!-- <img loading="lazy" data-back="/images/988x395.png" :src="'https://thumb.upera.tv/thumb?w=988&h=395&q=100&src='+item.cover" :alt="item.fa"> -->
           </nuxt-link>
         </div>
       </div>

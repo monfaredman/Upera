@@ -1,7 +1,7 @@
-export default function(context) {
+export default async function(context) {
 	if (process.browser) {
 		if(context.app.$auth){
-			context.store.dispatch("SPA_INIT")
+			await context.store.dispatch("SPA_INIT")
 		}
 	}
 }

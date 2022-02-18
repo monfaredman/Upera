@@ -1673,3 +1673,6 @@
 .theme-dark .card {
     background-color: transparent;
 }
+.theme-dark .actor2 > span {
+    color: #f2f2f2 !important;
+}

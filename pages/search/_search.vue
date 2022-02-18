@@ -71,9 +71,12 @@
           <div v-if="data.data!=null" class="row">
             <div v-for="(item,index) in data.data" :key="index" class="col-4 col-xl-1 col-md-2 col-sm-3 mt-2 mt-lg-4">
               <nuxt-link :to="{ name: item.type+'-id', params: { id: item.id }}" class="actor" :class="{'is-series': item.type!='movie'}">
-                <img :src="'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
+                <b-img v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 142,height: 212,show:true}" :src="'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name" />
+                <b-img v-if="item.type!='movie'" v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 142,height: 212,show:true}" :src="'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name" />
+                <b-img v-if="item.type!='movie'" v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 142,height: 212,show:true}" :src="'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name" />
+                <!--                 <img :src="'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
                 <img v-if="item.type!='movie'" :src="'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
-                <img v-if="item.type!='movie'" :src="'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
+                <img v-if="item.type!='movie'" :src="'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name"> -->
                 <span v-if="!item.ir && item.persian" class="label label-rounded label-red label-1">دوبله</span>
                 <span v-if="!item.ir && !item.persian" class="label label-rounded label-warning label-1">زیرنویس</span>
                 <span v-if="item.free && $config.envname=='upera'" class="label label-blue label-2">رایگان</span>
@@ -90,8 +93,10 @@
           </div>
           <div v-if="data.cast!=null" class="row">
             <div v-for="(item,index) in data.cast" :key="index" class="col-4 col-xl-1 col-md-2 col-sm-3 mt-2 mt-lg-4">
-              <nuxt-link :to="{ name: 'cast-id', params: { id: item.id }}" class="actor">
-                <img :src="'https://thumb.upera.tv/thumb?w=141&h=214&q=100&a=c&src=https://cdn.upera.shop/s3/casts/'+item.image" :alt="item.name">
+              <nuxt-link :to="{ name: 'cast-id', params: { id: item.id }}" class="actor2">
+                <b-img v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 140,height: 140,show:true}" :src="'https://thumb.upera.tv/thumb?w=140&h=140&q=100&a=t&src=https://cdn.upera.shop/s3/casts/'+item.image" :alt="item.name" class="rounded-circle" />
+
+                <!-- <img :src="'https://thumb.upera.tv/thumb?w=141&h=214&q=100&a=c&src=https://cdn.upera.shop/s3/casts/'+item.image" :alt="item.name"> -->
                 <span class="block">{{ ChooseLang(item.name,item.name_fa) }}</span>
               </nuxt-link>
             </div>

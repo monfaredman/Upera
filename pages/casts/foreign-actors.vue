@@ -4,7 +4,8 @@
       <div class="row">
         <div v-for="(item,index) in data.casts" :key="index" class="col-4 col-xl-1 col-md-2 col-sm-3 mt-2 mt-lg-4">
           <nuxt-link :to="{ name: 'cast-id', params: { id: item.id }}" class="actor">
-            <img :src="'https://thumb.upera.tv/thumb?w=141&h=214&q=100&a=c&src=https://cdn.upera.shop/s3/casts/'+item.image" :alt="item.name">
+            <b-img v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 141,height: 214,show:true}" :src="'https://thumb.upera.tv/thumb?w=141&h=214&q=100&a=c&src=https://cdn.upera.shop/s3/casts/'+item.image" :alt="item.name" />
+            <!-- <img :src="'https://thumb.upera.tv/thumb?w=141&h=214&q=100&a=c&src=https://cdn.upera.shop/s3/casts/'+item.image" :alt="item.name"> -->
             <span class="block">{{ ChooseLang(item.name,item.name_fa) }}</span>
           </nuxt-link>
         </div>

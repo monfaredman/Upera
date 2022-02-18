@@ -8629,6 +8629,10 @@ body widget .-bold {
     margin: 0 -20px 0 0;
   }
 
+  #actor > .container-fluid > .row_actor2_movie {
+    margin: 0 -30px 0 0 !important;
+  }
+
   #actor > .container-fluid > .row > div {
     padding: 0 0px 0 0px !important;
     margin: 0px 29px 0 29px;
@@ -8716,6 +8720,9 @@ body widget .-bold {
   #actor > .container-fluid > .row_actor_movie {
     max-width: 1380px;
     margin: 0 -20px 0 0;
+  }
+  #actor > .container-fluid > .row_actor2_movie {
+    margin: 0 -30px 0 0 !important;
   }
 
   #actor > .container-fluid > .row > div {
@@ -10485,4 +10492,13 @@ body .accordion > .card:nth-of-type(odd) .card-header {
 
 .sub_dl #subscriptionModal.modal{
   overflow: scroll;
+}
+
+.actor2 span {
+  color: #333;
+  text-align: center;
+  display: block;
+  font-size: 0.94em !important;
+  font-weight: 400;
+  letter-spacing: -0.5px;
 }
