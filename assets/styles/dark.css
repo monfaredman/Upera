@@ -1676,3 +1676,14 @@
 .theme-dark .actor2 > span {
     color: #f2f2f2 !important;
 }
+
+
+.theme-dark .showcase-theme-m-tn
+.showcase-thumbnail-wrapper-outter
+.text-invert:not(.title),
+.theme-dark .showcase-theme-m-tn
+.showcase-thumbnail-wrapper-outter
+.text-invert:not(.title)
+> a {
+    color: #f2f2f2 !important;
+}
