@@ -193,7 +193,7 @@
 
                 <span v-if="!screening.ekran && !cartloading" class="text-info h6 text-justify">حجم مصرفی: {{ fullrate_data.fa.title }}<br><br></span>
                 <!-- !ftb2 &&  -->
-                <span v-if="!ftb2 && !cartloading && !owned && traffic && trafficoo && !(downloadslist.some(function(el){ return el.owned === 1}))" class="text-justify ">دسترسی بدون خرید، با اینترنت همراه اول یا ایرانسل<br><button class="btn btn-secondary text-right" @click="SHOWAGAIN(0)">
+                <span v-if="!ftb2 && !cartloading && !owned && traffic && trafficoo && !(downloadslist.some(function(el){ return el.owned === 1}))" class="text-justify ">دسترسی بدون خرید، با اینترنت {{ operator_fullrate }}<br><button class="btn btn-secondary text-right" @click="SHOWAGAIN(0)">
                   بررسی اتصال اینترنت
                   <i class="fas fa-sync-alt" />
                 </button><br>و یا خرید با اینترنت فعلی شما:<br><br></span>
@@ -490,6 +490,7 @@ import {mapGetters} from 'vuex'
         premessage: null,
         buyloading: null,
         disable_button: false,
+        operator_fullrate: 'همراه اول یا ایرانسل',
         season_num: 0,
         showinfo: true,
         lastseason: {},
@@ -563,7 +564,9 @@ import {mapGetters} from 'vuex'
 
 
 
-
+if(this.checkuser.operator_fullrate){
+  this.operator_fullrate=this.checkuser.operator_fullrate
+}
       
 
 

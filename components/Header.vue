@@ -260,7 +260,7 @@
             {{ $t('setting.profile') }}
           </nuxt-link>
         </li>
-        <li class="mr-3">
+        <li v-if="location.host!='igtv.igaptv.com'" class="mr-3">
           <nuxt-link to="/payments">
             پرداخت ها
           </nuxt-link>

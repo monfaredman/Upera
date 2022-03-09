@@ -898,6 +898,8 @@ if(location.host=='igaptv.com'){
   if(!this.$auth.loggedIn){
     this.main_free=0
   }
+} else if(location.host=='igtv.igaptv.com'){
+  this.main_download=0
 }
 
 

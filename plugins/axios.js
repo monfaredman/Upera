@@ -4,10 +4,10 @@ export default function(context) {
 
 		let ip=null
 
-		if(context.req.headers['HTTP_X_FORWARDED_FOR'])
-			ip = context.req.headers['HTTP_X_FORWARDED_FOR'].split(',').pop()
-		else if(context.req.headers['HTTP_CF_CONNECTING_IP'])
-			ip = context.req.headers['HTTP_CF_CONNECTING_IP'].split(',').pop()
+		if(context.req.headers['x-forwarded-for'])
+			ip = context.req.headers['x-forwarded-for'].split(',').pop()
+		else if(context.req.headers['cf-connecting-ip'])
+			ip = context.req.headers['cf-connecting-ip'].split(',').pop()
 		else
 			ip=context.req.connection.remoteAddress || 
 		  context.req.socket.remoteAddress || 
@@ -15,10 +15,10 @@ export default function(context) {
 
 		 let country = null
 
-		if(context.req.headers['HTTP_AR_REAL_COUNTRY'])
-			country = context.req.headers['HTTP_AR_REAL_COUNTRY'].split(',').pop()
-		else if(context.req.headers['HTTP_CF_IPCOUNTRY'])
-			country = context.req.headers['HTTP_CF_IPCOUNTRY'].split(',').pop()
+		if(context.req.headers['ar-real-country'])
+			country = context.req.headers['ar-real-country'].split(',').pop()
+		else if(context.req.headers['cf-ipcountry'])
+			country = context.req.headers['cf-ipcountry'].split(',').pop()
 
 		if(ip)
 			context.app.$axios.setHeader('Nuxt_IP', ip)
