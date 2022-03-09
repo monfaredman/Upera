@@ -4,8 +4,8 @@ export default function(context) {
 
 		let ip=null
 
-		if(context.req.headers['x-forwarded-for'])
-			ip = context.req.headers['x-forwarded-for'].split(',').pop()
+		if(context.req.headers['ar-real-ip'])
+			ip = context.req.headers['ar-real-ip'].split(',').pop()
 		else if(context.req.headers['cf-connecting-ip'])
 			ip = context.req.headers['cf-connecting-ip'].split(',').pop()
 		else
@@ -19,6 +19,7 @@ export default function(context) {
 			country = context.req.headers['ar-real-country'].split(',').pop()
 		else if(context.req.headers['cf-ipcountry'])
 			country = context.req.headers['cf-ipcountry'].split(',').pop()
+
 
 		if(ip)
 			context.app.$axios.setHeader('Nuxt_IP', ip)
