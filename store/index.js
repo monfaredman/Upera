@@ -83,7 +83,7 @@ export const actions = {
       }else{
         store.commit('SET_USER',store.state.auth.user)
       }
-      if (this.$config.envname!='igapp' && store.state.checkuser.ref){
+      if (this.$config.envname!='igapp' && store.state.checkuser.ref != 4 && store.state.checkuser.ref){
         if (this.$cookiz.get('ref')!=store.state.checkuser.ref) {
           this.$cookiz.set('ref', store.state.checkuser.ref)
         }
