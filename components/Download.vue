@@ -313,6 +313,24 @@
                     </div>
                   </div>
                 </div>
+                <div v-if="$auth.loggedIn">
+                  <div v-if="$config.envname=='igapp'">
+                    <img class="p-4" src="@/assets/lottery/ref-logged-traffic.jpg" @click.prevent="lottery()">
+                  </div>
+                  <div v-else>
+                    <img v-show="!mref || isNaN(mref)" class="p-4" src="@/assets/lottery/noref-logged-buyandtraffic.jpg" @click.prevent="lottery()">
+                    <img v-show="mref && !isNaN(mref)" class="p-4" src="@/assets/lottery/ref-logged-buyandtraffic.jpg" @click.prevent="lottery()">
+                  </div>
+                </div>
+                <div v-else>
+                  <div v-if="$config.envname=='igapp'">
+                    <img class="p-4" src="@/assets/lottery/ref-nologged-traffic.jpg" @click.prevent="lottery()">
+                  </div>
+                  <div v-else>
+                    <img v-show="!mref || isNaN(mref)" class="p-4" src="@/assets/lottery/noref-nologged-buyandtraffic.jpg" @click.prevent="lottery()">
+                    <img v-show="mref && !isNaN(mref)" class="p-4" src="@/assets/lottery/ref-nologged-buyandtraffic.jpg" @click.prevent="lottery()">
+                  </div>
+                </div>
               </div>
               <div v-if="!cartloading && notes" class="col-12">
                 <span class="text-info h6 text-justify"><br>{{ notes }}<br><br></span>
@@ -485,6 +503,7 @@ import {mapGetters} from 'vuex'
         mobile: null,
         login: 0,
         ftb2: 0,
+        mref: 0,
         downloadloading: false,
         message: null,
         premessage: null,
@@ -563,6 +582,7 @@ import {mapGetters} from 'vuex'
 //   }
 
 
+this.mref=this.$cookiz.get('ref')
 
 if(this.checkuser.operator_fullrate){
   this.operator_fullrate=this.checkuser.operator_fullrate
@@ -1119,6 +1139,13 @@ this.checkdiv()
             }
           }
     },
+    lottery(){
+      if(!this.$auth.loggedIn){
+        this.$store.dispatch('login/SHOW_MODAL',{premessage: this.premessage,premobile: this.mobile,preredirect: null,prerefresh: false})
+      }else if (this.$config.envname!='igapp'){
+        window.location.href = 'https://www.instagram.com/uperashop/'
+      }
+    }
     },
 
 

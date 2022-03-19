@@ -102,6 +102,7 @@ import Item from "@/components/Item"
          res.data.data.email=null
          res.data.data.fullname=null
      }
+
     return {data:res.data.data}
   },
 

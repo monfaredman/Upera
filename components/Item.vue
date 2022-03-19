@@ -893,12 +893,12 @@ if(this.user_claps_counter>=1){
 this.main_free=this.data.item.free
 this.main_download=this.data.item.download
 
-if(location.host=='igaptv.com'){
+if(window.location.host=='igaptv.com'){
   this.main_download=0
   if(!this.$auth.loggedIn){
     this.main_free=0
   }
-} else if(location.host=='igtv.igaptv.com'){
+} else if(window.location.host=='igtv.igaptv.com'){
   this.main_download=0
 }
 

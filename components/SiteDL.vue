@@ -36,6 +36,14 @@
                         </div>
                       </div>
                     </div>
+
+
+                    <div v-if="$auth.loggedIn">
+                      <img class="p-4" src="@/assets/lottery/ref-logged-traffic.jpg" @click.prevent="lottery()">
+                    </div>
+                    <div v-else>
+                      <img class="p-4" src="@/assets/lottery/ref-nologged-traffic.jpg" @click.prevent="lottery()">
+                    </div>
                   </div>
                   <!--                     <div class="row">
                       <div class="col-sm-12 mt-4">
@@ -294,6 +302,16 @@ this.$refs['downloadLinks'].$on('shown', () => {
           this.$swal("لینک در دیوایس شما قابل کپی نیست.")
           return e
       }
+    },
+    lottery(){
+      if(!this.$auth.loggedIn){
+        this.$store.dispatch('login/SHOW_MODAL',{premessage: this.premessage,premobile: this.mobile,preredirect: null,prerefresh: false})
+      }else{
+        this.LINK_DOWNLOAD()
+      }
+      // else{
+      //   window.location.href = 'https://www.instagram.com/uperashop/'
+      // }
     },
 
     },

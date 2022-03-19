@@ -260,7 +260,7 @@
             {{ $t('setting.profile') }}
           </nuxt-link>
         </li>
-        <li v-if="location.host!='igtv.igaptv.com'" class="mr-3">
+        <li v-show="showpayments" class="mr-3">
           <nuxt-link to="/payments">
             پرداخت ها
           </nuxt-link>
@@ -311,6 +311,7 @@ import Subscription from "../components/Subscription"
       lastScrollTop: 0,
       lastScroll: 0,
       MenuOpen: false,
+      showpayments: true,
       categories: ["/genres", "/casts/iranian-actors", "/casts/foreign-actors", "/casts/directors"],
       profile: ["/profile","/payments", "/profile/settings", "/profile/plans", "/profile/internet"],
       banner: ["index", "cast-id", "movie-id", "episode-id", "series-id", "genres-genre", "lists-list"],
@@ -338,7 +339,9 @@ import Subscription from "../components/Subscription"
   },
   mounted() {
 
-
+if(location.host=='igtv.igaptv.com'){
+  this.showpayments=false
+}
       this.Nav()
       window.addEventListener('scroll', this.handleScroll)
 

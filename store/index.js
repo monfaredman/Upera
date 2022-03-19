@@ -77,7 +77,7 @@ export const actions = {
           let res
           res=await this.$axios.get('/ghost/get'+this.$config.check_url)
             store.commit('SET_USER',res.data)
-        }else if(location.host != 'igtv.igaptv.com'){
+        }else if(window.location.host != 'igtv.igaptv.com'){
           store.commit('SET_USER',{subscription: 1})
         }
       }else{

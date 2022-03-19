@@ -40,8 +40,8 @@
       - بیش از ۳۰۰۰ اپیزود فیلم و سریال<br>
       - امکان دانلود فیلم بدون محدودیت<br>
       - حجم مصرفی نیم بها با خرید اشتراک<br><br>
-      <span v-if="$config.envname=='igapp'"><b>امکان دسترسی به فیلم ها و سریال ها بدون خرید اشتراک:</b><br>
-        با اینترنت همراه اول و ایرانسل وارد شوید ، حجم مصرفی به جای خرید اشتراک تمام بها محاسبه می شود.<br></span>
+      <span><b>امکان دسترسی به فیلم ها و سریال ها بدون خرید اشتراک:</b><br>
+        با اینترنت {{ operator_fullrate }} وارد شوید ، حجم مصرفی به جای خرید اشتراک تمام بها محاسبه می شود.<br></span>
     </div>
     <!-- <div v-if="!planloading" v-lazy-load="description" /> -->
 
@@ -71,6 +71,7 @@
         castShow: null,
         payment_method: "saman",
         planloading: false,
+        operator_fullrate: 'همراه اول یا ایرانسل',
         plans: [],
         wallet: '0 تومان',
         message: false,
@@ -114,6 +115,10 @@
     },
 
         mounted() {
+
+if(this.checkuser.operator_fullrate){
+  this.operator_fullrate=this.checkuser.operator_fullrate
+}
 
 
 // else{

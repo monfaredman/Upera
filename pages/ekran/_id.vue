@@ -182,7 +182,7 @@
 
     mounted() {
 
-        if(location.host=='app.upera.tv' || location.host=='app.pofefilm.tv')
+        if(window.location.host=='app.upera.tv' || window.location.host=='app.pofefilm.tv')
           this.backtoapp=true
 
                 this.showModal()

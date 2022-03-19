@@ -19,7 +19,7 @@ import Download from "../../../components/Download"
   },
 
   layout(context) {
-    if(context.query.ref)
+    if(context.query.ref && context.$config.envname!='plus')
       return 'body'
     else
       return 'nofooter'
