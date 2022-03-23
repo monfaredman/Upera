@@ -27,6 +27,10 @@ export default function(context) {
 		if(country)
 			context.app.$axios.setHeader('Nuxt_Country', country)
 
+
+		if(context.req.headers['main-srm'])
+					context.app.$axios.setHeader('Main-SRM', '185.49.85.84')
+
 	}
 
 if (context.route.query.ref){
