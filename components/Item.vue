@@ -893,13 +893,15 @@ if(this.user_claps_counter>=1){
 this.main_free=this.data.item.free
 this.main_download=this.data.item.download
 
-if(window.location.host=='igaptv.com'){
-  this.main_download=0
-  if(!this.$auth.loggedIn){
-    this.main_free=0
+if(this.$config.envname=='igapp'){
+  if(window.location.host=='igaptv.com' || window.location.host=='igaptv.net'){
+    this.main_download=0
+    if(!this.$auth.loggedIn){
+      this.main_free=0
+    }
+  } else if(window.location.host=='igtv.igaptv.com' || window.location.host=='igtv.igaptv.net'){
+    this.main_download=0
   }
-} else if(window.location.host=='igtv.igaptv.com'){
-  this.main_download=0
 }
 
 

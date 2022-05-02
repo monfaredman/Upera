@@ -40,7 +40,7 @@
       - بیش از ۳۰۰۰ اپیزود فیلم و سریال<br>
       - امکان دانلود فیلم بدون محدودیت<br>
       - حجم مصرفی نیم بها با خرید اشتراک<br><br>
-      <span><b>امکان دسترسی به فیلم ها و سریال ها بدون خرید اشتراک:</b><br>
+      <span v-if="showfullrate"><b>امکان دسترسی به فیلم ها و سریال ها بدون خرید اشتراک:</b><br>
         با اینترنت {{ operator_fullrate }} وارد شوید ، حجم مصرفی به جای خرید اشتراک تمام بها محاسبه می شود.<br></span>
     </div>
     <!-- <div v-if="!planloading" v-lazy-load="description" /> -->
@@ -77,7 +77,8 @@
         message: false,
         description: false,
         charge: 0,
-        buyloading: false
+        buyloading: false,
+        showfullrate: true,
       }
     },
 
@@ -118,6 +119,11 @@
 
 if(this.checkuser.operator_fullrate){
   this.operator_fullrate=this.checkuser.operator_fullrate
+}
+
+
+if(this.$config.envname=='igapp' && (window.location.host=='igaptv.com' || window.location.host=='igaptv.net')){
+  this.showfullrate=false
 }
 
 

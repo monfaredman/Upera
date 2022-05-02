@@ -339,7 +339,7 @@ import Subscription from "../components/Subscription"
   },
   mounted() {
 
-if(location.host=='igtv.igaptv.com'){
+if(this.$config.envname=='igapp' && (location.host=='igtv.igaptv.com' || location.host=='igtv.igaptv.net')){
   this.showpayments=false
 }
       this.Nav()

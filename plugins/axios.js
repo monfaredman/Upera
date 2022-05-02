@@ -8,6 +8,8 @@ export default function(context) {
 			ip = context.req.headers['ar-real-ip'].split(',').pop()
 		else if(context.req.headers['cf-connecting-ip'])
 			ip = context.req.headers['cf-connecting-ip'].split(',').pop()
+		else if(context.req.headers['x-forwarded-for'])
+			ip = context.req.headers['x-forwarded-for'].split(',').pop()
 		else
 			ip=context.req.connection.remoteAddress || 
 		  context.req.socket.remoteAddress || 
@@ -26,10 +28,6 @@ export default function(context) {
 
 		if(country)
 			context.app.$axios.setHeader('Nuxt_Country', country)
-
-
-		if(context.req.headers['main-srm'])
-					context.app.$axios.setHeader('Main-SRM', '185.49.85.84')
 
 	}
 
