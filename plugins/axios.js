@@ -23,8 +23,10 @@ export default function(context) {
 			country = context.req.headers['cf-ipcountry'].split(',').pop()
 
 
-		if(ip)
+		if(ip){
 			context.app.$axios.setHeader('Nuxt_IP', ip)
+			context.app.$axios.setHeader('X_FORWARDED_FOR', ip)
+		}
 
 		if(country)
 			context.app.$axios.setHeader('Nuxt_Country', country)
