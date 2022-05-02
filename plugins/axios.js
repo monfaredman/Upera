@@ -10,6 +10,10 @@ export default function(context) {
 			ip = context.req.headers['cf-connecting-ip'].split(',').pop()
 		else if(context.req.headers['x-forwarded-for'])
 			ip = context.req.headers['x-forwarded-for'].split(',').pop()
+		else if(context.req.headers['x_forwarded_for'])
+			ip = context.req.headers['x_forwarded_for'].split(',').pop()
+		else if(context.req.headers['X-Forwarded-For'])
+			ip = context.req.headers['X-Forwarded-For'].split(',').pop()
 		else
 			ip=context.req.connection.remoteAddress || 
 		  context.req.socket.remoteAddress || 
