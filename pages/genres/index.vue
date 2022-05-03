@@ -4,7 +4,7 @@
       <div class="row align-items-center mt-3 mt-md-5 ml-2 ml-md-4">
         <div v-for="(item,index) in data" :key="index" class="col-lg-3 col-md-4 col-6">
           <nuxt-link :to="{ name: 'genres-genre', params: { genre: item.en.toLowerCase() }}">
-            <b-img v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 364,height: 190,show:true}" :src="'https://thumb.upera.tv/thumb?w=364&h=190&q=100&a=c&src='+item.cover" :alt="item.fa" class="rounded" />
+            <b-img v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 364,height: 190,show:true}" :src="'https://thumb.upera.shop/thumb?w=364&h=190&q=100&a=c&src='+item.cover" :alt="item.fa" class="rounded" />
             
             <div class="mt-2">
               <h6 class="mt-2 small font-weight-normal">
@@ -29,7 +29,7 @@
         </div>
         <div class="col-8 p-lg-4 p-md-2 p-sm-0">
           <nuxt-link :to="{ name: 'genres-genre', params: { genre: item.en.toLowerCase() }}">
-            <b-img v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 988,height: 395,show:true}" :src="'https://thumb.upera.tv/thumb?w=988&h=395&q=100&src='+item.cover" :alt="item.fa" />
+            <b-img v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 988,height: 395,show:true}" :src="'https://thumb.upera.shop/thumb?w=988&h=395&q=100&src='+item.cover" :alt="item.fa" />
           </nuxt-link>
         </div>
       </div> -->

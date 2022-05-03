@@ -53,12 +53,12 @@
           <div class="row no-gutters">
             <div class="col-md-6 col-lg-5" />
             <div class="col-md-6 col-lg-7 showcase-pic">
-              <b-img v-bind="{blank: true,blankColor: '#bbb',width: 1120,height: 576,show:true}" :src="'https://thumb.upera.tv/thumb?w=1120&h=576&q=95&a=t&zc=1&src=https://cdn.upera.shop/s3/backdrops/'+ChooseLang(data.item.backdrop,data.item.backdrop_fa)" :alt="data.item.name" class="showcase-img d-none d-lg-block" />
-              <b-img v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 375,height: 300,show:true}" :src="'https://thumb.upera.tv/thumb?w=375&h=300&q=100&a=c&zc=1&src=https://cdn.upera.shop/s3/backdrops/'+ChooseLang(data.item.backdrop,data.item.backdrop_fa)" :alt="data.item.name" class="showcase-img d-lg-none" />
+              <b-img v-bind="{blank: true,blankColor: '#bbb',width: 1120,height: 576,show:true}" :src="'https://thumb.upera.shop/thumb?w=1120&h=576&q=95&a=t&zc=1&src=https://cdn.upera.shop/s3/backdrops/'+ChooseLang(data.item.backdrop,data.item.backdrop_fa)" :alt="data.item.name" class="showcase-img d-none d-lg-block" />
+              <b-img v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 375,height: 300,show:true}" :src="'https://thumb.upera.shop/thumb?w=375&h=300&q=100&a=c&zc=1&src=https://cdn.upera.shop/s3/backdrops/'+ChooseLang(data.item.backdrop,data.item.backdrop_fa)" :alt="data.item.name" class="showcase-img d-lg-none" />
 
 
-              <!--               <img loading="lazy" data-back="/images/1120x576.png" class="showcase-img d-none d-lg-block" :src="'https://thumb.upera.tv/thumb?w=1120&h=576&q=95&a=t&zc=1&src=https://cdn.upera.shop/s3/backdrops/'+ChooseLang(data.item.backdrop,data.item.backdrop_fa)" :alt="data.item.name">
-              <img loading="lazy" data-back="/images/375x300.png" class="showcase-img d-lg-none" :src="'https://thumb.upera.tv/thumb?w=375&h=300&q=100&a=c&zc=1&src=https://cdn.upera.shop/s3/backdrops/'+ChooseLang(data.item.backdrop,data.item.backdrop_fa)" :alt="data.item.name"> -->
+              <!--               <img loading="lazy" data-back="/images/1120x576.png" class="showcase-img d-none d-lg-block" :src="'https://thumb.upera.shop/thumb?w=1120&h=576&q=95&a=t&zc=1&src=https://cdn.upera.shop/s3/backdrops/'+ChooseLang(data.item.backdrop,data.item.backdrop_fa)" :alt="data.item.name">
+              <img loading="lazy" data-back="/images/375x300.png" class="showcase-img d-lg-none" :src="'https://thumb.upera.shop/thumb?w=375&h=300&q=100&a=c&zc=1&src=https://cdn.upera.shop/s3/backdrops/'+ChooseLang(data.item.backdrop,data.item.backdrop_fa)" :alt="data.item.name"> -->
             </div>
           </div>
           <div id="showcase-thumbnail-wrapper-outter" class="showcase-thumbnail-wrapper-outter d-flex align-items-center justify-content-between pr-gutter p-lg-3 p-md-3">
@@ -66,9 +66,9 @@
               <div class="d-flex h-full align-items-end">
                 <div class="thumbnail">
                   <nuxt-link :to="{ name: type+'-id', params: { id: data.item.id }}">
-                    <b-img class="thumbnail" v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 207,height: 307,show:true}" :src="'https://thumb.upera.tv/thumb?w=207&h=307&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+data.item.poster" :alt="data.item.name" @load="itemsize('e')" @error="itemsize('e')" />
+                    <b-img class="thumbnail" v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 207,height: 307,show:true}" :src="'https://thumb.upera.shop/thumb?w=207&h=307&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+data.item.poster" :alt="data.item.name" @load="itemsize('e')" @error="itemsize('e')" />
 
-                    <!-- <img loading="lazy" data-back="/images/207x307.png" class="thumbnail" :src="'https://thumb.upera.tv/thumb?w=207&h=307&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+data.item.poster" :alt="data.item.name" @load="itemsize('e')" @error="itemsize('e')"> -->
+                    <!-- <img loading="lazy" data-back="/images/207x307.png" class="thumbnail" :src="'https://thumb.upera.shop/thumb?w=207&h=307&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+data.item.poster" :alt="data.item.name" @load="itemsize('e')" @error="itemsize('e')"> -->
                   </nuxt-link>
                 </div>
                 <div class="pr-md-4 pr-2 pr-0 mr-0 showcase-desc-wrapper h-full">
@@ -215,7 +215,7 @@
                 </div>
                 <div class="thumbnail hide-mobile">
                   <nuxt-link :to="{ name: type+'-id', params: { id: data.item.id }}">
-                    <img class="thumbnail" :src="'https://thumb.upera.tv/thumb?w=207&h=307&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+data.item.poster" :alt="data.item.name">
+                    <img class="thumbnail" :src="'https://thumb.upera.shop/thumb?w=207&h=307&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+data.item.poster" :alt="data.item.name">
                   </nuxt-link>
                 </div>
               </div>
@@ -277,9 +277,9 @@
               نمایش تیزر
             </div>
             <div class="article-img-holder d-none d-lg-block">
-              <b-img class="article-img" v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 413,height: 258,show:true}" :src="Chooseback('https://thumb.upera.tv/thumb?w=413&h=258&q=100&a=c&src=https://cdn.upera.shop/s3/',data.item.back_teaser,data.item.backdrop)" :alt="'تیزر '+data.item.name_fa" />
+              <b-img class="article-img" v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 413,height: 258,show:true}" :src="Chooseback('https://thumb.upera.shop/thumb?w=413&h=258&q=100&a=c&src=https://cdn.upera.shop/s3/',data.item.back_teaser,data.item.backdrop)" :alt="'تیزر '+data.item.name_fa" />
 
-              <!-- <img loading="lazy" data-back="/images/413x258.png" class="article-img" :src="Chooseback('https://thumb.upera.tv/thumb?w=413&h=258&q=100&a=c&src=https://cdn.upera.shop/s3/',data.item.back_teaser,data.item.backdrop)" :alt="'تیزر '+data.item.name_fa"> -->
+              <!-- <img loading="lazy" data-back="/images/413x258.png" class="article-img" :src="Chooseback('https://thumb.upera.shop/thumb?w=413&h=258&q=100&a=c&src=https://cdn.upera.shop/s3/',data.item.back_teaser,data.item.backdrop)" :alt="'تیزر '+data.item.name_fa"> -->
               <a href="#" class="play-movie text-invert">
                 <i class="icon-play" />
               </a>
@@ -358,12 +358,12 @@
         <div class="swiper-slide">
           <div class="row no-gutters">
             <div class="col-md-6 col-lg-7 showcase-pic">
-              <b-img class="showcase-img d-none d-lg-block" v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 1120,height: 400,show:true}" :src="'https://thumb.upera.tv/thumb?w=1120&h=400&q=95&a=c&zc=1&src=https://cdn.upera.shop/s3/backdrops/'+data.last_episode.backdrop" :alt="data.last_episode.name" />
+              <b-img class="showcase-img d-none d-lg-block" v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 1120,height: 400,show:true}" :src="'https://thumb.upera.shop/thumb?w=1120&h=400&q=95&a=c&zc=1&src=https://cdn.upera.shop/s3/backdrops/'+data.last_episode.backdrop" :alt="data.last_episode.name" />
 
-              <b-img class="showcase-img d-lg-none" v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 375,height: 300,show:true}" :src="'https://thumb.upera.tv/thumb?w=375&h=300&q=100&a=c&zc=1&src=https://cdn.upera.shop/s3/backdrops/'+data.last_episode.backdrop" :alt="data.last_episode.name" />
+              <b-img class="showcase-img d-lg-none" v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 375,height: 300,show:true}" :src="'https://thumb.upera.shop/thumb?w=375&h=300&q=100&a=c&zc=1&src=https://cdn.upera.shop/s3/backdrops/'+data.last_episode.backdrop" :alt="data.last_episode.name" />
 
-              <!--  <img loading="lazy" data-back="/images/1120x400.png" class="showcase-img d-none d-lg-block" :src="'https://thumb.upera.tv/thumb?w=1120&h=400&q=95&a=c&zc=1&src=https://cdn.upera.shop/s3/backdrops/'+data.last_episode.backdrop" :alt="data.last_episode.name">
-              <img loading="lazy" data-back="/images/375x300.png" class="showcase-img d-lg-none" :src="'https://thumb.upera.tv/thumb?w=375&h=300&q=100&a=c&zc=1&src=https://cdn.upera.shop/s3/backdrops/'+data.last_episode.backdrop" :alt="data.last_episode.name"> -->
+              <!--  <img loading="lazy" data-back="/images/1120x400.png" class="showcase-img d-none d-lg-block" :src="'https://thumb.upera.shop/thumb?w=1120&h=400&q=95&a=c&zc=1&src=https://cdn.upera.shop/s3/backdrops/'+data.last_episode.backdrop" :alt="data.last_episode.name">
+              <img loading="lazy" data-back="/images/375x300.png" class="showcase-img d-lg-none" :src="'https://thumb.upera.shop/thumb?w=375&h=300&q=100&a=c&zc=1&src=https://cdn.upera.shop/s3/backdrops/'+data.last_episode.backdrop" :alt="data.last_episode.name"> -->
             </div>
             <div class="col-md-6 col-lg-5" />
           </div>
@@ -416,9 +416,9 @@
                 </div>
                 <div class="thumbnail hide-mobile">
                   <nuxt-link :to="{ name: 'episode-id', params: { id: data.last_episode.id }}">
-                    <b-img class="thumbnail" v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 207,height: 307,show:true}" :src="'https://thumb.upera.tv/thumb?w=207&h=307&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+data.last_episode.poster" :alt="data.last_episode.name" />
+                    <b-img class="thumbnail" v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 207,height: 307,show:true}" :src="'https://thumb.upera.shop/thumb?w=207&h=307&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+data.last_episode.poster" :alt="data.last_episode.name" />
 
-                    <!--  <img loading="lazy" class="thumbnail" :src="'https://thumb.upera.tv/thumb?w=207&h=307&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+data.last_episode.poster" :alt="data.last_episode.name"> -->
+                    <!--  <img loading="lazy" class="thumbnail" :src="'https://thumb.upera.shop/thumb?w=207&h=307&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+data.last_episode.poster" :alt="data.last_episode.name"> -->
                   </nuxt-link>
                 </div>
               </div>
@@ -444,7 +444,7 @@
         <div class="swiper-wrapper py-1">
           <div v-for="(item2,index2) in item" :key="index2" class="swiper-slide movielabel">
             <nuxt-link :to="{ name: 'episode-id', params: { id: item2.id }}">
-              <img :src="'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item2.poster" :alt="item2.name">
+              <img :src="'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item2.poster" :alt="item2.name">
             </nuxt-link>
             <div class="mt-2">
               <h6 class="mt-2 small font-weight-normal">
@@ -460,7 +460,7 @@
                       <div class="row row_actor_movie">
                         <div v-for="(item2, index2) in item" :key="index2" class="col-4 col-xl-2 col-md-2 col-sm-3">
                           <nuxt-link :to="{ name: 'episode-id', params: { id: item2.id }}" class="episode-poster">
-                            <img :src="'https://thumb.upera.tv/thumb?w=184&h=279&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item2.poster" alt="">
+                            <img :src="'https://thumb.upera.shop/thumb?w=184&h=279&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item2.poster" alt="">
                             <span class="block">قسمت {{ item2.episode_number }}</span>
                           </nuxt-link>
                         </div>
@@ -489,7 +489,7 @@
         <swiper :ref="'mySwiper'+index" :options="swiperOption">
           <swiper-slide v-for="(item2,index2) in item" :key="index2" class="swiper-slide movielabel">
             <nuxt-link :to="{ name: 'episode-id', params: { id: item2.id }}">
-              <img :src="'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item2.poster" :alt="item2.name">
+              <img :src="'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item2.poster" :alt="item2.name">
             </nuxt-link>
             <div class="mt-2">
               <h6 class="mt-2 small font-weight-normal">
@@ -517,9 +517,9 @@
         <div class="row">
           <div v-for="(item2,index2) in data.season[selectseriesid]" :key="index2" class="col-lg-3 col-md-4 col-6">
             <nuxt-link :to="{ name: 'episode-id', params: { id: item2.id }}">
-              <b-img v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 364,height: 190,show:true}" :src="'https://thumb.upera.tv/thumb?w=364&h=190&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/'+item2.backdrop" :alt="item2.name" class="rounded" />
+              <b-img v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 364,height: 190,show:true}" :src="'https://thumb.upera.shop/thumb?w=364&h=190&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/'+item2.backdrop" :alt="item2.name" class="rounded" />
 
-              <!-- <img loading="lazy" data-back="/images/364x190.png" :src="'https://thumb.upera.tv/thumb?w=364&h=190&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/'+item2.backdrop" :alt="item2.name" class="rounded" width="100%"> -->
+              <!-- <img loading="lazy" data-back="/images/364x190.png" :src="'https://thumb.upera.shop/thumb?w=364&h=190&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/'+item2.backdrop" :alt="item2.name" class="rounded" width="100%"> -->
               <div v-if="$auth.loggedIn" class="progress">
                 <div class="progress-bar" :style="'width: '+(item2.current_time/item2.duration_time)*100+'%'" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" />
               </div>
@@ -546,12 +546,12 @@
           <!-- Slides -->
           <div v-for="(item,index) in data.similar" :key="index" class="swiper-slide" :class="{'movielabel':item.type=='movie'}">
             <nuxt-link :to="{ name: item.type+'-id', params: { id: item.id }}" :class="{'is-series': item.type!='movie'}">
-              <b-img v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 142,height: 212,show:true}" :src="'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name" />
-              <b-img v-if="item.type!='movie'" v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 142,height: 212,show:true}" :src="'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name" />
-              <b-img v-if="item.type!='movie'" v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 142,height: 212,show:true}" :src="'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name" />
-              <!--               <img loading="lazy" data-back="/images/142x212.png" :src="'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
-              <img v-if="item.type!='movie'" :src="'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
-              <img v-if="item.type!='movie'" :src="'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name"> -->
+              <b-img v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 142,height: 212,show:true}" :src="'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name" />
+              <b-img v-if="item.type!='movie'" v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 142,height: 212,show:true}" :src="'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name" />
+              <b-img v-if="item.type!='movie'" v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 142,height: 212,show:true}" :src="'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name" />
+              <!--               <img loading="lazy" data-back="/images/142x212.png" :src="'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
+              <img v-if="item.type!='movie'" :src="'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
+              <img v-if="item.type!='movie'" :src="'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name"> -->
               <span v-if="!item.ir && item.persian" class="label label-rounded label-red label-1">دوبله</span>
               <span v-if="!item.ir && !item.persian" class="label label-rounded label-warning label-1">زیرنویس</span>
               <span v-if="item.free && $config.envname=='upera'" class="label label-blue label-2" :class="{'label-rotated':true}">رایگان</span>
@@ -576,9 +576,9 @@
                     <div v-show="data.casts !== null" class="row row_actor_movie row_actor2_movie">
                       <div v-for="(item, index) in data.casts" :key="index" class="col-4 col-xl-1 col-md-2 col-sm-3 mt-2 mt-lg-4">
                         <nuxt-link :to="{ name: 'cast-id', params: { id: item.id }}" class="actor2">
-                          <b-img v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 140,height: 140,show:true}" :src="'https://thumb.upera.tv/thumb?w=140&h=140&q=100&a=t&src=https://cdn.upera.shop/s3/casts/'+item.image" :alt="item.name" class="rounded-circle" />
+                          <b-img v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 140,height: 140,show:true}" :src="'https://thumb.upera.shop/thumb?w=140&h=140&q=100&a=t&src=https://cdn.upera.shop/s3/casts/'+item.image" :alt="item.name" class="rounded-circle" />
 
-                          <!-- <img :src="'https://thumb.upera.tv/thumb?w=141&h=214&q=100&a=c&src=https://cdn.upera.shop/s3/casts/'+item.image" :alt="item.name"> -->
+                          <!-- <img :src="'https://thumb.upera.shop/thumb?w=141&h=214&q=100&a=c&src=https://cdn.upera.shop/s3/casts/'+item.image" :alt="item.name"> -->
                           <span class="block">{{ ChooseLang(item.name,item.name_fa) }}</span>
                         </nuxt-link>
                       </div>
@@ -617,7 +617,7 @@
                       <i class="far fa-2x fa-play-circle"
                          style="color: white; position: absolute; top: 45%; left: 45%;"
                       />
-                      <img :src="Chooseback('https://thumb.upera.tv/thumb?w=1920&h=1200&q=100&a=c&src=https://cdn.upera.shop/s3/',data.item.back_teaser,data.item.backdrop)" class="img-fluid" :alt="'تیزر '+data.item.name_fa">
+                      <img :src="Chooseback('https://thumb.upera.shop/thumb?w=1920&h=1200&q=100&a=c&src=https://cdn.upera.shop/s3/',data.item.back_teaser,data.item.backdrop)" class="img-fluid" :alt="'تیزر '+data.item.name_fa">
                     </a>
                   </div>
                 </div>
@@ -634,7 +634,7 @@
                     >
                       <a href="" class="d-block mb-4 h-100" @click.prevent="galleryindex = thumbIndex">
 
-                        <img :src="'https://thumb.upera.tv/thumb?w=1920&h=1200&q=100&a=c&src='+thumb" class="img-fluid img-thumbnail" :alt="'تصویر '+thumbIndex+' '+data.item.name_fa">
+                        <img :src="'https://thumb.upera.shop/thumb?w=1920&h=1200&q=100&a=c&src='+thumb" class="img-fluid img-thumbnail" :alt="'تصویر '+thumbIndex+' '+data.item.name_fa">
                       </a>
                     </div>
                   </div>
@@ -655,7 +655,7 @@
                     >
                       <a href="" class="d-block mb-4 h-100" @click.prevent="galleryindex = thumbIndex">
 
-                        <img :src="'https://thumb.upera.tv/thumb?w=1920&h=1200&q=100&a=c&src='+thumb" class="img-fluid img-thumbnail" :alt="'تصویر '+thumbIndex+' '+data.item.name_fa">
+                        <img :src="'https://thumb.upera.shop/thumb?w=1920&h=1200&q=100&a=c&src='+thumb" class="img-fluid img-thumbnail" :alt="'تصویر '+thumbIndex+' '+data.item.name_fa">
                       </a>
                     </div>
                   </div>
@@ -668,7 +668,7 @@
                       <i class="far fa-2x fa-play-circle"
                          style="color: white; position: absolute; top: 45%; left: 45%;"
                       />
-                      <img :src="Chooseback('https://thumb.upera.tv/thumb?w=1920&h=1200&q=100&a=c&src=https://cdn.upera.shop/s3/',data.item.back_teaser,data.item.backdrop)" class="img-fluid" :alt="'تیزر '+data.item.name_fa">
+                      <img :src="Chooseback('https://thumb.upera.shop/thumb?w=1920&h=1200&q=100&a=c&src=https://cdn.upera.shop/s3/',data.item.back_teaser,data.item.backdrop)" class="img-fluid" :alt="'تیزر '+data.item.name_fa">
                     </a>
                   </div>
                 </div>
@@ -680,7 +680,7 @@
                       <i class="far fa-2x fa-play-circle"
                          style="color: white; position: absolute; top: 45%; left: 45%;"
                       />
-                      <img :src="Chooseback('https://thumb.upera.tv/thumb?w=1920&h=1200&q=100&a=c&src=https://cdn.upera.shop/s3/',data.item.back_teaser,data.item.backdrop)" class="img-fluid" :alt="'تیزر '+data.item.name_fa">
+                      <img :src="Chooseback('https://thumb.upera.shop/thumb?w=1920&h=1200&q=100&a=c&src=https://cdn.upera.shop/s3/',data.item.back_teaser,data.item.backdrop)" class="img-fluid" :alt="'تیزر '+data.item.name_fa">
                     </a>
                   </div>
                 </div>
