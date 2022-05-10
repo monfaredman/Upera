@@ -313,7 +313,15 @@
                     </div>
                   </div>
                 </div>
-                <div v-if="$auth.loggedIn">
+                <div v-if="$config.envname=='igapp'">
+                  <div class="float-right">
+                    <a class="btn btn-light" href="https://web.igap.net/">
+                      بازگشت
+                    </a>
+                  </div>
+                  <div class="clearfix" />
+                </div>
+                <!--                 <div v-if="$auth.loggedIn">
                   <div v-if="$config.envname=='igapp'">
                     <img class="p-4" src="@/assets/lottery/ref-logged-traffic.jpg" @click.prevent="lottery()">
                   </div>
@@ -330,7 +338,7 @@
                     <img v-show="!mref || isNaN(mref)" class="p-4" src="@/assets/lottery/noref-nologged-buyandtraffic.jpg" @click.prevent="lottery()">
                     <img v-show="mref && !isNaN(mref)" class="p-4" src="@/assets/lottery/ref-nologged-buyandtraffic.jpg" @click.prevent="lottery()">
                   </div>
-                </div>
+                </div> -->
               </div>
               <div v-if="!cartloading && notes" class="col-12">
                 <span class="text-info h6 text-justify"><br>{{ notes }}<br><br></span>

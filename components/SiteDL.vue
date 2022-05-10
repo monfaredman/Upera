@@ -38,12 +38,12 @@
                     </div>
 
 
-                    <div v-if="$auth.loggedIn">
+                    <!--                     <div v-if="$auth.loggedIn">
                       <img class="p-4" src="@/assets/lottery/ref-logged-traffic.jpg" @click.prevent="lottery()">
                     </div>
                     <div v-else>
                       <img class="p-4" src="@/assets/lottery/ref-nologged-traffic.jpg" @click.prevent="lottery()">
-                    </div>
+                    </div> -->
                   </div>
                   <!--                     <div class="row">
                       <div class="col-sm-12 mt-4">
