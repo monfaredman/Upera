@@ -57,7 +57,7 @@ export default {
     link: [{ rel: "icon", type: "image/x-icon", href: "/favicon-"+process.env.ENV+".ico"}],
     script: [
       {
-        src: 'https://web.upera.tv/jwplayer?v1', body: true
+        src: 'https://seeko.film/jwplayer?v1', body: true
       }
     ],
   },
