@@ -1,44 +1,43 @@
 export default function(context) {
 
-	if (process.server) {
+	// if (process.server) {
 
-		let ip=null
+	// 	let ip=null
 
-		if(context.req.headers['ar-real-ip'])
-			ip = context.req.headers['ar-real-ip']
-		else if(context.req.headers['cf-connecting-ip'])
-			ip = context.req.headers['cf-connecting-ip']
-		else if(context.req.headers['x-forwarded-for'])
-			ip = context.req.headers['x-forwarded-for']
-		else if(context.req.headers['x_forwarded_for'])
-			ip = context.req.headers['x_forwarded_for']
-		else if(context.req.headers['X_Forwarded_For'])
-			ip = context.req.headers['X_Forwarded_For']
-		else if(context.req.headers['X-Forwarded-For'])
-			ip = context.req.headers['X-Forwarded-For']
-		else
-			ip=context.req.connection.remoteAddress || 
-		  context.req.socket.remoteAddress || 
-		  context.req.connection.socket.remoteAddress
+	// 	if(context.req.headers['ar-real-ip'])
+	// 		ip = context.req.headers['ar-real-ip'].split(',').pop()
+	// 	else if(context.req.headers['cf-connecting-ip'])
+	// 		ip = context.req.headers['cf-connecting-ip'].split(',').pop()
+	// 	else if(context.req.headers['x-forwarded-for'])
+	// 		ip = context.req.headers['x-forwarded-for'].split(',').pop()
+	// 	else if(context.req.headers['x_forwarded_for'])
+	// 		ip = context.req.headers['x_forwarded_for'].split(',').pop()
+	// 	else if(context.req.headers['X_Forwarded_For'])
+	// 		ip = context.req.headers['X_Forwarded_For'].split(',').pop()
+	// 	else if(context.req.headers['X-Forwarded-For'])
+	// 		ip = context.req.headers['X-Forwarded-For'].split(',').pop()
+	// 	else
+	// 		ip=context.req.connection.remoteAddress || 
+	// 	  context.req.socket.remoteAddress || 
+	// 	  context.req.connection.socket.remoteAddress
 
-		 //let country = null
+	// 	 let country = null
 
-		// if(context.req.headers['ar-real-country'])
-		// 	country = context.req.headers['ar-real-country'].split(',').pop()
-		// else if(context.req.headers['cf-ipcountry'])
-		// 	country = context.req.headers['cf-ipcountry'].split(',').pop()
+	// 	if(context.req.headers['ar-real-country'])
+	// 		country = context.req.headers['ar-real-country'].split(',').pop()
+	// 	else if(context.req.headers['cf-ipcountry'])
+	// 		country = context.req.headers['cf-ipcountry'].split(',').pop()
 
 
-		if(ip){
-			context.app.$axios.setHeader('Nuxt_IP', ip)
-			context.app.$axios.setHeader('X_FORWARDED_FOR', ip)
-			context.app.$axios.setHeader('X-FORWARDED-FOR', ip)
-		}
+	// 	if(ip){
+	// 		context.app.$axios.setHeader('Nuxt_IP', ip)
+	// 		context.app.$axios.setHeader('X_FORWARDED_FOR', ip)
+	// 	}
 
-		// if(country)
-		// 	context.app.$axios.setHeader('Nuxt_Country', country)
+	// 	if(country)
+	// 		context.app.$axios.setHeader('Nuxt_Country', country)
 
-	}
+	// }
 
 if (context.route.query.ref){
   const num = context.route.query.ref
