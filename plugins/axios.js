@@ -5,17 +5,17 @@ export default function(context) {
 		let ip=null
 
 		if(context.req.headers['ar-real-ip'])
-			ip = context.req.headers['ar-real-ip'].split(',').pop()
+			ip = context.req.headers['ar-real-ip']
 		else if(context.req.headers['cf-connecting-ip'])
-			ip = context.req.headers['cf-connecting-ip'].split(',').pop()
+			ip = context.req.headers['cf-connecting-ip']
 		else if(context.req.headers['x-forwarded-for'])
-			ip = context.req.headers['x-forwarded-for'].split(',').pop()
+			ip = context.req.headers['x-forwarded-for']
 		else if(context.req.headers['x_forwarded_for'])
-			ip = context.req.headers['x_forwarded_for'].split(',').pop()
+			ip = context.req.headers['x_forwarded_for']
 		else if(context.req.headers['X_Forwarded_For'])
-			ip = context.req.headers['X_Forwarded_For'].split(',').pop()
+			ip = context.req.headers['X_Forwarded_For']
 		else if(context.req.headers['X-Forwarded-For'])
-			ip = context.req.headers['X-Forwarded-For'].split(',').pop()
+			ip = context.req.headers['X-Forwarded-For']
 		else
 			ip=context.req.connection.remoteAddress || 
 		  context.req.socket.remoteAddress || 
