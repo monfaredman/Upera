@@ -183,6 +183,14 @@ export const actions = {
         RESET_DOWNLOAD({ commit }) {
             commit('RESET_DOWNLOAD')
         },
+
+        DOWNLOAD_SPINER_LOAD({ commit }) {
+            commit('DOWNLOAD_SPINER_LOAD')
+        },
+
+        DOWNLOAD_SPINER_CLEAN({ commit }) {
+            commit('DOWNLOAD_SPINER_CLEAN')
+        }
 }
 
 export const mutations = {

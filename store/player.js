@@ -6,6 +6,8 @@ export const state = () => ({
         url: [],
         show_report: false,
         filesloading: true,
+        showlinks: true,
+        dlplayerloading: true,
         showplyrmodal: false,
         showDownloadModal: false,
         next: null,
@@ -32,6 +34,12 @@ export const getters = {
   },
   filesloading(state) {
     return state.filesloading
+  },
+  dlplayerloading(state) {
+    return state.dlplayerloading
+  },
+  showlinks(state) {
+    return state.showlinks
   },
   showplyrmodal(state) {
     return state.showplyrmodal
@@ -717,11 +725,15 @@ return SRMdata
          * @param id
          * @constructor
          */
-        LOAD_TV({commit}, {id,SRMdata}) {
-            this.$axios.get('/get/watch/tv/' + id)
+        LOAD_LIVE({commit}, {guest,id,SRMdata}) {
+            var api_url = '/get/watch/tv/' + id
+            if(guest){
+              api_url = '/ghost/get/watch/tv/' + id
+            }
+            this.$axios.get(api_url)
                 .then(res => {
                     if (res.status === 200) {
-                        res.data.data.guest=0
+                        res.data.data.guest=guest
                         commit('SET_DATA_PLAYER_TV',  res.data.data)
                     }
                 }, error => {
@@ -767,84 +779,6 @@ return SRMdata
                           (window.history.length > 2) ? this.$router.go(-1) :  this.$router.push('/')
                           //commit('FLOWPLAYER_DESTORY', 'tv')
                           break
-                      }
-                    })
-                  } else {
-                    // Show Sweetalert if there is problem
-                    this.app.$swal({
-                        icon: 'error',
-                        title: this.app.i18n.t('player.error1'),
-                        dangerMode: true,
-                        button: this.app.i18n.t('player.back'),
-                    }).then(() => {
-                        this.$router.go(-1)
-                        //commit('FLOWPLAYER_DESTORY', 'tv')
-                    })
-                }
-            })
-        },
-        LOAD_GHOST_TV({commit}, {id,SRMdata}) {
-            this.$axios.get('/ghost/get/watch/tv/' + id)
-                .then(res => {
-                    if (res.status === 200) {
-                        res.data.data.guest=1
-                        commit('SET_DATA_PLAYER_TV',  res.data.data)
-                    }
-                }, error => {
-                  if (error.response.data.status == 'not_free') {
-                      var dlsmtitle=this.app.i18n.t('player.error2')
-                      if(!SRMdata.subscription){
-                        dlsmtitle=this.app.i18n.t('player.error6')
-                      }
-                      var dlsmbuttons={back: {
-                                text: this.app.i18n.t('player.back'),
-                                value: "back",
-                                closeModal: true,
-                                className: 'swal-back'
-                              }}
-
-                      if(SRMdata.subscription){
-                          Object.assign(dlsmbuttons, {signup: {
-                              text: this.app.i18n.t('player.subscribe'),
-                              value: "subscribe",
-                              closeModal: true
-                          }})
-                      }
-
-                      Object.assign(dlsmbuttons, {login: {
-                            text: this.app.i18n.t('nav.login'),
-                            value: "login",
-                            closeModal: true
-                          }})
-
-                      this.app.$swal({
-                      title: dlsmtitle,
-                      icon: 'error',
-                      dangerMode: true,
-                      buttons: dlsmbuttons,
-                    })
-                    .then((value) => {
-                      switch (value) {
-                     
-                        case "back":
-                          (window.history.length > 2) ? this.$router.go(-1) :  this.$router.push('/')
-                          //commit('FLOWPLAYER_DESTORY', 'tv')
-                          break
-                     
-
-                          case "signup":
-                            this.$router.push({ name: 'signup-with-plan' })
-                            //commit('FLOWPLAYER_DESTORY', 'tv')
-                            break
-
-                          
-                          case "login":
-                            this.dispatch('login/SHOW_MODAL',{premessage: null,premobile: null,preredirect: null,prerefresh: false})
-                            break
-                     
-                        default:
-                          (window.history.length > 2) ? this.$router.go(-1) :  this.$router.push('/')
-                          //commit('FLOWPLAYER_DESTORY', 'tv')
                       }
                     })
                   } else {
@@ -1064,6 +998,125 @@ commit('PLAYER_MODAL_CLEAN')
 
         },
 
+
+        LOAD_DOWNLOAD_PLAYER({commit}, {loggedIn,id,type, backdrop,block_id,name}) {
+            var ref=this.$cookiz.get('ref')
+            if(!ref || isNaN(ref))
+              ref=0
+                var api_url
+                if(type=="movie"){
+                  if (loggedIn) {
+                      api_url='/get/watch/movie-hls/'+ id + '/1'+ref
+                  } else {
+                      api_url='/ghost/get/watch/movie-hls/'+ id + '/1'+ref
+                  }
+                }else{
+                  if (loggedIn) {
+                      api_url='/get/watch/episode?hls=1&series_id=&type=sp&episode_id='+id+'&ref='+ref
+                  } else {
+                      api_url='/ghost/get/watch/episode?hls=1&series_id=&type=sp&episode_id='+id+'&ref='+ref
+                  }                  
+                }
+                
+                this.dispatch("download/DOWNLOAD_SPINER_LOAD")
+                commit('DOWNLOAD_PLAYER_SPINER_LOAD')
+                commit('HIDDEN_LINKS')
+
+                this.$axios.get(api_url).then((res) => {
+
+
+                    if (res.status === 200) {
+                            commit('PLAYER_MODAL_LOAD')
+
+
+                            let jwp
+                            let titlesm
+                            let video
+
+                            titlesm = name
+
+                            res.data=res.data.data
+
+                            if(type=="movie"){
+                              video=res.data.video
+                            }else{
+                              video=res.data.episode
+                            }
+
+                            if(video.length===0){
+                              this.app.$swal('There was a problem playing the video, we will fix it soon.', {
+                                icon: "error",
+                              })
+                              commit('DOWNLOAD_PLAYER_SPINER_CLEAN')
+                              this.dispatch("download/DOWNLOAD_SPINER_CLEAN")
+                              commit('SHOW_LINKS')
+                            }else{
+
+
+                              if(this.$device.isTV){
+                                  if(video[0].video.includes("?")){
+                                    video[0].video=video[0].video+'&app=1'
+                                  }else{
+                                    video[0].video=video[0].video+'?app=1'
+                                  }
+                              }
+
+  jwp=window.jwplayer(block_id).setup({ 
+    "playlist": [
+      {
+        "file": video[0].video,
+        "title": titlesm,
+        "image": backdrop,
+        "type": 'hls',
+        "autostart": true
+      }
+    ],
+    "height": "100%",
+    "width": "100%",
+    "pipIcon": "disabled",
+    "autostart": true
+  })
+
+
+
+
+                                jwp.on("setupError", function (e) {
+                                  this.app.$swal(e.message, {
+                                    icon: "error",
+                                  })
+                                })
+jwp.on('ready', (e) => {
+
+
+  commit('DOWNLOAD_PLAYER_SPINER_CLEAN')
+  this.dispatch("download/DOWNLOAD_SPINER_CLEAN")
+  
+  setTimeout(() => commit('SHOW_LINKS'), 2000)
+  return e
+})
+
+
+                            }
+                            
+                        
+
+
+                    }
+                }, (error) => {
+
+commit('PLAYER_MODAL_CLEAN')
+                // this.app.$swal('There was a problem playing the video, we will fix it soon.', {
+                //                 icon: "error",
+                //               })
+
+
+                              this.dispatch("download/DOWNLOAD_SPINER_CLEAN")
+                              commit('SHOW_LINKS')
+return error
+                })
+
+
+        },
 
         PLAYER_MODAL_LOAD({commit}) {
             commit('PLAYER_MODAL_LOAD')
@@ -2146,38 +2199,144 @@ document.body.classList.add('loaded')
 
             // Check and Sort Vidoe Link
             let jwp
+            var myDiv
 
             
                               if(this.$device.isTV){
-                                  if(state.data.video[0].streaming_url.includes("?")){
-                                    state.data.video[0].streaming_url=state.data.video[0].streaming_url+'&app=1'
+                                  if(state.data.video.streaming_url.includes("?")){
+                                    state.data.video.streaming_url=state.data.video.streaming_url+'&app=1'
                                   }else{
-                                    state.data.video[0].streaming_url=state.data.video[0].streaming_url+'?app=1'
+                                    state.data.video.streaming_url=state.data.video.streaming_url+'?app=1'
                                   }
                               }
 
   jwp=window.jwplayer('my-player').setup({
-    "playlist": [
-      {
-        "file": state.data.video[0].streaming_url,
-        "type": 'hls',
-        "autostart": true
-      }
-    ],
+    "file": state.data.video.streaming_url,
+    "type": 'hls',
     "height": "100%",
     "width": "100%",
     "pipIcon": "disabled",
-    "autostart": true
+    "autostart": true,
+    "mute": false,
+    "liveTimeout": 0
   })
 
+            jwp.on('play', (e) => {
+              document.getElementById('my-player').classList.remove( "jw-state-idle" )
+              return e
+             })
 
             jwp.on('ready', (e) => {
-              
-               if(!document.getElementById('my-player')){
-                document.body.classList.add('loaded')
-                  if(jwp){
-                      jwp.remove()
-                  }
+                if(document.getElementById('my-player')){
+
+                  document.body.classList.add('loaded')
+                    document.getElementById('my-player').classList.add( "jw-state-idle" )
+                    document.body.classList.add('playerback')
+                    document.getElementById('my-player').classList.remove( "jw-flag-aspect-mode" )
+
+                    myDiv = document.createElement("div")
+                    
+                    myDiv.innerHTML = '<div id="flowplayer-back-button"><div class="icon-back"></div></div>'
+
+                    document.getElementsByClassName("jwplayer")[0].appendChild(myDiv)
+
+
+                    document.getElementById('flowplayer-back-button').addEventListener('click', () => {
+                        if(jwp){
+                            jwp.remove()
+                        }
+                        var reElement = document.getElementById("my-player")
+                        reElement.parentNode.removeChild(reElement)
+
+                        var addElement = document.getElementById("flowplayer-player")
+
+                        addElement.innerHTML = `<div id="my-player" class="fp-full fp-mute fp-edgy flowplayer">
+
+                            </div>`
+
+                                                if(window.history.length > 2) 
+                         app.router.go(-1) 
+                        else
+                          app.router.push({ name: 'live'})
+                    })
+
+
+                    if(this.app.i18n.locale=="fa"){
+                      myDiv = document.createElement("span")
+                      myDiv.innerHTML = '<div id="flowplayer-rate">حجم مصرفی: <button type="button" class="btn btn-info rounded-pill">تمام بها</button></div>'
+                      document.getElementsByClassName("jwplayer")[0].appendChild(myDiv)
+    
+                    }
+
+// && data.data.fullrate !== null
+                    // if(this.app.i18n.locale=="fa" && data.data.fullrate !== null){
+                    //   myDiv = document.createElement("span")
+                    //   myDiv.innerHTML = '<div id="flowplayer-rate">حجم مصرفی: <button type="button" class="btn btn-info rounded-pill">'+data.data.fullrate_data.fa.title+'</button></div>'
+                    //   document.getElementsByClassName("jwplayer")[0].appendChild(myDiv)
+      
+                    //     if(data.data.fullrate_data.message && this.app.$config.envname!='igapp'){
+                    //       const flowplayerRate = document.getElementById('flowplayer-rate')
+                    //       flowplayerRate.addEventListener('click', () => {
+                    //           var dlsmbuttons={back: {
+                    //             text: this.app.i18n.t('player.back'),
+                    //             value: "back",
+                    //             closeModal: true,
+                    //             className: 'swal-back'
+                    //           }}
+
+
+                    //           if(data.data.fullrate_data.show_download === 1){
+                    //               Object.assign(dlsmbuttons, {download: {
+                    //                     text: this.app.i18n.t('player.download'),
+                    //                     value: "download",
+                    //                     closeModal: true
+                    //               }})
+                    //           }
+
+                    //           if(data.data.fullrate_data.show_subscription === 1){
+                    //               Object.assign(dlsmbuttons, {subscribe: {
+                    //                     text: this.app.i18n.t('player.subscribe'),
+                    //                     value: "subscribe",
+                    //                     closeModal: true
+                    //               }})
+                    //           }
+                    //           this.app.$swal({
+                    //                 title: data.data.fullrate_data.fa.message_title,
+                    //                 text: data.data.fullrate_data.fa.message_desc,
+                    //                 icon: 'error',
+                    //                 dangerMode: true,
+                    //                 buttons: dlsmbuttons,
+                    //               })
+                    //               .then((value) => {
+                    //                 switch (value) {
+                                   
+                    //                   case "back":
+                    //                     this.app.$swal.close()
+                    //                     break
+                                   
+                    //                   case "subscribe":
+                    //                       app.router.push({ name: 'movie-id', params: {id: data.data.video[0].id }})
+                    //                     break
+
+
+                    //                   case "download":
+                    //                     app.router.push({ name: 'movie-download-id', params: {id: data.data.video[0].id }, query: { force_to_buy: 1 } })
+                    //                     break
+
+                    //                   default:
+                    //                     this.app.$swal.close()
+                    //                     break
+                    //                 }
+                    //           })
+                    //         })
+                    //       }
+                    // }
+
+
+                    //jwp.play()
+                    
+
+                    
                 }else{ 
                   jwp.remove()
                 }
@@ -2208,9 +2367,11 @@ document.body.classList.add('loaded')
                 })
  
   })
-
-
-              jwp.addButton('/images/player-report.svg', 'Report', function() {state.show_report = true;jwp.pause()}, 'flowplayer-report-button', '')
+  jwp.on("error", function (e) {
+    setTimeout(() => app.router.go(), 3000)
+  
+ return e
+  })
 
 
 
@@ -2228,6 +2389,23 @@ document.body.classList.add('loaded')
 
         DOWNLOAD_SPINER_CLEAN(state) {
             state.filesloading = false
+        },
+
+        DOWNLOAD_PLAYER_SPINER_LOAD(state) {
+            state.dlplayerloading = true
+        },
+
+        DOWNLOAD_PLAYER_SPINER_CLEAN(state) {
+            state.dlplayerloading = false
+        },
+
+
+        SHOW_LINKS(state) {
+            state.showlinks = true
+        },
+
+        HIDDEN_LINKS(state) {
+            state.showlinks = false
         },
 
         PLAYER_MODAL_LOAD(state) {

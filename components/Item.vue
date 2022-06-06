@@ -894,14 +894,16 @@ this.main_free=this.data.item.free
 this.main_download=this.data.item.download
 
 if(this.$config.envname=='igapp'){
+  this.main_download=0
   if(window.location.host=='igaptv.com' || window.location.host=='igaptv.net'){
-    this.main_download=0
+    // this.main_download=0
     if(!this.$auth.loggedIn){
       this.main_free=0
     }
-  } else if(window.location.host=='igtv.igaptv.com' || window.location.host=='igtv.igaptv.net'){
-    this.main_download=0
   }
+  //  else if(window.location.host=='igtv.igaptv.com' || window.location.host=='igtv.igaptv.net' || window.location.host=='igaptv.igap.net'){
+  //   this.main_download=0
+  // }
 }
 
 

@@ -1,6 +1,6 @@
 <template>
   <div id="srm" class="srmrtl">
-    <div class="default">
+    <div class="default with-header">
       <Header />
       <Nuxt />
     </div>

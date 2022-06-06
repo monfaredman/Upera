@@ -193,10 +193,35 @@
 
                 <span v-if="!screening.ekran && !cartloading" class="text-info h6 text-justify">حجم مصرفی: {{ fullrate_data.fa.title }}<br><br></span>
                 <!-- !ftb2 &&  -->
+
+
                 <span v-if="!ftb2 && !cartloading && !owned && traffic && trafficoo && !(downloadslist.some(function(el){ return el.owned === 1}))" class="text-justify ">دسترسی بدون خرید، با اینترنت {{ operator_fullrate }}<br><button class="btn btn-secondary text-right" @click="SHOWAGAIN(0)">
                   بررسی اتصال اینترنت
                   <i class="fas fa-sync-alt" />
                 </button><br>و یا خرید با اینترنت فعلی شما:<br><br></span>
+                <span v-else-if="$config.envname=='igapp' && !ftb2 && traffic">
+                  <div>
+                    <!-- && !cartloading -->
+
+
+                    <div dir="ltr" class="col-12" style="padding:0; margin: 0; height: 100%;">
+                      <div id="flowplayer-download-player" class="is-closeable">
+                        <div v-show="dlplayerloading" class="light-gallery__spinner">
+                          <div class="light-gallery__dot" style="border-color: rgba(0, 0, 0, 0.8);" /> <div class="light-gallery__dot" style="border-color: rgba(0, 0, 0, 0.8);" /> <div class="light-gallery__dot" style="border-color: rgba(0, 0, 0, 0.8);" />
+                        </div>
+
+                        <div id="my-download-player" class="fp-full fp-mute fp-edgy flowplayer" />
+                      </div>
+                    </div>
+
+
+
+
+
+
+
+                  </div>
+                </span>
 
                 <span v-if="screening.ekran && !cartloading" class="text-info h6 text-justify">مصرف اینترنت جهت تماشای آنلاین {{ fullrate_data.fa.title }} می باشد<br><br></span>
 
@@ -206,7 +231,7 @@
 
                 <span v-if="!cartloading && !presale && pass" class="text-danger h6 text-justify">رمز پیش خرید: <span class="text-primary">{{ pass }}</span> (مخصوص کسانی که قبلا خرید کرده اند)<br><br></span>
               </div>
-              <div v-if="!cartloading && Object.keys(downloadslist).length > 0 && (downloadslist.some(function(el){ return el.owned === 1}) || !cart.some(function(el){ return downloadslist.some(function(el2){ return el.itemid === el2.id})}))">
+              <div v-if="!cartloading && showlinks && Object.keys(downloadslist).length > 0 && (downloadslist.some(function(el){ return el.owned === 1}) || !cart.some(function(el){ return downloadslist.some(function(el2){ return el.itemid === el2.id})}))">
                 <div v-for="(item,index) in downloadslist" :key="index" class="download-links-item">
                   <div class="row">
                     <div class="col-sm-6">
@@ -313,14 +338,14 @@
                     </div>
                   </div>
                 </div>
-                <div v-if="$config.envname=='igapp'">
+                <!--                 <div v-if="$config.envname=='igapp'">
                   <div class="float-right">
                     <a class="btn btn-light" href="https://web.igap.net/">
                       بازگشت
                     </a>
                   </div>
                   <div class="clearfix" />
-                </div>
+                </div> -->
                 <!--                 <div v-if="$auth.loggedIn">
                   <div v-if="$config.envname=='igapp'">
                     <img class="p-4" src="@/assets/lottery/ref-logged-traffic.jpg" @click.prevent="lottery()">
@@ -512,6 +537,7 @@ import {mapGetters} from 'vuex'
         login: 0,
         ftb2: 0,
         mref: 0,
+        i: 0,
         downloadloading: false,
         message: null,
         premessage: null,
@@ -545,7 +571,9 @@ import {mapGetters} from 'vuex'
           ...mapGetters({show_buy: "download/show_buy"}),
           ...mapGetters({notes: "download/notes"}),
           ...mapGetters({totalamount: "download/total_amount"}),
-          ...mapGetters({divcount: "download/divcount"})
+          ...mapGetters({divcount: "download/divcount"}),
+          ...mapGetters({dlplayerloading: "player/dlplayerloading"}),
+          ...mapGetters({showlinks: "player/showlinks"})
       },
 
     watch: {
@@ -562,6 +590,16 @@ import {mapGetters} from 'vuex'
       },
       show_buy() {
         this.checkdiv()
+      },
+      cartloading(val) {
+
+          if(!val && this.$config.envname=='igapp' && this.i==0 && !this.ftb && this.traffic && (this.owned || this.downloadslist.some(function(el){ return el.owned === 1}))){
+            this.i++
+            
+            this.$store.dispatch("player/LOAD_DOWNLOAD_PLAYER", {loggedIn: this.$auth.loggedIn,id:this.id,type:this.type,backdrop:'https://thumb.upera.shop/thumb?w=1920&h=938&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/'+this.backdrop,block_id:'my-download-player',name:this.ChooseLang(this.name,this.namefa)})
+
+            
+          }
       },
       // id(val) {
       //     if (val !== null && this.id && this.show) {
@@ -588,6 +626,7 @@ import {mapGetters} from 'vuex'
 //             this.$route.query.quality=0
 //             this.$route.query.force_to_buy=0
 //   }
+
 
 
 this.mref=this.$cookiz.get('ref')
@@ -636,6 +675,7 @@ if(this.checkuser.operator_fullrate){
 
 
           document.body.classList.add('loaded')
+
 
 
 
@@ -870,7 +910,7 @@ this.checkdiv()
           free=1
 
 
-          if(this.show_free==0 && (this.owned || (free && this.vod) || (this.vod && this.checkuser.access))){
+          if(this.$config.envname!='igapp' && this.show_free==0 && (this.owned || (free && this.vod) || (this.vod && this.checkuser.access))){
             this.$store.dispatch("download/ADD_DIVCOUNT")
           }else{
             this.$store.dispatch("download/MIN_DIVCOUNT")

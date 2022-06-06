@@ -5119,6 +5119,12 @@ nav a:hover {
   height: 100% !important;
 }
 
+
+.download-links-items .flowplayer-player,
+.download-links-items .jwplayer {
+  position: inherit !important;
+}
+
 #flowplayer-back-button,
 #flowplayer-rate {
   display: flex;

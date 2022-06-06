@@ -1687,3 +1687,7 @@
 > a {
     color: #f2f2f2 !important;
 }
+
+.theme-dark #flowplayer-download-player .light-gallery__spinner .light-gallery__dot {
+    border-color: #fff !important;
+}
