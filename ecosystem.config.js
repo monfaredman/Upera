@@ -3,7 +3,6 @@ module.exports = {
     {
       name: 'Upera',
       exec_mode: 'cluster',
-      host: ['185.177.125.152'],
       port: 3000,
       max_memory_restart: '20G',
       instances: '10', // Or a number of instances
