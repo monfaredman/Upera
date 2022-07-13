@@ -3,7 +3,7 @@
     <section id="banner" class="mt-5 pt-lg-5 pt-md-5">
       <div class="container">
         <div>
-          <Download :id="data.episode.id" :show="true" :ftb="false" :staticmodal="true" :owned="data.episode.owned" :traffic="data.episode.traffic" :trafficoo="data.episode.traffic_oo" :vod="data.episode.vod" :free="data.episode.free" :name="data.episode.name" :namefa="data.episode.name_fa" :posterf="data.episode.poster" :backdrop="data.episode.backdrop" :season="data.season" :itemdata="data.episode" type="episode" @hide-modal="HIDE_MODAL" />
+          <Download :id="data.episode.id" :show="true" :ftb="false" :staticmodal="true" :owned="data.episode.owned" :traffic="data.episode.traffic" :ir="data.episode.ir" :trafficoo="data.episode.traffic_oo" :vod="data.episode.vod" :free="data.episode.free" :name="data.episode.name" :namefa="data.episode.name_fa" :posterf="data.episode.poster" :backdrop="data.episode.backdrop" :season="data.season" :itemdata="data.episode" type="episode" @hide-modal="HIDE_MODAL" />
         </div>
       </div>
     </section>

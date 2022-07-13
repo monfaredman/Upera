@@ -478,6 +478,10 @@ import {mapGetters} from 'vuex'
         type: Number,
         default: 0
     },
+    ir: {
+        type: Number,
+        default: 0
+    },
     trafficoo: {
         type: Number,
         default: 0
@@ -596,7 +600,7 @@ import {mapGetters} from 'vuex'
           if(!val && this.$config.envname=='igapp' && this.i==0 && !this.ftb && this.traffic && (this.owned || this.downloadslist.some(function(el){ return el.owned === 1}))){
             this.i++
             
-            this.$store.dispatch("player/LOAD_DOWNLOAD_PLAYER", {loggedIn: this.$auth.loggedIn,id:this.id,type:this.type,backdrop:'https://thumb.upera.shop/thumb?w=1920&h=938&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/'+this.backdrop,block_id:'my-download-player',name:this.ChooseLang(this.name,this.namefa)})
+            this.$store.dispatch("player/LOAD_DOWNLOAD_PLAYER", {loggedIn: this.$auth.loggedIn,id:this.id,type:this.type,backdrop:'https://thumb.upera.shop/thumb?w=1920&h=938&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/'+this.backdrop,block_id:'my-download-player',name:this.ChooseLang(this.name,this.namefa),ir:this.ir})
 
             
           }
