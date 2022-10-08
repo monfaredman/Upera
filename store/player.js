@@ -999,7 +999,7 @@ commit('PLAYER_MODAL_CLEAN')
         },
 
 
-        LOAD_DOWNLOAD_PLAYER({commit}, {loggedIn,id,type, backdrop,block_id,name,ir}) {
+        LOAD_DOWNLOAD_PLAYER({commit}, {loggedIn,id,type, backdrop,block_id,name,ir,hour}) {
             var ref=this.$cookiz.get('ref')
             if(!ref || isNaN(ref))
               ref=0
@@ -1090,10 +1090,15 @@ jwp.on('ready', (e) => {
 
   commit('DOWNLOAD_PLAYER_SPINER_CLEAN')
   this.dispatch("download/DOWNLOAD_SPINER_CLEAN")
-  if(ir==1)
-    setTimeout(() => commit('SHOW_LINKS'), 30000)
-  else
+  //if(ir==1)
+  if(hour>=8 && hour<18){
+    if(ir==1)
+      setTimeout(() => commit('SHOW_LINKS'), 30000)
+    else
+      setTimeout(() => commit('SHOW_LINKS'), 150000)
+  }else{
     setTimeout(() => commit('SHOW_LINKS'), 2000)
+  }
   return e
 })
 
