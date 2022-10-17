@@ -1691,3 +1691,7 @@
 .theme-dark #flowplayer-download-player .light-gallery__spinner .light-gallery__dot {
     border-color: #fff !important;
 }
+
+.theme-dark .genre-link a{
+      color: #fff;
+}
