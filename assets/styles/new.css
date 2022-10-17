@@ -10509,6 +10509,6 @@ body .accordion > .card:nth-of-type(odd) .card-header {
   letter-spacing: -0.5px;
 }
 
-.genre-link a{
+.theme-dark .genre-link a{
       color: #fff;
 }
