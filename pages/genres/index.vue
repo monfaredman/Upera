@@ -1,10 +1,10 @@
 <template>
-  <div id="genre" class="mt-lg-5 pt-lg-5 mt-md-1 pt-md-1 pt-sm-3 pt-2 ml-lg-4 mr-lg-4">
-    <div class="container-fluid">
-      <div class="row align-items-center mt-3 mt-md-5 ml-2 ml-md-4">
-        <div v-for="(item,index) in data" :key="index" class="col-lg-3 col-md-4 col-6">
+  <div id="checkcontainer">
+    <div class="container-fluid mt-lg-5 mt-md-5 pt-lg-5 pt-md-5">
+      <div class="row genre-link align-items-center mt-lg-3 mt-md-3 pt-lg-3 pt-md-3">
+        <div v-for="(item,index) in data" :key="index" class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
           <nuxt-link :to="{ name: 'genres-genre', params: { genre: item.en.toLowerCase() }}">
-            <b-img v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 364,height: 190,show:true}" :src="'https://thumb.upera.shop/thumb?w=364&h=190&q=100&a=c&src='+item.cover" :alt="item.fa" class="rounded" />
+            <b-img v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',show:true}" :src="'https://thumb.upera.shop/thumb?w=364&h=190&q=100&a=c&src='+item.cover" :alt="item.fa" class="rounded" />
             
             <div class="mt-2">
               <h6 class="mt-2 small font-weight-normal">

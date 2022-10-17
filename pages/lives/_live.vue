@@ -57,7 +57,7 @@
             	this.guest=false
         	}
 
-            this.$store.dispatch('player/LOAD_LIVE', {guest:this.guest,id: this.$route.params.id,refi:this.$route.query.ref})
+            this.$store.dispatch('player/LOAD_LIVE', {guest:this.guest,id: this.$route.params.live,refi:this.$route.query.ref})
         },
         methods: {
         },

@@ -9,8 +9,10 @@
   "new": {
     "categories": "Categories",
     "genres": "Genres",
+    "lives": "Lives",
     "iranianactors": "Iranian Actors",
     "foreignactors": "Foreign Actors",
+    "foreignactors_mobile": "Foreign",
     "directors": "Directors",
     "search": "Search Movies, Series, Actors & Directors",
     "profile": "Profile",
@@ -58,7 +60,8 @@
     "story": "Story Line",
     "story2": "Story Line",
     "casts": "Cast",
-    "other_casts": "Other Cast"
+    "other_casts": "Other Cast",
+    "show": "Show"
   },
   "home": {
     "my_list": "My List",
@@ -113,7 +116,8 @@
     "sorry_no_result": "Sorry no result were found",
     "search": "Search",
     "load_more": "Load More",
-    "filmography": "Filmographie"
+    "filmography": "Filmographie",
+    "superhero": "SuperHero"
   },
   "setting": {
     "user_setting": "User Settings",

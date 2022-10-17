@@ -95,6 +95,11 @@
                     </nuxt-link>
                   </li>
                   <li>
+                    <nuxt-link to="/lives">
+                      {{ $t('new.lives') }}
+                    </nuxt-link>
+                  </li>
+                  <li>
                     <nuxt-link to="/casts/iranian-actors">
                       {{ $t('new.iranianactors') }}
                     </nuxt-link>
@@ -239,13 +244,18 @@
           </nuxt-link>
         </li>
         <li>
+          <nuxt-link to="/lives">
+            {{ $t('new.lives') }}
+          </nuxt-link>
+        </li>
+        <li>
           <nuxt-link to="/casts/iranian-actors">
             {{ $t('new.iranianactors') }}
           </nuxt-link>
         </li>
         <li>
           <nuxt-link to="/casts/foreign-actors">
-            {{ $t('new.foreignactors') }}
+            {{ $t('new.foreignactors_mobile') }}
           </nuxt-link>
         </li>
         <li>
@@ -312,9 +322,9 @@ import Subscription from "../components/Subscription"
       lastScroll: 0,
       MenuOpen: false,
       showpayments: true,
-      categories: ["/genres", "/casts/iranian-actors", "/casts/foreign-actors", "/casts/directors"],
+      categories: ["/genres", "/lives", "/casts/iranian-actors", "/casts/foreign-actors", "/casts/directors"],
       profile: ["/profile","/payments", "/profile/settings", "/profile/plans", "/profile/internet"],
-      banner: ["index", "cast-id", "movie-id", "episode-id", "series-id", "genres-genre", "lists-list"],
+      banner: ["index", "cast-id", "movie-id", "episode-id", "series-id", "genres-genre", "lives-live", "lists-list"],
       itemmenu: ["callback","movie-download-id","episode-download-id","ekran-id","movie-id", "episode-id", "series-id"]
 
     }

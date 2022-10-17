@@ -726,9 +726,9 @@ return SRMdata
          * @constructor
          */
         LOAD_LIVE({commit}, {guest,id,SRMdata}) {
-            var api_url = '/get/watch/tv/' + id
+            var api_url = '/get/watch/live/' + id
             if(guest){
-              api_url = '/ghost/get/watch/tv/' + id
+              api_url = '/ghost/get/watch/live/' + id
             }
             this.$axios.get(api_url)
                 .then(res => {
@@ -2210,15 +2210,15 @@ document.body.classList.add('loaded')
 
             
                               if(this.$device.isTV){
-                                  if(state.data.video.streaming_url.includes("?")){
-                                    state.data.video.streaming_url=state.data.video.streaming_url+'&app=1'
+                                  if(state.data.video.video.includes("?")){
+                                    state.data.video.video=state.data.video.video+'&app=1'
                                   }else{
-                                    state.data.video.streaming_url=state.data.video.streaming_url+'?app=1'
+                                    state.data.video.video=state.data.video.video+'?app=1'
                                   }
                               }
 
   jwp=window.jwplayer('my-player').setup({
-    "file": state.data.video.streaming_url,
+    "file": state.data.video.video,
     "type": 'hls',
     "height": "100%",
     "width": "100%",

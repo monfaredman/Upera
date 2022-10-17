@@ -10508,3 +10508,7 @@ body .accordion > .card:nth-of-type(odd) .card-header {
   font-weight: 400;
   letter-spacing: -0.5px;
 }
+
+.genre-link a{
+      color: #fff;
+}

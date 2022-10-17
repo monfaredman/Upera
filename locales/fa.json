@@ -9,8 +9,10 @@
     "new": {
       "categories": "دسته‌بندی‌ها",
     "genres": "ژانرها",
+    "lives": "پخش زنده",
     "iranianactors": "بازیگر ایرانی",
     "foreignactors": "بازیگر خارجی",
+    "foreignactors_mobile": "خارجی",
     "directors": "کارگردان ها",
     "search": "جستجوی فیلم، سریال، بازیگر و کارگردان",
     "profile": "پروفایل",
@@ -58,7 +60,8 @@
     "story": "داستان فیلم",
     "story2": "داستان",
     "casts": "عوامل",
-    "other_casts": "سایر عوامل"
+    "other_casts": "سایر عوامل",
+    "show": "مشاهده"
     },
     "home": {
       "my_list": "لیست من",
@@ -116,7 +119,8 @@
       "sorry_no_result": "اوه، چیزی پیدا نشد!",
       "search": "جستجو",
       "load_more": "مشاهده بیشتر",
-      "filmography": "فیلم گرافی"
+      "filmography": "فیلم گرافی",
+      "superhero": "ابرقهرمانی"
     },
     "setting": {
       "user_setting": "تنظیمات کاربری",
