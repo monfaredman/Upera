@@ -726,9 +726,14 @@ return SRMdata
          * @constructor
          */
         LOAD_LIVE({commit}, {guest,id,SRMdata}) {
-            var api_url = '/get/watch/live/' + id
+            var ref=this.$cookiz.get('ref')
+            if(!ref || isNaN(ref))
+              ref=''
+            else
+              ref='?ref='+ref
+            var api_url = '/get/watch/live/' + id + ref
             if(guest){
-              api_url = '/ghost/get/watch/live/' + id
+              api_url = '/ghost/get/watch/live/' + id + ref
             }
             this.$axios.get(api_url)
                 .then(res => {
