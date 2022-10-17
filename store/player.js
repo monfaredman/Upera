@@ -2264,11 +2264,11 @@ document.body.classList.add('loaded')
                                                 if(window.history.length > 2) 
                          app.router.go(-1) 
                         else
-                          app.router.push({ name: 'live'})
+                          app.router.push({ name: 'lives'})
                     })
 
 
-                    if(this.app.i18n.locale=="fa"){
+                    if(this.app.i18n.locale=="fa" && data.guest){
                       myDiv = document.createElement("span")
                       myDiv.innerHTML = '<div id="flowplayer-rate">حجم مصرفی: <button type="button" class="btn btn-info rounded-pill">تمام بها</button></div>'
                       document.getElementsByClassName("jwplayer")[0].appendChild(myDiv)
