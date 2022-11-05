@@ -1,6 +1,6 @@
 <template>
   <div id="checkcontainer">
-    <section v-if="data.movies!==null" id="slideshow" class="banner">
+    <section v-if="data.movies.length" id="slideshow" class="banner">
       <div class="swiper-container showcase main-slideshow">
         <div class="swiper-wrapper">
           <div class="swiper-slide">
@@ -39,8 +39,9 @@
         </div>
       </div>
     </section>
+    <FilterContents :show="true" :notop="notop" :showgenres="true" :listgenre="$route.params.list" :savedata="false" @execute_content_filtering="execute_content_filtering" />
     <div id="episode">
-      <div v-if="data.movies!==null" id="actor" class="episodes_collection">
+      <div v-if="data.movies.length" id="actor" class="episodes_collection">
         <div class="container-fluid pl-md-4 pr-md-5 mt-3  ">
           <div class="row">
             <div v-for="(item,index) in data.movies" :key="index" class="col-4 col-xl-1 col-md-2 col-sm-3 mt-2 mt-lg-4">
@@ -68,12 +69,17 @@
           </div>
         </div>
       </div>
+      <div v-else class="container-fluid">
+        <div class="text-center my-5">
+          <h2>محتوایی جهت نمایش وجود ندارد</h2>
+        </div>
+      </div>
       <div v-if="distance < 0 && data.last_page > 1" class="text-center p-2">
         <button class="btn-load-more btn btn-main" @click="manualLoad">
           {{ $t('home.load_more') }}
         </button>
       </div>
-      <infinite-loading v-else-if="data.last_page > 1" ref="infiniteLoading" @infinite="infiniteHandler">
+      <infinite-loading v-else-if="data.last_page > 1" ref="infiniteLoading" :identifier="infiniteId" @infinite="infiniteHandler">
         <span slot="no-more" />
         <span slot="no-results" />
       </infinite-loading>
@@ -83,21 +89,23 @@
 
 <script>
 import InfiniteLoading from 'vue-infinite-loading'
+import FilterContents from "@/components/FilterContents"
   export default {
         components: {
-            InfiniteLoading
+            InfiniteLoading,
+            FilterContents
         },
   async asyncData (context) {
 
     let res
-    let finded=0
+    //let finded=0
 
 
     
     if (context.app.$auth.loggedIn) {
-        res = await context.app.$axios.get('/get/get_listV2/'+context.params.list)
+        res = await context.app.$axios.get('/get/get_listV2/'+context.params.list+context.store.getters.filtercontents)
      }else{
-      res = await context.app.$axios.get('/ghost/get/get_listV2/'+context.params.list)
+      res = await context.app.$axios.get('/ghost/get/get_listV2/'+context.params.list+context.store.getters.filtercontents)
      }
 
      if(res.data.data.list!=null){
@@ -108,20 +116,24 @@ import InfiniteLoading from 'vue-infinite-loading'
        res.data.data.per_page=res.data.data.list.per_page
 
 
-        finded=1
+        //finded=1
+     }else{
+      res.data.data.movies=[]
      }
 
  
-
-	if(!finded){
-		return context.redirect(404, '/404')
-	}
+	//if(!finded){
+    //return {data:res.data.data}
+		//return context.redirect(404, '/404')
+	//}
     return {data:res.data.data}
   },
   data () {
     return {
       data:{},
       page: 1,
+      notop:false,
+      infiniteId: +new Date(),
       distance: -Infinity,
       userApi:'/get/get_listV2/'+this.$route.params.list,
       ghostApi:'/ghost/get/get_listV2/'+this.$route.params.list
@@ -131,6 +143,13 @@ import InfiniteLoading from 'vue-infinite-loading'
 
     return { title:  this.ChooseLang(this.data.titles_en,this.data.titles) }
   },
+    mounted() {
+
+
+  if(!this.data.movies.length){
+    this.notop=true
+  }   
+},
     methods: {
     ChooseLang(en,fa){
         if(fa && this.$i18n.locale=="fa")
@@ -151,8 +170,8 @@ import InfiniteLoading from 'vue-infinite-loading'
                 } else {
                         apiurl=this.ghostApi
                 }
-                    this.$axios.get(apiurl,{params: {page: this.page + 1}}).then(response => {
-                        if (response.status === 200) {
+                    this.$axios.get(apiurl+this.filtercontents,{params: {page: this.page + 1}}).then(response => {
+                        if (response.status === 200 && response.data.data.list!=null) {
                              response.data.data.movies=response.data.data.list.data
                              response.data.data.last_page=response.data.data.list.last_page
                              response.data.data.per_page=response.data.data.list.per_page
@@ -176,6 +195,45 @@ import InfiniteLoading from 'vue-infinite-loading'
               })
             },
     hasHistory () { return window.history.length > 2 },
+
+    execute_content_filtering() {
+        this.$nuxt.$loading.start()
+        this.$store.dispatch('filter/FILTER_LOADING')
+
+        var apiurl
+        if (this.$auth.loggedIn) {
+                apiurl=this.userApi
+        } else {
+                apiurl=this.ghostApi
+        }
+        this.$axios.get(apiurl+this.filtercontents).then(response => {
+            if (response.status === 200 && response.data.data.list!=null) {
+                 response.data.data.movies=response.data.data.list.data
+                 response.data.data.last_page=response.data.data.list.last_page
+                 response.data.data.per_page=response.data.data.list.per_page
+                if (response.data.data.movies.length) {
+                  this.data.movies = response.data.data.movies
+                 this.data.last_page=response.data.data.last_page
+                 this.data.per_page=response.data.data.per_page
+                  this.page=1
+                  this.infiniteId += 1
+                  this.notop=false
+                }else{
+                  this.data.movies=[]
+                  this.page=1
+                  this.data.last_page=1
+                  this.data.per_page=1
+                  this.infiniteId += 1
+                  this.notop=true
+                }
+            }
+            this.$store.dispatch('filter/CLEAN_FILTER_LOADING')
+            this.$nuxt.$loading.finish()
+        })
+
+        
+
+    }
   }
   }
 </script>

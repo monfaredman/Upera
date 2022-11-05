@@ -7,7 +7,8 @@ const Validation = {
 			computed: {
 				...mapGetters({
 					errors: "validation/errors",
-					checkuser: "checkuser"
+					checkuser: "checkuser",
+					filtercontents: "filtercontents"
 				})
 			}
 		})

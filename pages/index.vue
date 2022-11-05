@@ -2,7 +2,7 @@
   <div>
     <section v-if="data.top!==null" id="slideshow">
       <div class="swiper-container showcase main-slideshow">
-        <VueSlickCarousel ref="carousel" v-bind="swiperOption3" class="swiper-wrapper">
+        <VueSlickCarousel :key="swiperKey" ref="carousel" v-bind="swiperOption3" class="swiper-wrapper" :class="{ 'dir-ltr': data.top.length==1}">
           <div v-for="(item,index) in data.top" :key="index" class="swiper-slide">
             <div class="row no-gutters">
               <div class="col-md-6 col-lg-7 showcase-pic">
@@ -96,13 +96,13 @@
             </div>
           </div>
         </VueSlickCarousel>
-        <div dir="rtl">
+        <div v-if="data.top.length>1" dir="rtl">
           <div class="swiper-next swiper-button-next main-slideshow-next" @click="showPrev" />
           <div class="swiper-prev swiper-button-prev main-slideshow-prev" @click="showNext" />
         </div>
       </div>
     </section>
-
+    <FilterContents :show="true" :showgenres="true" :savedata="false" :notop="notop" @execute_content_filtering="execute_content_filtering" />
     <div v-for="(list, rootindex) in data.data" :key="rootindex">
       <div v-if="list.style == 'occasion' && list.data.length > 0">
         <section id="special" class="mb-5">
@@ -237,8 +237,13 @@
         </div>
       </section>
     </div>
+    <div v-if="nocontent" class="container-fluid ">
+      <div class="text-center my-5">
+        <h2>محتوایی جهت نمایش وجود ندارد</h2>
+      </div>
+    </div>
     <client-only>
-      <infinite-loading v-if="data.last_page > 1" @infinite="infiniteHandler">
+      <infinite-loading v-if="data.last_page > 1" :identifier="infiniteId" @infinite="infiniteHandler">
         <span slot="no-more" />
         <span slot="no-results" />
       </infinite-loading>
@@ -247,9 +252,11 @@
 </template>
 <script>
   import InfiniteLoading from 'vue-infinite-loading'
+  import FilterContents from "@/components/FilterContents"
     export default {
         components: {
-            InfiniteLoading
+            InfiniteLoading,
+            FilterContents
         },
   filters: {
     // Cut word
@@ -262,19 +269,23 @@
   },
   async asyncData (context) {
   	let res
-
   	if (context.app.$auth.loggedIn) {
-  	    res = await context.app.$axios.get('/get/discoverV2')
+  	    res = await context.app.$axios.get('/get/discoverV2'+context.store.getters.filtercontents)
   	 }else{
-  	 	res = await context.app.$axios.get('/ghost/get/discoverV2')
+  	 	res = await context.app.$axios.get('/ghost/get/discoverV2'+context.store.getters.filtercontents)
   	 }
+
     return {data:res.data.data}
   },
     data () {
       return {
       	data:{},
       page: 1,
+      infiniteId: +new Date(),
+      swiperKey: +new Date(),
       distance: -Infinity,
+      notop:false,
+      nocontent:false,
       userApi:'/get/discoverV2',
       ghostApi:'/ghost/get/discoverV2',
         swiperOption: {
@@ -352,7 +363,6 @@
         }
       }
     },
-
     destroyed () {
 if(this.data.occasions!=null){
   let specials=document.getElementsByClassName('special-slides')
@@ -366,7 +376,14 @@ if(this.data.occasions!=null){
     mounted() {
 
 
-      
+if(this.data.top==null){
+  this.notop=true
+}      
+
+if (!this.data.data.length) {
+  this.nocontent=true
+}
+
 
     	if(this.data.recently!=null){
     	    const watching = document.getElementById("watching")
@@ -548,7 +565,7 @@ if(this.data.occasions!=null){
                 } else {
                         apiurl=this.ghostApi
                 }
-                    this.$axios.get(apiurl,{params: {discover_page: this.page + 1}}).then(response => {
+                    this.$axios.get(apiurl+this.filtercontents,{params: {discover_page: this.page + 1}}).then(response => {
 
                         if (response.status === 200) {
                             if (response.data.data.data.length) {
@@ -563,6 +580,42 @@ if(this.data.occasions!=null){
                         }
                     })
                 this.page = this.page + 1
+            },
+
+            execute_content_filtering() {
+                this.$nuxt.$loading.start()
+                this.$store.dispatch('filter/FILTER_LOADING')
+                var apiurl
+                if (this.$auth.loggedIn) {
+                        apiurl=this.userApi
+                } else {
+                        apiurl=this.ghostApi
+                }
+
+                this.$axios.get(apiurl+this.filtercontents).then(response => {
+
+                    if (response.status === 200) {
+
+                          if (!response.data.data.data.length) {
+                            this.nocontent=true
+                          }else{
+                            this.nocontent=false
+                          }
+                          this.data = response.data.data
+                          if(this.data.top==null){
+                            this.notop=true
+                          }else{
+                            this.notop=false
+                          }
+                          this.page = 1
+                          this.infiniteId += 1
+                          this.swiperKey += 1
+                        //} 
+                    }
+                    this.$store.dispatch('filter/CLEAN_FILTER_LOADING')
+                    this.$nuxt.$loading.finish()
+                })
+
             },
   }
   }

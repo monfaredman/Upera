@@ -42,6 +42,10 @@
             </a>
           </div>
         </div>
+        <div class="setting_lable">
+          فیلترگذاری ثابت بر روی کل محتوا
+        </div>
+        <FilterContents :show="true" :savedata="true" :setting="true" :notop="false" @execute_content_filtering="execute_content_filtering" />
 
         <header class="headline py-4">
           <h5 class="title font-weight-bold">
@@ -69,7 +73,7 @@
             {{ $t('new.term') }}
           </nuxt-link>
         </div>
-        <div v-if="$config.envname!='igapp'" class="d-flex justify-content-between align-items-center mb-3 setting_lable">
+        <div v-if="$auth.loggedIn" class="d-flex justify-content-between align-items-center mb-3 setting_lable">
           <b-link class="text-danger" @click="logout()">
             خروج از حساب کاربری
           </b-link>
@@ -118,6 +122,9 @@ export default {
         this.$router.go()
         
 
+      },
+      execute_content_filtering() {
+        return this.data
       }
     },
 }

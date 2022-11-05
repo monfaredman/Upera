@@ -1965,7 +1965,9 @@ left:auto;
 .srmrtl .main-slideshow .main-slideshow-next{
   right:auto;
 }
-
+.srmrtl .custom-select{
+  background-position: left;
+}
 .tooltip{
   font-family: "dana VF", serif !important;
   direction: rtl;

@@ -4,6 +4,7 @@ export const state = () => ({
   checkuser: {
     subscription: 0
   },
+  filtercontents: '',
   nightmode: false
 })
 
@@ -17,6 +18,9 @@ export const getters = {
   },
   checkuser(state) {
     return state.checkuser
+  },
+  filtercontents(state) {
+    return state.filtercontents
   }
 }
 
@@ -49,6 +53,9 @@ export const mutations = {
   EMPTY_LANG(state) {
     localStorage.removeItem('lang')
     state.locale='fa'
+  },
+  SET_FILTER_CONTENTS (state, data) {
+      state.filtercontents = data
   }
 }
 
@@ -58,6 +65,10 @@ export const actions = {
 
     if(this.$device.isTV){
       this.app.context.redirect('https://tv.'+this.app.context.req.headers.host)
+    }
+
+    if (this.$cookiz.get('filtercontents')){
+      store.commit('SET_FILTER_CONTENTS',this.$cookiz.get('filtercontents'))
     }
     
   	if(!store.state.auth.loggedIn){
@@ -88,6 +99,9 @@ export const actions = {
           this.$cookiz.set('ref', store.state.checkuser.ref)
         }
       }
+      if (this.$cookiz.get('filtercontents')){
+        store.commit('SET_FILTER_CONTENTS',this.$cookiz.get('filtercontents'))
+      }
     }
   },
   SET_LANG({commit},lang) {
@@ -115,5 +129,8 @@ export const actions = {
     }else{
       this.$colorMode.preference='system'
     }
+  },
+  SET_FILTER_CONTENTS (store, data) {
+      store.commit('SET_FILTER_CONTENTS',data)
   }
 }

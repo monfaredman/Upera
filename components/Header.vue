@@ -190,7 +190,8 @@
                             <label class="custom-control-label" for="nightMode" />
                           </div>
                         </div>
-                        <div :class="{ 'border-bottom-gray' : $auth.loggedIn}" class="d-flex align-items-center justify-content-between py-4 pt-3">
+                        <!-- :class="{ 'border-bottom-gray' : $auth.loggedIn}" -->
+                        <div class="d-flex align-items-center justify-content-between py-4 pt-3 border-bottom-gray">
                           <div class="text-black">
                             زبان فارسی 
                           </div>
@@ -207,10 +208,16 @@
                             پرداخت ها
                           </nuxt-link>
                         </div>
-                        <div v-if="$auth.loggedIn" class="d-flex align-items-center justify-content-between py-4">
+                        <div v-if="$auth.loggedIn" class="d-flex align-items-center justify-content-between py-4 border-bottom-gray">
                           <b-link class="text-black" @click="logout()">
                             خروج از حساب کاربری
                           </b-link>
+                        </div>
+                        <div class="py-4 pt-3">
+                          <div class="text-black pb-1">
+                            فیلترگذاری ثابت محتوا
+                          </div>
+                          <FilterContents :show="true" :setting="true" :savedata="true" :notop="false" @execute_content_filtering="execute_content_filtering" />
                         </div>
                       </div>
                     </div>
@@ -574,6 +581,9 @@ document.body.classList.add("header-fixed-collapsed")
         this.$router.go()
         
 
+      },
+      execute_content_filtering(){
+        this.$router.go()
       }
     },
   }

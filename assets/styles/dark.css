@@ -406,6 +406,11 @@
     box-shadow: 0px 1px 10px -2px rgb(18, 18, 18);
 }
 
+.theme-dark .bg-filtermenu {
+    background: #121212;
+    transition: transform 0.4s;
+    box-shadow: 0px 1px 10px -2px rgb(18, 18, 18);
+}
 
 
 .theme-dark .page-header .trigger-menu svg {

@@ -3,7 +3,7 @@
     <div class="container-fluid mt-lg-5 mt-md-5 pt-lg-5 pt-md-5">
       <div class="row genre-link align-items-center mt-lg-3 mt-md-3 pt-lg-3 pt-md-3">
         <div v-for="(item,index) in data" :key="index" class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
-          <nuxt-link :to="{ name: 'genres-genre', params: { genre: item.en.toLowerCase() }}">
+          <nuxt-link :to="{ name: 'lists-list', params: { list: item.en.toLowerCase() }}">
             <b-img v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',show:true}" :src="'https://thumb.upera.shop/thumb?w=364&h=190&q=100&a=c&src='+item.cover" :alt="item.fa" class="rounded" />
             
             <div class="mt-2">

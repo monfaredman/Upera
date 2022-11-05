@@ -39,9 +39,9 @@
         </div>
       </div>
     </section>
-
+    <FilterContents :show="true" :savedata="false" @execute_content_filtering="execute_content_filtering" />
     <div id="episode">
-      <div v-if="data.movies!==null" id="actor" class="episodes_collection">
+      <div v-if="data.filmography!==null" id="actor" class="episodes_collection">
         <div class="container-fluid pl-md-4 pr-md-5 mt-3  ">
           <div class="row">
             <div v-for="(item,index) in data.filmography" :key="index" class="col-4 col-xl-1 col-md-2 col-sm-3 mt-2 mt-lg-4">
@@ -69,13 +69,18 @@
           </div>
         </div>
       </div>
+      <div v-else class="container-fluid">
+        <div class="text-center my-5">
+          <h2>محتوایی جهت نمایش وجود ندارد</h2>
+        </div>
+      </div>
       <div v-if="distance < 0 && data.last_page > 1" class="text-center p-2">
         <button class="btn-load-more btn btn-main" @click="manualLoad">
           {{ $t('home.load_more') }}
         </button>
       </div>
       <client-only v-else-if="data.last_page > 1">
-        <infinite-loading ref="infiniteLoading" @infinite="infiniteHandler">
+        <infinite-loading ref="infiniteLoading" :identifier="infiniteId" @infinite="infiniteHandler">
           <span slot="no-more" />
           <span slot="no-results" />
         </infinite-loading>
@@ -86,17 +91,19 @@
 
 <script>
 import InfiniteLoading from 'vue-infinite-loading'
+import FilterContents from "@/components/FilterContents"
   export default {
 
         components: {
-            InfiniteLoading
+            InfiniteLoading,
+            FilterContents
         },
   async asyncData (context) {
     let res
     if (context.app.$auth.loggedIn) {
-        res = await context.app.$axios.get('/get/cast/'+context.params.id)
+        res = await context.app.$axios.get('/get/cast/'+context.params.id+context.store.getters.filtercontents)
      }else{
-        res = await context.app.$axios.get('/ghost/get/cast/'+context.params.id)
+        res = await context.app.$axios.get('/ghost/get/cast/'+context.params.id+context.store.getters.filtercontents)
      }
     return {data:res.data.data}
   },
@@ -104,6 +111,7 @@ import InfiniteLoading from 'vue-infinite-loading'
     return {
       data:{},
       page: 1,
+      infiniteId: +new Date(),
       distance: -Infinity,
       userApi:'/get/cast/'+this.$route.params.id,
       ghostApi:'/ghost/get/cast/'+this.$route.params.id
@@ -133,7 +141,7 @@ import InfiniteLoading from 'vue-infinite-loading'
                 } else {
                         apiurl=this.ghostApi
                 }
-                    this.$axios.get(apiurl,{params: {page: this.page + 1}}).then(response => {
+                    this.$axios.get(apiurl+this.filtercontents,{params: {page: this.page + 1}}).then(response => {
                         if (response.status === 200) {
                             if (response.data.data.filmography.length) {
                               this.data.filmography = this.data.filmography.concat(response.data.data.filmography)
@@ -154,7 +162,30 @@ import InfiniteLoading from 'vue-infinite-loading'
                 this.$refs.infiniteLoading.attemptLoad()
               })
             },
-            hasHistory () { return window.history.length > 2 }
+            hasHistory () { return window.history.length > 2 },
+
+            execute_content_filtering() {
+                this.$nuxt.$loading.start()
+                this.$store.dispatch('filter/FILTER_LOADING')
+                var apiurl
+                if (this.$auth.loggedIn) {
+                        apiurl=this.userApi
+                } else {
+                        apiurl=this.ghostApi
+                }
+                this.$axios.get(apiurl+this.filtercontents).then(response => {
+                    if (response.status === 200) {
+                        //if (response.data.data.filmography.length) {
+                          this.data.filmography = response.data.data.filmography
+                          this.page=1
+                          this.infiniteId += 1
+                        //}
+                    }
+                    this.$store.dispatch('filter/CLEAN_FILTER_LOADING')
+                    this.$nuxt.$loading.finish()
+                })
+
+            }
   }
   }
 </script>

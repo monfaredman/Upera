@@ -36,6 +36,7 @@
           </div>
         </section>
       </div>
+      <FilterContents :show="true" :savedata="false" @execute_content_filtering="execute_content_filtering" />
       <section v-if="data.recently && data.recently!==null" id="watching" class="horizontal-list-container mt-lg-4 pt-5">
         <div class="d-flex align-items-center justify-content-between w-full">
           <h4 class="font-weight-bold text-nowrap mr-5 px-5 in-watching">
@@ -260,16 +261,24 @@
           </div>
         </div>
       </section>
+      <div v-if="data.watched==null && data.recently==null && data.downloads==null && data.watchlist==null && data.watchlist==null && data.offer==null" class="container-fluid">
+        <div class="text-center my-5">
+          <h2>محتوایی جهت نمایش وجود ندارد</h2>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 <script>
+  import FilterContents from "@/components/FilterContents"
   export default {
-
+        components: {
+            FilterContents
+        },
   async asyncData (context) {
     let res
     if (context.app.$auth.loggedIn) {
-        res = await context.app.$axios.get('/get/profile/get_list/all')
+        res = await context.app.$axios.get('/get/profile/get_list/all'+context.store.getters.filtercontents)
 
         return {data:res.data.data}
      }
@@ -378,6 +387,24 @@
     },
     SHOW_MODAL(){
       this.$store.dispatch('login/SHOW_MODAL',{premessage: null,premobile: null,preredirect: null,prerefresh: false})
+    },
+
+    execute_content_filtering() {
+      if (this.$auth.loggedIn) {
+        this.$nuxt.$loading.start()
+        this.$store.dispatch('filter/FILTER_LOADING')
+        this.$axios.get('/get/profile/get_list/all'+this.filtercontents).then(response => {
+
+            if (response.status === 200) {
+                //if (response.data.data.data.length) {
+                  this.data = response.data.data
+                //} 
+            }
+            this.$store.dispatch('filter/CLEAN_FILTER_LOADING')
+            this.$nuxt.$loading.finish()
+        })
+       }
+
     }
   }
   }

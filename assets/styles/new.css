@@ -1801,6 +1801,13 @@ a.subtitle {
     display: none !important;
   }
 }
+@media (min-width: 576px) and (max-width: 768px) {
+  .bg-filtermenu select{
+    font-size: 0.7rem;
+  }
+}
+
+
 
 @media (min-width: 992px) {
   .hide-desktop {
@@ -6715,6 +6722,12 @@ body widget .-bold {
   display: flex;
   justify-content: center;
   z-index: 9999;
+  background: #ffffff;
+  transition: transform 0.4s;
+  box-shadow: 0px 1px 10px -2px rgba(204, 204, 204, 0.88);
+}
+
+.bg-filtermenu {
   background: #ffffff;
   transition: transform 0.4s;
   box-shadow: 0px 1px 10px -2px rgba(204, 204, 204, 0.88);

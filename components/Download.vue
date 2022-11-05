@@ -397,7 +397,7 @@
                 <div class="row">
                   <div class="col-sm-6">
                     <div class="font-weight-bold d-none d-sm-block">
-                      دسترسی همزمان به ۳۰۰۰ عنوان فیلم و اپیزود
+                      دسترسی همزمان به ۳۰۰۰۰ عنوان فیلم و اپیزود
                     </div>
                   </div>
                   <div class="col-sm-6">
