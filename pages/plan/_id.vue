@@ -39,7 +39,7 @@
         //   this.get_payment_url(1)
         // }
 
-        this.get_payment_url(1)
+        this.get_payment_url('pec')
 
       }else{
         this.$store.dispatch('login/SHOW_MODAL',{premessage: null,premobile: null,preredirect: null,prerefresh: false})
@@ -63,20 +63,23 @@
             })
 
           },
-          async get_payment_url(gateway_id) {
-            var host2
-            host2=this.checkuser.domain
-            if(!host2 || host2=="igapi.upera.tv"){
-              host2=window.location.hostname
-            }
+          async get_payment_url(method) {
+            // var host2
+            // host2=this.checkuser.domain
+            // if(!host2 || host2=="igapi.upera.tv"){
+            //   host2=window.location.hostname
+            // }
+            var ref=this.$cookiz.get('ref')
+            if(!ref || isNaN(ref))
+              ref=0
 
-
-            await this.$axios.post('/update/profile/payment/change_plan', {
-                                    gateway_id: gateway_id,
+            await this.$axios.post('/change_subscription', {
+                                    method: method,
                                     plan_id: this.$route.params.id,
-                                    host: host2,
+                                    host: window.location.hostname,
                                     content_id: this.$route.query.content_id,
-                                    content_type: this.$route.query.content_type
+                                    content_type: this.$route.query.content_type,
+                                    ref: ref
                                 }).then((res) => {
               
               if(res.status === 200){

@@ -35,7 +35,7 @@
                         - {{ $t('show.episode') }} {{ item.episode_number }}
                       </div>
                       <div class="text-invert mb-1 mb-md-3">
-                        <nuxt-link v-for="(item2,index2) in ChooseLangAllGenres(item.genre)" :key="index2" :to="{ name: 'genres-genre', params: { genre: item2.genre }}" class="tag">
+                        <nuxt-link v-for="(item2,index2) in ChooseLangAllGenres(item.genre)" :key="index2" :to="{ name: 'lists-list', params: { list: item2.genre }}" class="tag">
                           {{ item2.title }}
                         </nuxt-link>
                       </div>

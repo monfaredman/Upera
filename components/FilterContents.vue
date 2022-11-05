@@ -69,7 +69,7 @@ import {mapGetters} from 'vuex'
 { text: 'فانتزی', value: 'fantasy' },
 { text: 'تاریخی', value: 'history' },
 { text: 'ترسناک', value: 'horror' },
-{ text: 'موزیکال', value: 'musical' },
+{ text: 'موزیکال', value: 'music' },
 { text: 'معمایی', value: 'mystery' },
 { text: 'عاشقانه', value: 'romance' },
 { text: 'علمی تخیلی', value: 'sci_fi' },

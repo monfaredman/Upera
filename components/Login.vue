@@ -132,6 +132,7 @@ import {mapGetters} from 'vuex'
             },
             password(val) {
                 if(val.length>3){
+                  this.password=this.formatToNum(val)
                   this.login()
                 }
             }
@@ -256,102 +257,27 @@ import {mapGetters} from 'vuex'
           document.getElementsByClassName('default')[0].classList.remove('blure')
       },
       LoginJquery() {
+        var self = this
 this.$refs['loginModal'].$on('shown', function() {
 document.getElementsByClassName('modal-content')[0].removeAttribute('tabindex')
 
-if(!this.sms_sent){
-              const isNumericInput = (event) => {
-                  const key = event.keyCode
-                  return ((key >= 48 && key <= 57) || 
-                      (key >= 96 && key <= 105) 
-                  )
-              }
-
-              const isModifierKey = (event) => {
-                  const key = event.keyCode
-                  return (event.shiftKey === true || key === 35 || key === 36) || 
-                      (key === 8 || key === 9 || key === 13 || key === 46) || 
-                      (key > 36 && key < 41) || 
-                      (
-                        
-                          (event.ctrlKey === true || event.metaKey === true) &&
-                          (key === 65 || key === 67 || key === 86 || key === 88 || key === 90)
-                      )
-              }
-
-              const enforceFormat = (event) => {
-                 
-                  if (!isNumericInput(event) && !isModifierKey(event)) {
-                      event.preventDefault()
-                  }
-              }
-
-              const formatToPhone = (event) => {
-                  if (isModifierKey(event)) { return }
-
-                 
-                  const target = event.target
-                  if(target.value){
-                  target.value=target.value.replace(/۱/g, "1")
-                  target.value=target.value.replace(/۲/g, "2")
-                  target.value=target.value.replace(/۳/g, "3")
-                  target.value=target.value.replace(/۴/g, "4")
-                  target.value=target.value.replace(/۵/g, "5")
-                  target.value=target.value.replace(/۶/g, "6")
-                  target.value=target.value.replace(/۷/g, "7")
-                  target.value=target.value.replace(/۸/g, "8")
-                  target.value=target.value.replace(/۹/g, "9")
-                  target.value=target.value.replace(/۰/g, "0")
-                  }
-                  var input = event.target.value.replace(/\D/g, '').substring(0, 11) 
-                  const zip = input.substring(0, 4)
-                  const middle = input.substring(4, 7)
-                  const last = input.substring(7, 11)
-                 
-                  if (input.length > 7) {
-                      target.value = `${zip} ${middle} ${last}`   
-                  }
-                  else if (input.length > 4) { target.value = `${zip} ${middle}` }
-                  else if (input.length > 0) { target.value = `${zip}` }
-              }
-
-              const formatToNum = (event) => {
-                  if (isModifierKey(event)) { return }
-
-                 
-                  const target = event.target
-                  if(target.value){
-                  target.value=target.value.replace(/۱/g, "1")
-                  target.value=target.value.replace(/۲/g, "2")
-                  target.value=target.value.replace(/۳/g, "3")
-                  target.value=target.value.replace(/۴/g, "4")
-                  target.value=target.value.replace(/۵/g, "5")
-                  target.value=target.value.replace(/۶/g, "6")
-                  target.value=target.value.replace(/۷/g, "7")
-                  target.value=target.value.replace(/۸/g, "8")
-                  target.value=target.value.replace(/۹/g, "9")
-                  target.value=target.value.replace(/۰/g, "0")
-                  }
-
-              }
-
+if(!self.sms_sent){
               const inputElement2 = document.getElementById('password')
               if(inputElement2){
-              inputElement2.addEventListener('keyup', formatToNum)
+              inputElement2.addEventListener('keyup', self.formatToNumevent)
 
                }
               const inputElement = document.getElementById('mobile')
               if(inputElement){
-              inputElement.addEventListener('keydown', enforceFormat)
-              inputElement.addEventListener('keyup', formatToPhone)
-
+                inputElement.addEventListener('keydown', self.enforceFormat)
+                inputElement.addEventListener('keyup', self.formatToPhone)
               }
 }
 })
 
       },
       change_mobile(){
-              const v = this.mobile
+              const v = this.formatToNum(this.mobile)
               const input = v.replace(/\D/g, '').substring(0, 11)
               const k = input.length
               if (/(\+98|0|98|0098)?([ ]|-|[()]){0,2}9[0-9]([ ]|-|[()]){0,2}(?:[0-9]([ ]|-|[()]){0,2}){8}/.test(v) && k == 11) {
@@ -363,6 +289,67 @@ if(!this.sms_sent){
               } else {
                   document.getElementById("mobile").classList.add('is-invalid')
               }
+      },
+      formatToNum(num) {
+          if(num){
+            num=num.replace(/۱/g, "1")
+            num=num.replace(/۲/g, "2")
+            num=num.replace(/۳/g, "3")
+            num=num.replace(/۴/g, "4")
+            num=num.replace(/۵/g, "5")
+            num=num.replace(/۶/g, "6")
+            num=num.replace(/۷/g, "7")
+            num=num.replace(/۸/g, "8")
+            num=num.replace(/۹/g, "9")
+            num=num.replace(/۰/g, "0")
+          }
+          return num
+      },
+      formatToNumevent(event) {
+          if (this.isModifierKey(event)) { return }
+
+          if(event.target.value)
+            event.target.value=this.formatToNum(event.target.value)
+      },
+      enforceFormat(event)  {
+          if (!this.isNumericInput(event) && !this.isModifierKey(event)) {
+              event.preventDefault()
+          }
+      },
+
+      formatToPhone (event)  {
+          if (this.isModifierKey(event)) { return }
+          const target = event.target
+          if(target.value)
+            target.value=this.formatToNum(target.value)
+          var input = event.target.value.replace(/\D/g, '').substring(0, 11) 
+          const zip = input.substring(0, 4)
+          const middle = input.substring(4, 7)
+          const last = input.substring(7, 11)
+         
+          if (input.length > 7) {
+              target.value = `${zip} ${middle} ${last}`   
+          }
+          else if (input.length > 4) { target.value = `${zip} ${middle}` }
+          else if (input.length > 0) { target.value = `${zip}` }
+      },
+      isNumericInput (event)  {
+          const key = event.keyCode
+          return ((key >= 48 && key <= 57) || 
+              (key >= 96 && key <= 105) 
+          )
+      },
+
+      isModifierKey(event) {
+          const key = event.keyCode
+          return (event.shiftKey === true || key === 35 || key === 36) || 
+              (key === 8 || key === 9 || key === 13 || key === 46) || 
+              (key > 36 && key < 41) || 
+              (
+                
+                  (event.ctrlKey === true || event.metaKey === true) &&
+                  (key === 65 || key === 67 || key === 86 || key === 88 || key === 90)
+              )
       }
     },
   }

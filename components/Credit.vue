@@ -144,7 +144,7 @@ if (this.$auth.loggedIn && !this.prewallet){
             this.$axios.post('/get/charge_wallet', {
                 amount: this.charge,
                 payment_method: this.payment_method,
-                callback_url: window.location.href
+                callback_url: location.origin+'/callback?mobile='+this.checkuser.mobile
             }).then((res) => {
                 this.message=false
               this.buyloading=false

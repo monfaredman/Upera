@@ -4,7 +4,7 @@
       <div class="row genre-link align-items-center mt-lg-3 mt-md-3 pt-lg-3 pt-md-3">
         <div v-for="(item,index) in data" :key="index" class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
           <nuxt-link :to="{ name: 'lists-list', params: { list: item.en.toLowerCase() }}">
-            <b-img v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',show:true}" :src="'https://thumb.upera.shop/thumb?w=364&h=190&q=100&a=c&src='+item.cover" :alt="item.fa" class="rounded" />
+            <b-img v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',show:true}" :src="item.cover" :alt="item.fa" class="rounded" />
             
             <div class="mt-2">
               <h6 class="mt-2 small font-weight-normal">
@@ -16,7 +16,7 @@
       </div>
       <!--       <div v-for="(item,index) in data" :key="index" class="row align-items-center mt-3 mt-md-5 ml-2 ml-md-4">
         <div class="col-4 px-1">
-          <nuxt-link :to="{ name: 'genres-genre', params: { genre: item.en.toLowerCase() }}">
+          <nuxt-link :to="{ name: 'lists-list', params: { list: item.en.toLowerCase() }}">
             <div class="mr-md-5">
               <h3 class="title">
                 {{ item.fa }}
@@ -28,7 +28,7 @@
           </nuxt-link>
         </div>
         <div class="col-8 p-lg-4 p-md-2 p-sm-0">
-          <nuxt-link :to="{ name: 'genres-genre', params: { genre: item.en.toLowerCase() }}">
+          <nuxt-link :to="{ name: 'lists-list', params: { list: item.en.toLowerCase() }}">
             <b-img v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 988,height: 395,show:true}" :src="'https://thumb.upera.shop/thumb?w=988&h=395&q=100&src='+item.cover" :alt="item.fa" />
           </nuxt-link>
         </div>
@@ -40,7 +40,7 @@
 export default {
   async asyncData (context) {
     let res
-        res = await context.app.$axios.get('/new_genres')
+        res = await context.app.$axios.get('/new_genres'+context.store.getters.filtercontents)
 
         return {data:res.data.genres}
     
