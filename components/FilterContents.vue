@@ -78,7 +78,8 @@ import {mapGetters} from 'vuex'
 { text: 'جنگی', value: 'war' }],
         localshowgenres: true,
         visible: true,
-        disable_age: false
+        disable_age: false,
+        windowWidth: 0
       }
     },
 
@@ -91,6 +92,8 @@ import {mapGetters} from 'vuex'
         mounted() {
           if(window.innerWidth<=576)
             this.visible=false
+
+          this.windowWidth=window.innerWidth
           window.addEventListener("resize", this.Resize)
           this.localshowgenres = this.showgenres
           var listgenre=this.listgenre
@@ -130,10 +133,13 @@ import {mapGetters} from 'vuex'
         
     methods: {
         Resize(e) {
-          if(window.innerWidth<=576)
-            this.visible=false
-          else
-            this.visible=true
+          
+          if(window.innerWidth!=this.windowWidth){
+            if(window.innerWidth<=576)
+              this.visible=false
+            else
+              this.visible=true
+        }
     return e
   },
       change_filter(filtertype,value){
