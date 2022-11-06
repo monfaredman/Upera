@@ -313,7 +313,7 @@ import {mapGetters} from 'vuex'
     },
     watch: {
       async success(val) {
-        if (this.$route.query.purchase=='subscription' && this.$auth.loggedIn && val === true && this.success) {
+        if (this.$route.query.purchase=='subscription' && this.$auth.loggedIn && val === true) {
             await this.$auth.fetchUser()
             this.$store.dispatch("SPA_INIT")
         }
@@ -407,6 +407,10 @@ import {mapGetters} from 'vuex'
             this.files=res.data.data.files
             if(this.files!=null)
               this.divcount=this.divcount+1
+
+            if(this.$route.query.purchase=="download"){
+              localStorage.removeItem('_cart')
+            }
           }else{
               this.divcount=this.divcount+1
 

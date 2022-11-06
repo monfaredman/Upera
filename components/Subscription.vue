@@ -161,7 +161,8 @@ if(this.$config.envname=='igapp' && (window.location.host=='igaptv.com' || windo
               this.$store.dispatch('login/SHOW_MODAL',{premessage: null,premobile: null,preredirect: '/plan/'+plan+'?content_id='+this.content_id+'&content_type='+this.content_type,prerefresh: false})
             }else{
                 this.$router.push({name: 'plan-id', params: {id: plan}, query: { content_id: this.content_id,content_type: this.content_type }})
-                this.planloading=true
+                // this.planloading=true
+                this.hideModal()
             }
           },
       showModal() {

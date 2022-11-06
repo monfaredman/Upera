@@ -123,17 +123,35 @@
                 <br><br>
               </div>
 
-              <div v-show="false" class="col-12 p-4 text-right">
-                <a href="tel:02191079979">تلفن پشتیبانی در ساعات اداری:‌ 02191079979</a><br>
-                <a href="tel:09022018555">تلفن پشتیبانی در ساعات غیر اداری:‌ 09022018555</a><br>
-                <a href="https://telegram.me/srmweb" target="_blank">تلگرام پشتیبانی</a>
-              </div>
+
+
 
               
               <div class="col-12">
                 <p v-show="totalamount && checkuser.tax" class="col-12 text-danger small">
                   + {{ (totalamount * 0.09) }} {{ $t('download.toman') }} (9 درصد مالیات بر ارزش افزوده)
                 </p>
+              </div>
+
+              <div v-show="$auth.loggedIn" class="col-12">
+                <div class="position-relative">
+                  <b-form-select v-model="method" :options="methods" />
+                  <div v-if="typeof errors === 'string'" class="text-danger">
+                    {{ errors }}
+                  </div>
+                  <div v-else-if="errors && errors.method" class="text-danger">
+                    {{ errors.method[0] }}
+                  </div>
+                  <div v-else class="invalid-feedback">
+                    خطا در روش خرید
+                  </div>
+                </div>
+              </div> 
+
+              <div v-show="false" class="col-12 p-4 text-right">
+                <a href="tel:02191079979">تلفن پشتیبانی در ساعات اداری:‌ 02191079979</a><br>
+                <a href="tel:09022018555">تلفن پشتیبانی در ساعات غیر اداری:‌ 09022018555</a><br>
+                <a href="https://telegram.me/srmweb" target="_blank">تلگرام پشتیبانی</a>
               </div>
             </div>
             <div class="download-links-footer footer-1">
@@ -540,7 +558,8 @@ import {mapGetters} from 'vuex'
       data() {
       return {
         castShow: null,
-        payment_method: "saman3",
+        method: 'saman3',
+        methods: [{ text: 'درگاه بانکی', value: 'saman3' },{ text: 'موجودی', value: 'credit' }],
         mobile: null,
         login: 0,
         ftb2: 0,
@@ -1111,12 +1130,23 @@ this.checkdiv()
             mobile: this.mobile,
             ekran: this.screening.ekran,
             callback_url: location.origin+'/callback?mobile='+this.mobile,
-            payment_method: this.payment_method,
+            method: this.method,
             ref: ref
         }).then((res) => {
           this.buyloading=false
           if(res.status === 200){
-            window.location.href = res.data.data.pay_url
+            if(this.method=="credit"){
+              localStorage.removeItem('_cart')
+              if (this.$auth.loggedIn) {
+                this.$router.go()
+              }else{
+                this.$swal("لینک های دانلود پیامک شدند. لطفا جهت دسترسی از طریق سایت وارد سایت شوید", {
+                  icon: "success",
+                })
+              }
+            }else{
+              window.location.href = res.data.data.pay_url
+            }
           }else{
             this.message=res.data.message
           }
