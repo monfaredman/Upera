@@ -22,7 +22,7 @@
             {{ $t('new.persianLang') }}
           </div>
           <div class="custom-control custom-switch">
-            <input id="language" disabled type="checkbox" class="custom-control-input" :checked="$i18n.locale==='fa'" @change="language($event.target.checked)">
+            <input id="language" disabled type="checkbox" class="custom-control-input" :checked="$i18n.locale==='fa'" @change="changelang()">
             <label class="custom-control-label" for="language" />
           </div>
         </div>
@@ -107,15 +107,6 @@ export default {
         else
           this.$colorMode.preference='light'
       },
-      language(e) {
-        if(e==true){
-          this.$store.dispatch('SET_LANG','fa')
-          this.$i18n.locale = 'fa'
-        }else{
-          this.$store.dispatch('SET_LANG','en')
-          this.$i18n.locale = 'en'
-        }
-      },
       async logout() {
 
         await this.$auth.logout()
@@ -125,6 +116,16 @@ export default {
       },
       execute_content_filtering() {
         return this.data
+      },
+      changelang(){
+
+        if(this.$i18n.locale==='en'){
+          this.$i18n.setLocale('fa')
+        }else{
+           this.$i18n.setLocale('en')
+        }
+
+        
       }
     },
 }

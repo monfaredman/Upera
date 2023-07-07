@@ -14,7 +14,8 @@
 
   async asyncData (context) {
 
-  	context.redirect('http://'+context.req.headers.host+'/series/'+context.params.id)
+    context.redirect({ name: 'series-id', params: { id: context.params.id } })
+  	//context.redirect('http://'+context.req.headers.host+'/series/'+context.params.id)
   },
 }
 </script>

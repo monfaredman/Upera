@@ -28,32 +28,6 @@ export const mutations = {
   SET_USER (state, data) {
       state.checkuser = data
   },
-  SET_LANG (state, locale) {
-    if (state.locales.includes(locale)) {
-      localStorage.setItem('lang', locale)
-      state.locale = locale
-    }
-    if(document.getElementById("srm")){
-
-      document.getElementById("srm").classList.remove( "srmrtl" )
-      if(state.locale=='fa')
-        document.getElementById("srm").classList.add( "srmrtl" )
-    }
-  },
-	GET_LANG(state) {
-		if (localStorage.getItem('lang') && state.locales.includes(localStorage.getItem('lang'))) {
-      state.locale = localStorage.getItem('lang')
-    }
-    if(document.getElementById("srm")){
-      document.getElementById("srm").classList.remove( "srmrtl" )
-      if(state.locale=='fa')
-        document.getElementById("srm").classList.add( "srmrtl" )
-    }
-  },
-  EMPTY_LANG(state) {
-    localStorage.removeItem('lang')
-    state.locale='fa'
-  },
   SET_FILTER_CONTENTS (state, data) {
       state.filtercontents = data
   }
@@ -103,12 +77,6 @@ export const actions = {
         store.commit('SET_FILTER_CONTENTS',this.$cookiz.get('filtercontents'))
       }
     }
-  },
-  SET_LANG({commit},lang) {
-    commit('SET_LANG',lang)
-  },
-  GET_LANG({commit}) {
-    commit('GET_LANG')
   },
   logout(store) {
         this.$axios.get('/ghost/get'+this.$config.check_url).then((response) => {

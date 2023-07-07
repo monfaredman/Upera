@@ -75,5 +75,5 @@ import Download from "../../../components/Download"
 .download .search{z-index:9999999 !important}
 .download .modal{top:50px !important;height:100% !important;}
 .download #downloadLinks___BV_modal_outer_{position:relative  !important;height:100% !important;}
-// .download .modal .modal-content{bottom:25px !important;}
+/*.download .modal .modal-content{bottom:25px !important;}*/
 </style>

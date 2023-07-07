@@ -600,5 +600,5 @@ this.$refs['callbackModal'].$on('shown', () => {
 .callback .search{z-index:9999999 !important}
 .callback .modal{top:50px !important;height:100% !important;}
 .callback #callbackModal___BV_modal_outer_{position:relative  !important;height:100% !important;}
-// .callback .modal .modal-content{bottom:25px !important;}
+/*.callback .modal .modal-content{bottom:25px !important;}*/
 </style>

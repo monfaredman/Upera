@@ -26,11 +26,7 @@ export default {
         computed: {
             ...mapGetters({locale: "locale"})
         },
-created: function() {
-  if (process.browser) {
-    this.$store.dispatch('GET_LANG')
-  }
-},
+
     mounted() {
       
 

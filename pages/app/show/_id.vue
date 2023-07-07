@@ -14,7 +14,8 @@ export default {
 
   async asyncData (context) {
 
-  	context.redirect('http://'+context.req.headers.host+'/movie/'+context.params.id)
+    context.redirect({ name: 'movie-id', params: { id: context.params.id } })
+  	//context.redirect('http://'+context.req.headers.host+'/movie/'+context.params.id)
   },
 }
 </script>

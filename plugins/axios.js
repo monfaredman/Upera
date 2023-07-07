@@ -60,6 +60,17 @@ if (context.route.query.ref){
 }
 
 
+  context.app.i18n.onBeforeLanguageSwitch = (oldLocale, newLocale, isInitialSetup, context) => {
+    //console.log(oldLocale, newLocale, isInitialSetup)
+    if(document.getElementById("srm")){
+      document.getElementById("srm").classList.remove( "srmrtl" )
+      if(newLocale=='fa')
+        document.getElementById("srm").classList.add( "srmrtl" )
+    }
+    return {oldLocale,isInitialSetup,context}
+  }
+
+
 
 	context.app.$axios.onError(error => {
 		if (error.response && error.response.status !== 200) {

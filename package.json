@@ -24,13 +24,14 @@
     "@nuxtjs/axios": "^5.13.6",
     "@nuxtjs/color-mode": "^2.1.1",
     "@nuxtjs/device": "github:Upera/device-module",
+    "@nuxtjs/i18n": "^7.3.1",
     "@nuxtjs/pwa": "^3.3.2",
     "bootstrap": "^4.5.3",
     "bootstrap-vue": "^2.21.2",
     "cookie-universal-nuxt": "^2.1.5",
     "klona": "^2.0.4",
     "node-gyp": "^8.4.1",
-    "nuxt": "^2.15.8",
+    "nuxt": "^2.17.0",
     "nuxt-clipboard2": "^0.2.1",
     "nuxt-i18n": "^6.28.1",
     "nuxt-lazy-load": "^1.2.7",
@@ -53,6 +54,7 @@
     "vue-sweetalert2": "^4.1.1"
   },
   "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@nuxt/image": "^0.0.4",
     "@nuxtjs/dotenv": "^1.4.1",
     "@nuxtjs/google-analytics": "^2.4.0",
@@ -62,7 +64,6 @@
     "eslint-loader": "^4.0.2",
     "eslint-plugin-prettier": "^3.4.1",
     "eslint-plugin-vue": "^7.17.0",
-    "node-sass": "^4.14.1",
     "prettier": "^2.3.2",
     "sass-loader": "^9.0.3"
   },

@@ -58,6 +58,5 @@ colorMode: 'dark',
 .download .with-header .modal{top:50px !important;}
 .download .modal{height:100% !important;}
 .download #downloadLinks___BV_modal_outer_{position:relative  !important;height:100% !important;}
-// .download .modal .modal-content{bottom:25px !important;}
-
+/*.download .modal .modal-content{bottom:25px !important;}*/
 </style>

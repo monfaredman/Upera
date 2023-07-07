@@ -16,11 +16,11 @@ export default {
   // },
   loadingIndicator: {
     name: 'circle',
-    color: process.env.COLOR,
+    color: process.env.COLOR2,
     background: 'white'
   },
   loading: {
-    color: process.env.COLOR,
+    color: process.env.COLOR2,
     height: '6px',
     rtl: true,
     continuous: true,
@@ -30,7 +30,7 @@ export default {
    ** Nuxt rendering mode
    ** See https://nuxtjs.org/api/configuration-mode
    */
-  mode: process.env.SSR,
+  ssr: false,
   /*
    ** Nuxt target
    ** See https://nuxtjs.org/api/configuration-target
@@ -57,7 +57,7 @@ export default {
     link: [{ rel: "icon", type: "image/x-icon", href: "/favicon-"+process.env.ENV+".ico"}],
     script: [
       {
-        src: 'https://web.upera.tv/jwplayer?v2', body: true
+        src: 'https://'+process.env.jwplayer+'/jwplayer?v2', body: true
       }
     ],
   },
@@ -93,7 +93,7 @@ export default {
    ** Plugins to load before mounting the App
    ** https://nuxtjs.org/guide/plugins
    */
-  plugins: ["~plugins/slick","~plugins/swiper",'~/plugins/i18n','~/plugins/swal',
+  plugins: ["~plugins/slick","~plugins/swiper",'~/plugins/swal',
     "./plugins/axios",
     "./plugins/mixins/validation","~/plugins/lightGallery.client","~/plugins/awesomeCountdown.client"],
   /*
@@ -113,6 +113,7 @@ export default {
    */
   modules: [
     // Doc: https://axios.nuxtjs.org/usage
+    '@nuxtjs/i18n',
     "@nuxtjs/axios",
     '@nuxtjs/auth',
     "@nuxtjs/pwa",
@@ -122,14 +123,6 @@ export default {
     "@nuxtjs/device",
     ['cookie-universal-nuxt', { alias: 'cookiz' }],
     'vue-social-sharing/nuxt',
-    // 'nuxt-sweetalert2',
-    // [
-    //   'vue-sweetalert2/nuxt',
-    //   {
-    //     confirmButtonColor: '#41b882',
-    //     cancelButtonColor: '#ff7674'
-    //   }
-    // ],
     ['nuxt-lazy-load', {
       images: true,
       videos: false,
@@ -140,6 +133,16 @@ export default {
       directiveOnly: false
     }]
   ],
+  i18n: {
+    locales: [{ code: 'fa', iso: 'fa-IR', file: 'fa.json' },
+  { code: 'en', iso: 'en-US', file: 'en.json' }],
+    defaultLocale: 'fa',
+    strategy: 'no_prefix',
+    langDir: '~/locales/',
+    vueI18n: {
+      fallbackLocale: 'fa'
+    }
+  },
   auth: {
   redirect: {
     login: '/login',
@@ -206,7 +209,7 @@ colorMode: {
   fallback: 'light'
 },
 
-  transition: {
+  pageTransition: {
     name: "fade",
     mode: "out-in",
   },
@@ -218,6 +221,7 @@ colorMode: {
     /*
      ** Run ESLint on save
      */
+    vendor: ['jwplayer'],
     extend(config, { isDev, isClient }) {
       if (isDev && isClient) {
         config.module.rules.push({

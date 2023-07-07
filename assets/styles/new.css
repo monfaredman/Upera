@@ -10521,3 +10521,12 @@ body .accordion > .card:nth-of-type(odd) .card-header {
   font-weight: 400;
   letter-spacing: -0.5px;
 }
+
+.download-links-body .scrollable .dropdown-menu.show {
+  overflow-y: scroll;
+  height: 100vh;
+  margin-bottom:25vh
+}
+.download-links-body .scrollable2 .dropdown-menu.show {
+  margin-top:25vh;
+}

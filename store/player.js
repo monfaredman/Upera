@@ -865,7 +865,7 @@ return SRMdata
                                   }
                               }
 
-  jwp=window.jwplayer(block_id).setup({ 
+  jwp=jwplayer(block_id).setup({ // eslint-disable-line
     "playlist": [
       {
         "file": res.data.file[0].file,
@@ -1066,7 +1066,7 @@ commit('PLAYER_MODAL_CLEAN')
                                   }
                               }
 
-  jwp=window.jwplayer(block_id).setup({ 
+  jwp=jwplayer(block_id).setup({ // eslint-disable-line
     "playlist": [
       {
         "file": video[0].video,
@@ -1146,6 +1146,8 @@ return error
             commit('DOWNLOAD_MODAL_CLEAN')
             return commit
         },
+
+
 
 }
 
@@ -1240,15 +1242,26 @@ export const mutations = {
 
             // Import subtitle to array
             let TextTrack = []
-            if (data.data.subtitle !== null) {
-                for (var i = 0; i < data.data.subtitle.length; i++) {
+            if (data.data.new_subtitle !== null) {
+                for (var i = 0; i < data.data.new_subtitle.length; i++) {
+                  if(i==0){
                     TextTrack.push(
                         {
                             kind: 'captions',
-                            label: data.data.subtitle[i].subtitle_language,
-                            file: data.data.subtitle[i].subtitle_name
+                            label: data.data.new_subtitle[i].language,
+                            file: data.data.new_subtitle[i].url,
+                            default: true
                         }
                     )
+                  }else{
+                    TextTrack.push(
+                        {
+                            kind: 'captions',
+                            label: data.data.new_subtitle[i].language,
+                            file: data.data.new_subtitle[i].url
+                        }
+                    )
+                  }
                 }
             }
 
@@ -1264,13 +1277,19 @@ export const mutations = {
 
                               if(this.$device.isTV){
                                   if(data.data.video[0].video.includes("?")){
-                                    data.data.video[0].video=data.data.video[0].video+'&app=1'
+                                    data.data.video[0].video=data.data.video[0].video+'&app=1&nosub=1'
                                   }else{
-                                    data.data.video[0].video=data.data.video[0].video+'?app=1'
+                                    data.data.video[0].video=data.data.video[0].video+'?app=1&nosub=1'
+                                  }
+                              }else{
+                                  if(data.data.video[0].video.includes("?")){
+                                    data.data.video[0].video=data.data.video[0].video+'&nosub=1'
+                                  }else{
+                                    data.data.video[0].video=data.data.video[0].video+'?nosub=1'
                                   }
                               }
 
-  jwp=window.jwplayer('my-player').setup({ 
+  jwp=jwplayer('my-player').setup({  // eslint-disable-line
     "playlist": [
       {
         "file": data.data.video[0].video,
@@ -1361,7 +1380,19 @@ export const mutations = {
                         if(jwp){
                             jwp.remove()
                         }
-                        state.next = 'movie'
+                        if (data.data.guest)
+                        this.$axios.post('/ghost/create/watch/movie/recently', {
+                            current_time: 0,
+                            duration_time: e.duration.toFixed(),
+                            movie_id: data.data.video[0].id,
+                        })
+                        else
+                        this.$axios.post('/create/watch/movie/recently', {
+                            current_time: 0,
+                            duration_time: e.duration.toFixed(),
+                            movie_id: data.data.video[0].id,
+                        })
+                        this.$router.push({name: 'movie-show-id', params: {id: data.data.suggestion}})
                     }
                 }
 
@@ -1447,7 +1478,7 @@ export const mutations = {
 
 
 
-            window.jwplayer().on('play', (e) => {
+            jwplayer().on('play', (e) => { // eslint-disable-line
               document.getElementById('my-player').classList.remove( "jw-state-idle" )
               return e
              })
@@ -1466,6 +1497,7 @@ export const mutations = {
 
 
                     document.getElementById('flowplayer-back-button').addEventListener('click', () => {
+                        jwp.setFullscreen(false)
                         if(jwp){
                             jwp.remove()
                         }
@@ -1680,15 +1712,26 @@ export const mutations = {
 
             // Import subtitle to array
             let TextTrack = []
-            if (data.data.subtitle !== null) {
-                for (var i = 0; i < data.data.subtitle.length; i++) {
+            if (data.data.new_subtitle !== null) {
+                for (var i = 0; i < data.data.new_subtitle.length; i++) {
+                  if(i==0){
                     TextTrack.push(
                         {
                             kind: 'captions',
-                            label: data.data.subtitle[i].subtitle_language,
-                            file: data.data.subtitle[i].subtitle_name
+                            label: data.data.new_subtitle[i].language,
+                            file: data.data.new_subtitle[i].url,
+                            default: true
                         }
                     )
+                  }else{
+                    TextTrack.push(
+                        {
+                            kind: 'captions',
+                            label: data.data.new_subtitle[i].language,
+                            file: data.data.new_subtitle[i].url
+                        }
+                    )
+                  }
                 }
             }
 
@@ -1707,13 +1750,23 @@ export const mutations = {
 
                               if(this.$device.isTV){
                                   if(data.data.episode[0].video.includes("?")){
-                                    data.data.episode[0].video=data.data.episode[0].video+'&app=1'
+                                    data.data.episode[0].video=data.data.episode[0].video+'&app=1&nosub=1'
                                   }else{
-                                    data.data.episode[0].video=data.data.episode[0].video+'?app=1'
+                                    data.data.episode[0].video=data.data.episode[0].video+'?app=1&nosub=1'
+                                  }
+                              }else{
+                                  if(data.data.episode[0].video.includes("?")){
+                                    data.data.episode[0].video=data.data.episode[0].video+'&nosub=1'
+                                  }else{
+                                    data.data.episode[0].video=data.data.episode[0].video+'?nosub=1'
                                   }
                               }
 
-  jwp=window.jwplayer('my-player').setup({ 
+let RecentlyTime = 200
+
+
+
+  jwp=jwplayer('my-player').setup({  // eslint-disable-line
     "playlist": [
       {
         "file": data.data.episode[0].video,
@@ -1731,20 +1784,7 @@ export const mutations = {
     "autostart": true
   })
 
-            /***********************************/
-
-            // 1- Send request recenlty time of video
-            // 2- Check next season and episode
-
-            /***********************************/
-
-
-            let RecentlyTime = 200 // Default second
-
-
-            // Change RecenltyTime in Seeking
-
-            jwp.on("seek", function(e) {
+              jwp.on("seek", function(e) {
                RecentlyTime = e.offset.toFixed()
             })
 
@@ -1814,13 +1854,13 @@ var nextHTML =''
             }
 
             // Check Recently
-            window.jwplayer().on('play', (e) => {
+            jwplayer().on('play', (e) => { // eslint-disable-line
               document.getElementById('my-player').classList.remove( "jw-state-idle" )
               return e
              })
             jwp.on('ready', (e) => {
                if(document.getElementById('my-player')){
-document.body.classList.add('loaded')
+                    document.body.classList.add('loaded')
                     document.getElementById('my-player').classList.add( "jw-state-idle" )
                     document.body.classList.add('playerback')
                     document.getElementById('my-player').classList.remove( "jw-flag-aspect-mode" )
@@ -1831,6 +1871,7 @@ document.body.classList.add('loaded')
 
 
                     document.getElementById('flowplayer-back-button').addEventListener('click', () => {
+                        jwp.setFullscreen(false)
                         if(jwp){
                             jwp.remove()
                         }
@@ -1950,10 +1991,10 @@ document.body.classList.add('loaded')
 
 
 
-  var outerDiv = document.getElementById('flowplayer-playlist')
-  var innerDiv = document.getElementsByClassName('jwplayer')[0]
+                    var outerDiv = document.getElementById('flowplayer-playlist')
+                    var innerDiv = document.getElementsByClassName('jwplayer')[0]
 
-  innerDiv.appendChild(outerDiv)
+                    innerDiv.appendChild(outerDiv)
 
 
   
@@ -2022,14 +2063,43 @@ document.body.classList.add('loaded')
                         if(jwp){
                             jwp.remove()
                         }
-                        state.next = 'episode'
+                        this.$router.push({name: 'episode-show-id', params: {id: state.suggestion.id}})
+                                            if (data.data.guest)
+                    this.$axios.post('/ghost/create/watch/series/recently', {
+                        current_time: 0,
+                        duration_time: e.duration.toFixed(),
+                        episode_id: data.data.episode[0].id,
+                        series_id: data.data.episode[0].series_id
+                    })
+                    else
+                    this.$axios.post('/create/watch/series/recently', {
+                        current_time: 0,
+                        duration_time: e.duration.toFixed(),
+                        episode_id: data.data.episode[0].id,
+                        series_id: data.data.episode[0].series_id
+                    })
                     } else if (state.next_season !== null) {
                         if(jwp){
                             jwp.remove()
                         }
-                        state.suggestion=state.next_season
-                        state.next = 'episode'
 
+
+                        
+                        this.$router.push({name: 'episode-show-id', params: {id: state.next_season.id}})
+                                            if (data.data.guest)
+                    this.$axios.post('/ghost/create/watch/series/recently', {
+                        current_time: 0,
+                        duration_time: e.duration.toFixed(),
+                        episode_id: data.data.episode[0].id,
+                        series_id: data.data.episode[0].series_id
+                    })
+                    else
+                    this.$axios.post('/create/watch/series/recently', {
+                        current_time: 0,
+                        duration_time: e.duration.toFixed(),
+                        episode_id: data.data.episode[0].id,
+                        series_id: data.data.episode[0].series_id
+                    })
                     }
 
                 }
@@ -2192,6 +2262,8 @@ document.body.classList.add('loaded')
               jwp.addButton('/images/player-report.svg', 'Report', function() {state.show_report = true;jwp.pause()}, 'flowplayer-report-button', '')
 
 
+
+
         },
 
 
@@ -2222,7 +2294,7 @@ document.body.classList.add('loaded')
                                   }
                               }
 
-  jwp=window.jwplayer('my-player').setup({
+  jwp=jwplayer('my-player').setup({ // eslint-disable-line
     "file": state.data.video.video,
     "type": 'hls',
     "height": "100%",
@@ -2254,6 +2326,7 @@ document.body.classList.add('loaded')
 
 
                     document.getElementById('flowplayer-back-button').addEventListener('click', () => {
+                        jwp.setFullscreen(false)
                         if(jwp){
                             jwp.remove()
                         }
@@ -2391,8 +2464,8 @@ document.body.classList.add('loaded')
 
         CLOSE_REPORT(state) {
             state.show_report = false
-            if(window.jwplayer("my-player"))
-                window.jwplayer("my-player").play()
+            if(jwplayer("my-player")) // eslint-disable-line
+                jwplayer("my-player").play() // eslint-disable-line
         },
 
         DOWNLOAD_SPINER_LOAD(state) {
@@ -2424,9 +2497,11 @@ document.body.classList.add('loaded')
             state.showplyrmodal = true
         },
 
+
+
         PLAYER_MODAL_CLEAN(state) {
             state.showplyrmodal = false
-           var playersm=window.jwplayer('my-files-player')
+           var playersm=jwplayer('my-files-player') // eslint-disable-line
             if(document.getElementById('my-files-player') && playersm){
                 playersm.remove()
             }
@@ -2442,7 +2517,6 @@ document.body.classList.add('loaded')
         PLAYER_DOWNLOAD_FILE(state,data) {
             state.download_files = data
         }
-
 
 
 }

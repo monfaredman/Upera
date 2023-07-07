@@ -27,12 +27,6 @@ export default {
             ...mapGetters({showCreditModal: "credit/showModal"}),
             ...mapGetters({showSubscriptionModal: "subscription/showModal"})
         },
-    created: function() {
-
-        if (process.browser) {
-            this.$store.dispatch('GET_LANG')
-        }
-    },
     mounted() {
     if(document.getElementById("goftino_w")){
         document.getElementById("goftino_w").remove()

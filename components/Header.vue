@@ -196,7 +196,7 @@
                             زبان فارسی 
                           </div>
                           <div class="custom-control custom-switch">
-                            <input id="language" disabled type="checkbox" class="custom-control-input" :checked="$i18n.locale==='fa'" @change="language($event.target.checked)">
+                            <input id="language" type="checkbox" class="custom-control-input" disabled :checked="$i18n.locale==='fa'" @change="changelang()">
                             <label class="custom-control-label" for="language" />
                           </div>
                         </div>
@@ -227,12 +227,12 @@
             </div>
 
             <nuxt-link v-if="checkuser.show_app" to="/app" class="btn btn-second px-lg-4 py-1 ml-1 btn-app">
-              {{ $t('new.download_app') }}
+              {{ $t('new.app') }}
             </nuxt-link>
             <b-button v-if="checkuser.subscription!=1 && !$auth.loggedIn && $route.name !=='login'" variant="main" class="py-1 px-lg-4" @click="SHOW_MODAL()">
-              {{ $t('new.login_register') }}
+              {{ $t('nav.login') }}
             </b-button>
-            <b-button v-else-if="checkuser.subscription==1 && !checkuser.access" variant="main" class="py-1 px-lg-4" @click="SHOW_MODAL_SUBSCRIPTION()">
+            <b-button v-if="checkuser.subscription==1 && !checkuser.access" variant="main" class="py-1 px-lg-4" @click="SHOW_MODAL_SUBSCRIPTION()">
               خرید اشتراک
             </b-button>
             <b-button v-else-if="checkuser.subscription==1 && checkuser.access" v-b-tooltip.hover :title="checkuser.days_period_to_end+' روز از اشتراک شما باقیمانده است'" variant="success" class="py-1 px-lg-4" @click="SHOW_MODAL_SUBSCRIPTION()">
@@ -566,15 +566,6 @@ document.body.classList.add("header-fixed-collapsed")
         else
           this.$colorMode.preference='light'
       },
-      language(e) {
-        if(e==true){
-          this.$store.dispatch('SET_LANG','fa')
-          this.$i18n.locale = 'fa'
-        }else{
-          this.$store.dispatch('SET_LANG','en')
-          this.$i18n.locale = 'en'
-        }
-      },
       async logout() {
 
         await this.$auth.logout()
@@ -584,6 +575,16 @@ document.body.classList.add("header-fixed-collapsed")
       },
       execute_content_filtering(){
         this.$router.go()
+      },
+      changelang(){
+
+        if(this.$i18n.locale==='en'){
+          this.$i18n.setLocale('fa')
+        }else{
+           this.$i18n.setLocale('en')
+        }
+
+        
       }
     },
   }

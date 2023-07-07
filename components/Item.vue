@@ -910,7 +910,7 @@ if(this.$config.envname=='igapp'){
                 if(this.main_free){
 
                   if(this.data.item.vod || this.data.item.owned){
-          					this.MainButton=9
+                    this.MainButton=9
                     if(this.type=='series'){
                       if(this.data.last_episode_seen)
                         this.episode=this.data.last_episode_seen
@@ -923,22 +923,22 @@ if(this.$config.envname=='igapp'){
                   }else{
                     this.MainButton=8
                   }
-            		if(this.data.item.upera && this.main_download){
-						      this.DownloadButton=2
-            		}
+                if(this.data.item.upera && this.main_download){
+                  this.DownloadButton=2
+                }
                 }else{
-                	if(this.data.item.ekran){
-                		if(this.data.item.upera){
-							if(this.data.item.presale){
-								if(this.data.item.owned){
-									this.MainButton=7
-								}else{
-									this.MainButton=5
-									this.ShowPresale=1
-								}
-							}else{
-								if(this.data.item.owned){
-									this.MainButton=9
+                  if(this.data.item.ekran){
+                    if(this.data.item.upera){
+              if(this.data.item.presale){
+                if(this.data.item.owned){
+                  this.MainButton=7
+                }else{
+                  this.MainButton=5
+                  this.ShowPresale=1
+                }
+              }else{
+                if(this.data.item.owned){
+                  this.MainButton=9
                   if(this.type=='series'){
                     if(this.data.last_episode_seen)
                       this.episode=this.data.last_episode_seen
@@ -946,21 +946,21 @@ if(this.$config.envname=='igapp'){
                        this.episode=this.data.first_episode
 
                   }
-								}else{
-									this.MainButton=4
-								}
-							}
-                		}else{
-                			this.MainButton=6
-                		}
-                	}else{
-						if(this.data.item.vod && this.checkuser.subscription){
-							if(this.data.item.presale){
-								this.MainButton=6
-								this.ShowPresale=1
-							}else{
-								if(this.checkuser.access || this.data.item.owned){
-									this.MainButton=9
+                }else{
+                  this.MainButton=4
+                }
+              }
+                    }else{
+                      this.MainButton=6
+                    }
+                  }else{
+            if(this.data.item.vod && this.checkuser.subscription){
+              if(this.data.item.presale){
+                this.MainButton=6
+                this.ShowPresale=1
+              }else{
+                if(this.checkuser.access || this.data.item.owned){
+                  this.MainButton=9
                   if(this.type=='series'){
                     if(this.data.last_episode_seen)
                       this.episode=this.data.last_episode_seen
@@ -971,28 +971,28 @@ if(this.$config.envname=='igapp'){
                   if(this.data.item.upera && this.main_download){
                     this.DownloadButton=1
                   }
-								}else{
-									this.MainButton=3
-								}
-							}
-							if(this.data.item.upera && this.main_download && !this.data.item.owned){
-								if(this.data.item.presale){
-									this.DownloadButton=4
-								}else{
-									this.DownloadButton=3
-								}
-							}
+                }else{
+                  this.MainButton=3
+                }
+              }
+              if(this.data.item.upera && this.main_download && !this.data.item.owned){
+                if(this.data.item.presale){
+                  this.DownloadButton=4
+                }else{
+                  this.DownloadButton=3
+                }
+              }
             }else if(this.data.item.upera && this.main_download){
-							if(this.data.item.presale){
-								if(this.data.item.owned){
-									this.MainButton=7
-								}else{
-									this.MainButton=2
-									this.ShowPresale=1
-								}
-							}else{
-								if(this.data.item.owned){
-									this.MainButton=9
+              if(this.data.item.presale){
+                if(this.data.item.owned){
+                  this.MainButton=7
+                }else{
+                  this.MainButton=2
+                  this.ShowPresale=1
+                }
+              }else{
+                if(this.data.item.owned){
+                  this.MainButton=9
                   if(this.type=='series'){
                     if(this.data.last_episode_seen)
                       this.episode=this.data.last_episode_seen
@@ -1002,8 +1002,8 @@ if(this.$config.envname=='igapp'){
                   }
 
 
-									this.DownloadButton=1
-								}else{
+                  this.DownloadButton=1
+                }else{
                   if(this.type=='series'){
                     this.MainButton=9
                     if(this.data.last_episode_seen)
@@ -1015,13 +1015,13 @@ if(this.$config.envname=='igapp'){
                     this.MainButton=1
                   }
 
-									
-								}
-							}
-						}else{
-							if(this.data.item.presale){
-								this.MainButton=7
-							}else if(this.type=='series'){
+                  
+                }
+              }
+            }else{
+              if(this.data.item.presale){
+                this.MainButton=7
+              }else if(this.type=='series'){
                 this.MainButton=9
                 if(this.data.last_episode_seen)
                   this.episode=this.data.last_episode_seen
@@ -1029,10 +1029,10 @@ if(this.$config.envname=='igapp'){
                    this.episode=this.data.first_episode
 
               }else{
-								this.MainButton=6
-							}
-						}
-                	}
+                this.MainButton=6
+              }
+            }
+                  }
                 }
 
               if(this.$route.query.force_subscription==1){

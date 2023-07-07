@@ -38,7 +38,7 @@
                 </b-dropdown>
               </div>
               <div :class="{ 'col-sm-6': (season_num>1),'col-sm-12': (season_num<=1)}">
-                <b-dropdown block :text="episodetitle" variant="outline-dark" class="srmb">
+                <b-dropdown block :text="episodetitle" variant="outline-dark" class="srmb" :class="{ 'scrollable': episode_num > 20,'scrollable2': episode_num > 20 && staticmodal}">
                   <b-dropdown-item v-for="(item, index) in lastseason[selectseriesid]" :key="index" href="#" :active="type=='episode' && itemdata.episode_number==item.episode_number" @click.prevent="selectepisode(item.id)">
                     قسمت {{ item.episode_number }}
                   </b-dropdown-item>
@@ -195,7 +195,7 @@
                 </b-dropdown>
               </div>
               <div :class="{ 'col-sm-6': (season_num>1),'col-sm-12': (season_num<=1)}">
-                <b-dropdown block :text="episodetitle" variant="outline-dark" class="srmb">
+                <b-dropdown block :text="episodetitle" variant="outline-dark" class="srmb" :class="{ 'scrollable': episode_num > 20,'scrollable2': episode_num > 20 && staticmodal}">
                   <b-dropdown-item v-for="(item, index) in lastseason[selectseriesid]" :key="index" href="#" :active="type=='episode' && itemdata.episode_number==item.episode_number" @click.prevent="selectepisode(item.id)">
                     قسمت {{ item.episode_number }}
                   </b-dropdown-item>
@@ -572,6 +572,7 @@ import {mapGetters} from 'vuex'
         disable_button: false,
         operator_fullrate: 'همراه اول یا ایرانسل',
         season_num: 0,
+        episode_num: 0,
         showinfo: true,
         lastseason: {},
           showBoxAnimation: false,
@@ -830,6 +831,7 @@ this.$refs['downloadLinks'].$on('shown', () => {
     window.addEventListener("resize", this.Resize)
     this.Resize('e')
 this.season_num=this.sizeofobj(this.lastseason)
+this.episode_num=this.sizeofobj(this.lastseason[this.selectseriesid])
 
 })
 
@@ -944,7 +946,7 @@ this.checkdiv()
           }
 
 
-          if(!this.owned && this.vod && !this.checkuser.access && (!free || this.show_free==1)){
+          if(!this.owned && this.vod  && !this.checkuser.access && (!free || this.show_free==1)){
             this.$store.dispatch("download/ADD_DIVCOUNT2")
           }else{
             this.$store.dispatch("download/MIN_DIVCOUNT2")
