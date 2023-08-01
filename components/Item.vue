@@ -222,7 +222,7 @@
             </div>
           </div> -->
           <client-only>
-            <countdown v-if="data.item.presale" :left-time="data.item.presale * 1000">
+            <countdown v-if="data.item.presale && data.item.presale <= 6288798" :left-time="data.item.presale * 1000">
               <div slot="process" slot-scope="{ timeObj }" class="d-flex align-items-center justify-content-center count-down-wrapper">
                 <div class="count-down count-down-invert text-center">
                   <div class="count-down-num">
