@@ -1231,7 +1231,7 @@ this.checkdiv()
       if(!this.$auth.loggedIn){
         this.$store.dispatch('login/SHOW_MODAL',{premessage: this.premessage,premobile: this.mobile,preredirect: null,prerefresh: false})
       }else if (this.$config.envname!='igapp'){
-        window.location.href = 'https://www.instagram.com/uperashop/'
+        window.location.href = 'https://www.instagram.com/uperatv/'
       }
     }
     },

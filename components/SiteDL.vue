@@ -310,7 +310,7 @@ this.$refs['downloadLinks'].$on('shown', () => {
         this.LINK_DOWNLOAD()
       }
       // else{
-      //   window.location.href = 'https://www.instagram.com/uperashop/'
+      //   window.location.href = 'https://www.instagram.com/uperatv/'
       // }
     },
 

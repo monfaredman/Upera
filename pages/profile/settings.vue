@@ -34,7 +34,7 @@
             <a href="https://t.me/shop_upera" class="">
               <i class="fab fa-2x fa-telegram-plane" :class="{ 'mr-2 mr-md-4': $i18n.locale!='fa' }" />
             </a>
-            <a href="https://instagram.com/uperashop" class="mr-2 mr-md-4">
+            <a href="https://instagram.com/uperatv" class="mr-2 mr-md-4">
               <i class="fab fa-2x fa-instagram" />
             </a>
             <a href="#">

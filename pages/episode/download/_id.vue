@@ -18,13 +18,13 @@ import Download from "../../../components/Download"
     Download
   },
 
-  layout(context) {
-    if(context.query.ref && context.$config.envname!='plus')
-      return 'body'
-    else
-      return 'nofooter'
-  },
-
+  // layout(context) {
+  //   if(context.query.ref && context.$config.envname!='plus')
+  //     return 'body'
+  //   else
+  //     return 'nofooter'
+  // },
+layout: "nofooter",
   async asyncData (context) {
     let res
     if (context.app.$auth.loggedIn) {

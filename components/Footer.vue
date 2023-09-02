@@ -45,7 +45,7 @@
                     </div>
                   </div>
                 </a>
-                <a v-if="$config.envname=='upera'" href="https://instagram.com/uperashop" class="mr-3">
+                <a v-if="$config.envname=='upera'" href="https://instagram.com/uperatv" class="mr-3">
                   <i class="icon-instagram" />
                 </a>
                 <a v-else-if="checkuser.instagram" :href="checkuser.instagram" class="mr-3">
@@ -212,7 +212,7 @@
                 </a>
 
 
-                <a v-if="$config.envname=='upera'" class="text-darker mr-3" href="https://instagram.com/uperashop">
+                <a v-if="$config.envname=='upera'" class="text-darker mr-3" href="https://instagram.com/uperatv">
                   <i class="icon-instagram" />
                 </a>
                 <a v-else-if="checkuser.instagram" class="text-darker mr-3" :href="checkuser.instagram">
@@ -265,7 +265,7 @@
                       </div>
                     </div>
                   </a>
-                  <a v-if="$config.envname=='upera'" class="text-darker mr-2" href="https://instagram.com/uperashop">
+                  <a v-if="$config.envname=='upera'" class="text-darker mr-2" href="https://instagram.com/uperatv">
                     <i class="icon-instagram" />
                   </a>
                   <a v-else-if="checkuser.instagram" class="text-darker mr-2" :href="checkuser.instagram">
@@ -313,7 +313,7 @@
                     </div>
                   </div>
                 </a>
-                <a v-if="$config.envname=='upera'" class="text-darker mr-2" href="https://instagram.com/uperashop">
+                <a v-if="$config.envname=='upera'" class="text-darker mr-2" href="https://instagram.com/uperatv">
                   <i class="icon-instagram" />
                 </a>
                 <a v-else-if="checkuser.instagram" class="text-darker mr-2" :href="checkuser.instagram">

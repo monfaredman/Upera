@@ -17,13 +17,13 @@ import Download from "../../../components/Download"
   components: {
     Download
   },
-  layout(context) {
-    if(context.query.ref && context.$config.envname!='plus')
-      return 'body'
-    else
-      return 'nofooter'
-  },
-    // layout: "nofooter",
+  // layout(context) {
+  //   if(context.query.ref && context.$config.envname!='plus')
+  //     return 'body'
+  //   else
+  //     return 'nofooter'
+  // },
+     layout: "nofooter",
 
   async asyncData (context) {
     let res
