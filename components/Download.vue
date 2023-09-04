@@ -212,8 +212,9 @@
                 <span v-if="!screening.ekran && !cartloading" class="text-info h6 text-justify">حجم مصرفی: {{ fullrate_data.fa.title }}<br><br></span>
                 <!-- !ftb2 &&  -->
 
+<!-- && trafficoo -->
 
-                <span v-if="!ftb2 && !cartloading && !owned && traffic && trafficoo && !(downloadslist.some(function(el){ return el.owned === 1}))" class="text-justify ">دسترسی بدون خرید، با اینترنت {{ operator_fullrate }}<br><button class="btn btn-secondary text-right" @click="SHOWAGAIN(0)">
+                <span v-if="!ftb2 && !cartloading && !owned && traffic && !(downloadslist.some(function(el){ return el.owned === 1}))" class="text-justify ">دسترسی بدون خرید، با اینترنت {{ operator_fullrate }}<br><button class="btn btn-secondary text-right" @click="SHOWAGAIN(0)">
                   بررسی اتصال اینترنت
                   <i class="fas fa-sync-alt" />
                 </button><br>و یا خرید با اینترنت فعلی شما:<br><br></span>
@@ -945,8 +946,8 @@ this.checkdiv()
             this.$store.dispatch("download/MIN_DIVCOUNT")
           }
 
-
-          if(!this.owned && this.vod  && !this.checkuser.access && (!free || this.show_free==1)){
+// && (!free || this.show_free==1)
+          if(!this.owned && this.vod  && !this.checkuser.access){
             this.$store.dispatch("download/ADD_DIVCOUNT2")
           }else{
             this.$store.dispatch("download/MIN_DIVCOUNT2")
