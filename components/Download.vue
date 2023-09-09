@@ -27,7 +27,8 @@
           </button>
         </div>
         <!-- !owned && (!free || (free && (ftb || $route.query.force_to_buy))) &&  -->
-        <div v-if="!cartloading && (!free || ftb2) && Object.keys(downloadslist).length > 0 && cart.length > 0 && cart.some(function(el){ return downloadslist.some(function(el2){ return el.itemid === el2.id})})">
+        <!-- && (!free || ftb2) -->
+        <div v-if="!cartloading && Object.keys(downloadslist).length > 0 && cart.length > 0 && cart.some(function(el){ return downloadslist.some(function(el2){ return el.itemid === el2.id})})">
           <div class="download-links-body" :class="{ 'download-links-body2': (($auth.loggedIn || !totalamount) && !lastseason)}">
             <div v-if="lastseason" class="row py-4 download-options-wrapper">
               <div v-if="season_num>1" class="col-sm-6">
@@ -49,7 +50,7 @@
               <div class="col-12">
                 <div class="position-relative">
                   <label for="premobile">{{ $t('new.enter_mobile') }}</label>                  
-                  <b-form-input id="premobile" v-model="mobile" style="text-align:left!important" name="mobile" dir="ltr" class="form-control large text-right mobile-input" :placeholder="$t('download.enter_mobile')" :title="$t('download.enter_mobile')" autofocus @keyup.enter="BUY" />
+                  <b-form-input id="premobile" ref="focusMe" v-model="mobile" style="text-align:left!important" name="mobile" dir="ltr" class="form-control large text-right mobile-input" :placeholder="$t('download.enter_mobile')" :title="$t('download.enter_mobile')" autofocus @keyup.enter="BUY" />
                   <div v-if="typeof errors === 'string'" class="text-danger">
                     {{ errors }}
                   </div>
@@ -133,20 +134,120 @@
                 </p>
               </div>
 
-              <div v-show="$auth.loggedIn" class="col-12">
-                <div class="position-relative">
-                  <b-form-select v-model="method" :options="methods" />
-                  <div v-if="typeof errors === 'string'" class="text-danger">
-                    {{ errors }}
-                  </div>
-                  <div v-else-if="errors && errors.method" class="text-danger">
-                    {{ errors.method[0] }}
-                  </div>
-                  <div v-else class="invalid-feedback">
-                    خطا در روش خرید
+
+
+              <header class="headline">
+                <h5 class="title font-weight-bold pt-1">
+                  انتخاب روش پرداخت
+                </h5>
+              </header>
+              <div v-if="$auth.loggedIn && typeof errors === 'string'" class="text-danger">
+                {{ errors }}
+              </div>
+              <div v-else-if="$auth.loggedIn && errors && errors.method" class="text-danger">
+                {{ errors.method[0] }}
+              </div>
+
+              <div class="col-12">
+                <div class="row position-relative payment_methods">
+                  <div class="container">
+                    <!-- <div class="text-muted mb-2">انتخاب روش پرداخت:</div> -->
+                    <div id="payment-1" class="option">
+                      <input id="payment1" v-model="method" type="radio" name="card" value="saman3">
+                      <label for="payment1" aria-label="درگاه بانکی">
+                        <span />
+      
+                        درگاه بانکی
+      
+                        <div class="card card--white card--sm">
+                          <div class="card__chip" />
+                          <div class="card__content">
+                            <div class="card__text">
+                              <div class="text__row">
+                                <div class="text__loader" />
+                                <div class="text__loader" />
+                              </div>
+                              <div class="text__row">
+                                <div class="text__loader" />
+                                <div class="text__loader" />
+                              </div>
+                            </div>
+                            <div class="card__symbol">
+                              <span />
+                              <span />
+                            </div>
+                          </div>
+                        </div>
+                      </label>
+                    </div>
+                    <b-tooltip target="payment-1" title="پرداخت با کلیه کارت های بانکی" placement="bottomleft" variant="primary" />
+
+                     
+                    <div id="payment-2" class="option">
+                      <input id="payment2" v-model="method" type="radio" name="card" value="directdebit">
+                      <label for="payment2" aria-label="پرداخت خودکار">
+                        <span />
+      
+                        پرداخت خودکار
+      
+                        <div class="card card--blue card--sm">
+                          <div class="card__chip" />
+                          <div class="card__content">
+                            <div class="card__text">
+                              <div class="text__row">
+                                <div class="text__loader" />
+                                <div class="text__loader" />
+                              </div>
+                              <div class="text__row">
+                                <div class="text__loader" />
+                                <div class="text__loader" />
+                              </div>
+                            </div>
+                            <div class="card__symbol">
+                              <span />
+                              <span />
+                            </div>
+                          </div>
+                        </div>
+                      </label>
+                    </div>
+                    <b-tooltip target="payment-2" title="خرید خودکار در آپرا بدون وارد کردن اطلاعات بانکی" placement="bottomleft" variant="success" />
+
+  
+
+  
+                    <div id="payment-5" class="option">
+                      <input id="payment5" v-model="method" type="radio" name="card" value="credit">
+                      <label for="payment5" aria-label="اعتبار آپرا">
+                        <span />
+      
+                        موجودی آپرا
+      
+                        <div class="card card--white card--sm">
+                          <div class="card__chip" />
+                          <img src="@/assets/img/logo.svg">
+                        </div>
+                      </label>
+                    </div>
+                    <b-tooltip target="payment-5" title="خرید با اعتبار آپرا" placement="bottomleft" variant="dark" />
+
+                    <div id="payment-4" class="option">
+                      <input id="payment4" v-model="method" type="radio" name="card" value="tally">
+                      <label for="payment4" aria-label="اعتبار تالی">
+                        <span />
+      
+                        اعتبار تالی
+      
+                        <div class="card card--white card--sm">
+                          <img src="@/assets/img/tally.png">
+                        </div>
+                      </label>
+                    </div>
+                    <b-tooltip target="payment-4" title="خرید با اعتبار تالی که در اپلیکیشن آپ دارید" placement="bottomleft" variant="danger" />
                   </div>
                 </div>
               </div> 
+
 
               <div v-show="false" class="col-12 p-4 text-right">
                 <a href="tel:02191079979">تلفن پشتیبانی در ساعات اداری:‌ 02191079979</a><br>
@@ -167,7 +268,10 @@
                     </div>
                   </div>
                   <div class="col-sm-6">
-                    <button v-if="disable_button || !totalamount" disabled class="btn btn-secondary btn-block">
+                    <button v-if="buyloading" class="btn btn-secondary btn-block" type="button" disabled>
+                      <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" /><span class="sr-only">Loading...</span>
+                    </button>
+                    <button v-else-if="disable_button || !totalamount" disabled class="btn btn-secondary btn-block">
                       <span v-if="!screening.ekran">{{ $t('download.pay_download') }}</span><span v-else>پرداخت و تماشا</span>
 
                       <i class="fa fa-money-bill pr-2" />
@@ -212,15 +316,14 @@
                 <span v-if="!screening.ekran && !cartloading" class="text-info h6 text-justify">حجم مصرفی: {{ fullrate_data.fa.title }}<br><br></span>
                 <!-- !ftb2 &&  -->
 
-<!-- && trafficoo -->
+                <!-- && trafficoo -->
 
                 <span v-if="!ftb2 && !cartloading && !owned && traffic && !(downloadslist.some(function(el){ return el.owned === 1}))" class="text-justify ">دسترسی بدون خرید، با اینترنت {{ operator_fullrate }}<br><button class="btn btn-secondary text-right" @click="SHOWAGAIN(0)">
                   بررسی اتصال اینترنت
                   <i class="fas fa-sync-alt" />
                 </button><br>و یا خرید با اینترنت فعلی شما:<br><br></span>
-                <span v-else-if="$config.envname=='igapp' && !ftb2 && traffic">
+                <!--                 <span v-else-if="$config.envname=='igapp' && !ftb2 && traffic">
                   <div>
-                    <!-- && !cartloading -->
 
 
                     <div dir="ltr" class="col-12" style="padding:0; margin: 0; height: 100%;">
@@ -240,7 +343,7 @@
 
 
                   </div>
-                </span>
+                </span> -->
 
                 <span v-if="screening.ekran && !cartloading" class="text-info h6 text-justify">مصرف اینترنت جهت تماشای آنلاین {{ fullrate_data.fa.title }} می باشد<br><br></span>
 
@@ -250,7 +353,8 @@
 
                 <span v-if="!cartloading && !presale && pass" class="text-danger h6 text-justify">رمز پیش خرید: <span class="text-primary">{{ pass }}</span> (مخصوص کسانی که قبلا خرید کرده اند)<br><br></span>
               </div>
-              <div v-if="!cartloading && showlinks && Object.keys(downloadslist).length > 0 && (downloadslist.some(function(el){ return el.owned === 1}) || !cart.some(function(el){ return downloadslist.some(function(el2){ return el.itemid === el2.id})}))">
+              <!-- && showlinks -->
+              <div v-if="!cartloading && Object.keys(downloadslist).length > 0 && (downloadslist.some(function(el){ return el.owned === 1}) || !cart.some(function(el){ return downloadslist.some(function(el2){ return el.itemid === el2.id})}))">
                 <div v-for="(item,index) in downloadslist" :key="index" class="download-links-item">
                   <div class="row">
                     <div class="col-sm-6">
@@ -558,6 +662,13 @@ import {mapGetters} from 'vuex'
 
       data() {
       return {
+                    payment_selected: 'radio1',
+        payment_options: [
+          { text: 'Radio 1', value: 'radio1' },
+          { text: 'Radio 3', value: 'radio2' },
+          { text: 'Radio 3 (disabled)', value: 'radio3', disabled: true },
+          { text: 'Radio 4', value: 'radio4' }
+        ],
         castShow: null,
         method: 'saman3',
         methods: [{ text: 'درگاه بانکی', value: 'saman3' },{ text: 'موجودی', value: 'credit' }],
@@ -601,8 +712,8 @@ import {mapGetters} from 'vuex'
           ...mapGetters({notes: "download/notes"}),
           ...mapGetters({totalamount: "download/total_amount"}),
           ...mapGetters({divcount: "download/divcount"}),
-          ...mapGetters({dlplayerloading: "player/dlplayerloading"}),
-          ...mapGetters({showlinks: "player/showlinks"})
+          // ...mapGetters({dlplayerloading: "player/dlplayerloading"}),
+          // ...mapGetters({showlinks: "player/showlinks"})
       },
 
     watch: {
@@ -620,16 +731,16 @@ import {mapGetters} from 'vuex'
       show_buy() {
         this.checkdiv()
       },
-      cartloading(val) {
+      // cartloading(val) {
 
-          if(!val && this.$config.envname=='igapp' && this.i==0 && !this.ftb && this.traffic && (this.owned || this.downloadslist.some(function(el){ return el.owned === 1}))){
-            this.i++
+          // if(!val && this.$config.envname=='igapp' && this.i==0 && !this.ftb && this.traffic && (this.owned || this.downloadslist.some(function(el){ return el.owned === 1}))){
+            // this.i++
             
-            this.$store.dispatch("player/LOAD_DOWNLOAD_PLAYER", {loggedIn: this.$auth.loggedIn,id:this.id,type:this.type,backdrop:'https://thumb.upera.shop/thumb?w=1920&h=938&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/'+this.backdrop,block_id:'my-download-player',name:this.ChooseLang(this.name,this.namefa),ir:this.ir,hour:this.hour})
+            // this.$store.dispatch("player/LOAD_DOWNLOAD_PLAYER", {loggedIn: this.$auth.loggedIn,id:this.id,type:this.type,backdrop:'https://thumb.upera.shop/thumb?w=1920&h=938&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/'+this.backdrop,block_id:'my-download-player',name:this.ChooseLang(this.name,this.namefa),ir:this.ir,hour:this.hour})
 
             
-          }
-      },
+          // }
+      // },
       // id(val) {
       //     if (val !== null && this.id && this.show) {
       //       if (this.$auth.loggedIn) {
@@ -831,9 +942,10 @@ this.lastseason=null
 this.$refs['downloadLinks'].$on('shown', () => {
     window.addEventListener("resize", this.Resize)
     this.Resize('e')
+    if(this.lastseason){
 this.season_num=this.sizeofobj(this.lastseason)
 this.episode_num=this.sizeofobj(this.lastseason[this.selectseriesid])
-
+}
 })
 
         if(!this.ftb)
@@ -1102,7 +1214,20 @@ this.checkdiv()
           return error
         })
       },
+      SHOW_MODAL_CREDIT() {
+        this.$store.dispatch('credit/SHOW_MODAL',{prewallet: null})
+      },
+      HIDE_MODAL_CREDIT() {
+        this.$store.dispatch('credit/HIDE_MODAL')
+      },
+      SHOW_MODAL_DIRECTDEBIT() {
+        this.$store.dispatch('directdebit/SHOW_MODAL',{premobile: this.mobile,forsubscription:false,id: this.id,type: this.type})
+      },
+      HIDE_MODAL_DIRECTDEBIT() {
+        this.$store.dispatch('directdebit/HIDE_MODAL')
+      },
       BUY() {
+
         if(this.mobile){
           this.mobile=this.mobile.replace(/۱/g, "1")
           this.mobile=this.mobile.replace(/۲/g, "2")
@@ -1121,6 +1246,11 @@ this.checkdiv()
         if(!ref || isNaN(ref))
           ref=0
 
+if (this.method=="directdebit" && !this.$auth.loggedIn) {
+this.$store.dispatch('login/SHOW_MODAL',{premessage: this.premessage,premobile: this.mobile,preredirect: null,prerefresh: 'directdebit'})
+}else if (this.method=="credit" && !this.$auth.loggedIn) {
+  this.$store.dispatch('login/SHOW_MODAL',{premessage: this.premessage,premobile: this.mobile,preredirect: null,prerefresh: false})
+  }
         var api_url
         if (this.$auth.loggedIn) {
             api_url='/get/buy'
@@ -1138,7 +1268,14 @@ this.checkdiv()
         }).then((res) => {
           this.buyloading=false
           if(res.status === 200){
-            if(this.method=="credit"){
+            if(res.data.data.login){
+              this.$store.dispatch('login/SHOW_MODAL',{premessage: this.premessage,premobile: this.mobile,preredirect: null,prerefresh: false})
+            }else if(this.method=="directdebit"){
+              if(res.data.data.showdirectdebitbox==1)
+                this.SHOW_MODAL_DIRECTDEBIT()
+              else
+                window.location.href = res.data.data.pay_url
+            }else if(this.method=="credit"){
               localStorage.removeItem('_cart')
               if (this.$auth.loggedIn) {
                 this.$router.go()
@@ -1158,7 +1295,55 @@ this.checkdiv()
            this.premessage=error.response.data.message
             if(error.response.data.login)
               this.$store.dispatch('login/SHOW_MODAL',{premessage: this.premessage,premobile: this.mobile,preredirect: null,prerefresh: false})
+            else if((this.$auth.loggedIn || (this.method!="credit" && this.method!="directdebit")) && error.response.data.message){
+                    var dlsmbuttons={back: {
+                              text: 'ok',
+                              value: "back",
+                              closeModal: true,
+                              className: 'swal-back'
+                            }}
+
+                      if(this.method=="credit"){
+                        Object.assign(dlsmbuttons, {addcredit: {
+                              text: 'افزایش موجودی آپرا',
+                              value: "addcredit",
+                              closeModal: true
+                        }})
+                      }
+
+              this.$swal({
+                  icon: 'error',
+                  title: error.response.data.message,
+                  dangerMode: true,
+                  buttons: dlsmbuttons,
+              }).then((value) => {
+                          switch (value) {
+                         
+                            case "back":
+                              this.$swal.close()
+                              if(!this.$auth.loggedIn)
+                              this.$refs.focusMe.focus()
+                              break
+                         
+                            case "addcredit":
+                              this.SHOW_MODAL_CREDIT()
+                                this.$swal.close()
+                              break
+
+
+                            default:
+                                this.$swal.close()
+                              if(!this.$auth.loggedIn)
+                              this.$refs.focusMe.focus()
+                              break
+
+                            }
+                  
+              })
+            }
         })
+
+      
       },
     async copy(text) {
       try {

@@ -203,6 +203,9 @@
                         <div v-if="$auth.loggedIn" class="d-flex align-items-center justify-content-between pt-4">
                           <a class="text-black" @click="SHOW_MODAL_CREDIT();$root.$emit('bv::hide::popover')">افزایش موجودی</a>
                         </div>
+                        <div v-if="$auth.loggedIn" class="d-flex align-items-center justify-content-between pt-4">
+                          <a class="text-black" @click="SHOW_MODAL_DIRECTDEBIT();$root.$emit('bv::hide::popover')">پرداخت خودکار</a>
+                        </div>
                         <div v-if="$auth.loggedIn" class="d-flex align-items-center justify-content-between pt-4 py-4 border-bottom-gray">
                           <nuxt-link class="text-black" to="/payments">
                             پرداخت ها
@@ -302,6 +305,7 @@
     <Login v-if="!$auth.loggedIn && $route.name !=='login'" :show="showModal" :staticmodal="false" @hide-modal="HIDE_MODAL" />
     <Credit v-if="$auth.loggedIn" :show="showCreditModal" @hide-modal="HIDE_MODAL_CREDIT" />
     <Subscription v-if="checkuser.subscription==1" :show="showSubscriptionModal" @hide-modal="HIDE_MODAL_SUBSCRIPTION" />
+    <DirectDebit v-if="$auth.loggedIn" :show="showDirectDebitModal" @hide-modal="HIDE_MODAL_DIRECTDEBIT" />
   </div>
 </template>
 
@@ -309,12 +313,14 @@
 import {mapGetters} from 'vuex'
 import Login from "../components/Login"
 import Credit from "../components/Credit"
+import DirectDebit from "../components/DirectDebit"
 import Subscription from "../components/Subscription"
 
   export default {
   components: {
     Login,
     Credit,
+    DirectDebit,
     Subscription
   },
   
@@ -339,6 +345,7 @@ import Subscription from "../components/Subscription"
     computed: {
         ...mapGetters({showModal: "login/showModal"}),
         ...mapGetters({showCreditModal: "credit/showModal"}),
+        ...mapGetters({showDirectDebitModal: "directdebit/showModal"}),
         ...mapGetters({showSubscriptionModal: "subscription/showModal"}),
     },
 
@@ -554,6 +561,13 @@ document.body.classList.add("header-fixed-collapsed")
             HIDE_MODAL_CREDIT() {
               this.$store.dispatch('credit/HIDE_MODAL')
             },
+
+      SHOW_MODAL_DIRECTDEBIT() {
+        this.$store.dispatch('directdebit/SHOW_MODAL',{premobile: null,subscription:false,id: null,type: null})
+      },
+      HIDE_MODAL_DIRECTDEBIT() {
+        this.$store.dispatch('directdebit/HIDE_MODAL')
+      },
             SHOW_MODAL_SUBSCRIPTION() {
               this.$store.dispatch('subscription/SHOW_MODAL',{content_type: '',content_id: ''})
             },

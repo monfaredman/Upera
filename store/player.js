@@ -1004,131 +1004,131 @@ commit('PLAYER_MODAL_CLEAN')
         },
 
 
-        LOAD_DOWNLOAD_PLAYER({commit}, {loggedIn,id,type, backdrop,block_id,name,ir,hour}) {
-            var ref=this.$cookiz.get('ref')
-            if(!ref || isNaN(ref))
-              ref=0
-                var api_url
-                if(type=="movie"){
-                  if (loggedIn) {
-                      api_url='/get/watch/movie-hls/'+ id + '/1'+ref
-                  } else {
-                      api_url='/ghost/get/watch/movie-hls/'+ id + '/1'+ref
-                  }
-                }else{
-                  if (loggedIn) {
-                      api_url='/get/watch/episode?hls=1&series_id=&type=sp&episode_id='+id+'&ref='+ref
-                  } else {
-                      api_url='/ghost/get/watch/episode?hls=1&series_id=&type=sp&episode_id='+id+'&ref='+ref
-                  }                  
-                }
+//         LOAD_DOWNLOAD_PLAYER({commit}, {loggedIn,id,type, backdrop,block_id,name,ir,hour}) {
+//             var ref=this.$cookiz.get('ref')
+//             if(!ref || isNaN(ref))
+//               ref=0
+//                 var api_url
+//                 if(type=="movie"){
+//                   if (loggedIn) {
+//                       api_url='/get/watch/movie-hls/'+ id + '/1'+ref
+//                   } else {
+//                       api_url='/ghost/get/watch/movie-hls/'+ id + '/1'+ref
+//                   }
+//                 }else{
+//                   if (loggedIn) {
+//                       api_url='/get/watch/episode?hls=1&series_id=&type=sp&episode_id='+id+'&ref='+ref
+//                   } else {
+//                       api_url='/ghost/get/watch/episode?hls=1&series_id=&type=sp&episode_id='+id+'&ref='+ref
+//                   }                  
+//                 }
                 
-                this.dispatch("download/DOWNLOAD_SPINER_LOAD")
-                commit('DOWNLOAD_PLAYER_SPINER_LOAD')
-                commit('HIDDEN_LINKS')
+//                 this.dispatch("download/DOWNLOAD_SPINER_LOAD")
+//                 commit('DOWNLOAD_PLAYER_SPINER_LOAD')
+//                 commit('HIDDEN_LINKS')
 
-                this.$axios.get(api_url).then((res) => {
-
-
-                    if (res.status === 200) {
-                            commit('PLAYER_MODAL_LOAD')
+//                 this.$axios.get(api_url).then((res) => {
 
 
-                            let jwp
-                            let titlesm
-                            let video
-
-                            titlesm = name
-
-                            res.data=res.data.data
-
-                            if(type=="movie"){
-                              video=res.data.video
-                            }else{
-                              video=res.data.episode
-                            }
-
-                            if(video.length===0){
-                              this.app.$swal('There was a problem playing the video, we will fix it soon.', {
-                                icon: "error",
-                              })
-                              commit('DOWNLOAD_PLAYER_SPINER_CLEAN')
-                              this.dispatch("download/DOWNLOAD_SPINER_CLEAN")
-                              commit('SHOW_LINKS')
-                            }else{
+//                     if (res.status === 200) {
+//                             commit('PLAYER_MODAL_LOAD')
 
 
-                              if(this.$device.isTV){
-                                  if(video[0].video.includes("?")){
-                                    video[0].video=video[0].video+'&app=1'
-                                  }else{
-                                    video[0].video=video[0].video+'?app=1'
-                                  }
-                              }
+//                             let jwp
+//                             let titlesm
+//                             let video
 
-  jwp=jwplayer(block_id).setup({ // eslint-disable-line
-    "playlist": [
-      {
-        "file": video[0].video,
-        "title": titlesm,
-        "image": backdrop,
-        "type": 'hls',
-        "autostart": true
-      }
-    ],
-    "height": "100%",
-    "width": "100%",
-    "pipIcon": "disabled",
-    "autostart": true
-  })
+//                             titlesm = name
 
+//                             res.data=res.data.data
+
+//                             if(type=="movie"){
+//                               video=res.data.video
+//                             }else{
+//                               video=res.data.episode
+//                             }
+
+//                             if(video.length===0){
+//                               this.app.$swal('There was a problem playing the video, we will fix it soon.', {
+//                                 icon: "error",
+//                               })
+//                               commit('DOWNLOAD_PLAYER_SPINER_CLEAN')
+//                               this.dispatch("download/DOWNLOAD_SPINER_CLEAN")
+//                               commit('SHOW_LINKS')
+//                             }else{
 
 
+//                               if(this.$device.isTV){
+//                                   if(video[0].video.includes("?")){
+//                                     video[0].video=video[0].video+'&app=1'
+//                                   }else{
+//                                     video[0].video=video[0].video+'?app=1'
+//                                   }
+//                               }
 
-                                jwp.on("setupError", function (e) {
-                                  this.app.$swal(e.message, {
-                                    icon: "error",
-                                  })
-                                })
-jwp.on('ready', (e) => {
+//   jwp=jwplayer(block_id).setup({ // eslint-disable-line
+//     "playlist": [
+//       {
+//         "file": video[0].video,
+//         "title": titlesm,
+//         "image": backdrop,
+//         "type": 'hls',
+//         "autostart": true
+//       }
+//     ],
+//     "height": "100%",
+//     "width": "100%",
+//     "pipIcon": "disabled",
+//     "autostart": true
+//   })
 
 
-  commit('DOWNLOAD_PLAYER_SPINER_CLEAN')
-  this.dispatch("download/DOWNLOAD_SPINER_CLEAN")
-  //if(ir==1)
-  if(hour>=8 && hour<18){
-    if(ir==1)
-      setTimeout(() => commit('SHOW_LINKS'), 30000)
-    else
-      setTimeout(() => commit('SHOW_LINKS'), 150000)
-  }else{
-    setTimeout(() => commit('SHOW_LINKS'), 2000)
-  }
-  return e
-})
 
 
-                            }
+//                                 jwp.on("setupError", function (e) {
+//                                   this.app.$swal(e.message, {
+//                                     icon: "error",
+//                                   })
+//                                 })
+// jwp.on('ready', (e) => {
+
+
+//   commit('DOWNLOAD_PLAYER_SPINER_CLEAN')
+//   this.dispatch("download/DOWNLOAD_SPINER_CLEAN")
+//   //if(ir==1)
+//   if(hour>=8 && hour<18){
+//     if(ir==1)
+//       setTimeout(() => commit('SHOW_LINKS'), 30000)
+//     else
+//       setTimeout(() => commit('SHOW_LINKS'), 150000)
+//   }else{
+//     setTimeout(() => commit('SHOW_LINKS'), 2000)
+//   }
+//   return e
+// })
+
+
+//                             }
                             
                         
 
 
-                    }
-                }, (error) => {
+//                     }
+//                 }, (error) => {
 
-commit('PLAYER_MODAL_CLEAN')
-                // this.app.$swal('There was a problem playing the video, we will fix it soon.', {
-                //                 icon: "error",
-                //               })
-
-
-                              this.dispatch("download/DOWNLOAD_SPINER_CLEAN")
-                              commit('SHOW_LINKS')
-return error
-                })
+// commit('PLAYER_MODAL_CLEAN')
+//                 // this.app.$swal('There was a problem playing the video, we will fix it soon.', {
+//                 //                 icon: "error",
+//                 //               })
 
 
-        },
+//                               this.dispatch("download/DOWNLOAD_SPINER_CLEAN")
+//                               commit('SHOW_LINKS')
+// return error
+//                 })
+
+
+//         },
 
         PLAYER_MODAL_LOAD({commit}) {
             commit('PLAYER_MODAL_LOAD')

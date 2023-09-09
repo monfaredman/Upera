@@ -29,7 +29,7 @@
     color: #F6F6F6 !important;
 }
 
-.theme-dark .modal-download-link .download-links-item {
+.theme-dark .modal-download-link .download-links-item  {
     border-top: 1px solid #6c757d;
 }
 
@@ -46,6 +46,12 @@
     background-color: #fff;
     background-clip: padding-box;
     border: 1px solid #ced4da;
+   
+}
+
+.theme-dark .download-links-body .form-control {
+   
+    color: #121212;
    
 }
 
@@ -1699,4 +1705,11 @@
 
 .theme-dark .genre-link a{
       color: #fff;
+}
+
+.theme-dark .payment_methods [type="radio"]:checked ~ label {
+  color: #fff;
+}
+.theme-dark .directdebit .card {
+    border: 1px solid #6c757d;
 }

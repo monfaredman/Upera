@@ -1038,6 +1038,10 @@ if(this.$config.envname=='igapp'){
               if(this.$route.query.force_subscription==1){
 
                 this.$store.dispatch('subscription/SHOW_MODAL',{content_type: this.type,content_id: this.data.item.id})
+              }else if(this.$route.query.force_download==1){
+
+                this.ftb=false
+                this.DOWNLOAD_MODAL_LOAD()
               }
               if(this.type!='movie' && this.data.season){
 
@@ -1068,13 +1072,15 @@ if(this.$config.envname=='igapp'){
                   this.ftb=true
                 else
                   this.ftb=false
-                this.$store.dispatch('player/DOWNLOAD_MODAL_LOAD')
+                this.DOWNLOAD_MODAL_LOAD()
               }else if(this.MainButton==3){
                 this.$store.dispatch('subscription/SHOW_MODAL',{content_type: this.type,content_id: this.data.item.id})
-                //this.$store.dispatch('player/DOWNLOAD_MODAL_LOAD')
+                //this.DOWNLOAD_MODAL_LOAD()
               }
             },
             HIDE_MODAL2() {
+              this.$router.push({path: this.$route.path})
+              // this.$router.replace({'force_download': null})
               this.$store.dispatch('player/DOWNLOAD_MODAL_CLEAN')
             },
             HIDE_MODAL3() {
@@ -1218,6 +1224,7 @@ this.clapCheckTimer = setTimeout(function(scope) {
               
     },
     DOWNLOAD_MODAL_LOAD() {
+      this.$router.push({path: this.$route.path, query: { force_download: 1 }})
       this.$store.dispatch('player/DOWNLOAD_MODAL_LOAD')
     },
     isactiveseason(season){

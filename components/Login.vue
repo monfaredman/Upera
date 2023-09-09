@@ -188,7 +188,11 @@ import {mapGetters} from 'vuex'
                 }else if(this.redirectTo){
                   this.$router.push({ path: this.redirectTo })
                 }else if(this.prerefresh){
-                  await this.$router.go()
+                  if(this.prerefresh=='directdebit'){
+                    this.SHOW_MODAL_DIRECTDEBIT()
+                  }else{
+                    await this.$router.go()
+                  }
                 }else{
                   await this.$store.dispatch('login')
                   this.$nuxt.refresh()
@@ -340,6 +344,12 @@ if(!self.sms_sent){
           )
       },
 
+      SHOW_MODAL_DIRECTDEBIT() {
+        this.$store.dispatch('directdebit/SHOW_MODAL',{premobile: null,subscription:false,id: null,type: null})
+      },
+      HIDE_MODAL_DIRECTDEBIT() {
+        this.$store.dispatch('directdebit/HIDE_MODAL')
+      },
       isModifierKey(event) {
           const key = event.keyCode
           return (event.shiftKey === true || key === 35 || key === 36) || 
