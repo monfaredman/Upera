@@ -203,7 +203,7 @@
                         <div v-if="$auth.loggedIn" class="d-flex align-items-center justify-content-between pt-4">
                           <a class="text-black" @click="SHOW_MODAL_CREDIT();$root.$emit('bv::hide::popover')">افزایش موجودی</a>
                         </div>
-                        <div v-if="$auth.loggedIn" class="d-flex align-items-center justify-content-between pt-4">
+                        <div v-if="$auth.loggedIn && checkuser.subscription==1" class="d-flex align-items-center justify-content-between pt-4">
                           <a class="text-black" @click="SHOW_MODAL_DIRECTDEBIT();$root.$emit('bv::hide::popover')">پرداخت خودکار</a>
                         </div>
                         <div v-if="$auth.loggedIn" class="d-flex align-items-center justify-content-between pt-4 py-4 border-bottom-gray">
@@ -232,10 +232,16 @@
             <nuxt-link v-if="checkuser.show_app" to="/app" class="btn btn-second px-lg-4 py-1 ml-1 btn-app">
               {{ $t('new.app') }}
             </nuxt-link>
-            <b-button v-if="checkuser.subscription!=1 && !$auth.loggedIn && $route.name !=='login'" variant="main" class="py-1 px-lg-4" @click="SHOW_MODAL()">
-              {{ $t('nav.login') }}
+            <b-button v-if="checkuser.subscription!=1 && !$auth.loggedIn && $route.name !=='login'" variant="main" class="py-1 px-lg-4" @click="SHOW_MODAL_WITH_DIRECTDEBIT()">
+              پرداخت خودکار
             </b-button>
-            <b-button v-if="checkuser.subscription==1 && !checkuser.access" variant="main" class="py-1 px-lg-4" @click="SHOW_MODAL_SUBSCRIPTION()">
+            <b-button v-else-if="checkuser.subscription!=1 && $auth.loggedIn" variant="main" class="py-1 px-lg-4" @click="SHOW_MODAL_DIRECTDEBIT()">
+              پرداخت خودکار
+            </b-button>
+            <b-button v-if="checkuser.subscription==1 && !$auth.loggedIn" variant="main" class="py-1 px-lg-4" @click="SHOW_MODAL_WITH_SUBSCRIPTION()">
+              خرید اشتراک
+            </b-button>
+            <b-button v-else-if="checkuser.subscription==1 && !checkuser.access" variant="main" class="py-1 px-lg-4" @click="SHOW_MODAL_SUBSCRIPTION()">
               خرید اشتراک
             </b-button>
             <b-button v-else-if="checkuser.subscription==1 && checkuser.access" v-b-tooltip.hover :title="checkuser.days_period_to_end+' روز از اشتراک شما باقیمانده است'" variant="success" class="py-1 px-lg-4" @click="SHOW_MODAL_SUBSCRIPTION()">
@@ -554,6 +560,12 @@ document.body.classList.add("header-fixed-collapsed")
       SHOW_MODAL() {
         this.$store.dispatch('login/SHOW_MODAL',{premessage: null,premobile: null,preredirect: null,prerefresh: false})
       },
+      SHOW_MODAL_WITH_DIRECTDEBIT() {
+        this.$store.dispatch('login/SHOW_MODAL',{premessage: null,premobile: null,preredirect: null,prerefresh: 'directdebit'})
+      },
+      SHOW_MODAL_WITH_SUBSCRIPTION() {
+        this.$store.dispatch('login/SHOW_MODAL',{premessage: null,premobile: null,preredirect: null,prerefresh: 'subscription'})
+      },
 
             SHOW_MODAL_CREDIT() {
               this.$store.dispatch('credit/SHOW_MODAL',{prewallet: null})
@@ -563,7 +575,7 @@ document.body.classList.add("header-fixed-collapsed")
             },
 
       SHOW_MODAL_DIRECTDEBIT() {
-        this.$store.dispatch('directdebit/SHOW_MODAL',{premobile: null,subscription:false,id: null,type: null})
+        this.$store.dispatch('directdebit/SHOW_MODAL',{premobile: null,forsubscription:false,id: null,type: null,paymentid: 0})
       },
       HIDE_MODAL_DIRECTDEBIT() {
         this.$store.dispatch('directdebit/HIDE_MODAL')

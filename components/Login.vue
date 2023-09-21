@@ -188,8 +188,12 @@ import {mapGetters} from 'vuex'
                 }else if(this.redirectTo){
                   this.$router.push({ path: this.redirectTo })
                 }else if(this.prerefresh){
+                  await this.$auth.fetchUser()
+                  this.$store.dispatch("SPA_INIT")
                   if(this.prerefresh=='directdebit'){
                     this.SHOW_MODAL_DIRECTDEBIT()
+                  }else if(this.prerefresh=='subscription'){
+                    this.SHOW_MODAL_SUBSCRIPTION()
                   }else{
                     await this.$router.go()
                   }
@@ -345,10 +349,16 @@ if(!self.sms_sent){
       },
 
       SHOW_MODAL_DIRECTDEBIT() {
-        this.$store.dispatch('directdebit/SHOW_MODAL',{premobile: null,subscription:false,id: null,type: null})
+        this.$store.dispatch('directdebit/SHOW_MODAL',{premobile: null,subscription:false,id: null,type: null,paymentid:0})
       },
       HIDE_MODAL_DIRECTDEBIT() {
         this.$store.dispatch('directdebit/HIDE_MODAL')
+      },
+      SHOW_MODAL_SUBSCRIPTION() {
+        this.$store.dispatch('subscription/SHOW_MODAL',{content_type: '',content_id: ''})
+      },
+      HIDE_MODAL_SUBSCRIPTION() {
+        this.$store.dispatch('subscription/HIDE_MODAL')
       },
       isModifierKey(event) {
           const key = event.keyCode

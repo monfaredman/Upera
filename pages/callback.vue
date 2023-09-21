@@ -94,6 +94,7 @@
 
 
 
+
                       <span v-for="(item,index) in files" :key="index">
                         <span v-if="!item.screening.ekran">
                           <br><br>
@@ -133,6 +134,17 @@
                       </div>
                       پرداخت شما موفقیت آمیز بود
 
+                      <br><br>
+                    </div>
+                    <div v-else-if="!loading && !buyloading && success && $route.query.purchase=='directdebit'" class="text-center">
+                      از شما جهت فعال کردن پرداخت خودکار<br><span style="color:#4b4bf9">ممنونیم</span>
+                      <div class="offset-2 col-8">
+                        <img class="img-fluid" src="@/assets/img/success.png">
+                      </div>
+                      
+                      <button class="btn btn-copy btn-light btn-block" @click="SHOW_MODAL_DIRECTDEBIT()">
+                        تنظیمات پرداخت خودکار
+                      </button>
                       <br><br>
                     </div>
                     <div v-else-if="!loading && !buyloading && checkagain" class="text-center">
@@ -373,9 +385,11 @@ import {mapGetters} from 'vuex'
         var purchase=this.$route.query.purchase
 
 
-        if(purchase!='download' && purchase!='wallet' && purchase!='subscription'){
+        if(purchase!='download' && purchase!='wallet' && purchase!='subscription' && purchase!='directdebit'){
           purchase='download'
         }
+
+                      
 
         if (this.$auth.loggedIn) {
             api_url='/payments/'+purchase+'/callback'
@@ -453,8 +467,29 @@ import {mapGetters} from 'vuex'
         var ref=this.$cookiz.get('ref')
         if(!ref || isNaN(ref))
           ref=0
-                       
-        if(this.$route.query.purchase=='subscription'){
+              if(this.$route.query.method=='vandar_subscriptions'){
+                if (this.$auth.loggedIn) {
+
+            this.buyloading=true
+            this.$axios.post('/directdebit/buy_subscription_bypaymentid', {
+                payment_id: this.$route.query.payment_id,
+                callback_url: location.origin+'/callback'
+            }).then((res) => {
+              if(res.status === 200 && res.data.data.pay_url){
+                window.location.href = res.data.data.pay_url
+              }else if(res.data.message){
+                this.message=res.data.message
+              }
+                this.message=false
+              this.buyloading=false
+            }, (error) => {
+                this.buyloading=false
+                this.message=error.response.data.message
+            })
+}else {
+            this.$store.dispatch('login/SHOW_MODAL',{premessage: null,premobile: null,preredirect: null,prerefresh: false})
+        }
+       } else if(this.$route.query.purchase=='subscription'){
 if (this.$auth.loggedIn) {
         this.buyloading=true
 
@@ -498,6 +533,12 @@ if (this.$auth.loggedIn) {
 }else if(this.$route.query.purchase=='wallet'){
         if (this.$auth.loggedIn) {
             this.SHOW_MODAL_CREDIT()
+        } else {
+            this.$store.dispatch('login/SHOW_MODAL',{premessage: null,premobile: null,preredirect: null,prerefresh: false})
+        }
+}else if(this.$route.query.purchase=='directdebit'){
+        if (this.$auth.loggedIn) {
+            this.SHOW_MODAL_DIRECTDEBIT()
         } else {
             this.$store.dispatch('login/SHOW_MODAL',{premessage: null,premobile: null,preredirect: null,prerefresh: false})
         }
@@ -580,6 +621,13 @@ this.$refs['callbackModal'].$on('shown', () => {
             SHOW_MODAL_CREDIT() {
               this.$store.dispatch('credit/SHOW_MODAL',{prewallet: this.wallet})
             },
+
+      SHOW_MODAL_DIRECTDEBIT() {
+        this.$store.dispatch('directdebit/SHOW_MODAL',{premobile: this.mobile,forsubscription:false,id: this.id,type: this.type,paymentid:0})
+      },
+      HIDE_MODAL_DIRECTDEBIT() {
+        this.$store.dispatch('directdebit/HIDE_MODAL')
+      },
     async COPY(text) {
       try {
         await this.$copyText(text)

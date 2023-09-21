@@ -211,7 +211,7 @@
                         </div>
                       </label>
                     </div>
-                    <b-tooltip target="payment-2" title="خرید خودکار در آپرا بدون وارد کردن اطلاعات بانکی" placement="bottomleft" variant="success" />
+                    <!-- <b-tooltip target="payment-2" title="خرید خودکار در آپرا بدون وارد کردن اطلاعات بانکی" placement="bottomleft" variant="success" /> -->
 
   
 
@@ -229,7 +229,7 @@
                         </div>
                       </label>
                     </div>
-                    <b-tooltip target="payment-5" title="خرید با اعتبار آپرا" placement="bottomleft" variant="dark" />
+                    <!-- <b-tooltip target="payment-5" title="خرید با اعتبار آپرا" placement="bottomleft" variant="dark" /> -->
 
                     <div id="payment-4" class="option">
                       <input id="payment4" v-model="method" type="radio" name="card" value="tally">
@@ -243,7 +243,6 @@
                         </div>
                       </label>
                     </div>
-                    <b-tooltip target="payment-4" title="خرید با اعتبار تالی که در اپلیکیشن آپ دارید" placement="bottomleft" variant="danger" />
                   </div>
                 </div>
               </div> 
@@ -318,7 +317,7 @@
 
                 <!-- && trafficoo -->
 
-                <span v-if="!ftb2 && !cartloading && !owned && traffic && !(downloadslist.some(function(el){ return el.owned === 1}))" class="text-justify ">دسترسی بدون خرید، با اینترنت {{ operator_fullrate }}<br><button class="btn btn-secondary text-right" @click="SHOWAGAIN(0)">
+                <span v-if="!ftb2 && !cartloading && traffic && !(downloadslist.some(function(el){ return el.owned === 1}))" class="text-justify ">دسترسی بدون خرید، با اینترنت {{ operator_fullrate }}<br><button class="btn btn-secondary text-right" @click="SHOWAGAIN(0)">
                   بررسی اتصال اینترنت
                   <i class="fas fa-sync-alt" />
                 </button><br>و یا خرید با اینترنت فعلی شما:<br><br></span>
@@ -690,7 +689,8 @@ import {mapGetters} from 'vuex'
           showBoxAnimation: false,
           selectseriesid: 1,
           seasontitle: 'فصل 1',
-          episodetitle: 'قسمت ها'
+          episodetitle: 'قسمت ها',
+          directdebit_payment_id:0
       }
     },
 
@@ -1221,7 +1221,7 @@ this.checkdiv()
         this.$store.dispatch('credit/HIDE_MODAL')
       },
       SHOW_MODAL_DIRECTDEBIT() {
-        this.$store.dispatch('directdebit/SHOW_MODAL',{premobile: this.mobile,forsubscription:false,id: this.id,type: this.type})
+        this.$store.dispatch('directdebit/SHOW_MODAL',{premobile: this.mobile,forsubscription:false,id: this.id,type: this.type,paymentid:this.directdebit_payment_id})
       },
       HIDE_MODAL_DIRECTDEBIT() {
         this.$store.dispatch('directdebit/HIDE_MODAL')
@@ -1271,10 +1271,15 @@ this.$store.dispatch('login/SHOW_MODAL',{premessage: this.premessage,premobile: 
             if(res.data.data.login){
               this.$store.dispatch('login/SHOW_MODAL',{premessage: this.premessage,premobile: this.mobile,preredirect: null,prerefresh: false})
             }else if(this.method=="directdebit"){
+              if(res.data.data.payment_id){
+                this.directdebit_payment_id=res.data.data.payment_id
+              }
               if(res.data.data.showdirectdebitbox==1)
                 this.SHOW_MODAL_DIRECTDEBIT()
-              else
-                window.location.href = res.data.data.pay_url
+              else{
+                localStorage.removeItem('_cart')
+                this.$router.go()
+              }
             }else if(this.method=="credit"){
               localStorage.removeItem('_cart')
               if (this.$auth.loggedIn) {
