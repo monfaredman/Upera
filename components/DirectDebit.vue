@@ -61,7 +61,7 @@
                   label-for="check-pay_anything"
                   description="هر زمانی که شما، روش 'پرداخت خودکار' را جهت خرید انتخاب کنید، دیگر نیازی به وارد کردن اطلاعات کارت خود ندارید و پرداخت خودکار از طریق کارت شما انجام می شود"
                 >
-                  <b-form-checkbox id="check-pay_anything" v-model="directdebit_subscriptions.pay_anything" class="mx-3 text-light" name="check-pay_anything" switch @change="ADD_SUBSCRIPTION(1)">
+                  <b-form-checkbox id="check-pay_anything" v-model="directdebit_subscriptions.pay_anything" class="mx-3" name="check-pay_anything" switch @change="ADD_SUBSCRIPTION(1)">
                     پرداخت خودکار به انتخاب شما
                   </b-form-checkbox>
                 </b-form-group>
