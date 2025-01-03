@@ -130,7 +130,7 @@
               
               <div class="col-12">
                 <p v-show="totalamount && checkuser.tax" class="col-12 text-danger small">
-                  + {{ (totalamount * 0.09) }} {{ $t('download.toman') }} (9 درصد مالیات بر ارزش افزوده)
+                  + {{ (totalamount * 0.1) }} {{ $t('download.toman') }} (10 درصد مالیات بر ارزش افزوده)
                 </p>
               </div>
 
@@ -180,7 +180,7 @@
                         </div>
                       </label>
                     </div>
-                    <b-tooltip target="payment-1" title="پرداخت با کلیه کارت های بانکی" placement="bottomleft" variant="primary" />
+                    <!-- <b-tooltip target="payment-1" title="پرداخت با کلیه کارت های بانکی" placement="bottomleft" variant="primary" /> -->
 
                      
                     <div id="payment-2" class="option">
@@ -260,7 +260,7 @@
                   <div class="col-sm-6">
                     <div class="font-weight-bold d-none d-sm-block">
                       {{ $t('download.amount_payable') }}: 
-                      <span v-if="checkuser.tax"><span class="overlay_price font-weight-light"><span class="overlay_price_label position-relative"><i class="icon-toman" /></span><span>{{ charAt2((totalamount+(totalamount * 0.09))) }}</span>.{{ substring2((totalamount+(totalamount * 0.09))) }}</span></span>
+                      <span v-if="checkuser.tax"><span class="overlay_price font-weight-light"><span class="overlay_price_label position-relative"><i class="icon-toman" /></span><span>{{ charAt2((totalamount+(totalamount * 0.1))) }}</span>.{{ substring2((totalamount+(totalamount * 0.1))) }}</span></span>
                       <span v-else><span class="overlay_price font-weight-light"><span class="overlay_price_label position-relative"><i class="icon-toman" /></span><span>{{ charAt2(totalamount) }}</span>.{{ substring2(totalamount) }}</span></span>
 
                       <svg v-if="buyloading" id="L9" class="svg-loader" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 100 100" enable-background="new 0 0 0 0" xml:space="preserve"><path data-v-28f0b4cb="" fill="#373737" d="M73,50c0-12.7-10.3-23-23-23S27,37.3,27,50 M30.9,50c0-10.5,8.5-19.1,19.1-19.1S69.1,39.5,69.1,50" transform="rotate(109.69 50 50)"><animateTransform data-v-28f0b4cb="" attributeName="transform" attributeType="XML" type="rotate" dur="1s" from="0 50 50" to="360 50 50" repeatCount="indefinite" /></path></svg>
@@ -604,10 +604,10 @@ import {mapGetters} from 'vuex'
         type: Number,
         default: 0
     },
-    hour: {
-        type: Number,
-        default: 0
-    },
+    // hour: {
+    //     type: Number,
+    //     default: 0
+    // },
     trafficoo: {
         type: Number,
         default: 0
@@ -840,11 +840,11 @@ if(this.checkuser.operator_fullrate){
                 return en
         },
         Push(id,type){
-          if(this.$route.query.ref){
-            return
-          }
+          // if(this.$route.query.ref){
+          //   return
+          // }
           if(this.staticmodal || id!=this.id){
-            this.hideModal()
+            // this.hideModal()
 
             this.$router.push({
                 name: type+"-id",
@@ -855,23 +855,24 @@ if(this.checkuser.operator_fullrate){
           }
         },
         UPERAPLUS(id,type){
-          if(this.checkuser.subscription){
+          // if(this.checkuser.subscription){
             this.$store.dispatch('subscription/SHOW_MODAL',{content_type: this.type,content_id: this.id})
-          }else{
-            var ref=this.$cookiz.get('refb')
-            if(!ref || isNaN(ref))
-              ref=0
+            return id+type
+          // }else{
+          //   var ref=this.$cookiz.get('refb')
+          //   if(!ref || isNaN(ref))
+          //     ref=0
 
-            var url
-            if(this.$route.query.ref)
-              url='https://plus.upera.tv/'+type+'/'+id+'?force_subscription=1&ref='+this.$route.query.ref
-            else if(ref)
-              url='https://plus.upera.tv/'+type+'/'+id+'?force_subscription=1&ref='+ref
-            else
-              url='https://plus.upera.tv/'+type+'/'+id+'?force_subscription=1'
+          //   var url
+          //   if(this.$route.query.ref)
+          //     url='https://plus.upera.tv/'+type+'/'+id+'?force_subscription=1&ref='+this.$route.query.ref
+          //   else if(ref)
+          //     url='https://plus.upera.tv/'+type+'/'+id+'?force_subscription=1&ref='+ref
+          //   else
+          //     url='https://plus.upera.tv/'+type+'/'+id+'?force_subscription=1'
 
-            window.location.href = url
-          }
+          //   window.location.href = url
+          // }
         },
         sizeofobj(obj) {
           if(!obj)
@@ -883,26 +884,31 @@ if(this.checkuser.operator_fullrate){
         return size
     },
         Push2(id,type){
-            this.hideModal()
-
-            if(this.$route.query.ref){
-              this.$router.push({
-                  name: type+"-show-id",
-                  params: {
-                      id: id
-                  },
-                  query: {
-                      ref: this.$route.query.ref
-                  }
-              })
-            }else{
+            // this.hideModal()
               this.$router.push({
                   name: type+"-show-id",
                   params: {
                       id: id
                   }
               })
-            }
+            // if(this.$route.query.ref){
+            //   this.$router.push({
+            //       name: type+"-show-id",
+            //       params: {
+            //           id: id
+            //       },
+            //       query: {
+            //           ref: this.$route.query.ref
+            //       }
+            //   })
+            // }else{
+            //   this.$router.push({
+            //       name: type+"-show-id",
+            //       params: {
+            //           id: id
+            //       }
+            //   })
+            // }
         },
         charAt2(string){
             string=String(string)
@@ -1016,7 +1022,7 @@ this.checkdiv()
         document.getElementById("download-links-items").scrollTop=0
       },
       EKRAN(ekranid) {
-        this.hideModal()
+        // this.hideModal()
         this.$router.push({
             name: "ekran-id",
             params: {
@@ -1278,11 +1284,15 @@ this.$store.dispatch('login/SHOW_MODAL',{premessage: this.premessage,premobile: 
                 this.SHOW_MODAL_DIRECTDEBIT()
               else{
                 localStorage.removeItem('_cart')
+                // if(!this.staticmodal)
+                // this.$router.replace({query: { force_download: 1 }})
                 this.$router.go()
               }
             }else if(this.method=="credit"){
               localStorage.removeItem('_cart')
               if (this.$auth.loggedIn) {
+                // if(!this.staticmodal)
+                // this.$router.replace({query: { force_download: 1 }})
                 this.$router.go()
               }else{
                 this.$swal("لینک های دانلود پیامک شدند. لطفا جهت دسترسی از طریق سایت وارد سایت شوید", {
@@ -1363,28 +1373,33 @@ this.$store.dispatch('login/SHOW_MODAL',{premessage: this.premessage,premobile: 
     },
     selectseries(id,num){
           if(num && num!=this.id){
-            this.hideModal()
+            // this.hideModal()
 
-
-            if(this.$route.query.ref){
-              this.$router.push({
-                  name:"episode-download-id",
-                  params: {
-                      id: num
-                  },
-                  query: {
-                      ref: this.$route.query.ref,
-                      content: this.$route.query.content
-                  }
-              })
-            }else{
               this.$router.push({
                   name:"episode-download-id",
                   params: {
                       id: num
                   }
               })
-            }
+            // if(this.$route.query.ref){
+            //   this.$router.push({
+            //       name:"episode-download-id",
+            //       params: {
+            //           id: num
+            //       },
+            //       query: {
+            //           ref: this.$route.query.ref,
+            //           content: this.$route.query.content
+            //       }
+            //   })
+            // }else{
+            //   this.$router.push({
+            //       name:"episode-download-id",
+            //       params: {
+            //           id: num
+            //       }
+            //   })
+            // }
           }else{
       this.selectseriesid=id
 
@@ -1396,26 +1411,32 @@ this.$store.dispatch('login/SHOW_MODAL',{premessage: this.premessage,premobile: 
 
     selectepisode(id){
       if(id!=this.id){
-            this.hideModal()
-            if(this.$route.query.ref){
-              this.$router.push({
-                  name:"episode-download-id",
-                  params: {
-                      id: id
-                  },
-                  query: {
-                      ref: this.$route.query.ref,
-                      content: this.$route.query.content
-                  }
-              })
-            }else{
+            // this.hideModal()
               this.$router.push({
                   name:"episode-download-id",
                   params: {
                       id: id
                   }
               })
-            }
+            // if(this.$route.query.ref){
+            //   this.$router.push({
+            //       name:"episode-download-id",
+            //       params: {
+            //           id: id
+            //       },
+            //       query: {
+            //           ref: this.$route.query.ref,
+            //           content: this.$route.query.content
+            //       }
+            //   })
+            // }else{
+            //   this.$router.push({
+            //       name:"episode-download-id",
+            //       params: {
+            //           id: id
+            //       }
+            //   })
+            // }
           }
     },
     lottery(){

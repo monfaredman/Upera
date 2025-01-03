@@ -198,7 +198,7 @@
           <b-collapse id="accordion-4" accordion="my-accordion" role="tabpanel" @shown="show(4)" @hide="hide(4)">
             <div class="pl-5 collapse-content row">
               <div class="col-6 col-sm-4 col-lg-2 col-md-3 mb-3 mb-4 pr-0 mr-lg-3">
-                <a href="" class="btn btn-lg btn-danger btn-block" @click.prevent="install('https://tv.upera.tv/')">
+                <a href="" class="btn btn-lg btn-danger btn-block" @click.prevent="install('https://upera.tv/tv')">
                   
                   {{ $t('new.goto_webtv_app') }}
                 </a>

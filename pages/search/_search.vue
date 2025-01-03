@@ -224,35 +224,6 @@ if(this.$route.params.search){
         else
             return en
     },
-    ChooseLangGenres(genre){
-        if(this.$i18n.locale=="fa"){
-            return this.$i18n.t(`home.${genre.toLowerCase()}`)
-        }else
-           return genre 
-    },
-    ChooseLangAllGenres(genres){
-        if(this.$i18n.locale=="fa"){
-            genres=genres.split(',')
-            if(Array.isArray(genres)){
-                const mm=this
-                for (var key = 0, len = genres.length; key < len; key++) {
-            genres[key] = mm.$i18n.t(`home.${genres[key].toLowerCase()}`)
-        }
-                return genres
-            }else if(genres !== null){
-                return [this.$i18n.t(`home.${genres.toLowerCase()}`)]
-            }else
-                return null
-        }else{
-          if(Array.isArray(genres)){
-              return genres.split(',')
-          }else if(genres !== null){
-            return [genres]
-          }else{
-            return null
-          }
-        }
-    },
 
             SEARCH() {
               if(this.query && this.query.length>1){

@@ -90,20 +90,13 @@ import {mapGetters} from 'vuex'
 
 
         mounted() {
+          this.fetchGenres()
           if(window.innerWidth<=576)
             this.visible=false
 
           this.windowWidth=window.innerWidth
           window.addEventListener("resize", this.Resize)
-          this.localshowgenres = this.showgenres
-          var listgenre=this.listgenre
-          if(this.localshowgenres && listgenre){
-            if(!this.genres.some(function(el){ return el.value === listgenre})){
-              this.localshowgenres=false
-            }else{
-              this.genre=listgenre
-            }
-          }
+
           if(!this.setting){
             this.f_type=this.filter.f_type
             this.country=this.filter.country
@@ -132,6 +125,34 @@ import {mapGetters} from 'vuex'
 
         
     methods: {
+
+    fetchGenres() {
+      this.$axios.get('/genres')
+        .then(response => {
+          if (response.status === 200 && response.data.genres) {
+            // Map the response to the expected format for the genres dropdown
+            this.genres = [
+              { text: 'همه ژانرها', value: 0 }, // Default option
+              ...Object.entries(response.data.genres).map(([english_name, persian_name]) => ({
+                text: persian_name,
+                value: english_name.toLowerCase()
+              }))
+            ]
+            this.localshowgenres = this.showgenres
+            var listgenre=this.listgenre
+            if(this.localshowgenres && listgenre){
+              if(!this.genres.some(function(el){ return el.value === listgenre})){
+                this.localshowgenres=false
+              }else{
+                this.genre=listgenre
+              }
+            }
+          }
+        })
+        .catch(error => {
+          console.error("Error fetching genres:", error)
+        })
+    },
         Resize(e) {
           
           if(window.innerWidth!=this.windowWidth){

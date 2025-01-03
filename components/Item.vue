@@ -95,8 +95,13 @@
                         - {{ $t('show.episode') }} {{ data.item.episode_number }}
                       </div>
                       <div class="text-invert mb-1 mb-md-3">
-                        <nuxt-link v-for="(item2,index2) in ChooseLangAllGenres(data.item.genre)" :key="index2" :to="{ name: 'lists-list', params: { list: item2.genre }}" class="tag">
-                          {{ item2.title }}
+                        <nuxt-link 
+                          v-for="(persianName, englishName) in data.item.new_genres" 
+                          :key="englishName" 
+                          :to="{ name: 'lists-list', params: { list: englishName }}" 
+                          class="tag"
+                        >
+                          {{ persianName }}
                         </nuxt-link>
                       </div>
                       <div v-if="!data.item.ir && data.item.persian" class="text-invert mb-1 mb-md-3">
@@ -307,9 +312,25 @@
               <div class="statistics-item statistics-item-row text-muted">
                 <i class="icon-profile" />
                 <span class="statistics-item-caption">
-                  <span class="hide-mobile">گروه سنی </span><span class="font-weight-bold">{{ data.item.age }}</span>
-                  <!--                                 <span
-                                    class="hide-mobile"> سال به بالا</span> -->
+                  <nuxt-link :id="data.item.age" to="/profile/about-contact" class="text-black">
+                    <span class="hide-mobile">گروه سنی </span>
+                    <span class="font-weight-bold">{{ data.item.age }}</span>
+                  </nuxt-link>
+
+                  <span v-show="null" id="G" class="tooltip-target">G</span>
+                  <b-tooltip target="G" title="مناسب تمامی سنین" variant="dark" />
+
+                  <span v-show="null" id="PG" class="tooltip-target">PG</span>
+                  <b-tooltip target="PG" title="سرپرستی والدین پیشنهاد می‌شود" variant="dark" />
+
+                  <span v-show="null" id="PG-13" class="tooltip-target">PG-13</span>
+                  <b-tooltip target="PG-13" title="برخی از صحنه ها برای افراد زیر ۱۳ سال نامناسب است" variant="dark" />
+
+                  <span v-show="null" id="R" class="tooltip-target">R</span>
+                  <b-tooltip target="R" title="زیر ۱۸ سال به همراهی والدین یا سرپرست نیاز دارد" variant="dark" />
+
+                  <span v-show="null" id="X" class="tooltip-target">X</span>
+                  <b-tooltip target="X" title="هیچ فرد کمتر از ۱۸ سال نباید این فیلم ها را ببینند" variant="dark" />
                 </span>
               </div>
               <div v-if="total_claps" class="statistics-item statistics-item-row text-muted">
@@ -814,8 +835,8 @@ import Comments from "@/components/Comments"
                 // this.data.item.genre = this.data.item.genre.replace(/-/g, ', ')
                 // // Set title
 
-
-
+console.log(1)
+this.INIT()
                 if(this.$i18n.locale=="fa" && this.data.item.name_fa)
                 document.title = this.data.item.name_fa
                 else
@@ -825,6 +846,7 @@ import Comments from "@/components/Comments"
         },
 
         beforeDestroy() {
+          this.$store.dispatch('SET_CONTENT_SUBSCRIPTION_ACTION',0)
           window.removeEventListener('resize', this.itemsize)
 
       if (this.clapCheckTimer) {
@@ -858,6 +880,11 @@ if(this.user_claps_counter>=1){
           this.user_claps=this.data.claps.user
         },
         mounted() {
+          this.INIT()
+        },
+
+        methods: {
+          INIT(){
 
 
           window.addEventListener("resize", this.itemsize)
@@ -906,6 +933,7 @@ if(this.$config.envname=='igapp'){
   // }
 }
 
+this.$store.dispatch('SET_CONTENT_SUBSCRIPTION_ACTION',this.data.item.vod)
 
                 if(this.main_free){
 
@@ -954,7 +982,8 @@ if(this.$config.envname=='igapp'){
                       this.MainButton=6
                     }
                   }else{
-            if(this.data.item.vod && this.checkuser.subscription){
+                    // && this.checkuser.subscription
+            if(this.data.item.vod){
               if(this.data.item.presale){
                 this.MainButton=6
                 this.ShowPresale=1
@@ -1056,9 +1085,8 @@ if(this.$config.envname=='igapp'){
                   this.seasontitle='فصل '+this.selectseriesid
                 }
               }
-        },
 
-        methods: {
+          },
             PLAY() {
               if(this.MainButton==9){
                 if(this.type=='series'){
@@ -1098,33 +1126,6 @@ if(this.$config.envname=='igapp'){
                 else
                     return cdn+'backdrops/'+backdrop
             },
-    ChooseLangAllGenres(genres){
-          if(!genres){
-            return null
-          }
-
-          genres=genres.split(',')
-
-          if(!Array.isArray(genres)){
-            genres=[genres]
-          }
-
-          var key = 0, len = genres.length
-          var genres2 =[]
-
-        if(this.$i18n.locale=="fa"){
-            const mm=this
-            for (key = 0; key < len; key++) {
-              genres2[key] = {genre:genres[key].toLowerCase(),title:mm.$i18n.t(`home.${genres[key].toLowerCase()}`)}
-            }
-            return genres2
-        }else{
-            for (key = 0; key < len; key++) {
-              genres2[key] = {genre:genres[key].toLowerCase(),title:genres[key]}
-            }
-            return genres2
-        }
-    },
             hasHistory () { return window.history.length > 2 },
 
  
@@ -1224,7 +1225,7 @@ this.clapCheckTimer = setTimeout(function(scope) {
               
     },
     DOWNLOAD_MODAL_LOAD() {
-      this.$router.push({path: this.$route.path, query: { force_download: 1 }})
+      // this.$router.push({path: this.$route.path, query: { force_download: 1 }})
       this.$store.dispatch('player/DOWNLOAD_MODAL_LOAD')
     },
     isactiveseason(season){

@@ -3,8 +3,9 @@
     <div v-if="planloading" class="alert alert-warning mb-4">
       لطفا کمی منتظر بمانید...
     </div>
-
-
+    <div v-else-if="checkuser.days_period_to_end" class="alert alert-warning mb-4">
+      {{ checkuser.days_period_to_end }}  روز از اشتراک شما باقیمانده است
+    </div>
       
     <div v-if="!planloading">
       <div v-for="(plan,index) in plans" :key="index" @click="BUY(index)">
@@ -32,9 +33,12 @@
     </div>
     <!-- class="pb-3 border-bottom-gray mb-3" -->
     <div v-if="!planloading" class="pb-3 border-bottom-gray mb-3">
-      به اعداد بالا ۹ درصد مالیات بر ارزش افزوده اضافه می&zwnj;شود
+      به اعداد بالا ۱۰ درصد مالیات بر ارزش افزوده اضافه می&zwnj;شود
     </div>
 
+    <div v-if="!planloading && desc_subscription" class="pb-3 border-bottom-gray mb-3">
+      دقت کنید که تنها فیلم و سریال های موجود در آپرا پلاس را می توانید با خرید این اشتراک مشاهده نمایید<br><a target="_blank" href="https://plus.upera.tv">مشاهده فیلم و سریال های آپرا پلاس</a>
+    </div>
     <div v-if="!planloading" class="alert alert-warning mb-4">
       <b>امکانات اشترک:</b><br>
       - بیش از ۳۰۰۰۰ اپیزود فیلم و سریال<br>
@@ -79,6 +83,7 @@
         charge: 0,
         buyloading: false,
         showfullrate: true,
+        desc_subscription: false
       }
     },
 
@@ -117,6 +122,12 @@
 
         mounted() {
 
+
+  if(this.$config.envname!='plus'){
+    this.desc_subscription=true
+  }
+
+
 if(this.checkuser.operator_fullrate){
   this.operator_fullrate=this.checkuser.operator_fullrate
 }
@@ -126,6 +137,9 @@ if(this.$config.envname=='igapp' && (window.location.host=='igaptv.com' || windo
   this.showfullrate=false
 }
 
+if(this.checkuser.subscription!=1){
+  this.showfullrate=false
+}
 
 // else{
 //   this.$store.dispatch('login/SHOW_MODAL',{premessage: null,premobile: null,preredirect: null,prerefresh: false})

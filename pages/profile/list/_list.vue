@@ -148,12 +148,6 @@ import FilterContents from "@/components/FilterContents"
         else
             return en
     },
-    ChooseLangGenres(genre){
-        if(this.$i18n.locale=="fa"){
-            return this.$i18n.t(`home.${genre.toLowerCase()}`)
-        }else
-           return genre 
-    },
             infiniteHandler($state) {
                 var apiurl
                 if (this.$auth.loggedIn) {

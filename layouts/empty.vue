@@ -8,7 +8,7 @@
     </div>
     <Login v-if="!$auth.loggedIn" :show="showModal" :staticmodal="false" @hide-modal="HIDE_MODAL" />
     <Credit v-if="$auth.loggedIn" :show="showCreditModal" @hide-modal="HIDE_MODAL_CREDIT" />
-    <Subscription v-if="checkuser.subscription==1" :show="showSubscriptionModal" @hide-modal="HIDE_MODAL_SUBSCRIPTION" />
+    <Subscription :show="showSubscriptionModal" @hide-modal="HIDE_MODAL_SUBSCRIPTION" />
     <nuxt />
   </div>
 </template>

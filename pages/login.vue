@@ -22,6 +22,14 @@ import Login from "../components/Login"
       class: 'login'
     },title:  'ورود' }
   },
+
+      mounted() {
+        if(this.$auth.loggedIn && this.$route.query.redirect){
+                  this.$router.push({ path: this.$route.query.redirect })
+        }else if (this.$auth.loggedIn) {
+            this.$router.push('/')
+        }
+      },
     methods: {
             HIDE_MODAL() {
               

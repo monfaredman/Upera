@@ -1,9 +1,9 @@
 <template>
   <div>
-    <section v-if="data.top!==null" id="slideshow">
+    <section v-if="top && top.length" id="slideshow">
       <div class="swiper-container showcase main-slideshow">
-        <VueSlickCarousel :key="swiperKey" ref="carousel" v-bind="swiperOption3" class="swiper-wrapper" :class="{ 'dir-ltr': data.top.length==1}">
-          <div v-for="(item,index) in data.top" :key="index" class="swiper-slide">
+        <VueSlickCarousel :key="swiperKey" ref="carousel" v-bind="swiperOption3" class="swiper-wrapper" :class="{ 'dir-ltr': top.length==1}">
+          <div v-for="(item,index) in top" :key="index" class="swiper-slide">
             <div class="row no-gutters">
               <div class="col-md-6 col-lg-7 showcase-pic">
                 <b-img v-bind="{blank: true,blankColor: '#bbb',width: 1120,height: 576,show:true}" :src="'https://thumb.upera.shop/thumb?w=1120&h=576&q=90&a=t&zc=1&src=https://cdn.upera.shop/s3/backdrops/'+item.backdrop" :alt="item.name" class="showcase-img d-none d-lg-block" />
@@ -35,8 +35,13 @@
                         - {{ $t('show.episode') }} {{ item.episode_number }}
                       </div>
                       <div class="text-invert mb-1 mb-md-3">
-                        <nuxt-link v-for="(item2,index2) in ChooseLangAllGenres(item.genre)" :key="index2" :to="{ name: 'lists-list', params: { list: item2.genre }}" class="tag">
-                          {{ item2.title }}
+                        <nuxt-link 
+                          v-for="(persianName, englishName) in item.new_genres" 
+                          :key="englishName" 
+                          :to="{ name: 'lists-list', params: { list: englishName }}" 
+                          class="tag"
+                        >
+                          {{ persianName }}
                         </nuxt-link>
                       </div>
                       <div v-if="!item.ir && item.persian" class="text-invert mb-1 mb-md-3 hide-mobile">
@@ -96,13 +101,13 @@
             </div>
           </div>
         </VueSlickCarousel>
-        <div v-if="data.top.length>1" dir="rtl">
+        <div v-if="top.length>1" dir="rtl">
           <div class="swiper-next swiper-button-next main-slideshow-next" @click="showPrev" />
           <div class="swiper-prev swiper-button-prev main-slideshow-prev" @click="showNext" />
         </div>
       </div>
     </section>
-    <FilterContents :show="true" :showgenres="true" :savedata="false" :notop="notop" @execute_content_filtering="execute_content_filtering" />
+    <FilterContents :show="true" :showgenres="true" :savedata="false" :notop="!(top && top.length > 0)" @execute_content_filtering="execute_content_filtering" />
     <div v-for="(list, rootindex) in data.data" :key="rootindex">
       <div v-if="list.style == 'occasion' && list.data.length > 0">
         <section id="special" class="mb-5">
@@ -126,7 +131,10 @@
                               {{ ChooseLang(item.name,item.name_fa) }}
                             </h5>                        
                             <p class="mt-1 font-weight-normal">
-                              <span v-for="(item2,index2) in ChooseLangAllGenres(item.genre)" :key="index2">{{ item2.title }}<span v-if="index2+1 < ChooseLangAllGenres(item.genre).length"> | </span></span>
+                              <span v-for="(genre, index2) in item.genre.split(',')" :key="index2">
+                                {{ item.new_genres[genre.toLowerCase()] || genre }}
+                                <span v-if="index2 + 1 < item.genre.split(',').length"> | </span>
+                              </span>
                             </p>
                           </div>
                           <div class="d-flex flex-column justify-content-center align-items-center small">
@@ -160,6 +168,33 @@
                       </div>
                     </div>
                   </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+      <div v-else-if="(list.style == 'backdrop' || list.style == 'lives') && list.data.length > 0">
+        <section class="horizontal-list-container  mt-5 reach-begin">
+          <div class="d-flex justify-content-between align-items-center mb-2 container-fluid">
+            <h4 class="font-weight-bold">
+              {{ ChooseLang(list.list_en,list.list_fa) }}
+            </h4>
+            <nuxt-link :to="{ name: 'lists-list', params: { list: list.list.toLowerCase() }}" class="mb-1">
+              {{ $t('new.show_all') }}
+              <img src="@/assets/img/more.svg" height="3" alt="">
+            </nuxt-link>
+          </div>
+          <div v-swiper:[rootindex]="swiperOption2" class="swiper-container watching-slider">
+            <div class="swiper-wrapper py-1">
+              <div v-for="(item, index) in list.data" :key="index" class="swiper-slide">
+                <nuxt-link :to="{ name: item.type+'-id', params: { id: item.id }}">
+                  <b-img v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 364,height: 190,show:true}" :src="'https://thumb.upera.shop/thumb?w=364&h=190&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/'+item.backdrop" :alt="item.name_fa" />
+                </nuxt-link>
+                <div class="mt-2">
+                  <h6 class="mt-2 small font-weight-normal">
+                    {{ ChooseLang(item.name,item.name_fa) }}
+                  </h6>
                 </div>
               </div>
             </div>
@@ -206,7 +241,7 @@
           </div>
         </section>
       </div>
-      <section v-if="rootindex==0 && data.recently!==null" id="watching" class="horizontal-list-container mt-lg-4 pt-5">
+      <section v-if="rootindex==0 && recently!==null" id="watching" class="horizontal-list-container mt-lg-4 pt-5">
         <div class="d-flex align-items-center justify-content-between w-full">
           <h4 class="font-weight-bold text-nowrap mr-5 px-5 in-watching">
             {{ ChooseLang(data.titles_en.recently,data.titles.recently) }}
@@ -214,7 +249,7 @@
           <div v-swiper:watchSwip="swiperOption2" class="swiper-container watching-slider">
             <div class="swiper-wrapper">
               <!-- Slides -->
-              <div v-for="(item,index) in data.recently" :key="index" class="swiper-slide">
+              <div v-for="(item,index) in recently" :key="index" class="swiper-slide">
                 <nuxt-link v-if="item.type=='movie'" :to="{ name: 'movie-show-id', params: { id: item.id }}">
                   <b-img v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 364,height: 190,show:true}" :src="'https://thumb.upera.shop/thumb?w=364&h=190&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/'+item.backdrop" :alt="item.name" />
 
@@ -269,25 +304,21 @@
   },
   async asyncData (context) {
   	let res
-  	if (context.app.$auth.loggedIn) {
-  	    res = await context.app.$axios.get('/get/discoverV2'+context.store.getters.filtercontents)
-  	 }else{
-  	 	res = await context.app.$axios.get('/ghost/get/discoverV2'+context.store.getters.filtercontents)
-  	 }
+    res = await context.app.$axios.get('/ghost/get/discoverV3'+context.store.getters.filtercontents)
 
     return {data:res.data.data}
   },
     data () {
       return {
       	data:{},
+      top: {},
+      recently: {},
       page: 1,
       infiniteId: +new Date(),
       swiperKey: +new Date(),
       distance: -Infinity,
-      notop:false,
       nocontent:false,
-      userApi:'/get/discoverV2',
-      ghostApi:'/ghost/get/discoverV2',
+      ghostApi:'/ghost/get/discoverV3',
         swiperOption: {
         spaceBetween: 10,
         slidesPerView: 3.3,
@@ -374,18 +405,16 @@ if(this.data.occasions!=null){
 }
   },
     mounted() {
+      this.get_top()
+      this.get_recently()
 
-
-if(this.data.top==null){
-  this.notop=true
-}      
 
 if (!this.data.data.length) {
   this.nocontent=true
 }
 
 
-    	if(this.data.recently!=null){
+    	if(this.recently!=null){
     	    const watching = document.getElementById("watching")
     	if(watching){
     this.watchSwip.on('reachBeginning', () => {
@@ -469,44 +498,63 @@ if(this.data.occasions!=null){
 }
     },
   methods: {
+    get_top() {
+      var apiurl
+      if (this.$auth.loggedIn) {
+              apiurl='/get/get_top'
+      } else {
+              apiurl='/ghost/get/get_top'
+      }
+      this.$axios.get(apiurl+this.filtercontents).then((res) => { 
+        if(res.status === 200){
+          this.top=res.data.data.top
+
+        }else{
+          this.message=res.data.message
+        }
+      }, (error) => {
+        this.message=error.response.data.message
+        return error
+      })
+
+    },
+    get_recently() {
+      var apiurl
+      if (this.$auth.loggedIn) {
+              apiurl='/get/get_recently'
+      } else {
+        this.recently=null
+        return
+      }
+      this.$axios.get(apiurl+this.filtercontents).then((res) => {
+         
+        if(res.status === 200){
+          this.recently=res.data.data.recently
+          if(this.recently!=null){
+            const watching = document.getElementById("watching")
+          if(watching){
+            this.watchSwip.on('reachBeginning', () => {
+                watching.classList.remove('swipe')
+            })
+            this.watchSwip.on('fromEdge', () => {
+                watching.classList.add('swipe')
+            })
+            }
+          }
+        }else{
+          this.message=res.data.message
+        }
+      }, (error) => {
+        this.message=error.response.data.message
+        return error
+      })
+
+    },
     ChooseLang(en,fa){
         if(fa && this.$i18n.locale=="fa")
             return fa
         else
             return en.charAt(0).toUpperCase() + en.slice(1)
-    },
-    ChooseLangGenres(genre){
-        if(this.$i18n.locale=="fa"){
-            return this.$i18n.t(`home.${genre.toLowerCase()}`)
-        }else
-           return genre.toUpperCase(genre) 
-    },
-    ChooseLangAllGenres(genres){
-          if(!genres){
-            return null
-          }
-
-          genres=genres.split(',')
-
-          if(!Array.isArray(genres)){
-            genres=[genres]
-          }
-
-          var key = 0, len = genres.length
-          var genres2 =[]
-
-        if(this.$i18n.locale=="fa"){
-            const mm=this
-            for (key = 0; key < len; key++) {
-              genres2[key] = {genre:genres[key].toLowerCase(),title:mm.$i18n.t(`home.${genres[key].toLowerCase()}`)}
-            }
-            return genres2
-        }else{
-            for (key = 0; key < len; key++) {
-              genres2[key] = {genre:genres[key].toLowerCase(),title:genres[key]}
-            }
-            return genres2
-        }
     },
     truncate(string, value) {
       return string.substring(0, value) + "..."
@@ -526,10 +574,10 @@ if(this.data.occasions!=null){
 
       if (is_watchlist==0) {
         // Add true to data array
-        this.data.top[index].is_watchlist = 1
+        this.top[index].is_watchlist = 1
       } else {
         // Add false to data array
-        this.data.top[index].is_watchlist = 0
+        this.top[index].is_watchlist = 0
 
       }
 
@@ -557,14 +605,10 @@ if(this.data.occasions!=null){
       }
       return e
     },
-
                infiniteHandler($state) {
                 var apiurl
-                if (this.$auth.loggedIn) {
-                        apiurl=this.userApi
-                } else {
-                        apiurl=this.ghostApi
-                }
+                  apiurl=this.ghostApi
+                
                     this.$axios.get(apiurl+this.filtercontents,{params: {discover_page: this.page + 1}}).then(response => {
 
                         if (response.status === 200) {
@@ -583,38 +627,70 @@ if(this.data.occasions!=null){
             },
 
             execute_content_filtering() {
-                this.$nuxt.$loading.start()
-                this.$store.dispatch('filter/FILTER_LOADING')
-                var apiurl
-                if (this.$auth.loggedIn) {
-                        apiurl=this.userApi
-                } else {
-                        apiurl=this.ghostApi
-                }
+this.$nuxt.$loading.start()
+this.$store.dispatch('filter/FILTER_LOADING')
 
-                this.$axios.get(apiurl+this.filtercontents).then(response => {
+let requests = []
 
-                    if (response.status === 200) {
+// اولین درخواست
+let apiurl = this.$auth.loggedIn ? '/get/get_top' : '/ghost/get/get_top'
+requests.push(
+  this.$axios.get(apiurl + this.filtercontents).then(response => {
+    if (response.status === 200) {
+      this.top = response.data.data.top
+    }
+  })
+)
 
-                          if (!response.data.data.data.length) {
-                            this.nocontent=true
-                          }else{
-                            this.nocontent=false
-                          }
-                          this.data = response.data.data
-                          if(this.data.top==null){
-                            this.notop=true
-                          }else{
-                            this.notop=false
-                          }
-                          this.page = 1
-                          this.infiniteId += 1
-                          this.swiperKey += 1
-                        //} 
-                    }
-                    this.$store.dispatch('filter/CLEAN_FILTER_LOADING')
-                    this.$nuxt.$loading.finish()
-                })
+// دومین درخواست در صورت ورود کاربر
+if (this.$auth.loggedIn) {
+  apiurl = '/get/get_recently'
+  requests.push(
+    this.$axios.get(apiurl + this.filtercontents).then(response => {
+      if (response.status === 200) {
+        this.recently = response.data.data.recently
+        if (this.recently != null) {
+          const watching = document.getElementById('watching')
+          if (watching) {
+            this.watchSwip.on('reachBeginning', () => {
+              watching.classList.remove('swipe')
+            })
+            this.watchSwip.on('fromEdge', () => {
+              watching.classList.add('swipe')
+            })
+          }
+        }
+      }
+    })
+  )
+}
+
+// سومین درخواست
+apiurl = this.ghostApi
+requests.push(
+  this.$axios.get(apiurl + this.filtercontents).then(response => {
+    if (response.status === 200) {
+      this.nocontent = !response.data.data.data.length
+      this.data = response.data.data
+      this.page = 1
+      this.infiniteId += 1
+      this.swiperKey += 1
+    }
+  })
+)
+
+// وقتی همه درخواست‌ها کامل شدند
+Promise.all(requests)
+  .then(() => {
+    this.$store.dispatch('filter/CLEAN_FILTER_LOADING')
+    this.$nuxt.$loading.finish()
+  })
+  .catch(error => {
+    console.error('Error in requests:', error)
+    this.$store.dispatch('filter/CLEAN_FILTER_LOADING')
+    this.$nuxt.$loading.finish()
+  })
+
 
             },
   }

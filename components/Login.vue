@@ -179,7 +179,10 @@ import {mapGetters} from 'vuex'
                 }) 
             },
             async login() {
-              document.getElementById('submit-code').setAttribute('disabled', true)
+              const submitcode = document.getElementById('submit-code')
+              if(submitcode){
+                submitcode.setAttribute('disabled', true)
+              }
               try {
                 let response = await this.$auth.loginWith('local', { data: {mobile:this.mobile.replace(/\s/g, ''),password:this.password} })
 
@@ -188,14 +191,21 @@ import {mapGetters} from 'vuex'
                 }else if(this.redirectTo){
                   this.$router.push({ path: this.redirectTo })
                 }else if(this.prerefresh){
-                  await this.$auth.fetchUser()
-                  this.$store.dispatch("SPA_INIT")
-                  if(this.prerefresh=='directdebit'){
-                    this.SHOW_MODAL_DIRECTDEBIT()
-                  }else if(this.prerefresh=='subscription'){
-                    this.SHOW_MODAL_SUBSCRIPTION()
+                  if(this.$route.name ==='movie-download-id' || this.$route.name ==='episode-download-id' || this.$route.name ==='series-download-id'){
+                    await this.$store.dispatch('login')
+                    this.$nuxt.refresh()
                   }else{
-                    await this.$router.go()
+                    await this.$auth.fetchUser()
+                    this.$store.dispatch("SPA_INIT")
+                    if(this.prerefresh=='directdebit'){
+                      this.SHOW_MODAL_DIRECTDEBIT()
+                      await this.$nuxt.refresh()
+                    }else if(this.prerefresh=='subscription'){
+                      this.SHOW_MODAL_SUBSCRIPTION()
+                      await this.$nuxt.refresh()
+                    }else{
+                      await this.$router.go()
+                    }
                   }
                 }else{
                   await this.$store.dispatch('login')
@@ -219,7 +229,9 @@ import {mapGetters} from 'vuex'
                 
                 return response
               } catch (err) {
-                document.getElementById('submit-code').setAttribute('disabled', false)
+                if(submitcode){
+                 submitcode.setAttribute('disabled', false)
+                }
 
                 return err
               }

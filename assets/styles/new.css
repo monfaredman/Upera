@@ -1653,10 +1653,10 @@ body {
     transition: opacity 0.2s ease-in;
   }
 
-  .trigger-menu-wrapper2 {
+/*  .trigger-menu-wrapper2 {
     background: none !important;
     box-shadow: none !important;
-  }
+  }*/
 }
 @media (max-width: 767.98px) and (prefers-reduced-motion: reduce) {
   .header-mobile {
@@ -2236,6 +2236,12 @@ a.thumbnail-wrapper {
   .icon-profile-setting::before {
   content: "";
 }
+#header.category
+  .header-links-category
+  .header-link
+  .icon-kids-version::before {
+  content: "";
+}
 @media (max-width: 767.98px) {
   #header.category .header-links-category .header-link span {
     display: block;
@@ -2258,12 +2264,26 @@ a.thumbnail-wrapper {
   .icon-profile-setting::before {
   content: "";
 }
+#header.profile
+  .header-links-profile
+  .header-link
+  .icon-kids-version::before {
+  content: "";
+}
 @media (max-width: 767.98px) {
   #header.profile .header-links-profile .header-link span {
     display: block;
   }
-  #header .nuxt-link-exact-active span {
+  #header .nuxt-link-exact-active span{
     display: block;
+    color: var(--primary);
+  font-weight: bold;
+
+  }
+  #header .nuxt-link-exact-active i {
+    display: block;
+    color: var(--primary);
+
   }
 }
 #header.profile .header-links-profile-setting .header-link {
@@ -2373,10 +2393,14 @@ a.thumbnail-wrapper {
     height: 2.5rem;
   }
   .header-links .header-link .icon-categories,
+  .header-links .header-link .fa-child,
   .header-links .header-link .icon-profile-setting,
   .header-links .header-link .icon-profile {
     margin-top: -0.25rem;
     margin-left: 0.5rem;
+  }
+  .header-links .header-link .icon-kids-version{
+    margin-top: -0.25rem;
   }
   .header-links .header-link .icon-expand-arrow {
     position: absolute;
@@ -2409,11 +2433,15 @@ a.thumbnail-wrapper {
     left: 0 !important;
     right: 0 !important;
     width: 100% !important;
-    background-color: #f6f6f6 !important;
     z-index: 10 !important;
     display: flex !important;
     align-items: center !important;
+    /*    background-color: #f6f6f6 !important;*/
+
   }
+
+
+
   .mega-menu > li {
     height: 2.5rem !important;
     margin-left: 1rem !important;
@@ -2423,7 +2451,7 @@ a.thumbnail-wrapper {
     align-items: center !important;
   }
   .mega-menu > li > a {
-    color: #979797 !important;
+    color: #fff !important;
   }
   .mega-menu > li > a:hover,
   .mega-menu > li > a:focus,
@@ -2451,25 +2479,25 @@ a.thumbnail-wrapper {
     left: 0.625rem;
   }
 }
-@media (min-width: 1196px) {
+/*@media (min-width: 1196px) {
 
   .header-links .header-link .icon-setting {
     margin-top: -0.25rem;
   }
-}
-@media (min-width: 768px) and (max-width: 1196px) {
+}*/
+/*@media (min-width: 768px) and (max-width: 1196px) {
   .header-links .header-link .icon-setting {
     margin-top: -0.5rem;
   }
-}
+}*/
 @media (min-width: 768px) and (max-width: 1112px) {
   .header-links.header-links-profile-setting {
     margin-left: 0.25rem !important;
     margin-right: 0.25rem !important;
   }
-  .header-links.header-links-profile-setting .header-link span {
+/*  .header-links.header-links-profile-setting .header-link span {
     display: none;
-  }
+  }*/
 }
 /*.header-links.header-links-profile-setting .header-link {
   opacity: 0;
@@ -2538,7 +2566,7 @@ a.thumbnail-wrapper {
   .header-mobile .header-link span {
     font-size: 0.75rem;
     margin-top: 0.25rem;
-    display: none;
+/*    display: none;*/
   }
   .header-mobile .header-link .icon-upera-logo {
     margin-top: 5px;
@@ -4944,7 +4972,7 @@ nav a:hover {
   border: 0;
 }
 .logo img {
-  height: 50px;
+  height: 70px;
 }
 
 .img-gradient {
@@ -5815,6 +5843,9 @@ div.download-links-poster::after {
     }*/
 }
 @media (max-width: 767.98px) {
+  .logo img {
+  height: 50px;
+}
   .download-links .download-size {
     color: #cacaca;
     direction: ltr;
@@ -6724,7 +6755,7 @@ body widget .-bold {
   z-index: 9999;
   background: #ffffff;
   transition: transform 0.4s;
-  box-shadow: 0px 1px 10px -2px rgba(204, 204, 204, 0.88);
+  /*box-shadow: 0px 1px 10px -2px rgba(204, 204, 204, 0.88);*/
 }
 
 .bg-filtermenu {
@@ -6813,7 +6844,7 @@ body widget .-bold {
   vertical-align: middle;
 }
 .logo_another_pages > .icon-upera-logo {
-  font-size: 1.9em;
+  font-size: 2.5em;
   vertical-align: middle;
 }
 .insert_comment button {
@@ -9540,7 +9571,7 @@ small,
   right: 0;
   width: 100%;
   height: 40px;
-  background-color: #f6f6f6;
+/*  background-color: #f6f6f6;*/
   -webkit-transition: all 300ms;
   transition: all 300ms;
   -webkit-transform: translate3d(0, -20px, -5px);
@@ -9660,7 +9691,13 @@ small,
 }
 
 .header-mobile .nuxt-link-exact-active span {
-  display: block;
+  display: block;  color: var(--primary);
+  font-weight: bold;
+
+}
+.header-mobile .nuxt-link-exact-active i {
+  display: block;  color: var(--primary);
+
 }
 .btn {
   font-size: 1rem;
@@ -9747,7 +9784,7 @@ small,
   }
 }
 
-@media (min-width: 767.98px) and (max-width: 920px) {
+@media (min-width: 767.98px) and (max-width: 1018px) {
   .btn-app {
     visibility: hidden;
     display: none;
@@ -9868,11 +9905,30 @@ small,
 #popover-d-settings {
   border: none;
   font-family: "dana VF";
-
+  left: -20px !important;
 }
 
 #popover-d-settings .dropdown-menu{
+/*  min-width: 360px;*/
   min-width: 17rem;
+}
+
+#popover-d-profile .popover-header{
+  visibility: hidden;
+}
+
+#popover-d-profile .arrow {visibility:hidden !important;display: none !important;}
+#popover-d-profile{z-index: 999999999999999999!important}
+
+#popover-d-profile {
+  border: none;
+  font-family: "dana VF";
+  left: -80px !important;
+}
+
+#popover-d-profile .dropdown-menu{
+  min-width: 360px;
+/*  min-width: 17rem;*/
 }
 
 .download-links-poster2 {
@@ -10841,4 +10897,121 @@ body .accordion > .card:nth-of-type(odd) .card-header {
 }
 .directdebit .form-group{
 margin-bottom: 0 !important;
+}
+
+@media (min-width: 768px) {
+    body .trigger-header {
+      background-color: #171717;
+  }
+  body .header-links .header-link {
+      color: #fff;
+  }
+  .header-links .header-link .icon-expand-arrow {
+      opacity: 1;
+      position: relative;
+      transform: initial;
+      transition: all .3s;
+      visibility: visible;
+  }
+  body .header-search .header-search-input {
+    background-color: transparent;
+    border-color: #fff;
+    border-radius: .5rem;
+    color: #fff;
+  }
+}
+#header{
+  font-size: 1rem;
+}
+#header .category-menu{
+  font-size: 0.875rem;
+}
+#header ::placeholder {
+    color: #fff;
+  font-size: 0.875rem;
+}
+#header i {
+    color: #fff;
+}
+
+.header-fixed-collapsed #header::before {
+    content: none;
+}
+.dropdown-menu-list .nav-item,
+.dropdown-menu-list .nav-link {
+    color: #525252;
+}
+.nav-link-divider::after {
+    position: absolute;
+    left: 1rem;
+    right: 1rem;
+    bottom: 0;
+    border-bottom: 2px solid #D9D9D9;
+    content: "";
+}
+.nav-item-padding {
+    padding: .5rem 1rem;
+}
+.dropdown-menu-list .disabled {
+    color: #D4D4D4;
+}
+.dropdown-menu-list .btn-sm {
+    border-radius: 1rem;
+    font-size: .75rem;
+    padding: 2px !important;
+}
+.dropdown-menu-list
+ .fa {
+    font-size: 1.25rem;
+}
+@media (min-width: 768px) {
+    .header-links .dropdown-menu {
+        min-width: 360px;
+    }
+}
+
+.trigger-menu-wrapper {
+    background: #121212;
+    transition: transform 0.4s;
+    box-shadow: 0px 1px 10px -2px rgb(18, 18, 18);
+}
+
+
+.trigger-menu-wrapper2 {
+    background: linear-gradient(0deg, transparent 0%, #171717 90%);
+    transition: transform 0.4s;
+    box-shadow: none;
+}
+
+.scroll-up .trigger-menu-wrapper2 {
+    background: #121212;
+    transition: transform 0.4s;
+    box-shadow: 0px 1px 10px -2px rgb(18, 18, 18);
+}
+
+
+
+ #header .category .category-menu {
+    background: linear-gradient(to left, #121212 0%, rgba(23, 23, 23, 0) 100%);
+}
+
+/*
+.theme-light body:not(.trigger-menu-wrapper2):not(.scroll-down):not(.scroll-up) #header .category .category-menu{
+background-color: #f6f6f6 !important;
+}*/
+.logo_another_pages .icon-upera-fa-logotype:before {
+   
+    color: #ffffff !important;
+}
+
+.logo_another_pages .icon-logo:before {
+    color: #f63 !important;
+}
+.logo_another_pages .icon-upera-logo:before {
+    color: #f63 !important;
+}
+
+
+#popover-d-profile .nav-link{
+  color: #525252;
 }

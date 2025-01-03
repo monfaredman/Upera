@@ -38,7 +38,7 @@
     "popper.js": "^1.16.1",
     "sweetalert": "^2.1.2",
     "swiper": "^5.4.5",
-    "vue": "^2.6.14",
+    "vue": "^2.7.16",
     "vue-alertify": "^1.1.0",
     "vue-awesome-countdown": "^1.1.4",
     "vue-awesome-swiper": "^4.1.1",
@@ -51,7 +51,8 @@
     "vue-slick-carousel": "^1.0.6",
     "vue-social-sharing": "^3.0.8",
     "vue-swal": "^1.0.0",
-    "vue-sweetalert2": "^4.1.1"
+    "vue-sweetalert2": "^4.1.1",
+    "vuex": "^3.6.2"
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",

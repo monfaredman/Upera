@@ -120,7 +120,7 @@ export default {
     '@nuxtjs/color-mode',
     "bootstrap-vue/nuxt",
     "nuxt-clipboard2",
-    "@nuxtjs/device",
+    // "@nuxtjs/device",
     ['cookie-universal-nuxt', { alias: 'cookiz' }],
     'vue-social-sharing/nuxt',
     ['nuxt-lazy-load', {

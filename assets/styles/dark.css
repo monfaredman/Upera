@@ -404,14 +404,6 @@
 
 
 
-
-
-.theme-dark .trigger-menu-wrapper {
-    background: #121212;
-    transition: transform 0.4s;
-    box-shadow: 0px 1px 10px -2px rgb(18, 18, 18);
-}
-
 .theme-dark .bg-filtermenu {
     background: #121212;
     transition: transform 0.4s;
@@ -480,17 +472,7 @@
    
     color: #ffffff !important;
 }
-.theme-dark .logo_another_pages .icon-upera-fa-logotype:before {
-   
-    color: #ffffff !important;
-}
 
-.theme-dark .logo_another_pages .icon-logo:before {
-    color: #f63 !important;
-}
-.theme-dark .logo_another_pages .icon-upera-logo:before {
-    color: #f63 !important;
-}
 
 .theme-dark .insert_comment input {
     border: 1px solid #a8abaf !important;
@@ -1087,9 +1069,11 @@
     }
 
 
-    .theme-dark #header .category .category-menu {
+/*    .theme-dark #header .category .category-menu {
         background-color: #121212 !important;
-    }
+        background: linear-gradient(to left, #121212 0%, rgba(23, 23, 23, 0) 100%);
+
+    }*/
 
 
     .theme-dark #header .search input {
@@ -1713,3 +1697,52 @@
 .theme-dark .directdebit .card {
     border: 1px solid #6c757d;
 }
+
+.theme-dark #popover-d-profile .nav-link,
+.theme-dark #popover-d-settings .text-black,
+.theme-dark #popover-d-profile .nav-item i,
+.theme-dark #popover-d-profile .nav-item .font-weight-bold{
+  color: #D4D4D4 !important;
+}
+
+.theme-dark  #popover-d-profile .dropdown-menu,
+.theme-dark  #popover-d-settings .dropdown-menu {
+  background-color: #373737;
+}
+
+.theme-dark  #popover-d-profile .dropdown-menu::before,
+.theme-dark  #popover-d-settings .dropdown-menu::before {
+  background-image: url("/images/caret-dark2.svg");
+}
+
+
+
+@media (min-width: 768px) {
+    .theme-dark .trigger-header {
+      background-color: #171717;
+  }
+  .theme-dark .header-links .header-link {
+      color: #fff;
+  }
+  ..theme-dark .header-search .header-search-input {
+    border-color: #fff;
+    color: #fff;
+  }
+}
+.theme-dark #header ::placeholder {
+    color: #fff;
+}
+.theme-dark #header i {
+    color: #fff;
+}
+.theme-dark .dropdown-menu-list .nav-item,
+.theme-dark .dropdown-menu-list .nav-link {
+    color: #525252;
+}
+.theme-dark .nav-link-divider::after {
+    border-bottom: 2px solid #D9D9D9;
+}
+.theme-dark .dropdown-menu-list .disabled {
+    color: #D4D4D4;
+}
+

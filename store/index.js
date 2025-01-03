@@ -4,6 +4,8 @@ export const state = () => ({
   checkuser: {
     subscription: 0
   },
+  my_credit: 0,
+  content_subscription: 0,
   filtercontents: '',
   nightmode: false
 })
@@ -19,6 +21,12 @@ export const getters = {
   checkuser(state) {
     return state.checkuser
   },
+  my_credit(state) {
+    return state.my_credit
+  },
+  content_subscription(state) {
+    return state.content_subscription
+  },
   filtercontents(state) {
     return state.filtercontents
   }
@@ -28,35 +36,44 @@ export const mutations = {
   SET_USER (state, data) {
       state.checkuser = data
   },
+  SET_CONTENT_SUBSCRIPTION (state, data) {
+      state.content_subscription = data
+  },
   SET_FILTER_CONTENTS (state, data) {
       state.filtercontents = data
+  },
+  SET_MY_CREDIT (state, data) {
+      state.my_credit = data
   }
 }
 
 export const actions = {
 
-  async nuxtServerInit(store) {
+  // async nuxtServerInit(store) {
 
-    if(this.$device.isTV){
-      this.app.context.redirect('https://tv.'+this.app.context.req.headers.host)
-    }
+  //   // if(this.$device.isTV){
+  //   //   this.app.context.redirect('https://tv.'+this.app.context.req.headers.host)
+  //   // }
 
-    if (this.$cookiz.get('filtercontents')){
-      store.commit('SET_FILTER_CONTENTS',this.$cookiz.get('filtercontents'))
-    }
+  //   if (this.$cookiz.get('filtercontents')){
+  //     store.commit('SET_FILTER_CONTENTS',this.$cookiz.get('filtercontents'))
+  //   }
     
-  	if(!store.state.auth.loggedIn){
-  		let res
-    	res=await this.$axios.get('/ghost/get'+this.$config.check_url)
-        store.commit('SET_USER',res.data)
+  // 	if(!store.state.auth.loggedIn){
+  // 		let res
+  //   	res=await this.$axios.get('/ghost/get'+this.$config.check_url)
+  //       store.commit('SET_USER',res.data)
 
-    }else{
+  //   }else{
 
-      store.commit('SET_USER',store.state.auth.user)
-    }
-  },
+  //     store.commit('SET_USER',store.state.auth.user)
+  //   }
+  // },
   async SPA_INIT(store) {
-    if(this.$config.envmode=='spa'){
+    // if(this.$config.envmode=='spa'){
+      if (localStorage.getItem('isKids') == 1){
+        this.app.context.redirect('https://'+window.location.host+'/kids')
+      }
       if(!store.state.auth.loggedIn){
         if(this.$config.envname!='igapp'){
           let res
@@ -76,7 +93,7 @@ export const actions = {
       if (this.$cookiz.get('filtercontents')){
         store.commit('SET_FILTER_CONTENTS',this.$cookiz.get('filtercontents'))
       }
-    }
+    // }
   },
   logout(store) {
         this.$axios.get('/ghost/get'+this.$config.check_url).then((response) => {
@@ -98,7 +115,13 @@ export const actions = {
       this.$colorMode.preference='system'
     }
   },
+  SET_CONTENT_SUBSCRIPTION_ACTION(store,data) {
+    store.commit('SET_CONTENT_SUBSCRIPTION',data)
+  },
   SET_FILTER_CONTENTS (store, data) {
       store.commit('SET_FILTER_CONTENTS',data)
+  },
+  SET_MY_CREDIT (store, data) {
+      store.commit('SET_MY_CREDIT',data)
   }
 }

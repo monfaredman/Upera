@@ -119,8 +119,8 @@
                     </div>
                     <div class="dl-qr hide-mobile hide-tablet">
                       <nuxt-link to="/app">
-                        <img v-if="$config.envname=='upera'" :src="'https://chart.apis.google.com/chart?cht=qr&chs=150x150&chld=L|0&chl=https://upera.tv/app?ref='+$cookiz.get('ref')">
-                        <img v-else :src="'https://chart.apis.google.com/chart?cht=qr&chs=150x150&chld=L|0&chl=https://'+checkuser.domain+'/app?ref='+$cookiz.get('ref')">
+                        <img v-if="$config.envname=='upera'" :src="'https://web.upera.tv/qr-code/i-'+$cookiz.get('ref')+'.jpg'">
+                        <!-- <img v-else :src="'https://chart.apis.google.com/chart?cht=qr&chs=150x150&chld=L|0&chl=https://'+checkuser.domain+'/app?ref='+$cookiz.get('ref')"> -->
                       </nuxt-link>
                     </div>
                   </div>
@@ -129,6 +129,18 @@
             </div>
             <div class="col-lg-4 hide-mobile hide-tablet">
               <div v-if="$config.envname=='upera'" class="d-flex namad-wrapper">
+                <div class="namad pr-2">
+                  <div class="namad-box-2">
+                    <a href="https://satra.ir/" target="_blank">
+                      <img src="/images/satra.png" width="80">
+                    </a>
+                  </div>
+                  <div class="namad-box-2">
+                    <a href="https://sapra.ir/" target="_blank">
+                      <img src="/images/sapra.png" width="80">
+                    </a>
+                  </div>
+                </div>
                 <div class="namad pr-2">
                   <div class="namad-box-2" @click="samandehi">
                     <img src="/images/samandehi.png" width="80">
@@ -147,8 +159,20 @@
                   </div>
                 </div>
               </div>
-              <div v-else-if="checkuser.ref<=5 || checkuser.enamad_id || checkuser.samandehi_id" class="d-flex namad-wrapper">
+              <div v-else class="d-flex namad-wrapper">
                 <div class="namad pr-2">
+                  <div class="namad-box-2">
+                    <a href="https://satra.ir/" target="_blank">
+                      <img src="/images/satra.png" width="80">
+                    </a>
+                  </div>
+                  <div class="namad-box-2">
+                    <a href="https://sapra.ir/" target="_blank">
+                      <img src="/images/sapra.png" width="80">
+                    </a>
+                  </div>
+                </div>
+                <div v-show="checkuser.samandehi_id" class="namad pr-2">
                   <div class="namad-box-2" @click="samandehi">
                     <img src="/images/samandehi.png" width="80">
                   </div>
@@ -158,7 +182,7 @@
                     </a>
                   </div>
                 </div>
-                <div class="namad pr-2">
+                <div v-show="checkuser.enamad_id" class="namad pr-2">
                   <div class="namad-box">
                     <a @click="enamad">
                       <img src="/images/enamad.png" width="80">
@@ -429,9 +453,10 @@ samandehi(){
   },
 enamad(){
     if(this.$config.envname=='upera'){
-      window.open('https://trustseal.enamad.ir/?id=204904&amp;Code=ipcUNmaUZGludD970sgm', 'Popup','toolbar=no, location=no, statusbar=no, menubar=no, scrollbars=1, resizable=0, width=580, height=600, top=30')
+      window.open('https://trustseal.enamad.ir/?id=204904&Code=ipcUNmaUZGludD970sgm', '_blank')
     }else if(this.checkuser.enamad_id){
-      window.open('https://trustseal.enamad.ir/?id='+this.checkuser.enamad_id+'&amp;Code='+this.checkuser.enamad_code, 'Popup','toolbar=no, location=no, statusbar=no, menubar=no, scrollbars=1, resizable=0, width=580, height=600, top=30')
+      //amp;
+      window.open('https://trustseal.enamad.ir/?id='+this.checkuser.enamad_id+'&Code='+this.checkuser.enamad_code, '_blank')
     }else if(this.checkuser.ref<=5){
       window.open('https://upera.tv/namad', '_blank')
     }

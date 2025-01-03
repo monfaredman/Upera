@@ -800,6 +800,81 @@ return SRMdata
                 }
             })
         },
+        LOAD_VIDEO({commit}, {guest,id,SRMdata}) {
+            var ref=this.$cookiz.get('ref')
+            if(!ref || isNaN(ref))
+              ref=''
+            else
+              ref='?ref='+ref
+            var api_url = '/get/watch/video/' + id + ref
+            if(guest){
+              api_url = '/ghost/get/watch/video/' + id + ref
+            }
+            this.$axios.get(api_url)
+                .then(res => {
+                    if (res.status === 200) {
+                        res.data.data.guest=guest
+                        commit('SET_DATA_PLAYER_VIDEO',  res.data.data)
+                    }
+                }, error => {
+                  if (error.response.data.status == 'not_free') {
+                      var dlsmtitle=this.app.i18n.t('player.error2')
+                      if(!SRMdata.subscription){
+                        dlsmtitle=this.app.i18n.t('player.error6')
+                      }
+                      var dlsmbuttons={back: {
+                                text: this.app.i18n.t('player.back'),
+                                value: "back",
+                                closeModal: true,
+                                className: 'swal-back'
+                              }}
+
+                      if(SRMdata.subscription){
+                          Object.assign(dlsmbuttons, {subscribe: {
+                              text: this.app.i18n.t('player.subscribe'),
+                              value: "subscribe",
+                              closeModal: true
+                          }})
+                      }                      
+                      this.app.$swal({
+                      title: dlsmtitle,
+                      icon: 'error',
+                      dangerMode: true,
+                      buttons: dlsmbuttons,
+                    })
+                    .then((value) => {
+                      switch (value) {
+                     
+                        case "back":
+                          (window.history.length > 2) ? this.$router.go(-1) :  this.$router.push('/')
+                          //commit('FLOWPLAYER_DESTORY', 'tv')
+                          break
+                     
+                        case "subscribe":
+                                  this.$router.push({ name: 'change-plan' })
+                          //commit('FLOWPLAYER_DESTORY', 'tv')
+                          break
+                     
+                        default:
+                          (window.history.length > 2) ? this.$router.go(-1) :  this.$router.push('/')
+                          //commit('FLOWPLAYER_DESTORY', 'tv')
+                          break
+                      }
+                    })
+                  } else {
+                    // Show Sweetalert if there is problem
+                    this.app.$swal({
+                        icon: 'error',
+                        title: this.app.i18n.t('player.error1'),
+                        dangerMode: true,
+                        button: this.app.i18n.t('player.back'),
+                    }).then(() => {
+                        this.$router.go(-1)
+                        //commit('FLOWPLAYER_DESTORY', 'tv')
+                    })
+                }
+            })
+        },
 
 
 
@@ -857,13 +932,13 @@ return SRMdata
                               commit('PLAYER_DOWNLOAD_FILE',res.data.download)
 
 
-                              if(this.$device.isTV){
-                                  if(res.data.file[0].file.includes("?")){
-                                    res.data.file[0].file=res.data.file[0].file+'&app=1'
-                                  }else{
-                                    res.data.file[0].file=res.data.file[0].file+'?app=1'
-                                  }
-                              }
+                              // if(this.$device.isTV){
+                              //     if(res.data.file[0].file.includes("?")){
+                              //       res.data.file[0].file=res.data.file[0].file+'&app=1'
+                              //     }else{
+                              //       res.data.file[0].file=res.data.file[0].file+'?app=1'
+                              //     }
+                              // }
 
   jwp=jwplayer(block_id).setup({ // eslint-disable-line
     "playlist": [
@@ -1275,19 +1350,19 @@ export const mutations = {
             
             let jwp
 
-                              if(this.$device.isTV){
-                                  if(data.data.video[0].video.includes("?")){
-                                    data.data.video[0].video=data.data.video[0].video+'&app=1&nosub=1'
-                                  }else{
-                                    data.data.video[0].video=data.data.video[0].video+'?app=1&nosub=1'
-                                  }
-                              }else{
+                              // if(this.$device.isTV){
+                              //     if(data.data.video[0].video.includes("?")){
+                              //       data.data.video[0].video=data.data.video[0].video+'&app=1&nosub=1'
+                              //     }else{
+                              //       data.data.video[0].video=data.data.video[0].video+'?app=1&nosub=1'
+                              //     }
+                              // }else{
                                   if(data.data.video[0].video.includes("?")){
                                     data.data.video[0].video=data.data.video[0].video+'&nosub=1'
                                   }else{
                                     data.data.video[0].video=data.data.video[0].video+'?nosub=1'
                                   }
-                              }
+                              // }
 
   jwp=jwplayer('my-player').setup({  // eslint-disable-line
     "playlist": [
@@ -1748,19 +1823,19 @@ export const mutations = {
             // Check and Sort Video Link
             let jwp
 
-                              if(this.$device.isTV){
-                                  if(data.data.episode[0].video.includes("?")){
-                                    data.data.episode[0].video=data.data.episode[0].video+'&app=1&nosub=1'
-                                  }else{
-                                    data.data.episode[0].video=data.data.episode[0].video+'?app=1&nosub=1'
-                                  }
-                              }else{
+                              // if(this.$device.isTV){
+                              //     if(data.data.episode[0].video.includes("?")){
+                              //       data.data.episode[0].video=data.data.episode[0].video+'&app=1&nosub=1'
+                              //     }else{
+                              //       data.data.episode[0].video=data.data.episode[0].video+'?app=1&nosub=1'
+                              //     }
+                              // }else{
                                   if(data.data.episode[0].video.includes("?")){
                                     data.data.episode[0].video=data.data.episode[0].video+'&nosub=1'
                                   }else{
                                     data.data.episode[0].video=data.data.episode[0].video+'?nosub=1'
                                   }
-                              }
+                              // }
 
 let RecentlyTime = 200
 
@@ -2286,13 +2361,13 @@ var nextHTML =''
             var myDiv
 
             
-                              if(this.$device.isTV){
-                                  if(state.data.video.video.includes("?")){
-                                    state.data.video.video=state.data.video.video+'&app=1'
-                                  }else{
-                                    state.data.video.video=state.data.video.video+'?app=1'
-                                  }
-                              }
+                              // if(this.$device.isTV){
+                              //     if(state.data.video.video.includes("?")){
+                              //       state.data.video.video=state.data.video.video+'&app=1'
+                              //     }else{
+                              //       state.data.video.video=state.data.video.video+'?app=1'
+                              //     }
+                              // }
 
   jwp=jwplayer('my-player').setup({ // eslint-disable-line
     "file": state.data.video.video,
@@ -2462,6 +2537,200 @@ var nextHTML =''
 
         },
 
+
+        SET_DATA_PLAYER_VIDEO(state, data) {
+            var app=this.app
+            state.data = data
+
+            /***********************************/
+
+            // Add Component Before Init Player
+
+            /***********************************/
+
+
+            // Get Element of player div
+
+
+            // Check and Sort Vidoe Link
+            let jwp
+            var myDiv
+
+            
+                              // if(this.$device.isTV){
+                              //     if(state.data.video.video.includes("?")){
+                              //       state.data.video.video=state.data.video.video+'&app=1'
+                              //     }else{
+                              //       state.data.video.video=state.data.video.video+'?app=1'
+                              //     }
+                              // }
+
+  jwp=jwplayer('my-player').setup({ // eslint-disable-line
+    "file": state.data.video[0].video,
+    "type": 'hls',
+    "height": "100%",
+    "width": "100%",
+    "pipIcon": "disabled",
+    "autostart": true,
+    "mute": false,
+  })
+
+            jwp.on('play', (e) => {
+              document.getElementById('my-player').classList.remove( "jw-state-idle" )
+              return e
+             })
+
+            jwp.on('ready', (e) => {
+                if(document.getElementById('my-player')){
+
+                  document.body.classList.add('loaded')
+                    document.getElementById('my-player').classList.add( "jw-state-idle" )
+                    document.body.classList.add('playerback')
+                    document.getElementById('my-player').classList.remove( "jw-flag-aspect-mode" )
+
+                    myDiv = document.createElement("div")
+                    
+                    myDiv.innerHTML = '<div id="flowplayer-back-button"><div class="icon-back"></div></div>'
+
+                    document.getElementsByClassName("jwplayer")[0].appendChild(myDiv)
+
+
+                    document.getElementById('flowplayer-back-button').addEventListener('click', () => {
+                        jwp.setFullscreen(false)
+                        if(jwp){
+                            jwp.remove()
+                        }
+                        var reElement = document.getElementById("my-player")
+                        reElement.parentNode.removeChild(reElement)
+
+                        var addElement = document.getElementById("flowplayer-player")
+
+                        addElement.innerHTML = `<div id="my-player" class="fp-full fp-mute fp-edgy flowplayer">
+
+                            </div>`
+
+                                                if(window.history.length > 2) 
+                         app.router.go(-1) 
+                        else
+                          app.router.push({ name: ''})
+                    })
+
+
+                    if(this.app.i18n.locale=="fa" && data.guest){
+                      myDiv = document.createElement("span")
+                      myDiv.innerHTML = '<div id="flowplayer-rate">حجم مصرفی: <button type="button" class="btn btn-info rounded-pill">تمام بها</button></div>'
+                      document.getElementsByClassName("jwplayer")[0].appendChild(myDiv)
+    
+                    }
+
+// && data.data.fullrate !== null
+                    // if(this.app.i18n.locale=="fa" && data.data.fullrate !== null){
+                    //   myDiv = document.createElement("span")
+                    //   myDiv.innerHTML = '<div id="flowplayer-rate">حجم مصرفی: <button type="button" class="btn btn-info rounded-pill">'+data.data.fullrate_data.fa.title+'</button></div>'
+                    //   document.getElementsByClassName("jwplayer")[0].appendChild(myDiv)
+      
+                    //     if(data.data.fullrate_data.message && this.app.$config.envname!='igapp'){
+                    //       const flowplayerRate = document.getElementById('flowplayer-rate')
+                    //       flowplayerRate.addEventListener('click', () => {
+                    //           var dlsmbuttons={back: {
+                    //             text: this.app.i18n.t('player.back'),
+                    //             value: "back",
+                    //             closeModal: true,
+                    //             className: 'swal-back'
+                    //           }}
+
+
+                    //           if(data.data.fullrate_data.show_download === 1){
+                    //               Object.assign(dlsmbuttons, {download: {
+                    //                     text: this.app.i18n.t('player.download'),
+                    //                     value: "download",
+                    //                     closeModal: true
+                    //               }})
+                    //           }
+
+                    //           if(data.data.fullrate_data.show_subscription === 1){
+                    //               Object.assign(dlsmbuttons, {subscribe: {
+                    //                     text: this.app.i18n.t('player.subscribe'),
+                    //                     value: "subscribe",
+                    //                     closeModal: true
+                    //               }})
+                    //           }
+                    //           this.app.$swal({
+                    //                 title: data.data.fullrate_data.fa.message_title,
+                    //                 text: data.data.fullrate_data.fa.message_desc,
+                    //                 icon: 'error',
+                    //                 dangerMode: true,
+                    //                 buttons: dlsmbuttons,
+                    //               })
+                    //               .then((value) => {
+                    //                 switch (value) {
+                                   
+                    //                   case "back":
+                    //                     this.app.$swal.close()
+                    //                     break
+                                   
+                    //                   case "subscribe":
+                    //                       app.router.push({ name: 'movie-id', params: {id: data.data.video[0].id }})
+                    //                     break
+
+
+                    //                   case "download":
+                    //                     app.router.push({ name: 'movie-download-id', params: {id: data.data.video[0].id }, query: { force_to_buy: 1 } })
+                    //                     break
+
+                    //                   default:
+                    //                     this.app.$swal.close()
+                    //                     break
+                    //                 }
+                    //           })
+                    //         })
+                    //       }
+                    // }
+
+
+                    //jwp.play()
+                    
+
+                    
+                }else{ 
+                  jwp.remove()
+                }
+                return e
+            })
+
+  jwp.on("setupError", function (e) {
+    var errorsm=e.message
+                this.app.$swal({
+                    icon: 'error',
+                    title: errorsm,
+                    dangerMode: true,
+                    button: 'Back',
+                }).then(() => {
+                        if(jwp){
+                            jwp.remove()
+                        }
+                    var reElement = document.getElementById("my-player")
+                    reElement.parentNode.removeChild(reElement)
+
+                    var addElement = document.getElementById("flowplayer-player")
+
+                    addElement.innerHTML = `<div id="my-player" class="fp-full fp-mute fp-edgy flowplayer">
+
+                        </div>`
+                    app.router.go(-1)
+
+                })
+ 
+  })
+  jwp.on("error", function (e) {
+    setTimeout(() => app.router.go(), 3000)
+  
+ return e
+  })
+
+
+
+        },
         CLOSE_REPORT(state) {
             state.show_report = false
             if(jwplayer("my-player")) // eslint-disable-line

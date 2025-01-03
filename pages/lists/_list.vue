@@ -9,9 +9,6 @@
               <div class="col-md-6 col-lg-4 showcase-pic">
                 <b-img class="showcase-img d-none d-lg-block" v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 800,height: 400,show:true}" :src="'https://thumb.upera.shop/thumb?w=800&h=400&zc=3&q=100&a=t&src=https://cdn.upera.shop/s3/backdrops/'+data.movies[0].backdrop" alt="" />
                 <b-img class="showcase-img d-lg-none" v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 400,height: 300,show:true}" :src="'https://thumb.upera.shop/thumb?w=400&h=300&zc=3&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/'+data.movies[0].backdrop" alt="" />
-                <!-- 
-                <img class="showcase-img d-none d-lg-block" :src="'https://thumb.upera.shop/thumb?w=800&h=400&zc=3&q=100&a=t&src=https://cdn.upera.shop/s3/backdrops/'+data.movies[0].backdrop" alt="">
-                <img class="showcase-img d-lg-none" :src="'https://thumb.upera.shop/thumb?w=400&h=300&zc=3&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/'+data.movies[0].backdrop" alt=""> -->
               </div>
             </div>
             <div
@@ -39,13 +36,21 @@
         </div>
       </div>
     </section>
-    <FilterContents :show="true" :notop="notop" :showgenres="true" :listgenre="$route.params.list" :savedata="false" @execute_content_filtering="execute_content_filtering" />
+    <FilterContents :show="showfilter" :notop="notop" :showgenres="true" :listgenre="$route.params.list" :savedata="false" @execute_content_filtering="execute_content_filtering" />
     <div id="episode">
       <div v-if="data.movies.length" id="actor" class="episodes_collection">
         <div class="container-fluid pl-md-4 pr-md-5 mt-3  ">
           <div class="row">
-            <div v-for="(item,index) in data.movies" :key="index" class="col-4 col-xl-1 col-md-2 col-sm-3 mt-2 mt-lg-4">
-              <nuxt-link :to="{ name: item.type+'-id', params: { id: item.id }}" class="actor" :class="{'is-series': item.type!='movie'}">
+            <div v-for="(item,index) in data.movies" :key="index" :class="[
+              'mt-2', 
+              'mt-lg-4', 
+              item.type === 'video' || item.type === 'live' ? 'col-12 col-xl-3 col-md-4 col-sm-6' : 'col-4 col-xl-1 col-md-2 col-sm-3'
+            ]"
+            >
+              <nuxt-link v-if="item.type=='video' || item.type=='live'" :to="{ name: item.type+'-id', params: { id: item.id }}">
+                <b-img v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 364,height: 190,show:true}" :src="'https://thumb.upera.shop/thumb?w=364&h=190&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/'+item.backdrop" :alt="item.name_fa" />
+              </nuxt-link>
+              <nuxt-link v-else :to="{ name: item.type+'-id', params: { id: item.id }}" class="actor" :class="{'is-series': item.type!='movie'}">
                 <b-img v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 142,height: 212,show:true}" :src="'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name" />
 
                 <b-img v-if="item.type!='movie'" v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 142,height: 212,show:true}" :src="'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name" />
@@ -102,11 +107,8 @@ import FilterContents from "@/components/FilterContents"
 
 
     
-    if (context.app.$auth.loggedIn) {
-        res = await context.app.$axios.get('/get/get_listV2/'+context.params.list+context.store.getters.filtercontents)
-     }else{
-      res = await context.app.$axios.get('/ghost/get/get_listV2/'+context.params.list+context.store.getters.filtercontents)
-     }
+      res = await context.app.$axios.get('/ghost/get/get_listV3/'+context.params.list+context.store.getters.filtercontents)
+     
 
      if(res.data.data.list!=null){
        res.data.data.titles_en=res.data.data.list.list
@@ -114,29 +116,32 @@ import FilterContents from "@/components/FilterContents"
        res.data.data.movies=res.data.data.list.data
        res.data.data.last_page=res.data.data.list.last_page
        res.data.data.per_page=res.data.data.list.per_page
-
+       if(res.data.data.list.filterable)
+       res.data.data.filterable=true
+     else
+      res.data.data.filterable=false
 
         //finded=1
      }else{
       res.data.data.movies=[]
      }
 
- 
+
 	//if(!finded){
     //return {data:res.data.data}
 		//return context.redirect(404, '/404')
 	//}
-    return {data:res.data.data}
+    return {data:res.data.data,showfilter:res.data.data.filterable}
   },
   data () {
     return {
       data:{},
       page: 1,
+      showfilter: true,
       notop:false,
       infiniteId: +new Date(),
       distance: -Infinity,
-      userApi:'/get/get_listV2/'+this.$route.params.list,
-      ghostApi:'/ghost/get/get_listV2/'+this.$route.params.list
+      ghostApi:'/ghost/get/get_listV3/'+this.$route.params.list
     }
   },
   head() {
@@ -157,25 +162,17 @@ import FilterContents from "@/components/FilterContents"
         else
             return en
     },
-    ChooseLangGenres(genre){
-        if(this.$i18n.locale=="fa"){
-            return this.$i18n.t(`home.${genre.toLowerCase()}`)
-        }else
-           return genre 
-    },
             infiniteHandler($state) {
                 var apiurl
-                if (this.$auth.loggedIn) {
-                        apiurl=this.userApi
-                } else {
                         apiurl=this.ghostApi
-                }
+                
                     this.$axios.get(apiurl+this.filtercontents,{params: {page: this.page + 1}}).then(response => {
                         if (response.status === 200 && response.data.data.list!=null) {
                              response.data.data.movies=response.data.data.list.data
                              response.data.data.last_page=response.data.data.list.last_page
                              response.data.data.per_page=response.data.data.list.per_page
                             if (response.data.data.movies.length) {
+
                               this.data.movies = this.data.movies.concat(response.data.data.movies)
                               if(response.data.data.last_page==this.page)
                                 $state.complete()
@@ -201,11 +198,8 @@ import FilterContents from "@/components/FilterContents"
         this.$store.dispatch('filter/FILTER_LOADING')
 
         var apiurl
-        if (this.$auth.loggedIn) {
-                apiurl=this.userApi
-        } else {
-                apiurl=this.ghostApi
-        }
+apiurl=this.ghostApi
+        
         this.$axios.get(apiurl+this.filtercontents).then(response => {
             if (response.status === 200 && response.data.data.list!=null) {
                  response.data.data.movies=response.data.data.list.data
@@ -215,6 +209,10 @@ import FilterContents from "@/components/FilterContents"
                   this.data.movies = response.data.data.movies
                  this.data.last_page=response.data.data.last_page
                  this.data.per_page=response.data.data.per_page
+                   if(response.data.data.list.sortable==1)
+                    this.showfilter=true
+                  else
+                    this.showfilter=false
                   this.page=1
                   this.infiniteId += 1
                   this.notop=false

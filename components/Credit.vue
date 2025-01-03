@@ -105,6 +105,7 @@ if (this.$auth.loggedIn && !this.prewallet){
           if(res.status === 200){
 
              this.wallet = res.data.data.my_credit
+             this.$store.dispatch('SET_MY_CREDIT',this.wallet)
           }else{
             this.message=res.data.message
           }
