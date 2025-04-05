@@ -14,12 +14,6 @@
               <!--               <nuxt-link to="/profile/internet" class="nav-link">
                 {{ $t('new.halfPrice') }}
               </nuxt-link> -->
-              <a v-if="$config.envname=='upera'" href="https://web.upera.tv/affiliate.html" target="_blank" class="nav-link">
-                همکاری
-              </a>
-              <a v-else-if="checkuser.ref<=5" href="https://web.upera.tv/affiliate.html" target="_blank" class="nav-link">
-                همکاری
-              </a>
             </ul>
             <div class="d-flex align-items-center">
               <ul class="nav">
@@ -75,12 +69,6 @@
                 <!--                 <nuxt-link to="/profile/internet" class="nav-link text-black">
                   {{ $t('new.halfPrice') }}
                 </nuxt-link> -->
-                <a v-if="$config.envname=='upera'" href="https://web.upera.tv/affiliate.html" target="_blank" class="nav-link text-black">
-                  همکاری
-                </a>
-                <a v-else-if="checkuser.ref<=5" href="https://web.upera.tv/affiliate.html" target="_blank" class="nav-link text-black">
-                  همکاری
-                </a>
                 <nuxt-link to="/profile/terms" class="nav-link text-black">
                   {{ $t('new.term') }}
                 </nuxt-link>

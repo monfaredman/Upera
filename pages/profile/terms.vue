@@ -43,10 +43,10 @@ export default {
   async asyncData (context) {
     let res
     res = await context.app.$axios.get('/get/app/details')
-    if(context.app.i18n.locale=="fa")
+    // if(context.app.i18n.locale=="fa")
     return {data:{terms:res.data.data.terms,privacy:res.data.data.privacy}}
-    else
-      return {data:{terms:res.data.data.terms_en,privacy:res.data.data.privacy_en}}
+    // else
+    //   return {data:{terms:res.data.data.terms_en,privacy:res.data.data.privacy_en}}
   },
     data () {
       return {

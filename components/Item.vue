@@ -5,25 +5,38 @@
         <div class="px-3 h-full">
           <div class="row h-full align-items-center">
             <div class="col-6">
-              <button v-if="!MainButton && DownloadButton" class="btn btn-main btn-block" @click="ftb=false;DOWNLOAD_MODAL_LOAD();">
-                <span v-if="DownloadButton==1"><i class="fa fa-download pr-2 " /><span>دانلود</span></span>
-                <span v-else-if="DownloadButton==2" class="smallsrm"><i class="fa fa-download pr-2 " /><span>دانلود رایگان</span></span>
-                <span v-else-if="DownloadButton==3" class="smallsrm"><i class="fa fa-download pr-2 " /><span>خرید و دانلود</span></span>
-                <span v-else-if="DownloadButton==4" class="smallsrm"><i class="fa fa-download pr-2 " /><span>پیش خرید و دانلود</span></span>
+              <button 
+                v-if="actions && !actions.mainButton.exist && actions.downloadButton.exist" 
+                class="btn btn-main btn-block" 
+                @click="ftb = false; DOWNLOAD_MODAL_LOAD(actions.downloadButton.action)"
+              >
+                <span>
+                  <i class="fa fa-download pr-2" />
+                  <span>{{ ChooseLang(actions.downloadButton.label.en, actions.downloadButton.label.fa) }}</span>
+                </span>
               </button>
-              <button v-else-if="!MainButton" class="btn btn-main">
-                به زودی
+
+
+              <button 
+                v-else-if="actions && actions.mainButton.exist"
+                class="btn btn-main btn-block" 
+                @click="PLAY(actions.mainButton.action)"
+              >
+                <span class="smallsrm">
+                  <i class="fa fa-play pr-2" />
+                  <span>
+                    {{ ChooseLang(actions.mainButton.label.en, actions.mainButton.label.fa) }}
+                    <span v-if="actions.mainButton.action == 'play' && episode.id"> {{ $t('show.episode') }} {{ episode.episode_number }}
+                    </span>
+                  </span>
+                </span>
               </button>
-              <button v-else class="btn btn-main btn-block" @click="PLAY()">
-                <span v-if="MainButton==9" class="smallsrm"><i class="fa fa-play pr-2 " /><span>نمایش<span v-if="episode.id"> قسمت {{ episode.episode_number }}</span></span></span>
-                <span v-else-if="MainButton==1"><i class="fa fa-play pr-2 " /><span>خرید</span></span>
-                <span v-else-if="MainButton==2"><i class="fa fa-play pr-2 " /><span>پیش خرید</span></span>
-                <span v-else-if="MainButton==3"><i class="fa fa-play pr-2 " /><span>خرید اشتراک</span></span>
-                <span v-else-if="MainButton==4"><i class="fa fa-play pr-2 " /><span>خرید بلیط</span></span>
-                <span v-else-if="MainButton==5" class="smallsrm"><i class="fa fa-play pr-2 " /><span>پیش خرید بلیط</span></span>
-                <span v-else-if="MainButton==6"><i class="fa fa-play pr-2 " /><span>به زودی</span></span>
-                <span v-else-if="MainButton==7"><i class="fa fa-play pr-2 " /><span>به زودی</span></span>
-                <span v-else-if="MainButton==8" class="smallsrm"><i class="fa fa-play pr-2 " /><span>خرید امکان نمایش</span></span>
+
+              <button 
+                v-else
+                class="btn btn-main"
+              >
+                <b-spinner small />
               </button>
             </div>
             <div class="col-6 h-full">
@@ -113,24 +126,33 @@
                     </div>
                   </div>
                   <div id="showcase-button-wrapper" class="showcase-button-wrapper">
-                    <button v-if="MainButton" class="btn btn-main mr-1 ml-0" @click="PLAY()">
-                      <span v-if="MainButton==9" class="smallsrm"><i class="fa fa-play pr-2 " /><span>نمایش<span v-if="episode.id"> قسمت {{ episode.episode_number }}</span></span></span>
-                      <span v-else-if="MainButton==1"><i class="fa fa-play pr-2 " /><span>خرید</span></span>
-                      <span v-else-if="MainButton==2"><i class="fa fa-play pr-2 " /><span>پیش خرید</span></span>
-                      <span v-else-if="MainButton==3"><i class="fa fa-play pr-2 " /><span>خرید اشتراک</span></span>
-                      <span v-else-if="MainButton==4"><i class="fa fa-play pr-2 " /><span>خرید بلیط</span></span>
-                      <span v-else-if="MainButton==5" class="smallsrm"><i class="fa fa-play pr-2 " /><span>پیش خرید بلیط</span></span>
-                      <span v-else-if="MainButton==6"><i class="fa fa-play pr-2 " /><span>به زودی</span></span>
-                      <span v-else-if="MainButton==7" class="smallsrm"><i class="fa fa-play pr-2 " /><span>به زودی</span></span>
-                      <span v-else-if="MainButton==8" class="smallsrm"><i class="fa fa-play pr-2 " /><span>خرید امکان نمایش</span></span>
+                    <button v-if="actions && actions.mainButton.exist" class="btn btn-main mr-1 ml-0" @click="PLAY(actions.mainButton.action)">
+                      <span class="smallsrm">
+                        <i class="fa fa-play pr-2" />
+                        <span>
+                          {{ ChooseLang(actions.mainButton.label.en, actions.mainButton.label.fa) }}
+                          <span v-if="actions.mainButton.action === 'play' && episode.id"> {{ $t('show.episode') }} {{ episode.episode_number }}
+                          </span>
+                        </span>
+                      </span>
                     </button>
 
-                    <button v-if="DownloadButton" class="btn btn-dark btn-download mr-1 ml-0" @click="ftb=false;DOWNLOAD_MODAL_LOAD();">
-                      <span v-if="DownloadButton==1"><i class="fa fa-download pr-2 " /><span>دانلود</span></span>
-                      <span v-else-if="DownloadButton==2" class="smallsrm"><i class="fa fa-download pr-2 " /><span>دانلود رایگان</span></span>
-                      <span v-else-if="DownloadButton==3" class="smallsrm"><i class="fa fa-download pr-2 " /><span>خرید و دانلود</span></span>
-                      <span v-else-if="DownloadButton==4" class="smallsrm"><i class="fa fa-download pr-2 " /><span>پیش خرید و دانلود</span></span>
+                    <button v-if="actions && actions.downloadButton.exist" class="btn btn-dark btn-download mr-1 ml-0" @click="ftb = false; DOWNLOAD_MODAL_LOAD(actions.downloadButton.action)">
+                      <span class="smallsrm">
+                        <i class="fa fa-download pr-2" />
+                        <span>
+                          {{ ChooseLang(actions.downloadButton.label.en, actions.downloadButton.label.fa) }}
+                        </span>
+                      </span>
                     </button>
+
+                    <button v-if="!actions || (!actions.mainButton.exist && !actions.downloadButton.exist)" class="btn btn-main mr-1 ml-0">
+                      <span class="smallsrm">
+                        <b-spinner small />
+                      </span>
+                    </button>
+
+
                     <!-- @click.prevent="ADD_CLAP(data.item.id, type)" -->
                     <a :class="{active:clapinterval}" class="btn btn-dark btn-icon ml-1 hide-mobile" @mousedown="startclap" @mouseleave="stopclap" @mouseup="stopclap" @touchstart="startclap" @touchend="stopclap" @touchcancel="stopclap">
                       <div class="likes">
@@ -149,83 +171,7 @@
               </div>
             </div>
           </div>
-          <!--           <div
-            class="showcase-thumbnail-wrapper-outter d-flex align-items-center justify-content-between pr-gutter pr-md-3"
-          >
-            <div class="showcase-thumbnail-wrapper w-full">
-              <div class="d-flex h-full align-items-end">
-                <div class="pr-md-4 pr-md-2 showcase-desc-wrapper">
-                  <div class="showcase-desc">
-
-                    
-                  </div>
-                  <div class="showcase-button-wrapper">
-                    <a v-if="DownloadButton && MainButton" href="" class="text-invert show-mobile" @click.prevent="ftb=false;DOWNLOAD_MODAL_LOAD();">
-                      <span v-if="DownloadButton==1"><i class="fa fa-download " /></span>
-                      <span v-else-if="DownloadButton==2"><i class="fa fa-download " /></span>
-                      <span v-else-if="DownloadButton==3"><i class="fa fa-download " /></span>
-                      <span v-else-if="DownloadButton==4"><i class="fa fa-download " /></span>
-
-
-                      <div>
-                        <span v-if="DownloadButton==1"><span>دانلود</span></span>
-                        <span v-else-if="DownloadButton==2"><span>دانلود رایگان</span></span>
-                        <span v-else-if="DownloadButton==3"><span>خرید و دانلود</span></span>
-                        <span v-else-if="DownloadButton==4"><span>پیش خرید و دانلود</span></span>
-                      </div>
-                    </a>
-
-                    <button v-if="!MainButton && DownloadButton" class="btn btn-main mr-1 ml-0" @click="ftb=false;DOWNLOAD_MODAL_LOAD();">
-                      <span v-if="DownloadButton==1"><i class="fa fa-download pr-2 " /><span>دانلود</span></span>
-                      <span v-else-if="DownloadButton==2"><i class="fa fa-download pr-2 " /><span>دانلود رایگان</span></span>
-                      <span v-else-if="DownloadButton==3"><i class="fa fa-download pr-2 " /><span>خرید و دانلود</span></span>
-                      <span v-else-if="DownloadButton==4"><i class="fa fa-download pr-2 " /><span>پیش خرید و دانلود</span></span>
-                    </button>
-                    <button v-else-if="!MainButton" class="btn btn-main">
-                      به زودی
-                    </button>
-                    <button v-else class="btn btn-main mr-1 ml-0" @click="PLAY()">
-                      <span v-if="MainButton==9"><i class="fa fa-play pr-2 " /><span>نمایش<span v-if="episode.id"> قسمت {{ episode.episode_number }}</span></span></span>
-                      <span v-else-if="MainButton==1"><i class="fa fa-play pr-2 " /><span>خرید</span></span>
-                      <span v-else-if="MainButton==2"><i class="fa fa-play pr-2 " /><span>پیش خرید</span></span>
-                      <span v-else-if="MainButton==3"><i class="fa fa-play pr-2 " /><span>خرید اشتراک</span></span>
-                      <span v-else-if="MainButton==4"><i class="fa fa-play pr-2 " /><span>خرید بلیط</span></span>
-                      <span v-else-if="MainButton==5"><i class="fa fa-play pr-2 " /><span>پیش خرید بلیط</span></span>
-                      <span v-else-if="MainButton==6"><i class="fa fa-play pr-2 " /><span>به زودی</span></span>
-                      <span v-else-if="MainButton==7"><i class="fa fa-play pr-2 " /><span>presale ساعت مانده تا نمایش</span></span>
-                      <span v-else-if="MainButton==8"><i class="fa fa-play pr-2 " /><span>خرید امکان نمایش</span></span>
-                    </button>
-
-                    <button v-if="DownloadButton && MainButton" class="btn btn-dark btn-download ml-md-2 hide-mobile" @click="ftb=false;DOWNLOAD_MODAL_LOAD();">
-                      <span v-if="DownloadButton==1"><i class="fa fa-download pr-2 " /><span>دانلود</span></span>
-                      <span v-else-if="DownloadButton==2"><i class="fa fa-download pr-2 " /><span>دانلود رایگان</span></span>
-                      <span v-else-if="DownloadButton==3"><i class="fa fa-download pr-2 " /><span>خرید و دانلود</span></span>
-                      <span v-else-if="DownloadButton==4"><i class="fa fa-download pr-2 " /><span>پیش خرید و دانلود</span></span>
-                    </button>
-                    <a href="#" class="btn btn-dark btn-icon ml-1 hide-mobile">
-                      <i class="icon-clap" />
-                    </a>
-                    <a href="#" class="btn btn-dark btn-icon ml-1 hide-mobile">
-                      <i class="icon-share-android" />
-                    </a>
-                    <a href="" class="btn btn-dark btn-icon ml-1 hide-mobile" @click.prevent="ADD_WATCHLIST(data.item.id, type)">
-                      <i :class="{ 'icon-bookmark-empty': !is_watchlist,'icon-bookmark': is_watchlist==1 }" />
-                    </a>
-                    <a href="" class="text-invert show-mobile" @click.prevent="ADD_WATCHLIST(data.item.id, type)">
-                      <i :class="{ 'icon-bookmark-empty': !is_watchlist,'icon-bookmark': is_watchlist==1 }" />
-                      <div v-if="is_watchlist==1">حذف از لیست</div>
-                      <div v-else>بعدا می بینم</div>
-                    </a>
-                  </div>
-                </div>
-                <div class="thumbnail hide-mobile">
-                  <nuxt-link :to="{ name: type+'-id', params: { id: data.item.id }}">
-                    <img class="thumbnail" :src="'https://thumb.upera.shop/thumb?w=207&h=307&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+data.item.poster" :alt="data.item.name">
-                  </nuxt-link>
-                </div>
-              </div>
-            </div>
-          </div> -->
+     
           <client-only>
             <countdown v-if="data.item.presale && data.item.presale <= 6288798" :left-time="data.item.presale * 1000">
               <div slot="process" slot-scope="{ timeObj }" class="d-flex align-items-center justify-content-center count-down-wrapper">
@@ -277,7 +223,7 @@
     <section id="movie" class="page">
       <div class="container-fluid">
         <div class="article py-3">
-          <div v-if="data.files.teaser==1" class="article-img-wrapper mr-lg-3" @click.prevent="GET_FILE(1);">
+          <div v-if="medias.teaser==1" class="article-img-wrapper mr-lg-3" @click.prevent="GET_FILE(1);">
             <div class="font-weight-bold mb-2 d-none d-lg-block">
               نمایش تیزر
             </div>
@@ -374,17 +320,17 @@
 
 
 
-    <section v-if="type=='series' && data.last_episode" id="slideshow" dir="ltr">
+    <section v-if="type=='series' && last_episode" id="slideshow" dir="ltr">
       <div class="swiper-container showcase main-slideshow showcase-season">
         <div class="swiper-slide">
           <div class="row no-gutters">
             <div class="col-md-6 col-lg-7 showcase-pic">
-              <b-img class="showcase-img d-none d-lg-block" v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 1120,height: 400,show:true}" :src="'https://thumb.upera.shop/thumb?w=1120&h=400&q=95&a=c&zc=1&src=https://cdn.upera.shop/s3/backdrops/'+data.last_episode.backdrop" :alt="data.last_episode.name" />
+              <b-img class="showcase-img d-none d-lg-block" v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 1120,height: 400,show:true}" :src="'https://thumb.upera.shop/thumb?w=1120&h=400&q=95&a=c&zc=1&src=https://cdn.upera.shop/s3/backdrops/'+last_episode.backdrop" :alt="last_episode.name" />
 
-              <b-img class="showcase-img d-lg-none" v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 375,height: 300,show:true}" :src="'https://thumb.upera.shop/thumb?w=375&h=300&q=100&a=c&zc=1&src=https://cdn.upera.shop/s3/backdrops/'+data.last_episode.backdrop" :alt="data.last_episode.name" />
+              <b-img class="showcase-img d-lg-none" v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 375,height: 300,show:true}" :src="'https://thumb.upera.shop/thumb?w=375&h=300&q=100&a=c&zc=1&src=https://cdn.upera.shop/s3/backdrops/'+last_episode.backdrop" :alt="last_episode.name" />
 
-              <!--  <img loading="lazy" data-back="/images/1120x400.png" class="showcase-img d-none d-lg-block" :src="'https://thumb.upera.shop/thumb?w=1120&h=400&q=95&a=c&zc=1&src=https://cdn.upera.shop/s3/backdrops/'+data.last_episode.backdrop" :alt="data.last_episode.name">
-              <img loading="lazy" data-back="/images/375x300.png" class="showcase-img d-lg-none" :src="'https://thumb.upera.shop/thumb?w=375&h=300&q=100&a=c&zc=1&src=https://cdn.upera.shop/s3/backdrops/'+data.last_episode.backdrop" :alt="data.last_episode.name"> -->
+              <!--  <img loading="lazy" data-back="/images/1120x400.png" class="showcase-img d-none d-lg-block" :src="'https://thumb.upera.shop/thumb?w=1120&h=400&q=95&a=c&zc=1&src=https://cdn.upera.shop/s3/backdrops/'+last_episode.backdrop" :alt="last_episode.name">
+              <img loading="lazy" data-back="/images/375x300.png" class="showcase-img d-lg-none" :src="'https://thumb.upera.shop/thumb?w=375&h=300&q=100&a=c&zc=1&src=https://cdn.upera.shop/s3/backdrops/'+last_episode.backdrop" :alt="last_episode.name"> -->
             </div>
             <div class="col-md-6 col-lg-5" />
           </div>
@@ -396,8 +342,8 @@
                 <div class="pr-md-4 pr-md-2 showcase-desc-wrapper">
                   <div class="showcase-desc">
                     <div class="title text-invert mb-5 mb-md-3">
-                      <nuxt-link :to="{ name: 'episode-id', params: { id: data.last_episode.id }}">
-                        {{ ChooseLang(data.item.name,data.item.name_fa) }} - قسمت {{ data.last_episode.episode_number }}
+                      <nuxt-link :to="{ name: 'episode-id', params: { id: last_episode.id }}">
+                        {{ ChooseLang(data.item.name,data.item.name_fa) }} - قسمت {{ last_episode.episode_number }}
                       </nuxt-link>
                     </div>
                     <div class="p-fs-small text-invert mb-1 mb-md-3 hide-mobile font-weight-normal">
@@ -405,18 +351,18 @@
                     </div>
                   </div>
                   <div class="showcase-button-wrapper">
-                    <nuxt-link :to="{ name: 'episode-id', params: { id: data.last_episode.id }}" class="text-invert show-mobile">
+                    <nuxt-link :to="{ name: 'episode-id', params: { id: last_episode.id }}" class="text-invert show-mobile">
                       <i class="icon-info" />
 
 
                       <div>توضیحات این قسمت</div>
                     </nuxt-link>
 
-                    <nuxt-link :to="{ name: 'episode-show-id', params: { id: data.last_episode.id }}" class="btn btn-main">
+                    <nuxt-link :to="{ name: 'episode-show-id', params: { id: last_episode.id }}" class="btn btn-main">
                       نمایش
                     </nuxt-link>
 
-                    <nuxt-link :to="{ name: 'episode-id', params: { id: data.last_episode.id }}" class="btn btn-dark btn-download ml-md-2 hide-mobile">
+                    <nuxt-link :to="{ name: 'episode-id', params: { id: last_episode.id }}" class="btn btn-dark btn-download ml-md-2 hide-mobile">
                       توضیحات این قسمت <i class="icon-info" />
                     </nuxt-link>
                     <!--                                     <a href="#" class="btn btn-dark btn-icon hide-mobile">
@@ -436,10 +382,10 @@
                   </div>
                 </div>
                 <div class="thumbnail hide-mobile">
-                  <nuxt-link :to="{ name: 'episode-id', params: { id: data.last_episode.id }}">
-                    <b-img class="thumbnail" v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 207,height: 307,show:true}" :src="'https://thumb.upera.shop/thumb?w=207&h=307&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+data.last_episode.poster" :alt="data.last_episode.name" />
+                  <nuxt-link :to="{ name: 'episode-id', params: { id: last_episode.id }}">
+                    <b-img class="thumbnail" v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 207,height: 307,show:true}" :src="'https://thumb.upera.shop/thumb?w=207&h=307&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+last_episode.poster" :alt="last_episode.name" />
 
-                    <!--  <img loading="lazy" class="thumbnail" :src="'https://thumb.upera.shop/thumb?w=207&h=307&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+data.last_episode.poster" :alt="data.last_episode.name"> -->
+                    <!--  <img loading="lazy" class="thumbnail" :src="'https://thumb.upera.shop/thumb?w=207&h=307&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+last_episode.poster" :alt="last_episode.name"> -->
                   </nuxt-link>
                 </div>
               </div>
@@ -450,81 +396,10 @@
     </section>
 
 
-    <!-- 
-    <section v-if="type!='movie' && data.season" id="episode-v2">
-      
-
-      <div class="horizontal-list-container">
-        <div class="swiper-container horizontal-list">
-        <section id="movie-tabs" class="nav_tabContent">
-          <div id="movie-tabs" class="border-top border-dark nav_tabContent">
-            <div class="nav mt-3" role="tablist">
-              <b-tabs content-class="mt-4" class="col-12">
-                <b-tab v-for="(item, index) in data.season" :key="index" :title="'فصل '+index" :active="isactiveseason(index)">
-      <div v-swiper:offerSwiper="swiperOption">
-        <div class="swiper-wrapper py-1">
-          <div v-for="(item2,index2) in item" :key="index2" class="swiper-slide movielabel">
-            <nuxt-link :to="{ name: 'episode-id', params: { id: item2.id }}">
-              <img :src="'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item2.poster" :alt="item2.name">
-            </nuxt-link>
-            <div class="mt-2">
-              <h6 class="mt-2 small font-weight-normal">
-                قسمت {{ item2.episode_number }}
-              </h6>
-            </div>
-          </div>
-        </div>
-      </div>
-
-                  <div class="mt-2">
-                    <div class="container-fluid pl-md-0 pr-md-0 row_actor_movie_container">
-                      <div class="row row_actor_movie">
-                        <div v-for="(item2, index2) in item" :key="index2" class="col-4 col-xl-2 col-md-2 col-sm-3">
-                          <nuxt-link :to="{ name: 'episode-id', params: { id: item2.id }}" class="episode-poster">
-                            <img :src="'https://thumb.upera.shop/thumb?w=184&h=279&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item2.poster" alt="">
-                            <span class="block">قسمت {{ item2.episode_number }}</span>
-                          </nuxt-link>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </b-tab>
-              </b-tabs>
-            </div>
-          </div>
-        </section>
-      </div>
-    </div>
-    </section> -->
-
-    <!-- 
-
-
-    <section v-if="type!='movie' && data.season">
-      <div v-for="(item, index) in data.season" :key="index" class="horizontal-list-container mt-4 reach-begin">
-        <div class="d-flex justify-content-between align-items-center mb-2 container-fluid">
-          <h4 class="title">
-            فصل {{ index }}
-          </h4>
-        </div>
-        <swiper :ref="'mySwiper'+index" :options="swiperOption">
-          <swiper-slide v-for="(item2,index2) in item" :key="index2" class="swiper-slide movielabel">
-            <nuxt-link :to="{ name: 'episode-id', params: { id: item2.id }}">
-              <img :src="'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item2.poster" :alt="item2.name">
-            </nuxt-link>
-            <div class="mt-2">
-              <h6 class="mt-2 small font-weight-normal">
-                قسمت {{ item2.episode_number }}
-              </h6>
-            </div>
-          </swiper-slide>
-        </swiper>
-      </div>
-    </section> -->
 
 
 
-    <section v-if="type!='movie' && data.season" id="watching" class="horizontal-list-container item mt-lg-2 pt-3">
+    <section v-if="type!='movie' && season" id="watching" class="horizontal-list-container item mt-lg-2 pt-3">
       <div class="container-fluid mb-2">
         <div class="row">
           <b-dropdown class="col-lg-2 col-md-3 col-4" block :text="seasontitle" variant="dark">
@@ -536,7 +411,7 @@
       </div>
       <div class="container-fluid">
         <div class="row">
-          <div v-for="(item2,index2) in data.season[selectseriesid]" :key="index2" class="col-lg-3 col-md-4 col-6">
+          <div v-for="(item2,index2) in season[selectseriesid]" :key="index2" class="col-lg-3 col-md-4 col-6">
             <nuxt-link :to="{ name: 'episode-id', params: { id: item2.id }}">
               <b-img v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 364,height: 190,show:true}" :src="'https://thumb.upera.shop/thumb?w=364&h=190&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/'+item2.backdrop" :alt="item2.name" class="rounded" />
 
@@ -547,7 +422,7 @@
             </nuxt-link>
             <div class="mt-2">
               <h6 class="mt-2 small font-weight-normal">
-                قسمت {{ item2.episode_number }}<span v-if="item2.season_number!=1"> - فصل {{ item2.season_number }}</span>
+                {{ ChooseLang(item2.name,item2.name_fa) }}
               </h6>
             </div>
           </div>
@@ -556,7 +431,7 @@
     </section>
 
 
-    <section v-if="data.similar!=null" class="horizontal-list-container mt-4 reach-begin">
+    <section v-if="similar!=null" class="horizontal-list-container mt-4 reach-begin">
       <div class="d-flex justify-content-between align-items-center mb-2 container-fluid">
         <h4 class="title">
           {{ $t('show.similar') }}
@@ -565,7 +440,7 @@
       <div v-swiper:offerSwiper="swiperOption" class="newset-slider">
         <div class="swiper-wrapper py-1">
           <!-- Slides -->
-          <div v-for="(item,index) in data.similar" :key="index" class="swiper-slide" :class="{'movielabel':item.type=='movie'}">
+          <div v-for="(item,index) in similar" :key="index" class="swiper-slide" :class="{'movielabel':item.type=='movie'}">
             <nuxt-link :to="{ name: item.type+'-id', params: { id: item.id }}" :class="{'is-series': item.type!='movie'}">
               <b-img v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 142,height: 212,show:true}" :src="'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name" />
               <b-img v-if="item.type!='movie'" v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 142,height: 212,show:true}" :src="'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name" />
@@ -586,16 +461,16 @@
         </div>
       </div>
     </section>
-    <section v-if="data.showtabs" class="horizontal-list-container mt-4">
+    <section class="horizontal-list-container mt-4">
       <div class="swiper-container horizontal-list">
         <div id="movie-tabs" class="border-top border-dark">
           <div class="nav mt-3" role="tablist">
-            <b-tabs content-class="mt-4" class="w-full">
-              <b-tab v-if="data.casts !== null || data.directors !== null || data.producers !== null" :title="$t('new.casts')">
+            <b-tabs v-model="activeTab" content-class="mt-4" class="w-full">
+              <b-tab v-if="casts !== null || directors !== null || producers !== null" :title="$t('new.casts')">
                 <div id="actor" class="mt-2">
                   <div class="container-fluid pl-md-0 pr-md-0 row_actor_movie_container">
-                    <div v-show="data.casts !== null" class="row row_actor_movie row_actor2_movie">
-                      <div v-for="(item, index) in data.casts" :key="index" class="col-4 col-xl-1 col-md-2 col-sm-3 mt-2 mt-lg-4">
+                    <div v-show="casts !== null" class="row row_actor_movie row_actor2_movie">
+                      <div v-for="(item, index) in casts" :key="index" class="col-4 col-xl-1 col-md-2 col-sm-3 mt-2 mt-lg-4">
                         <nuxt-link :to="{ name: 'cast-id', params: { id: item.id }}" class="actor2">
                           <b-img v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 140,height: 140,show:true}" :src="'https://thumb.upera.shop/thumb?w=140&h=140&q=100&a=t&src=https://cdn.upera.shop/s3/casts/'+item.image" :alt="item.name" class="rounded-circle" />
 
@@ -604,34 +479,34 @@
                         </nuxt-link>
                       </div>
                     </div>
-                    <hr v-show="data.casts !== null && (data.directors !== null || data.producers !== null)">
-                    <div v-show="data.directors !== null || data.producers !== null" class="mt-md-2 small font-weight-bold">
-                      <h6 v-show="data.casts !== null">
+                    <hr v-show="casts !== null && (directors !== null || producers !== null)">
+                    <div v-show="directors !== null || producers !== null" class="mt-md-2 small font-weight-bold">
+                      <h6 v-show="casts !== null">
                         {{ $t('new.other_casts') }}
                       </h6>
-                      <p v-show="data.directors !== null" class="font-weight-normal">
-                        {{ $t('show.director') }}: <span v-for="(item, index) in data.directors" :key="index"><nuxt-link :to="{ name: 'cast-id', params: { id: item.id }}"> {{ ChooseLang(item.name,item.name_fa) }} </nuxt-link><span v-if="index+1 < data.directors.length">, </span></span>
+                      <p v-show="directors !== null" class="font-weight-normal">
+                        {{ $t('show.director') }}: <span v-for="(item, index) in directors" :key="index"><nuxt-link :to="{ name: 'cast-id', params: { id: item.id }}"> {{ ChooseLang(item.name,item.name_fa) }} </nuxt-link><span v-if="index+1 < directors.length">, </span></span>
                       </p>
-                      <p v-show="data.producers !== null" class="font-weight-normal">
-                        {{ $t('show.producer') }}: <span v-for="(item, index) in data.producers" :key="index"><nuxt-link :to="{ name: 'cast-id', params: { id: item.id }}"> {{ ChooseLang(item.name,item.name_fa) }} </nuxt-link><span v-if="index+1 < data.producers.length">, </span></span>
+                      <p v-show="producers !== null" class="font-weight-normal">
+                        {{ $t('show.producer') }}: <span v-for="(item, index) in producers" :key="index"><nuxt-link :to="{ name: 'cast-id', params: { id: item.id }}"> {{ ChooseLang(item.name,item.name_fa) }} </nuxt-link><span v-if="index+1 < producers.length">, </span></span>
                       </p>     
-                      <p v-show="data.writers !== null" class="font-weight-normal">
-                        {{ $t('show.writer') }}: <span v-for="(item, index) in data.writers" :key="index"><nuxt-link :to="{ name: 'cast-id', params: { id: item.id }}"> {{ ChooseLang(item.name,item.name_fa) }} </nuxt-link><span v-if="index+1 < data.writers.length">, </span></span>
+                      <p v-show="writers !== null" class="font-weight-normal">
+                        {{ $t('show.writer') }}: <span v-for="(item, index) in writers" :key="index"><nuxt-link :to="{ name: 'cast-id', params: { id: item.id }}"> {{ ChooseLang(item.name,item.name_fa) }} </nuxt-link><span v-if="index+1 < writers.length">, </span></span>
                       </p> 
-                      <p v-show="data.investors !== null" class="font-weight-normal">
-                        {{ $t('show.investor') }}: <span v-for="(item, index) in data.investors" :key="index"><nuxt-link :to="{ name: 'cast-id', params: { id: item.id }}"> {{ ChooseLang(item.name,item.name_fa) }} </nuxt-link><span v-if="index+1 < data.investors.length">, </span></span>
+                      <p v-show="investors !== null" class="font-weight-normal">
+                        {{ $t('show.investor') }}: <span v-for="(item, index) in investors" :key="index"><nuxt-link :to="{ name: 'cast-id', params: { id: item.id }}"> {{ ChooseLang(item.name,item.name_fa) }} </nuxt-link><span v-if="index+1 < investors.length">, </span></span>
                       </p>                 
                     </div>
                   </div>
                 </div>
               </b-tab>
-              <b-tab v-if="data.item.news !== null" @click="showcomment=true">
+              <b-tab @click="showcomment=true">
                 <template #title>
-                  <b-spinner v-if="commentsloading" type="border" class="mb-1 ml-1" small /> {{ $t('comment.comments') }} ({{ data.item.comm_num }})
+                  <b-spinner v-if="commentsloading" type="border" class="mb-1 ml-1" small /> {{ $t('comment.comments') }} ({{ comm_num }})
                 </template>
-                <Comments :showcomment="showcomment" :postid="data.item.news" :type="type" :name="data.item.name" :namefa="data.item.name_fa" :precommentsdata="data.commentsData" :preavatar="data.avatar" :preemail="data.email" :prefullname="data.fullname" :precomments="data.comments" />
+                <Comments :id="data.item.id" :type="type" :name="data.item.name" :namefa="data.item.name_fa" />
               </b-tab>
-              <b-tab v-if="data.files.backstage === 1" title="پشت صحنه">
+              <b-tab v-if="medias.backstage === 1" title="پشت صحنه">
                 <div class="row">
                   <div class="col-lg-6 mb-2">
                     <a href="" class="position-relative" @click.prevent="GET_FILE(2);">
@@ -643,25 +518,7 @@
                   </div>
                 </div>
               </b-tab>
-              <b-tab v-if="data.files.image === 1 && data.images" title="گالری" dir="ltr">
-                <div>
-                  <client-only>
-                    <LightGallery :index="galleryindex" :images="data.images" @close="galleryindex = null" />
-                  </client-only>
-
-                  <div v-if="data.images.length>=1" class="row text-center text-lg-left">
-                    <div v-for="(thumb, thumbIndex) in data.images"
-                         :key="thumbIndex" class="col-lg-3 col-md-4 col-6"
-                    >
-                      <a href="" class="d-block mb-4 h-100" @click.prevent="galleryindex = thumbIndex">
-
-                        <img :src="'https://thumb.upera.shop/thumb?w=1920&h=1200&q=100&a=c&src='+thumb" class="img-fluid img-thumbnail" :alt="'تصویر '+thumbIndex+' '+data.item.name_fa">
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              </b-tab>
-              <b-tab v-if="data.files.image === 1 && !data.images" dir="ltr" @click="LoadImages()">
+              <b-tab v-if="medias.image === 1" dir="ltr" @click="LoadImages()">
                 <template #title>
                   <b-spinner v-if="imagesloading" type="border" class="mb-1 ml-1" small /> گالری
                 </template>
@@ -682,7 +539,7 @@
                   </div>
                 </div>
               </b-tab>
-              <b-tab v-if="data.files.musicvideo === 1" title="موزیک ویدئو">
+              <b-tab v-if="medias.musicvideo === 1" title="موزیک ویدئو">
                 <div class="row">
                   <div class="col-lg-6 mb-2">
                     <a href="" class="position-relative" @click.prevent="GET_FILE(4);">
@@ -694,7 +551,7 @@
                   </div>
                 </div>
               </b-tab>
-              <b-tab v-if="data.files.next === 1" title="آنچه در قسمت بعد خواهید دید">
+              <b-tab v-if="medias.next === 1" title="آنچه در قسمت بعد خواهید دید">
                 <div class="row">
                   <div class="col-lg-6 mb-2">
                     <a href="" class="position-relative" @click.prevent="GET_FILE(3);">
@@ -711,7 +568,7 @@
         </div>
       </div>
     </section>
-    <Download :id="data.item.id" :show="showDownloadModal" :ftb="ftb" :owned="data.item.owned" :traffic="data.item.traffic" :trafficoo="data.item.traffic_oo" :vod="data.item.vod" :free="data.item.free" :name="data.item.name" :namefa="data.item.name_fa" :posterf="data.item.poster" :backdrop="data.item.backdrop" :season="season" :itemdata="data.item" :type="type" @hide-modal="HIDE_MODAL2" />
+    <Download :id="data.item.id" :show="showDownloadModal" :ftb="ftb" :owned="owned" :traffic="data.item.traffic" :trafficoo="data.item.traffic_oo" :vod="data.item.vod" :free="data.item.free" :name="data.item.name" :namefa="data.item.name_fa" :posterf="data.item.poster" :backdrop="data.item.backdrop" :season="season" :itemdata="data.item" :type="type" @hide-modal="HIDE_MODAL2" />
     <client-only>
       <File :id="data.item.id" :show="showplyrmodal" :content="modalcontent" :name="data.item.name" :namefa="data.item.name_fa" :backdrop="data.item.backdrop" :backdropteaser="data.item.backdrop_teaser" :type="type" @hide-modal="HIDE_MODAL3" />
 
@@ -749,10 +606,10 @@ import Comments from "@/components/Comments"
 
         data() {
             return {
+              actions: null,
+               activeTab: 0,
               galleryindex:null,
-              MainButton:0,
               ftb:false,
-              DownloadButton:0,
               main_download:0,
               main_free:0,
               ShowPresale:0,
@@ -766,7 +623,29 @@ import Comments from "@/components/Comments"
               episode: {
                 id: null
               },
-        
+              medias: {},
+              casts: [],
+              directors: null,
+              producers: null,
+owned: 0,
+owned_period_end: null,
+              writers: null,
+              investors: null,
+              characters: null,
+              commentsData: null,
+              offer: null,
+              similar:null,
+              comments: 0,
+
+
+                    current_time: 0,
+      duration_time: 0,
+      comm_num: 0,
+      last_episode_seen :null,
+      first_episode :null,
+      last_episode :null,
+
+
         countdown: {},
         total_claps: 0,
         user_claps: 0,
@@ -817,10 +696,17 @@ import Comments from "@/components/Comments"
     return { title: (this.type=='episode') ? ((this.data.item.season_number==1) ? (this.ChooseLang(this.data.item.series_name,this.data.item.series_name_fa)+',قسمت '+this.data.item.episode_number) : (this.ChooseLang(this.data.item.series_name,this.data.item.series_name_fa)+',قسمت '+this.data.item.episode_number+' فصل '+this.data.item.season_number)) : this.ChooseLang(this.data.item.name,this.data.item.name_fa) }
   },
         computed: {
-            ...mapGetters({showplyrmodal: "player/showplyrmodal"}),
-            ...mapGetters({showDownloadModal: "player/showDownloadModal"}),
-            ...mapGetters({commentsloading: "comments/commentsloading"})
+            ...mapGetters({showplyrmodal: "showplyrmodal"}),
+            ...mapGetters({showDownloadModal: "showDownloadModal"}),
+            ...mapGetters({commentsloading: "comments/commentsloading"}),
+
+    tabsKey() {
+      // اگر داده‌های cast موجود باشند، key متفاوت از حالت بدون داده خواهد بود.
+      return (this.casts || this.directors || this.producers) ? 'with-casts' : 'no-casts'
+    }
         },
+
+ 
         watch: {
             data() {
                 // if (this.data.item.runtime <= 60) {
@@ -835,14 +721,29 @@ import Comments from "@/components/Comments"
                 // this.data.item.genre = this.data.item.genre.replace(/-/g, ', ')
                 // // Set title
 
-console.log(1)
 this.INIT()
+this.loadAdditionalData()
                 if(this.$i18n.locale=="fa" && this.data.item.name_fa)
                 document.title = this.data.item.name_fa
                 else
                     document.title = this.data.item.name
 
-            }
+            },
+    casts(newVal) {
+      if (newVal || this.directors || this.producers) {
+        this.activeTab = 0
+      }
+    },
+    directors(newVal) {
+      if (newVal || this.casts || this.producers) {
+        this.activeTab = 0
+      }
+    },
+    producers(newVal) {
+      if (newVal || this.casts || this.directors) {
+        this.activeTab = 0
+      }
+    }
         },
 
         beforeDestroy() {
@@ -874,34 +775,95 @@ if(this.user_claps_counter>=1){
           return error
         })
 }   
-        },  
-        created() {
-          this.total_claps=this.data.claps.total
-          this.user_claps=this.data.claps.user
         },
         mounted() {
           this.INIT()
+          this.loadAdditionalData()
         },
 
         methods: {
-          INIT(){
 
+async loadAdditionalData() {
+  try {
 
-          window.addEventListener("resize", this.itemsize)
-          if(this.data.comments){
-            this.showcomment=true
-          }
+  const statisticsEndpoint = this.$auth.loggedIn
+    ? '/get/statistics/'
+    : '/ghost/get/statistics/'
 
+  const accessibilityPromise = this.$auth.loggedIn
+    ? this.$axios.get('/get/accessibility/' + this.type + '/' + this.data.item.id)
+    : Promise.resolve({ data: { data: { owned: 0, owned_period_end: null, actions: this.data.item.actions } } })
 
+if (this.type === 'movie') {
+  const [castRes, mediaRes, similarRes, accessibilityRes, statisticsRes] = await Promise.all([
+    this.$axios.get('/get/cast/' + this.type + '/' + this.data.item.id),
+    this.$axios.get('/get/media/' + this.type + '/' + this.data.item.id),
+    this.$axios.get('/ghost/get/similar/' + this.type + '/' + this.data.item.id),
+    accessibilityPromise,
+    this.$axios.get(statisticsEndpoint + this.type + '/' + this.data.item.id)
+  ])
 
-          if(this.type!="movie" && this.data.season) {
-            this.season=this.data.season
+  // ادغام داده‌های دریافتی برای فیلم
+  this.casts = castRes.data.data.casts
+  this.directors = castRes.data.data.directors
+  this.producers = castRes.data.data.producers
+  this.writers = castRes.data.data.writers
+  this.investors = castRes.data.data.investors
+  this.characters = castRes.data.data.characters
+  this.medias = mediaRes.data.data.medias
+  this.similar = similarRes.data.data.similar
+  this.offer = similarRes.data.data.offer
+  this.owned = accessibilityRes.data.data.owned
+  this.owned_period_end = accessibilityRes.data.data.owned_period_end
+  this.actions = accessibilityRes.data.data.actions
+  this.total_claps = statisticsRes.data.data.claps.total
+  this.user_claps = statisticsRes.data.data.claps.user
+  this.current_time = statisticsRes.data.data.current_time
+  this.duration_time = statisticsRes.data.data.duration_time
+  this.is_watchlist = statisticsRes.data.data.is_watchlist
+  this.comm_num = statisticsRes.data.data.comm_num
+} else {
+  const seasonEndpoint = this.$auth.loggedIn
+    ? '/get/season/'
+    : '/ghost/get/season/'
+    
+  const [castRes, mediaRes, similarRes, accessibilityRes, statisticsRes, seasonRes] = await Promise.all([
+    this.$axios.get('/get/cast/' + this.type + '/' + this.data.item.id),
+    this.$axios.get('/get/media/' + this.type + '/' + this.data.item.id),
+    this.$axios.get('/ghost/get/similar/' + this.type + '/' + this.data.item.id),
+    accessibilityPromise,
+    this.$axios.get(statisticsEndpoint + this.type + '/' + this.data.item.id),
+    this.$axios.get(seasonEndpoint + this.type + '/' + this.data.item.id)
+  ])
 
-            if(this.type=="series"){
+  // ادغام داده‌های دریافتی برای محتواهای غیر فیلم (سریال/اپیزود)
+  this.casts = castRes.data.data.casts
+  this.directors = castRes.data.data.directors
+  this.producers = castRes.data.data.producers
+  this.writers = castRes.data.data.writers
+  this.investors = castRes.data.data.investors
+  this.characters = castRes.data.data.characters
+  this.medias = mediaRes.data.data.medias
+  this.similar = similarRes.data.data.similar
+  this.offer = similarRes.data.data.offer
+  this.owned = accessibilityRes.data.data.owned
+  this.owned_period_end = accessibilityRes.data.data.owned_period_end
+  this.actions = accessibilityRes.data.data.actions
+  this.total_claps = statisticsRes.data.data.claps.total
+  this.user_claps = statisticsRes.data.data.claps.user
+  this.current_time = statisticsRes.data.data.current_time
+  this.duration_time = statisticsRes.data.data.duration_time
+  this.is_watchlist = statisticsRes.data.data.is_watchlist
+  this.comm_num = statisticsRes.data.data.comm_num
+  // اختصاص داده‌های مربوط به فصل
+  this.season = seasonRes.data.data.season
+  this.last_episode_seen = seasonRes.data.data.last_episode_seen
+  this.first_episode = seasonRes.data.data.first_episode
+  this.last_episode = seasonRes.data.data.last_episode
+}
+
+            if(this.type=="series" && this.season){
               this.season_num=this.sizeofobj(this.season)
-
-
-
 
               if(this.season_num>0){
                 var j=this
@@ -913,156 +875,17 @@ if(this.user_claps_counter>=1){
 
               }
             }
-          }
-
-          this.is_watchlist=this.data.item.is_watchlist
-
-this.main_free=this.data.item.free
-this.main_download=this.data.item.download
-
-if(this.$config.envname=='igapp'){
-  this.main_download=0
-  if(window.location.host=='igaptv.com' || window.location.host=='igaptv.net'){
-    // this.main_download=0
-    if(!this.$auth.loggedIn){
-      this.main_free=0
-    }
-  }
-  //  else if(window.location.host=='igtv.igaptv.com' || window.location.host=='igtv.igaptv.net' || window.location.host=='igaptv.igap.net'){
-  //   this.main_download=0
-  // }
-}
-
-this.$store.dispatch('SET_CONTENT_SUBSCRIPTION_ACTION',this.data.item.vod)
-
-                if(this.main_free){
-
-                  if(this.data.item.vod || this.data.item.owned){
-                    this.MainButton=9
-                    if(this.type=='series'){
-                      if(this.data.last_episode_seen)
-                        this.episode=this.data.last_episode_seen
-                      else if(this.data.first_episode)
-                         this.episode=this.data.first_episode
-
-                    }
-                  }else if(this.checkuser.subscription){
-                    this.MainButton=3
-                  }else{
-                    this.MainButton=8
-                  }
-                if(this.data.item.upera && this.main_download){
-                  this.DownloadButton=2
-                }
-                }else{
-                  if(this.data.item.ekran){
-                    if(this.data.item.upera){
-              if(this.data.item.presale){
-                if(this.data.item.owned){
-                  this.MainButton=7
-                }else{
-                  this.MainButton=5
-                  this.ShowPresale=1
-                }
-              }else{
-                if(this.data.item.owned){
-                  this.MainButton=9
-                  if(this.type=='series'){
-                    if(this.data.last_episode_seen)
-                      this.episode=this.data.last_episode_seen
-                    else if(this.data.first_episode)
-                       this.episode=this.data.first_episode
-
-                  }
-                }else{
-                  this.MainButton=4
-                }
-              }
-                    }else{
-                      this.MainButton=6
-                    }
-                  }else{
-                    // && this.checkuser.subscription
-            if(this.data.item.vod){
-              if(this.data.item.presale){
-                this.MainButton=6
-                this.ShowPresale=1
-              }else{
-                if(this.checkuser.access || this.data.item.owned){
-                  this.MainButton=9
-                  if(this.type=='series'){
-                    if(this.data.last_episode_seen)
-                      this.episode=this.data.last_episode_seen
-                    else if(this.data.first_episode)
-                       this.episode=this.data.first_episode
-
-                  }
-                  if(this.data.item.upera && this.main_download){
-                    this.DownloadButton=1
-                  }
-                }else{
-                  this.MainButton=3
-                }
-              }
-              if(this.data.item.upera && this.main_download && !this.data.item.owned){
-                if(this.data.item.presale){
-                  this.DownloadButton=4
-                }else{
-                  this.DownloadButton=3
-                }
-              }
-            }else if(this.data.item.upera && this.main_download){
-              if(this.data.item.presale){
-                if(this.data.item.owned){
-                  this.MainButton=7
-                }else{
-                  this.MainButton=2
-                  this.ShowPresale=1
-                }
-              }else{
-                if(this.data.item.owned){
-                  this.MainButton=9
-                  if(this.type=='series'){
-                    if(this.data.last_episode_seen)
-                      this.episode=this.data.last_episode_seen
-                    else if(this.data.first_episode)
-                       this.episode=this.data.first_episode
-
-                  }
+          
 
 
-                  this.DownloadButton=1
-                }else{
-                  if(this.type=='series'){
-                    this.MainButton=9
-                    if(this.data.last_episode_seen)
-                      this.episode=this.data.last_episode_seen
-                    else if(this.data.first_episode)
-                       this.episode=this.data.first_episode
 
-                  }else{
-                    this.MainButton=1
-                  }
+        if(this.type=='series'){
+          if(this.last_episode_seen)
+            this.episode=this.last_episode_seen
+          else if(this.first_episode)
+             this.episode=this.first_episode
 
-                  
-                }
-              }
-            }else{
-              if(this.data.item.presale){
-                this.MainButton=7
-              }else if(this.type=='series'){
-                this.MainButton=9
-                if(this.data.last_episode_seen)
-                  this.episode=this.data.last_episode_seen
-                else if(this.data.first_episode)
-                   this.episode=this.data.first_episode
-
-              }else{
-                this.MainButton=6
-              }
-            }
-                  }
-                }
+        }
 
               if(this.$route.query.force_subscription==1){
 
@@ -1072,36 +895,44 @@ this.$store.dispatch('SET_CONTENT_SUBSCRIPTION_ACTION',this.data.item.vod)
                 this.ftb=false
                 this.DOWNLOAD_MODAL_LOAD()
               }
-              if(this.type!='movie' && this.data.season){
+              if(this.type!='movie' && this.season){
 
                 if(this.type=='episode'){
                   this.selectseriesid=this.data.item.season_number
                   this.seasontitle='فصل '+this.selectseriesid
                 }else if(this.type=='series'){
                   if(this.data.last_episode)
-                    this.selectseriesid=this.data.last_episode.season_number
+                    this.selectseriesid=this.last_episode.season_number
                   else
-                    this.selectseriesid=Object.keys(this.data.season)[0]
+                    this.selectseriesid=Object.keys(this.season)[0]
                   this.seasontitle='فصل '+this.selectseriesid
                 }
               }
 
+  } catch (error) {
+    console.error("Error loading additional movie data:", error)
+  }
+},
+
+          INIT(){
+          window.addEventListener("resize", this.itemsize)
+this.$store.dispatch('SET_CONTENT_SUBSCRIPTION_ACTION',this.data.item.vod)
           },
-            PLAY() {
-              if(this.MainButton==9){
+            PLAY(action=null) {
+              if(action=="play"){
                 if(this.type=='series'){
                   if(this.episode.id)
                     this.$router.push({ name: 'episode-show-id' , params: {id: this.episode.id }})
                 }else{
                   this.$router.push({ name: this.type+'-show-id' , params: {id: this.data.item.id }})
                 }
-              }else if(this.MainButton==1 || this.MainButton==2 || this.MainButton==4 || this.MainButton==5 || this.MainButton==8){
-                if(this.DownloadButton)
+              }else if(action=="buy"){
+                if(this.actions.downloadButton.exist)
                   this.ftb=true
                 else
                   this.ftb=false
                 this.DOWNLOAD_MODAL_LOAD()
-              }else if(this.MainButton==3){
+              }else if(action=="subscription"){
                 this.$store.dispatch('subscription/SHOW_MODAL',{content_type: this.type,content_id: this.data.item.id})
                 //this.DOWNLOAD_MODAL_LOAD()
               }
@@ -1109,10 +940,10 @@ this.$store.dispatch('SET_CONTENT_SUBSCRIPTION_ACTION',this.data.item.vod)
             HIDE_MODAL2() {
               this.$router.push({path: this.$route.path})
               // this.$router.replace({'force_download': null})
-              this.$store.dispatch('player/DOWNLOAD_MODAL_CLEAN')
+              this.$store.dispatch('DOWNLOAD_MODAL_CLEAN')
             },
             HIDE_MODAL3() {
-              this.$store.dispatch('player/PLAYER_MODAL_CLEAN')
+              this.$store.dispatch('PLAYER_MODAL_CLEAN')
             },
             ChooseLang(en,fa){
                 if(fa && this.$i18n.locale=="fa")
@@ -1133,7 +964,7 @@ this.$store.dispatch('SET_CONTENT_SUBSCRIPTION_ACTION',this.data.item.vod)
 
        GET_FILE(content) {
           this.modalcontent=content
-          this.$store.dispatch('player/PLAYER_MODAL_LOAD')
+          this.$store.dispatch('PLAYER_MODAL_LOAD')
        },
  
      ADD_WATCHLIST(id, type) {
@@ -1224,9 +1055,10 @@ this.clapCheckTimer = setTimeout(function(scope) {
                 }
               
     },
-    DOWNLOAD_MODAL_LOAD() {
+    DOWNLOAD_MODAL_LOAD(action=null) {
       // this.$router.push({path: this.$route.path, query: { force_download: 1 }})
-      this.$store.dispatch('player/DOWNLOAD_MODAL_LOAD')
+      this.$store.dispatch('DOWNLOAD_MODAL_LOAD')
+      return action
     },
     isactiveseason(season){
       if(this.type=="episode")
@@ -1235,7 +1067,7 @@ this.clapCheckTimer = setTimeout(function(scope) {
         else
           return false
       else
-        if(this.data.first_episode && season==this.data.first_episode.season_number)
+        if(this.first_episode && season==this.first_episode.season_number)
           return true
         else
           return false
@@ -1264,9 +1096,9 @@ this.clapCheckTimer = setTimeout(function(scope) {
 
       if(element.length){
         element[0].style.setProperty('height', `${vh}px`)
-        if(this.data.item.ir && !this.DownloadButton)
+        if(this.data.item.ir && (!this.actions || !this.actions.downloadButton.exist))
           element[0].style.setProperty('padding-top', `${(vh/2)}px`)
-        else if(!this.data.item.ir && !this.DownloadButton)
+        else if(!this.data.item.ir && (!this.actions || !this.actions.downloadButton.exist))
           element[0].style.setProperty('padding-top', `${(vh/3)}px`)
       }
     }else if(e!='e'){

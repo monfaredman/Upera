@@ -1,167 +1,419 @@
 <template>
-  <div>
-    <div v-if="show_report" class="report-modal">
-      <div id="modal" class="col-12 col-sm-8 col-lg-6 offset-sm-2 offset-lg-3">
-        <div class="header">
-          <span id="close" @click="CLOSE_REPORT()">
-            <svg version="1.1" class="sm-exit-svg" width="100%" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-                 viewBox="0 0 511.999 511.999" style="enable-background:new 0 0 511.999 511.999;" xml:space="preserve"
-            >
-              <circle style="fill:#E21B1B;" cx="255.999" cy="255.999" r="255.999" />
-              <g>
-                <rect x="244.002" y="120.008" transform="matrix(0.7071 -0.7071 0.7071 0.7071 -106.0397 256.0022)" style="fill:#FFFFFF;" width="24" height="271.988" />
-                <rect x="120.008" y="244.007" transform="matrix(0.7071 -0.7071 0.7071 0.7071 -106.0428 256.0035)" style="fill:#FFFFFF;" width="271.988" height="24" />
-              </g>
-            </svg>                    </span>
+  <div class="video-container">
+    <div class="hamshahri">
+      <!-- دکمه بازگشت -->
+      <a class="srmjs " @click="goBack">
+        <div id="flowplayer-back-button">
+          <div class="icon-back" />
         </div>
-        <div class="body">
-          <h1>
-            {{ $t('report.what_happening') }}
-            <b v-if="$i18n.locale=='fa'" style="color:dodgerblue">؟</b>
-            <b v-else style="color:dodgerblue">?</b>
-          </h1>
-          <div class="form-check">
-            <label class="form-check-label">
-              <input v-model="report_problem_type" class="custom-control-input2 form-check" name="radio_group_1" type="radio" value="1">
-              <span class="custom-control-indicator" />
-              <h4>{{ $t('report.labeling_problem') }}</h4>
-            </label>
-          </div>
-          <div class="form-check">
-            <label class="form-check-label">
-              <input v-model="report_problem_type" class="custom-control-input2 form-check" name="radio_group_1" type="radio" value="2">
-              <span class="custom-control-indicator" />
-              <h4>{{ $t('report.video_problem') }}</h4>
-            </label>
-          </div>
-          <div class="form-check">
-            <label class="form-check-label">
-              <input v-model="report_problem_type" class="custom-control-input2 form-check" name="radio_group_1" type="radio" value="3">
-              <span class="custom-control-indicator" />
-              <h4>{{ $t('report.sound_problem') }}</h4>
-            </label>
-          </div>
-          <div class="form-check">
-            <label class="form-check-label">
-              <input v-model="report_problem_type" class="custom-control-input2 form-check" name="radio_group_1" type="radio" value="4">
-              <span class="custom-control-indicator" />
-              <h4>{{ $t('report.caption_problem') }}</h4>
-            </label>
-          </div>
+      </a>
 
+      <!-- لودینگ -->
+      <div v-if="loading" class="video-loading-spinner" />
 
-          <div class="textarea-details">
-            <h3>{{ $t('report.more_details') }}</h3>
-            <textarea v-model="report_details" :placeholder="$t('report.more_details')" cols="40" rows="6" />
-          </div>
-          <div class="my-2">
-            <button v-if="! report_button" class="btn btn-warning" @click="SEND_REPORT">
-              {{ $t('report.send') }}
-            </button>
-            <button v-if="report_button" class="btn btn-warning">
-              <i id="btn-progress" /> Loading
-            </button>
-          </div>
-        </div>
-      </div>
+      <!-- پیام "به زودی" -->
+      <p v-if="soon" class="soon">
+        به زودی...
+      </p>
+
+      <!-- دکمه رفرش -->
+      <button v-if="soon" class="btn btn-primary btn-lg fw-bold refresh-btn" @click="reloadPage">
+        بارگذاری مجدد
+      </button>
     </div>
 
-    <!-- REPORT -->
-
-    <div class="col-12 row" style="padding:0; margin: 0; height: 100%;">
-      <div dir="ltr" class="col-12">
-        <div id="flowplayer-player" class="is-closeable">
-          <div id="my-player" class="fp-full fp-mute fp-edgy flowplayer" />
-        </div>
+    <!-- پلیر -->
+    <div class="player-wrapper">
+      <VideoPlayer
+        v-if="videoUrl && !loading"
+        ref="moviePlayer"
+        playerid="movie-player"
+        :stream="videoUrl"
+        :poster="posterUrl"
+        :title="movieTitle"
+        :tracks="tracks"
+        :player-auto-play="true"
+        class="full-screen-player vjs-fluid"
+        @ready="handlePlayerReady"
+        @timeupdate="handleTimeUpdate"
+        @ended="handleEnded"
+      />
+    </div>
+    <div v-if="showNextMovie && suggestion" class="next-movie-overlay" @click="playNextMovie">
+      <div class="next-movie-content">
+        <p>{{ $t('player.next') }}: {{ suggestion.name_fa }}</p>
+        <img :src="suggestionBackdrop" alt="Next Movie Backdrop">
       </div>
     </div>
   </div>
 </template>
+
+
 <script>
+import VideoPlayer from '~/components/VideoPlayer.vue'
 
-
-	import {mapGetters} from 'vuex'
-
-    export default {
-
-
-        beforeRouteLeave(to, from, next) {
-           	var playersm=window.jwplayer('my-player')
-            if(document.getElementById("my-player") && playersm){
-                playersm.remove()
-            }
-            next()
-            document.body.classList.remove('playerback')
-        },
-		layout: "empty",
-        data() {
-            return {
-                movie_title: '',
-                active: '',
-                show_suggestion: false,
-                show_report_modal: false,
-                report_problem_type: null,
-                report_details: null,
-                show_report_body: true,
-                report_button: false,
-                guest: true,
-            }
-        },
-  head() {
-
-    return { title: 'تماشای آنلاین' }
+export default {
+  components: { VideoPlayer },
+  beforeRouteLeave(to, from, next) {
+    // در هنگام ترک صفحه، می‌توانید تنظیمات یا کلاس‌های اضافه شده را پاک کنید
+    next()
   },
-
-        computed: {
-            ...mapGetters({url: "player/url"}),
-            ...mapGetters({suggestion: "player/suggestion"}),
-            ...mapGetters({show_report: "player/show_report"}),
-            ...mapGetters({next: "player/next"})
-        },
-        watch: {
-            next(val) {
-                if (val === 'movie') {
-                    //this.$store.commit('FLOWPLAYER_DESTORY', 'movie')
-                    this.$router.push({name: 'movie-show-id', params: {id: this.suggestion.id}})
-                }
-            }
-        },
-
-        mounted() {
-        	document.body.classList.remove('loaded')
-            if (this.$auth.loggedIn) {
-                this.guest=false
-                this.$store.dispatch('player/LOAD_MOVIE_PLAYER', {id: this.$route.params.id, lg_backdrop: this.lg_backdrop, md_backdrop: this.md_backdrop,SRMdata: {},refi:this.$route.query.ref})
-            }else{
-                this.$store.dispatch('player/LOAD_GHOST_MOVIE_PLAYER', {id: this.$route.params.id, lg_backdrop: this.lg_backdrop, md_backdrop: this.md_backdrop,SRMdata: {},ekran_unique_id:this.$route.query.ekran_unique_id,refi:this.$route.query.ref})
-            }
-        },
-        methods: {
-            SEND_REPORT() {
-
-                        this.report_button = true
-                        this.$axios.post('/create/report/movie', {
-                            type: this.report_problem_type,
-                            details: this.report_details,
-                            id: this.$route.params.id
-                        }).then((res) => {
-                            if (res.data.status === 'success') {
-                                this.report_button = false
-                                this.CLOSE_REPORT()
-                                this.$alertify.logPosition("top right")
-                                this.$alertify.success('Successful Send, our team will check it soon')
-                            }
-                        }, (error) => {
-                           this.report_button = false
-                           return error
-                        })
-
-            },
-
-            // When Colse video re-play video 
-            CLOSE_REPORT() {
-                this.$store.commit('player/CLOSE_REPORT')
-            }
-        },
+  layout: 'empty',
+  data() {
+    return {
+      movieTitle: '',
+      posterUrl: '',
+      videoUrl: '',
+      tracks: [],
+      loading: true,
+      guest: true,
+      show_report: false,
+      report_problem_type: null,
+      report_details: '',
+      report_button: false,
+      soon: false,
+      // برای مدیریت گزارش، می‌توانید گزینه‌ها را از یک آرایه تعریف کنید
+      reportOptions: [
+        { value: 1, label: 'report.labeling_problem' },
+        { value: 2, label: 'report.video_problem' },
+        { value: 3, label: 'report.sound_problem' },
+        { value: 4, label: 'report.caption_problem' }
+      ],
+      // برای زمان‌بندی بروزرسانی recently
+      recentlyTime: 200,
+      // برای نمایش فیلم بعدی
+      showNextMovie: false,
+      suggestion: null,
+      suggestionBackdrop: '',
+      // اگر زمان شروع پخش از قبل وجود داشته باشد
+      startTime: 0
     }
+  },
+  mounted() {
+    // حذف کلاس‌های احتمالی قبلی
+    if (this.$auth && this.$auth.loggedIn) {
+      this.guest = false
+    }
+    this.loadMovie()
+  },
+  methods: {
+    showErrorAlert(data) {
+    let dlsmtitle = this.$i18n.locale === 'fa' ? data.message_fa : data.message
+// let backtohome=false
+    if(!dlsmtitle){
+      dlsmtitle=this.$t('player.error1')
+      // backtohome=true
+    }
+    let dlsmbuttons = {
+      back: {
+        text: this.$t('player.back'),
+        value: "back",
+        closeModal: true,
+        className: 'swal-back'
+      }
+    }
+    if (data.show_download === 1) {
+      dlsmbuttons.download = {
+        text: this.$t('player.download'),
+        value: "download",
+        closeModal: true
+      }
+    }
+    if (data.show_ekran === 1) {
+      dlsmbuttons.download = {
+        text: this.$t('show.buy_ticket'),
+        value: "download",
+        closeModal: true
+      }
+    }
+    if (data.show_subscription === 1) {
+      dlsmbuttons.subscribe = {
+        text: this.$t('player.subscribe'),
+        value: "subscribe",
+        closeModal: true
+      }
+    }
+    if(!this.$auth.loggedIn && data.show_login === 1){
+      Object.assign(dlsmbuttons, {login: {
+            text: this.$t('nav.login'),
+            value: "login",
+            closeModal: true
+      }})
+    }
+    this.$swal({
+      title: dlsmtitle,
+      icon: 'error',
+      dangerMode: true,
+      buttons: dlsmbuttons,
+    }).then((value) => {
+      switch (value) {
+        case "back":
+          (window.history.length > 2)
+            ? this.$router.go(-1)
+            : this.$router.push({ name: 'movie-id', params: { id: this.$route.params.id } })
+          break
+        case "subscribe":
+          this.$store.dispatch('subscription/SHOW_MODAL', { content_type: 'movie', content_id: this.$route.params.id })
+          break
+        case "download":
+          this.$router.push({ name: 'movie-download-id', params: { id: this.$route.params.id }, query: { force_to_buy: 1 } })
+          break
+
+                            case "login":
+                                  this.$store.dispatch('login/SHOW_MODAL',{premessage: null,premobile: null,preredirect: null,prerefresh: false})
+                                
+                              break
+        default:
+          (window.history.length > 2)
+            ? this.$router.go(-1)
+            : this.$router.push({ name: 'movie-id', params: { id: this.$route.params.id } })
+          break
+      }
+    })
+  },
+    async loadMovie() {
+      try {
+        const id = this.$route.params.id
+        if (!id) return
+
+        const ref = this.$cookiz.get('ref') || ''
+        // انتخاب API مناسب بر اساس وضعیت guest
+        const apiUrl = this.guest
+          ? `/ghost/get/watch/movie-hls/${id}/1${ref ? `?ref=${ref}` : ''}`
+          : `/get/watch/movie-hls/${id}/1${ref ? `?ref=${ref}` : ''}`
+
+        const response = await this.$axios.get(apiUrl)
+        if (response.status === 200) {
+          const data = response.data.data
+          // تنظیم اطلاعات اصلی فیلم
+          this.movieTitle = (this.$i18n.locale === 'fa' && data.video[0].name_fa)
+            ? data.video[0].name_fa
+            : data.video[0].name
+          this.posterUrl = data.cdn.lg_backdrop + data.video[0].backdrop
+          // فرض بر این است که آدرس ویدیو حاوی پارامتر nosub است
+          const streamUrl = data.video[0].video.includes('?')
+            ? data.video[0].video + '&nosub=1'
+            : data.video[0].video + '?nosub=1'
+          // ذخیره زمان شروع (در صورت وجود)
+          this.startTime = data.video[0].current_time || 0
+
+          const streamResponse = await fetch(streamUrl, { method: "HEAD" })
+
+          if (streamResponse.ok) {
+            console.log("Stream is available:", streamUrl)
+            this.videoUrl = streamUrl
+            this.soon = false
+          } else {
+            console.log("notok")
+            this.soon = true
+
+          }
+
+          // تنظیم زیرنویس‌ها (در صورت موجود بودن)
+          if (data.new_subtitle && Array.isArray(data.new_subtitle)) {
+            this.tracks = data.new_subtitle.map((track, index) => {
+              return {
+                kind: 'captions',
+                label: track.language,
+                src: track.url,
+                default: index === 0
+              }
+            })
+          }
+          // ذخیره پیشنهاد فیلم بعدی در صورت موجود بودن
+          if (data.suggestion) {
+            this.suggestion = data.suggestion
+            this.suggestionBackdrop = data.cdn.md_backdrop + data.suggestion.backdrop
+          }
+        } else {
+            this.showErrorAlert(response.data.data)
+
+
+        }
+      } catch (error) {
+              this.showErrorAlert(error.response.data)
+
+      } finally {
+        this.loading = false
+
+
+
+      }
+    },
+    handlePlayerReady(playerInstance) {
+      // اگر زمان پخش ذخیره شده باشد، پلیر را از آن نقطه آغاز می‌کنیم
+      if (this.startTime && playerInstance.currentTime) {
+        playerInstance.currentTime(this.startTime)
+      }
+      // در صورت نیاز می‌توان رویدادهای دیگری را نیز در اینجا اضافه کرد
+    },
+    handleTimeUpdate({ currentTime, duration, player }) {
+      // ارسال زمان اخیر (recently) هر ۲۰۰ ثانیه
+      if (Math.floor(currentTime) >= this.recentlyTime) {
+        this.recentlyTime = Math.floor(currentTime) + 200
+        // ارسال درخواست به سرور جهت ذخیره زمان دیده شده
+        const payload = {
+          current_time: Math.floor(currentTime),
+          duration_time: Math.floor(duration),
+          movie_id: this.$route.params.id
+        }
+        if (this.guest) {
+          this.$axios.post('/ghost/create/watch/movie/recently', payload)
+        } else {
+          this.$axios.post('/create/watch/movie/recently', payload)
+        }
+      }
+      // نمایش دکمه/اوورلی فیلم بعدی زمانی که زمان باقی‌مانده کمتر از 100 ثانیه است
+      if (duration - currentTime <= 100 && this.suggestion) {
+        this.showNextMovie = true
+      } else {
+        this.showNextMovie = false
+      }
+      return player
+    },
+    handleEnded() {
+      // در پایان پخش فیلم، در صورت وجود پیشنهاد فیلم بعدی، به آن هدایت می‌شویم
+      if (this.suggestion) {
+        this.playNextMovie()
+      }
+    },
+    playNextMovie() {
+      // در صورت وجود پلیر، می‌توان آن را پاک کرد یا متوقف نمود
+      // سپس به صفحه فیلم بعدی هدایت می‌شویم
+      this.$router.push({ name: 'movie-show-id', params: { id: this.suggestion.id } })
+    },
+    goBack() {
+      if (window.history.length > 2) {
+        this.$router.go(-1)
+      } else {
+        this.$router.push({ name: 'movie-id', params: { id: this.$route.params.id } })
+      }
+    },
+    openReport() {
+      // نمایش مدال گزارش و متوقف کردن پخش
+      this.show_report = true
+      const player = this.$refs.moviePlayer?.player
+      if (player) {
+        player.pause()
+      }
+    },
+    closeReport() {
+      // بستن مدال گزارش و ادامه پخش
+      this.show_report = false
+      const player = this.$refs.moviePlayer?.player
+      if (player) {
+        player.play()
+      }
+    },
+    async sendReport() {
+      this.report_button = true
+      try {
+        const payload = {
+          type: this.report_problem_type,
+          details: this.report_details,
+          id: this.$route.params.id
+        }
+        const res = await this.$axios.post('/create/report/movie', payload)
+        if (res.data.status === 'success') {
+          this.report_button = false
+          this.closeReport()
+          this.$alertify.logPosition("top right")
+          this.$alertify.success('Successful Send, our team will check it soon')
+        }
+      } catch (error) {
+        this.report_button = false
+        console.error('Report Error:', error)
+      }
+    }
+  }
+}
 </script>
+
+<style scoped>
+.movie-player-page {
+  position: relative;
+  height: 100%;
+  width: 100%;
+}
+
+/* استایل مدال گزارش */
+.report-modal {
+  position: fixed;
+  z-index: 1000;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.modal-container {
+  background: #fff;
+  padding: 1rem;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 600px;
+}
+.header {
+  text-align: right;
+}
+.sm-exit-svg {
+  width: 24px;
+  cursor: pointer;
+}
+
+/* دکمه‌های روی ویدیو */
+.video-overlay {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  z-index: 500;
+  display: flex;
+  justify-content: space-between;
+}
+.back-button, .report-button {
+  background: rgba(0,0,0,0.6);
+  border: none;
+  padding: 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #fff;
+}
+.back-button:hover, .report-button:hover {
+  background: rgba(0,0,0,0.8);
+}
+
+/* استایل پوشش فیلم بعدی */
+.next-movie-overlay {
+  position: absolute;
+  bottom: 60px;
+  right: 20px;
+  background: rgba(0,0,0,0.7);
+  padding: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  z-index: 600;
+}
+.next-movie-content p {
+  margin: 0 0 5px;
+  color: #fff;
+}
+.next-movie-content img {
+  width: 100%;
+  border-radius: 4px;
+}
+
+/* استایل پلیر */
+.player-wrapper {
+  height: 100%;
+}
+.video-loading-spinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+</style>

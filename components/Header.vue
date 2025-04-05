@@ -741,7 +741,6 @@ document.body.classList.add("header-fixed-collapsed")
       },
 
             SHOW_MODAL_CREDIT() {
-              
               this.$store.dispatch('credit/SHOW_MODAL',{prewallet: null})
             },
             HIDE_MODAL_CREDIT() {

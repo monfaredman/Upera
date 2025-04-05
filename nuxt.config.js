@@ -54,12 +54,7 @@ export default {
         content: process.env.npm_package_description || "",
       },
     ],
-    link: [{ rel: "icon", type: "image/x-icon", href: "/favicon-"+process.env.ENV+".ico"}],
-    script: [
-      {
-        src: 'https://'+process.env.jwplayer+'/jwplayer?v2', body: true
-      }
-    ],
+    link: [{ rel: "icon", type: "image/x-icon", href: "/favicon-"+process.env.ENV+".ico"}]
   },
   /*
    ** Global CSS
@@ -83,7 +78,9 @@ export default {
     "../assets/styles/rtl.css",
     ...process.env.ENV=='igapp'?["assets/styles/theme.css"]:[],
     "vue-slick-carousel/dist/vue-slick-carousel.css",
-    "../assets/styles/dark.css"
+    "../assets/styles/dark.css",
+    'video.js/dist/video-js.css', // Video.js styles
+    'videojs-contrib-ads/dist/videojs.ads.css', // Ads styles
   ],
   router: {
       linkActiveClass: 'active',
@@ -213,6 +210,30 @@ colorMode: {
     name: "fade",
     mode: "out-in",
   },
+  bootstrapVue: {
+    components: [
+      'BTooltip',
+      'BTab',
+      'BTabs',
+      'BDropdownItem',
+      'BDropdown',
+      'BButton',
+      'BTable',
+      'BModal',
+      'BLink',
+      'BForm',
+      'BFormSelect',
+      'BFormInput',
+      'BFormCheckbox',
+      'BFormGroup',
+      'BImg',
+      'BCard',
+      'BCollapse',
+      'BPopover',
+      'BSpinner',
+    ],
+    directives: ['VBTooltip','VBToggle'],
+  },
   build: {
     /**
      * add external plugins
@@ -221,7 +242,6 @@ colorMode: {
     /*
      ** Run ESLint on save
      */
-    vendor: ['jwplayer'],
     extend(config, { isDev, isClient }) {
       if (isDev && isClient) {
         config.module.rules.push({

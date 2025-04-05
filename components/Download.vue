@@ -504,7 +504,7 @@
                       نمایش فیلم
                       <i class="icon-play" />
                     </a>
-                    <a v-else-if="type=='series'" class="btn btn-main btn-block" href="" @click.prevent="Push2(id,type)">
+                    <a v-else-if="type=='series'" class="btn btn-main btn-block" href="" @click.prevent="Push2(season[1][0].id,'episode')">
                       نمایش قسمت اول سریال
                       <i class="icon-play" />
                     </a>
@@ -711,9 +711,7 @@ import {mapGetters} from 'vuex'
           ...mapGetters({show_buy: "download/show_buy"}),
           ...mapGetters({notes: "download/notes"}),
           ...mapGetters({totalamount: "download/total_amount"}),
-          ...mapGetters({divcount: "download/divcount"}),
-          // ...mapGetters({dlplayerloading: "player/dlplayerloading"}),
-          // ...mapGetters({showlinks: "player/showlinks"})
+          ...mapGetters({divcount: "download/divcount"})
       },
 
     watch: {
@@ -730,30 +728,8 @@ import {mapGetters} from 'vuex'
       },
       show_buy() {
         this.checkdiv()
-      },
-      // cartloading(val) {
-
-          // if(!val && this.$config.envname=='igapp' && this.i==0 && !this.ftb && this.traffic && (this.owned || this.downloadslist.some(function(el){ return el.owned === 1}))){
-            // this.i++
-            
-            // this.$store.dispatch("player/LOAD_DOWNLOAD_PLAYER", {loggedIn: this.$auth.loggedIn,id:this.id,type:this.type,backdrop:'https://thumb.upera.shop/thumb?w=1920&h=938&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/'+this.backdrop,block_id:'my-download-player',name:this.ChooseLang(this.name,this.namefa),ir:this.ir,hour:this.hour})
-
-            
-          // }
-      // },
-      // id(val) {
-      //     if (val !== null && this.id && this.show) {
-      //       if (this.$auth.loggedIn) {
-      //           this.$store.dispatch("download/GET_DOWNLOAD", {id: this.id,type:this.type,quality:this.$route.query.quality,force_to_buy:this.$route.query.force_to_buy})
-      //       } else {
-      //           this.$store.dispatch("download/GET_GHOST_DOWNLOAD", {id: this.id,type:this.type,quality:this.$route.query.quality,force_to_buy:this.$route.query.force_to_buy})
-      //       }
-      //       this.$route.query.quality=0
-      //       this.$route.query.force_to_buy=0
-      //     }
-      //     return val
-
-      // }
+      }
+  
     },
 
         mounted() {
@@ -940,7 +916,6 @@ this.lastseason=null
 }else{
   this.lastseason=this.season
 }
-
 
 
 

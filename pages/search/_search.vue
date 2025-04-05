@@ -83,11 +83,8 @@
                   <span v-if="item.free && $config.envname=='upera'" class="label label-blue label-2">رایگان</span>
                 </nuxt-link>
                 <div class="mt-2">
-                  <h6 v-if="item.type!='episode'" class="mt-2 small font-weight-normal">
+                  <h6 class="mt-2 small font-weight-normal">
                     {{ ChooseLang(item.name,item.name_fa) }}
-                  </h6>
-                  <h6 v-else class="mt-2 small font-weight-normal">
-                    {{ $t('show.episode') }} {{ item.episode_number }} {{ ChooseLang(item.series_name,item.series_name_fa) }}<span v-if="item.season_number>1"> {{ item.season_number }}</span>
                   </h6>
                 </div>
               </div>
@@ -136,11 +133,11 @@ import FilterContents from "@/components/FilterContents"
     }
 
     let res
-    if (context.app.$auth.loggedIn) {
-        res = await context.app.$axios.post('/get/search'+context.store.getters.filtercontents, queries)
-     }else{
+    // if (context.app.$auth.loggedIn) {
+    //     res = await context.app.$axios.post('/get/search'+context.store.getters.filtercontents, queries)
+    //  }else{
       res = await context.app.$axios.post('/ghost/get/search'+context.store.getters.filtercontents, queries)
-     }
+     // }
 
 
      let noresult2
@@ -280,11 +277,11 @@ if(this.$route.params.search){
 
 
                 var apiurl
-                if (this.$auth.loggedIn) {
-                        apiurl='/get/search'
-                } else {
+                // if (this.$auth.loggedIn) {
+                //         apiurl='/get/search'
+                // } else {
                         apiurl='/ghost/get/search'
-                }
+                // }
                     this.$axios.post(apiurl+this.filtercontents,queries).then(response => {
                         if (response.status === 200) {
                             this.data=response.data.data
@@ -316,11 +313,11 @@ if(this.$route.params.search){
       queries.imdb = 1
     }
                 var apiurl
-                if (this.$auth.loggedIn) {
-                        apiurl='/get/search'
-                } else {
+                // if (this.$auth.loggedIn) {
+                //         apiurl='/get/search'
+                // } else {
                         apiurl='/ghost/get/search'
-                }
+                // }
                     this.$axios.post(apiurl+this.filtercontents,queries).then(response => {
                         if (response.status === 200) {
                             this.data=response.data.data

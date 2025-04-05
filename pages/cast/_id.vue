@@ -58,11 +58,8 @@
                 <span v-if="item.free && $config.envname=='upera'" class="label label-blue label-2">رایگان</span>
               </nuxt-link>
               <div class="mt-2">
-                <h6 v-if="item.type!='episode'" class="mt-2 small font-weight-normal">
+                <h6 class="mt-2 small font-weight-normal">
                   {{ ChooseLang(item.name,item.name_fa) }}
-                </h6>
-                <h6 v-else class="mt-2 small font-weight-normal">
-                  {{ $t('show.episode') }} {{ item.episode_number }} {{ ChooseLang(item.series_name,item.series_name_fa) }}<span v-if="item.season_number>1"> {{ item.season_number }}</span>
                 </h6>
               </div>
             </div>
@@ -100,11 +97,11 @@ import FilterContents from "@/components/FilterContents"
         },
   async asyncData (context) {
     let res
-    if (context.app.$auth.loggedIn) {
-        res = await context.app.$axios.get('/get/cast/'+context.params.id+context.store.getters.filtercontents)
-     }else{
+    // if (context.app.$auth.loggedIn) {
+    //     res = await context.app.$axios.get('/get/cast/'+context.params.id+context.store.getters.filtercontents)
+    //  }else{
         res = await context.app.$axios.get('/ghost/get/cast/'+context.params.id+context.store.getters.filtercontents)
-     }
+     // }
     return {data:res.data.data}
   },
   data () {
@@ -113,7 +110,7 @@ import FilterContents from "@/components/FilterContents"
       page: 1,
       infiniteId: +new Date(),
       distance: -Infinity,
-      userApi:'/get/cast/'+this.$route.params.id,
+      // userApi:'/get/cast/'+this.$route.params.id,
       ghostApi:'/ghost/get/cast/'+this.$route.params.id
     }
   },
@@ -130,11 +127,11 @@ import FilterContents from "@/components/FilterContents"
     },
             infiniteHandler($state) {
                 var apiurl
-                if (this.$auth.loggedIn) {
-                        apiurl=this.userApi
-                } else {
+                // if (this.$auth.loggedIn) {
+                //         apiurl=this.userApi
+                // } else {
                         apiurl=this.ghostApi
-                }
+                // }
                     this.$axios.get(apiurl+this.filtercontents,{params: {page: this.page + 1}}).then(response => {
                         if (response.status === 200) {
                             if (response.data.data.filmography.length) {
@@ -162,11 +159,11 @@ import FilterContents from "@/components/FilterContents"
                 this.$nuxt.$loading.start()
                 this.$store.dispatch('filter/FILTER_LOADING')
                 var apiurl
-                if (this.$auth.loggedIn) {
-                        apiurl=this.userApi
-                } else {
+                // if (this.$auth.loggedIn) {
+                //         apiurl=this.userApi
+                // } else {
                         apiurl=this.ghostApi
-                }
+                // }
                 this.$axios.get(apiurl+this.filtercontents).then(response => {
                     if (response.status === 200) {
                         //if (response.data.data.filmography.length) {

@@ -7,13 +7,19 @@ export const state = () => ({
   my_credit: 0,
   content_subscription: 0,
   filtercontents: '',
-  nightmode: false
+  nightmode: false,
+        showplyrmodal: false,
+        showDownloadModal: false,
+  autoplay: true
 })
 
 // getters
 export const getters = {
   nightmode(state) {
     return state.nightmode
+  },
+  autoplay(state) {
+    return state.autoplay
   },
   locale(state) {
     return state.locale
@@ -26,6 +32,13 @@ export const getters = {
   },
   content_subscription(state) {
     return state.content_subscription
+  },
+
+  showplyrmodal(state) {
+    return state.showplyrmodal
+  },
+  showDownloadModal(state) {
+    return state.showDownloadModal
   },
   filtercontents(state) {
     return state.filtercontents
@@ -44,6 +57,15 @@ export const mutations = {
   },
   SET_MY_CREDIT (state, data) {
       state.my_credit = data
+  },
+  SET_showplyrmodal (state, data) {
+      state.showplyrmodal = data
+  },
+  SET_showDownloadModal (state, data) {
+      state.showDownloadModal = data
+  },
+  SET_AUTOPLAY_MUTATION(state, autoplay) {
+    state.autoplay = autoplay
   }
 }
 
@@ -115,12 +137,41 @@ export const actions = {
       this.$colorMode.preference='system'
     }
   },
+  SET_AUTOPLAY(store, autoplay) {
+    store.commit('SET_AUTOPLAY_MUTATION', autoplay)
+  },
   SET_CONTENT_SUBSCRIPTION_ACTION(store,data) {
     store.commit('SET_CONTENT_SUBSCRIPTION',data)
   },
   SET_FILTER_CONTENTS (store, data) {
       store.commit('SET_FILTER_CONTENTS',data)
   },
+        DOWNLOAD_MODAL_LOAD(store) {
+
+          store.commit('SET_showDownloadModal',true)
+        },
+
+        DOWNLOAD_MODAL_CLEAN(store) {
+
+          store.commit('SET_showDownloadModal',false)
+
+        },
+
+        PLAYER_MODAL_LOAD(store) {
+          store.commit('SET_showplyrmodal',true)
+        },
+
+
+
+        PLAYER_MODAL_CLEAN(store) {
+
+          store.commit('SET_showplyrmodal',false)
+           // var playersm=jwplayer('my-files-player') // eslint-disable-line
+           //  if(document.getElementById('my-files-player') && playersm){
+           //      playersm.remove()
+           //  }
+        },
+
   SET_MY_CREDIT (store, data) {
       store.commit('SET_MY_CREDIT',data)
   }
