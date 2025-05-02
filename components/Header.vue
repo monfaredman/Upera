@@ -56,21 +56,16 @@
             <nuxt-link v-if="(categories.includes($route.path) || profile.includes($route.path))" to="/" class="logo logo_another_pages">
               <i v-if="$config.envname=='upera'" class="icon-upera-fa-logotype" />
               <i v-if="$config.envname=='upera'" class="icon-upera-logo" />
-              <img v-if="$config.envname=='igapp' && $colorMode.value=='light'" src="@/assets/img/_logo.png" :class="{'d-none d-md-block':bannerNav}" :alt="$config.name_fa">
-              <img v-if="$config.envname=='igapp' && $colorMode.value=='dark'" src="@/assets/images/_logo-mobile.png" :class="{'d-none d-md-block':bannerNav}" :alt="$config.name_fa">
               <img v-if="$config.envname=='plus' && $colorMode.value=='light'" :src="'https://cdn.upera.shop/s3/vods/'+checkuser.logo" :class="{'d-none d-md-block':bannerNav}" :alt="$config.name_fa">
               <img v-if="$config.envname=='plus' && $colorMode.value=='dark'" :src="'https://cdn.upera.shop/s3/vods/'+checkuser.logo_dark" :class="{'d-none d-md-block':bannerNav}" :alt="$config.name_fa">
             </nuxt-link>
             <nuxt-link v-else to="/" class="logo">
               <img v-if="$config.envname=='upera'" src="@/assets/img/logo.svg" :class="{'d-none d-md-block':bannerNav}" :alt="$config.name_fa">
-              <img v-if="$config.envname=='igapp' && $colorMode.value=='light'" src="@/assets/img/_logo.png" :class="{'d-none d-md-block':bannerNav}" :alt="$config.name_fa">
-              <img v-if="$config.envname=='igapp' && $colorMode.value=='dark'" src="@/assets/images/_logo-mobile.png" :class="{'d-none d-md-block':bannerNav}" :alt="$config.name_fa">
               <img v-if="$config.envname=='plus' && $colorMode.value=='light'" :src="'https://cdn.upera.shop/s3/vods/'+checkuser.logo" :class="{'d-none d-md-block':bannerNav}" :alt="$config.name_fa">
               <img v-if="$config.envname=='plus' && $colorMode.value=='dark'" :src="'https://cdn.upera.shop/s3/vods/'+checkuser.logo_dark" :class="{'d-none d-md-block':bannerNav}" :alt="$config.name_fa">
               <img v-if="bannerNav && $config.envname=='upera'" src="/images/logo-mobile.svg" class="d-md-none" :alt="$config.name_fa">
-              <img v-if="bannerNav && $config.envname=='igapp'" src="@/assets/images/_logo-mobile.png" class="d-md-none" :alt="$config.name_fa">
-              <img v-if="bannerNav && $config.envname=='plus' && checkuser.ref<=5" src="@/assets/images/mobile.png" class="d-md-none" :alt="$config.name_fa">
-              <img v-if="bannerNav && $config.envname=='plus' && checkuser.ref>5" :src="'https://cdn.upera.shop/s3/vods/'+checkuser.logo_dark" class="d-md-none" :alt="$config.name_fa">
+              <img v-if="bannerNav && $config.envname=='plus' && checkuser.ref<=2" src="@/assets/images/mobile.png" class="d-md-none" :alt="$config.name_fa">
+              <img v-if="bannerNav && $config.envname=='plus' && checkuser.ref>2" :src="'https://cdn.upera.shop/s3/vods/'+checkuser.logo_dark" class="d-md-none" :alt="$config.name_fa">
             </nuxt-link>
 
 
@@ -542,9 +537,7 @@ import Subscription from "../components/Subscription"
   },
   mounted() {
 
-if(this.$config.envname=='igapp' && (location.host=='igtv.igaptv.com' || location.host=='igtv.igaptv.net')){
-  this.showpayments=false
-}
+
       this.Nav()
       window.addEventListener('scroll', this.handleScroll)
 

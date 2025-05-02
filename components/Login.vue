@@ -25,7 +25,7 @@
           <button id="submit-mobile" class="btn btn-main btn-block mt-5 mb-2" :disabled="isMobileDisabled">
             {{ $t('nav.login') }}
           </button>
-          <div v-if="$i18n.locale=='fa' && $config.envname!='igapp'" class="text-center">
+          <div v-if="$i18n.locale=='fa'" class="text-center">
             <small>
               <span>با ثبت نام در {{ $config.name_fa }}، </span>
               <nuxt-link to="/profile/terms">قوانین و شرایط استفاده و حریم خصوصی</nuxt-link>

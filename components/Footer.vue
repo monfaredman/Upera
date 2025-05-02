@@ -8,7 +8,7 @@
               <nuxt-link v-if="checkuser.show_app" to="/app" class="nav-link">
                 {{ $t('new.download_app') }}
               </nuxt-link>
-              <nuxt-link v-if="$config.envname!='igapp'" to="/profile/faq" class="nav-link">
+              <nuxt-link to="/profile/faq" class="nav-link">
                 {{ $t('new.FAQ') }}
               </nuxt-link>
               <!--               <nuxt-link to="/profile/internet" class="nav-link">
@@ -17,8 +17,7 @@
             </ul>
             <div class="d-flex align-items-center">
               <ul class="nav">
-                <a v-if="$config.envname=='igapp'" class="nav-link dir-ltr footer-sticky-link" href="tel:0212043924">0212043924</a>
-                <a v-else-if="checkuser.phone" class="nav-link dir-ltr footer-sticky-link" :href="'tel:'+checkuser.phone">{{ checkuser.phone }}</a>
+                <a v-if="checkuser.phone" class="nav-link dir-ltr footer-sticky-link" :href="'tel:'+checkuser.phone">{{ checkuser.phone }}</a>
               </ul>
               <div class="socials d-flex align-items-center text-center text-md-left">
                 <a v-if="shownotification" id="notif1" class="notification mr-3" href="" @click.prevent="notification('notif1')">
@@ -63,7 +62,7 @@
           <div class="row align-items-center">
             <div class="col-md-8 col-lg-4">
               <ul class="nav nav-separator">
-                <nuxt-link v-if="$config.envname!='igapp'" to="/profile/faq" class="nav-link text-black">
+                <nuxt-link to="/profile/faq" class="nav-link text-black">
                   {{ $t('new.FAQ') }}
                 </nuxt-link>
                 <!--                 <nuxt-link to="/profile/internet" class="nav-link text-black">
@@ -88,13 +87,10 @@
                         </nuxt-link>
                       </div>
                       <div class="dl-links d-flex justify-content-between">
-                        <a v-if="$config.envname=='upera'" class="text-invert d-flex justify-content-center" href="" @click.prevent="install('https://play.google.com/store/apps/details?id=com.techera.upera')">
+                        <a class="text-invert d-flex justify-content-center" href="" to="/app">
                           <i class="icon-android" />
                         </a>
-                        <a v-else-if="checkuser.ref<=5" class="text-invert d-flex justify-content-center" href="" @click.prevent="install('https://play.google.com/store/apps/details?id=com.techera.upera')">
-                          <i class="icon-android" />
-                        </a>
-                        <nuxt-link v-else to="/app" class="text-invert d-flex justify-content-center">
+                        <nuxt-link to="/app" class="text-invert d-flex justify-content-center">
                           <i class="icon-android" />
                         </nuxt-link>
                         <nuxt-link to="/app" class="text-invert d-flex justify-content-center">
@@ -194,11 +190,9 @@
             </div>
             <div class="col-md-4">
               <div class="footer-info text-center">
-                <a v-if="$config.envname=='igapp'" class="text-darker font-weight-normal" href="mailto:info@igap.net">info@igap.net</a>
-                <a v-else-if="checkuser.email" class="text-darker font-weight-normal" :href="'mailto:'+checkuser.email">{{ checkuser.email }}</a>
-                <span v-if="$config.envname=='igapp' || (checkuser.email && checkuser.phone)" class="divider" />
-                <a v-if="$config.envname=='igapp'" class="text-darker font-weight-normal" href="tel:0212043924">0212043924</a>
-                <a v-else-if="checkuser.phone" class="text-darker font-weight-normal" :href="'tel:'+checkuser.phone">{{ checkuser.phone }}</a>
+                <a v-if="checkuser.email" class="text-darker font-weight-normal" :href="'mailto:'+checkuser.email">{{ checkuser.email }}</a>
+                <span v-if="checkuser.email && checkuser.phone" class="divider" />
+                <a v-if="checkuser.phone" class="text-darker font-weight-normal" :href="'tel:'+checkuser.phone">{{ checkuser.phone }}</a>
               </div>
             </div>
             <div class="col-md-4">
@@ -251,11 +245,9 @@
             <div class="d-flex justify-content-end">
               <div class="">
                 <div class="footer-info text-center">
-                  <a v-if="$config.envname=='igapp'" class="text-darker font-weight-normal" href="mailto:info@igap.net">info@igap.net</a>
-                  <a v-else-if="checkuser.email" class="text-darker font-weight-normal" :href="'mailto:'+checkuser.email">{{ checkuser.email }}</a>
-                  <span v-if="$config.envname=='igapp' || (checkuser.email && checkuser.phone)" class="divider" />
-                  <a v-if="$config.envname=='igapp'" class="text-darker font-weight-normal" href="tel:0212043924">0212043924</a>
-                  <a v-else-if="checkuser.phone" class="text-darker font-weight-normal" :href="'tel:'+checkuser.phone">{{ checkuser.phone }}</a>
+                  <a v-if="checkuser.email" class="text-darker font-weight-normal" :href="'mailto:'+checkuser.email">{{ checkuser.email }}</a>
+                  <span v-if="checkuser.email && checkuser.phone" class="divider" />
+                  <a v-if="checkuser.phone" class="text-darker font-weight-normal" :href="'tel:'+checkuser.phone">{{ checkuser.phone }}</a>
                 </div>
               </div>
               <div class="">
@@ -299,11 +291,9 @@
           <div class="row align-items-center show-mobile">
             <div class="col-md-4 mb-3">
               <div class="footer-info text-center">
-                <a v-if="$config.envname=='igapp'" class="text-darker font-weight-normal" href="mailto:info@igap.net">info@igap.net</a>
-                <a v-else-if="checkuser.email" class="text-darker font-weight-normal" :href="'mailto:'+checkuser.email">{{ checkuser.email }}</a>
-                <span v-if="$config.envname=='igapp' || (checkuser.email && checkuser.phone)" class="divider" />
-                <a v-if="$config.envname=='igapp'" class="text-darker font-weight-normal" href="tel:0212043924">0212043924</a>
-                <a v-else-if="checkuser.phone" class="text-darker font-weight-normal" :href="'tel:'+checkuser.phone">{{ checkuser.phone }}</a>
+                <a v-if="checkuser.email" class="text-darker font-weight-normal" :href="'mailto:'+checkuser.email">{{ checkuser.email }}</a>
+                <span v-if="checkuser.email && checkuser.phone" class="divider" />
+                <a v-if="checkuser.phone" class="text-darker font-weight-normal" :href="'tel:'+checkuser.phone">{{ checkuser.phone }}</a>
               </div>
             </div>
             <div class="col-md-4 mb-3">

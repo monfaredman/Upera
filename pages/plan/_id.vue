@@ -330,11 +330,7 @@ if(this.transfer){
           },
           async get_payment_url() {
             this.transfer=false
-            // var host2
-            // host2=this.checkuser.domain
-            // if(!host2 || host2=="igapi.upera.tv"){
-            //   host2=window.location.hostname
-            // }
+
             this.loading=true
             var ref=this.$cookiz.get('ref')
             if(!ref || isNaN(ref))

@@ -133,9 +133,6 @@ if(this.checkuser.operator_fullrate){
 }
 
 
-if(this.$config.envname=='igapp' && (window.location.host=='igaptv.com' || window.location.host=='igaptv.net')){
-  this.showfullrate=false
-}
 
 if(this.checkuser.subscription!=1){
   this.showfullrate=false

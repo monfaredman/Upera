@@ -321,28 +321,7 @@
                   بررسی اتصال اینترنت
                   <i class="fas fa-sync-alt" />
                 </button><br>و یا خرید با اینترنت فعلی شما:<br><br></span>
-                <!--                 <span v-else-if="$config.envname=='igapp' && !ftb2 && traffic">
-                  <div>
 
-
-                    <div dir="ltr" class="col-12" style="padding:0; margin: 0; height: 100%;">
-                      <div id="flowplayer-download-player" class="is-closeable">
-                        <div v-show="dlplayerloading" class="light-gallery__spinner">
-                          <div class="light-gallery__dot" style="border-color: rgba(0, 0, 0, 0.8);" /> <div class="light-gallery__dot" style="border-color: rgba(0, 0, 0, 0.8);" /> <div class="light-gallery__dot" style="border-color: rgba(0, 0, 0, 0.8);" />
-                        </div>
-
-                        <div id="my-download-player" class="fp-full fp-mute fp-edgy flowplayer" />
-                      </div>
-                    </div>
-
-
-
-
-
-
-
-                  </div>
-                </span> -->
 
                 <span v-if="screening.ekran && !cartloading" class="text-info h6 text-justify">مصرف اینترنت جهت تماشای آنلاین {{ fullrate_data.fa.title }} می باشد<br><br></span>
 
@@ -460,32 +439,6 @@
                     </div>
                   </div>
                 </div>
-                <!--                 <div v-if="$config.envname=='igapp'">
-                  <div class="float-right">
-                    <a class="btn btn-light" href="https://web.igap.net/">
-                      بازگشت
-                    </a>
-                  </div>
-                  <div class="clearfix" />
-                </div> -->
-                <!--                 <div v-if="$auth.loggedIn">
-                  <div v-if="$config.envname=='igapp'">
-                    <img class="p-4" src="@/assets/lottery/ref-logged-traffic.jpg" @click.prevent="lottery()">
-                  </div>
-                  <div v-else>
-                    <img v-show="!mref || isNaN(mref)" class="p-4" src="@/assets/lottery/noref-logged-buyandtraffic.jpg" @click.prevent="lottery()">
-                    <img v-show="mref && !isNaN(mref)" class="p-4" src="@/assets/lottery/ref-logged-buyandtraffic.jpg" @click.prevent="lottery()">
-                  </div>
-                </div>
-                <div v-else>
-                  <div v-if="$config.envname=='igapp'">
-                    <img class="p-4" src="@/assets/lottery/ref-nologged-traffic.jpg" @click.prevent="lottery()">
-                  </div>
-                  <div v-else>
-                    <img v-show="!mref || isNaN(mref)" class="p-4" src="@/assets/lottery/noref-nologged-buyandtraffic.jpg" @click.prevent="lottery()">
-                    <img v-show="mref && !isNaN(mref)" class="p-4" src="@/assets/lottery/ref-nologged-buyandtraffic.jpg" @click.prevent="lottery()">
-                  </div>
-                </div> -->
               </div>
               <div v-if="!cartloading && notes" class="col-12">
                 <span class="text-info h6 text-justify"><br>{{ notes }}<br><br></span>
@@ -569,7 +522,7 @@
                   </div>
                   <div class="col-sm-6">
                     <a :href="'tel:' + ussd" class="btn btn-danger btn-block">
-                      خرید<span v-if="$config.envname!='igapp'"> تکی</span> از طریق هف هشتاد
+                      خرید تکی از طریق هف هشتاد
                       <i class="fa fa-money-bill pr-2" />
                     </a>
                   </div>
@@ -961,21 +914,6 @@ this.checkdiv()
       },
 
       ADDTOCART(itemid,amount,size,quality) {
-        if(this.checkuser.subscription && this.$route.query.ref && this.$config.envname=='igapp'){
-              this.$swal({
-                  icon: 'error',
-                  title: 'لطفا جهت دسترسی بدون خرید اشتراک، با اینترنت همراه اول یا ایرانسل وارد شوید',
-                  dangerMode: true,
-                  button: 'بررسی اتصال اینترنت',
-              }).then(() => {
-                  this.SHOWAGAIN(0)
-                  this.$swal.close()
-              })
-        }else if(this.checkuser.subscription && this.$config.envname=='igapp'){
-            this.$store.dispatch('subscription/SHOW_MODAL',{content_type: this.type,content_id: this.id})
-          
-        }else{
-
           var name
 
           if(this.type=='episode'){
@@ -990,7 +928,6 @@ this.checkdiv()
           this.$store.dispatch("download/ADD_NEW_TO_DOWNLOAD", {itemid: itemid,amount:amount,size:size,name:name,quality:quality,id: this.id,type:this.type,poster:'https://thumb.upera.shop/thumb?w=70&h=103&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+this.posterf })
 
           document.getElementById("download-links-items").scrollTop=0
-        }
       },
       REMOVEFROMCART(itemid,amount) {
         this.$store.dispatch("download/DELETE_FROM_DOWNLOAD", {itemid: itemid,amount:amount})
@@ -1006,9 +943,7 @@ this.checkdiv()
         })
       },
       SHOWAGAIN(force_to_buy) {
-        if(force_to_buy==1 && this.checkuser.subscription && this.$config.envname=='igapp'){
-          this.$store.dispatch('subscription/SHOW_MODAL',{content_type: this.type,content_id: this.id})
-        }else{
+
           this.ftb2=force_to_buy
 
 
@@ -1020,7 +955,7 @@ this.checkdiv()
 
 
           this.checkdiv()
-        }
+        
         
       },
       checkdiv() {
@@ -1033,7 +968,7 @@ this.checkdiv()
           free=1
 
 
-          if(this.$config.envname!='igapp' && this.show_free==0 && (this.owned || (free && this.vod) || (this.vod && this.checkuser.access))){
+          if(this.show_free==0 && (this.owned || (free && this.vod) || (this.vod && this.checkuser.access))){
             this.$store.dispatch("download/ADD_DIVCOUNT")
           }else{
             this.$store.dispatch("download/MIN_DIVCOUNT")
@@ -1417,7 +1352,7 @@ this.$store.dispatch('login/SHOW_MODAL',{premessage: this.premessage,premobile: 
     lottery(){
       if(!this.$auth.loggedIn){
         this.$store.dispatch('login/SHOW_MODAL',{premessage: this.premessage,premobile: this.mobile,preredirect: null,prerefresh: false})
-      }else if (this.$config.envname!='igapp'){
+      }else {
         window.location.href = 'https://www.instagram.com/uperatv/'
       }
     }

@@ -181,7 +181,7 @@
                     </div>
 
 
-                    <div v-if="!loading && !buyloading && $config.envname!='igapp'" class="col-12 p-4 text-right">
+                    <div v-if="!loading && !buyloading" class="col-12 p-4 text-right">
                       <br><a href="tel:02191079979">تلفن پشتیبانی در ساعات اداری:‌ <br>02191079979</a><br><br>
                       <a href="tel:09022018555">تلفن پشتیبانی در ساعات غیر اداری:‌ <br>09022018555</a><br><br>
                       <a href="https://telegram.me/srmweb" target="_blank">تلگرام پشتیبانی</a>

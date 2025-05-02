@@ -83,11 +83,11 @@
           </h5>
           <b-collapse id="accordion-1" visible accordion="my-accordion" role="tabpanel" @shown="show(1)" @hide="hide(1)">
             <div class="pl-5 collapse-content row">
-              <div v-if="checkuser.show_app!=2" class="col-6 col-sm-4 col-lg-2 col-md-3 mb-3 mb-4 pr-0 mr-lg-3">
+              <!--             <div v-if="checkuser.show_app!=2" class="col-6 col-sm-4 col-lg-2 col-md-3 mb-3 mb-4 pr-0 mr-lg-3">
                 <a href="" @click.prevent="install('https://play.google.com/store/apps/details?id=com.techera.upera')">
                   <img src="@/assets/img/app/Group 579@3x.png" alt="">
                 </a>
-              </div>
+              </div> -->
               <div v-if="checkuser.show_app!=2" class="col-6 col-sm-4 col-lg-2 col-md-3 mb-3 mb-4 pr-0 mr-lg-3">
                 <a href="" @click.prevent="install('https://app.upera.tv/get_app/apk')">
                   <img class="" src="@/assets/img/app/Group 580@3x.png" alt="">
@@ -173,11 +173,11 @@
           </h2>
           <b-collapse id="accordion-3" accordion="my-accordion" role="tabpanel" @shown="show(3)" @hide="hide(3)">
             <div class="pl-5 collapse-content row">
-              <div class="col-6 col-sm-4 col-lg-2 col-md-3 mb-3 mb-4 pr-0 mr-lg-3">
+              <!--               <div class="col-6 col-sm-4 col-lg-2 col-md-3 mb-3 mb-4 pr-0 mr-lg-3">
                 <a href="" @click.prevent="install('https://play.google.com/store/apps/details?id=com.techera.uperatv')">
                   <img src="@/assets/img/app/Group 579@3x.png" alt="">
                 </a>
-              </div>
+              </div> -->
               <div class="col-6 col-sm-4 col-lg-2 col-md-3 mb-3 mb-4 pr-0 mr-lg-3">
                 <a href="" @click.prevent="install('https://app.upera.tv/get_app/android_tv')">
                   <img class="" src="@/assets/img/app/Group 580@3x.png" alt="">

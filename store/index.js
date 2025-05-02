@@ -97,17 +97,13 @@ export const actions = {
         this.app.context.redirect('https://'+window.location.host+'/kids')
       }
       if(!store.state.auth.loggedIn){
-        if(this.$config.envname!='igapp'){
           let res
           res=await this.$axios.get('/ghost/get'+this.$config.check_url)
             store.commit('SET_USER',res.data)
-        }else if(window.location.host != 'igtv.igaptv.com' && window.location.host != 'igtv.igaptv.net'){
-          store.commit('SET_USER',{subscription: 1})
-        }
       }else{
         store.commit('SET_USER',store.state.auth.user)
       }
-      if (this.$config.envname!='igapp' && store.state.checkuser.ref != 4 && store.state.checkuser.ref){
+      if (store.state.checkuser.ref != 4 && store.state.checkuser.ref){
         if (this.$cookiz.get('ref')!=store.state.checkuser.ref) {
           this.$cookiz.set('ref', store.state.checkuser.ref)
         }
