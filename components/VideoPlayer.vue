@@ -2,7 +2,7 @@
   <div style="position: relative;">
     <div v-if="!stream && posterUrl" class="video-placeholder" :style="{ backgroundImage: `url(${poster})` }">
       <div v-if="title" class="video-title-overlay">
-        {{ title }}
+        {{ adActive ? 'نمایش تبلیغات' : title }}
       </div>
     </div>
     <video
@@ -16,16 +16,19 @@
       :poster="posterUrl"
     />
     <div v-if="title && stream" class="video-title-overlay">
-      {{ title }}
+      {{ adActive ? 'نمایش تبلیغات' : title }}
     </div>
+
+    <button id="vast-cta-btn">
+      اطلاعات بیشتر
+    </button>
   </div>
 </template>
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import videojs from 'video.js'
-import 'videojs-contrib-ads'
-import 'videojs-ima'
+import '@arte/videojs-vast'
 import 'videojs-hls-quality-selector'
 
 export default {
@@ -85,6 +88,12 @@ export default {
     
     muteOnOtherPlay: { type: Boolean, default: false }
   },
+      data() {
+    return {
+      adActive: false, // آیا الآن اد در حال پخشه؟
+    }
+  },
+
   computed: {
     ...mapGetters({
       autoPlay: 'autoplay',
@@ -115,9 +124,15 @@ export default {
     }
     window.removeEventListener('keydown', this.handleKeydown)
   },
+
+
+
   methods: {
     ...mapActions(['SET_AUTOPLAY']),
     initPlayer() {
+
+
+
       this.player = videojs(this.playerid, {
         autoplay: this.playerAutoPlay,
         controls: true,
@@ -127,13 +142,61 @@ export default {
       })
 
       if (this.vastUrl) {
-        this.player.ima({
-          adTagUrl: this.vastUrl,
-          debug: true,
-        })
+
+
+const vastVjsOptions = {
+  // vastUrl: 
+    vastUrl: this.vastUrl,
+  playAdAlways: true,      // اگر می‌خواهید حتماً قبل از محتوا اجرا شود
+  withCredentials: false,  // برحسب نیاز
+  mediaFileRegex: /.*/,
+  addCtaClickZone: false,
+  timeout: 5,              // ثانیه
+    skipButtonOptions: {
+    // متنی که نمایش داده می‌شود
+    text: 'رد کردن >>',
+  }
+}
+
+// Initialize the VAST plugin
+this.player.vast(vastVjsOptions)
+
+const ctaBtn = document.getElementById('vast-cta-btn')
+
+// وقتی پلاگین URL کلیک رو داره، دکمه رو نشون بده و رفتارش رو ست کن:
+this.player.on('vast.play', (e, { ctaUrl, adClickCallback, adTitle }) => {
+      ctaBtn.innerText = adTitle 
+  if (ctaUrl) {
+    ctaBtn.style.display = 'block'
+    ctaBtn.onclick = () => {
+      // call the plugin’s click-tracking callback
+      adClickCallback()
+      // then navigate
+      window.open(ctaUrl, '_blank')
+    }
+  }
+})
+
+// وقتی آگهی تموم شد یا Error خورد، دکمه رو مخفی کن:
+const hideCta = () => { ctaBtn.style.display = 'none' }
+this.player.on('vast.complete', hideCta)
+this.player.on('vast.error', hideCta)
+
+
       }
 
       this.player.ready(() => {
+
+        this.player.on('vast.play', () => {
+          this.adActive = true
+        })
+        // وقتی اد تموم می‌شه یا رد می‌شه
+        this.player.on('vast.complete', () => {
+          this.adActive = false
+        })
+        this.player.on('vast.skip', () => {
+          this.adActive = false
+        })
 
   if (this.tracks && this.tracks.length) {
     this.tracks.forEach(track => {
@@ -442,6 +505,27 @@ this.player.hlsQualitySelector({
 }
 </script>
 <style scoped>
+/* کلیک‌کننده‌ی روی تبلیغ (transparent overlay) */
+.vjs-vast-click-container {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  cursor: pointer;
+  z-index: 25;
+}
+
+/* متن شمارش معکوس (اگر پلاگین نمایش می‌ده) */
+.vjs-vast-countdown {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  color: #fff;
+  font-size: 16px;
+  text-shadow: 0 0 4px rgba(0,0,0,0.7);
+  z-index: 30;
+}
+
+
 /* Title overlay with better shadow and positioning */
 .video-title-overlay {
   position: absolute;

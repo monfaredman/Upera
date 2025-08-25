@@ -26,12 +26,11 @@
     <div class="player-wrapper">
       <VideoPlayer
         v-if="videoUrl && !loading"
-        ref="moviePlayer"
-        playerid="movie-player"
+        ref="videoPlayer"
+        playerid="video-player"
         :stream="videoUrl"
         :poster="posterUrl"
-        :title="movieTitle"
-        :vast-url="vastUrl || ''"
+        :title="videoTitle"
         :tracks="tracks"
         :player-auto-play="true"
         class="full-screen-player vjs-fluid"
@@ -40,10 +39,10 @@
         @ended="handleEnded"
       />
     </div>
-    <div v-if="showNextMovie && suggestion" class="next-movie-overlay" @click="playNextMovie">
-      <div class="next-movie-content">
+    <div v-if="showNextVideo && suggestion" class="next-video-overlay" @click="playNextVideo">
+      <div class="next-video-content">
         <p>{{ $t('player.next') }}: {{ suggestion.name_fa }}</p>
-        <img :src="suggestionBackdrop" alt="Next Movie Backdrop">
+        <img :src="suggestionBackdrop" alt="Next Video Backdrop">
       </div>
     </div>
   </div>
@@ -62,29 +61,17 @@ export default {
   layout: 'empty',
   data() {
     return {
-      movieTitle: '',
+      videoTitle: '',
       posterUrl: '',
       videoUrl: '',
-      vastUrl: '',
       tracks: [],
       loading: true,
       guest: true,
-      show_report: false,
-      report_problem_type: null,
-      report_details: '',
-      report_button: false,
       soon: false,
-      // برای مدیریت گزارش، می‌توانید گزینه‌ها را از یک آرایه تعریف کنید
-      reportOptions: [
-        { value: 1, label: 'report.labeling_problem' },
-        { value: 2, label: 'report.video_problem' },
-        { value: 3, label: 'report.sound_problem' },
-        { value: 4, label: 'report.caption_problem' }
-      ],
       // برای زمان‌بندی بروزرسانی recently
       recentlyTime: 200,
       // برای نمایش فیلم بعدی
-      showNextMovie: false,
+      showNextVideo: false,
       suggestion: null,
       suggestionBackdrop: '',
       // اگر زمان شروع پخش از قبل وجود داشته باشد
@@ -96,7 +83,7 @@ export default {
     if (this.$auth && this.$auth.loggedIn) {
       this.guest = false
     }
-    this.loadMovie()
+    this.loadVideo()
   },
   methods: {
     showErrorAlert(data) {
@@ -112,20 +99,6 @@ export default {
         value: "back",
         closeModal: true,
         className: 'swal-back'
-      }
-    }
-    if (data.show_download === 1) {
-      dlsmbuttons.download = {
-        text: this.$t('player.download'),
-        value: "download",
-        closeModal: true
-      }
-    }
-    if (data.show_ekran === 1) {
-      dlsmbuttons.download = {
-        text: this.$t('show.buy_ticket'),
-        value: "download",
-        closeModal: true
       }
     }
     if (data.show_subscription === 1) {
@@ -152,13 +125,10 @@ export default {
         case "back":
           (window.history.length > 2)
             ? this.$router.go(-1)
-            : this.$router.push({ name: 'movie-id', params: { id: this.$route.params.id } })
+            : this.$router.push({ name: 'video-id', params: { id: this.$route.params.id } })
           break
         case "subscribe":
-          this.$store.dispatch('subscription/SHOW_MODAL', { content_type: 'movie', content_id: this.$route.params.id })
-          break
-        case "download":
-          this.$router.push({ name: 'movie-download-id', params: { id: this.$route.params.id }, query: { force_to_buy: 1 } })
+          this.$store.dispatch('subscription/SHOW_MODAL', { content_type: 'video', content_id: this.$route.params.id })
           break
 
                             case "login":
@@ -168,12 +138,12 @@ export default {
         default:
           (window.history.length > 2)
             ? this.$router.go(-1)
-            : this.$router.push({ name: 'movie-id', params: { id: this.$route.params.id } })
+            : this.$router.push({ name: 'video-id', params: { id: this.$route.params.id } })
           break
       }
     })
   },
-    async loadMovie() {
+    async loadVideo() {
       try {
         const id = this.$route.params.id
         if (!id) return
@@ -181,14 +151,14 @@ export default {
         const ref = this.$cookiz.get('ref') || ''
         // انتخاب API مناسب بر اساس وضعیت guest
         const apiUrl = this.guest
-          ? `/ghost/get/watch/movie-hls/${id}/1${ref ? `?ref=${ref}` : ''}`
-          : `/get/watch/movie-hls/${id}/1${ref ? `?ref=${ref}` : ''}`
+          ? `/ghost/get/watch/video/${id}${ref ? `?ref=${ref}` : ''}`
+          : `/get/watch/video/${id}${ref ? `?ref=${ref}` : ''}`
 
         const response = await this.$axios.get(apiUrl)
         if (response.status === 200) {
           const data = response.data.data
           // تنظیم اطلاعات اصلی فیلم
-          this.movieTitle = (this.$i18n.locale === 'fa' && data.video[0].name_fa)
+          this.videoTitle = (this.$i18n.locale === 'fa' && data.video[0].name_fa)
             ? data.video[0].name_fa
             : data.video[0].name
           this.posterUrl = data.cdn.lg_backdrop + data.video[0].backdrop
@@ -204,7 +174,6 @@ export default {
           if (streamResponse.ok) {
             console.log("Stream is available:", streamUrl)
             this.videoUrl = streamUrl
-            this.vastUrl = data.vast
             this.soon = false
           } else {
             console.log("notok")
@@ -258,74 +227,38 @@ export default {
         const payload = {
           current_time: Math.floor(currentTime),
           duration_time: Math.floor(duration),
-          movie_id: this.$route.params.id
+          video_id: this.$route.params.id
         }
         if (this.guest) {
-          this.$axios.post('/ghost/create/watch/movie/recently', payload)
+          this.$axios.post('/ghost/create/watch/video/recently', payload)
         } else {
-          this.$axios.post('/create/watch/movie/recently', payload)
+          this.$axios.post('/create/watch/video/recently', payload)
         }
       }
       // نمایش دکمه/اوورلی فیلم بعدی زمانی که زمان باقی‌مانده کمتر از 100 ثانیه است
       if (duration - currentTime <= 100 && this.suggestion) {
-        this.showNextMovie = true
+        this.showNextVideo = true
       } else {
-        this.showNextMovie = false
+        this.showNextVideo = false
       }
       return player
     },
     handleEnded() {
       // در پایان پخش فیلم، در صورت وجود پیشنهاد فیلم بعدی، به آن هدایت می‌شویم
       if (this.suggestion) {
-        this.playNextMovie()
+        this.playNextVideo()
       }
     },
-    playNextMovie() {
+    playNextVideo() {
       // در صورت وجود پلیر، می‌توان آن را پاک کرد یا متوقف نمود
       // سپس به صفحه فیلم بعدی هدایت می‌شویم
-      this.$router.push({ name: 'movie-show-id', params: { id: this.suggestion.id } })
+      this.$router.push({ name: 'video-show-id', params: { id: this.suggestion.id } })
     },
     goBack() {
       if (window.history.length > 2) {
         this.$router.go(-1)
       } else {
-        this.$router.push({ name: 'movie-id', params: { id: this.$route.params.id } })
-      }
-    },
-    openReport() {
-      // نمایش مدال گزارش و متوقف کردن پخش
-      this.show_report = true
-      const player = this.$refs.moviePlayer?.player
-      if (player) {
-        player.pause()
-      }
-    },
-    closeReport() {
-      // بستن مدال گزارش و ادامه پخش
-      this.show_report = false
-      const player = this.$refs.moviePlayer?.player
-      if (player) {
-        player.play()
-      }
-    },
-    async sendReport() {
-      this.report_button = true
-      try {
-        const payload = {
-          type: this.report_problem_type,
-          details: this.report_details,
-          id: this.$route.params.id
-        }
-        const res = await this.$axios.post('/create/report/movie', payload)
-        if (res.data.status === 'success') {
-          this.report_button = false
-          this.closeReport()
-          this.$alertify.logPosition("top right")
-          this.$alertify.success('Successful Send, our team will check it soon')
-        }
-      } catch (error) {
-        this.report_button = false
-        console.error('Report Error:', error)
+        this.$router.push({ name: 'video-id', params: { id: this.$route.params.id } })
       }
     }
   }
@@ -333,25 +266,12 @@ export default {
 </script>
 
 <style scoped>
-.movie-player-page {
+.video-player-page {
   position: relative;
   height: 100%;
   width: 100%;
 }
 
-/* استایل مدال گزارش */
-.report-modal {
-  position: fixed;
-  z-index: 1000;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0,0,0,0.7);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
 .modal-container {
   background: #fff;
   padding: 1rem;
@@ -377,7 +297,7 @@ export default {
   display: flex;
   justify-content: space-between;
 }
-.back-button, .report-button {
+.back-button {
   background: rgba(0,0,0,0.6);
   border: none;
   padding: 8px;
@@ -385,12 +305,12 @@ export default {
   cursor: pointer;
   color: #fff;
 }
-.back-button:hover, .report-button:hover {
+.back-button:hover {
   background: rgba(0,0,0,0.8);
 }
 
 /* استایل پوشش فیلم بعدی */
-.next-movie-overlay {
+.next-video-overlay {
   position: absolute;
   bottom: 60px;
   right: 20px;
@@ -400,11 +320,11 @@ export default {
   cursor: pointer;
   z-index: 600;
 }
-.next-movie-content p {
+.next-video-content p {
   margin: 0 0 5px;
   color: #fff;
 }
-.next-movie-content img {
+.next-video-content img {
   width: 100%;
   border-radius: 4px;
 }

@@ -7,8 +7,8 @@
             <div class="row no-gutters">
               <div class="col-md-6 col-lg-9" />
               <div class="col-md-6 col-lg-3 showcase-pic">
-                <b-img class="showcase-img d-none d-lg-block" v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 800,height: 400,show:true}" :src="'https://thumb.upera.shop/thumb?w=800&h=400&zc=3&q=100&a=t&src=https://cdn.upera.shop/s3/casts/'+data.cast.image" :alt="data.cast.name_fa" />
-                <b-img class="showcase-img d-lg-none" v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 400,height: 300,show:true}" :src="'https://thumb.upera.shop/thumb?w=400&h=300&zc=3&q=100&a=c&src=https://cdn.upera.shop/s3/casts/'+data.cast.image" :alt="data.cast.name_fa" />
+                <b-img class="showcase-img d-none d-lg-block" v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 800,height: 400,show:true}" :src="'https://thumb.upera.shop/thumb?w=800&h=600&q=90&fmt=webp&a=t&src=https://cdn.upera.shop/s3/casts/'+data.cast.image" :alt="data.cast.name_fa" />
+                <b-img class="showcase-img d-lg-none" v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 400,height: 300,show:true}" :src="'https://thumb.upera.shop/thumb?w=400&h=300&q=90&fmt=webp&a=c&src=https://cdn.upera.shop/s3/casts/'+data.cast.image" :alt="data.cast.name_fa" />
 
                 <!--                <img class="showcase-img d-none d-lg-block" :src="'https://thumb.upera.shop/thumb?w=800&h=400&zc=3&q=100&a=t&src=https://cdn.upera.shop/s3/casts/'+data.cast.image" :alt="data.cast.name_fa">
                 <img class="showcase-img d-lg-none" :src="'https://thumb.upera.shop/thumb?w=400&h=300&zc=3&q=100&a=c&src=https://cdn.upera.shop/s3/casts/'+data.cast.image" :alt="data.cast.name_fa"> -->

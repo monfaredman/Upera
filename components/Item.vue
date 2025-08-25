@@ -721,7 +721,7 @@ owned_period_end: null,
                 // this.data.item.genre = this.data.item.genre.replace(/-/g, ', ')
                 // // Set title
 
-this.INIT()
+this.INIT(0)
 this.loadAdditionalData()
                 if(this.$i18n.locale=="fa" && this.data.item.name_fa)
                 document.title = this.data.item.name_fa
@@ -777,7 +777,7 @@ if(this.user_claps_counter>=1){
 }   
         },
         mounted() {
-          this.INIT()
+          this.INIT(1)
           this.loadAdditionalData()
         },
 
@@ -914,8 +914,10 @@ if (this.type === 'movie') {
   }
 },
 
-          INIT(){
+          INIT(firstrun){
+            if(firstrun==1){
           window.addEventListener("resize", this.itemsize)
+        }
 this.$store.dispatch('SET_CONTENT_SUBSCRIPTION_ACTION',this.data.item.vod)
           },
             PLAY(action=null) {
@@ -1082,34 +1084,43 @@ this.clapCheckTimer = setTimeout(function(scope) {
         return size
     },
   itemsize(e) {
-    let w=window.innerWidth
-    let i=25
-    
-    if(w<=375){
-      i=12
-    }else if(w<=357){
-      i=10
-    }
-    if(w<=767.98){
-      let vh = document.getElementById("showcase-thumbnail-wrapper-outter").offsetHeight-document.getElementById("showcase-button-wrapper").offsetHeight-i
-      let element=document.getElementsByClassName('showcase-bottom')
+    const w = window.innerWidth
+  // محاسبه‌ی offset ثابت بسته به عرض صفحه
+  let offset = 25
+  if (w <= 357) {
+    offset = 10
+  } else if (w <= 375) {
+    offset = 12
+  }
 
-      if(element.length){
-        element[0].style.setProperty('height', `${vh}px`)
-        if(this.data.item.ir && (!this.actions || !this.actions.downloadButton.exist))
-          element[0].style.setProperty('padding-top', `${(vh/2)}px`)
-        else if(!this.data.item.ir && (!this.actions || !this.actions.downloadButton.exist))
-          element[0].style.setProperty('padding-top', `${(vh/3)}px`)
-      }
-    }else if(e!='e'){
-      let element=document.getElementsByClassName('showcase-bottom')
-      if(element.length){
-        element[0].style.removeProperty('height')
-        element[0].style.removeProperty('padding-top')
-      }
-    }
+  // کش کردن المان‌های پرکاربرد
+  const outerWrapper = document.getElementById("showcase-thumbnail-wrapper-outter")
+  const buttonWrapper = document.getElementById("showcase-button-wrapper")
+  const bottomEl = document.querySelector(".showcase-bottom")
+
+  if (!bottomEl || !outerWrapper || !buttonWrapper) {
     return e
-  },
+  }
+
+  // همیشه استایل‌های قدیمی را پاک کن
+  bottomEl.style.removeProperty("height")
+  bottomEl.style.removeProperty("padding-top")
+
+  if (w <= 767.98) {
+    // ارتفاع قابل استفاده
+    const vh = outerWrapper.offsetHeight - buttonWrapper.offsetHeight - offset
+    bottomEl.style.height = `${vh}px`
+
+    // محاسبه‌ی padding-top اگر دکمه دانلود وجود نداشته باشد
+    const hasDownload = this.actions?.downloadButton?.exist
+    if (!hasDownload) {
+      const factor = this.data.item.ir ? 0.5 : (1/3)
+      bottomEl.style.paddingTop = `${vh * factor}px`
+    }
+  }
+
+  return e
+},
     selectseries(id){
        this.selectseriesid=id
        this.seasontitle='فصل '+id

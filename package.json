@@ -18,6 +18,7 @@
     "deploy": "pm2 start npm --name upera --max-memory-restart 10000M -- start"
   },
   "dependencies": {
+    "@arte/videojs-vast": "^1.5.3",
     "@chenfengyuan/vue-countdown": "^1.1.5",
     "@nuxtjs/auth": "^4.9.1",
     "@nuxtjs/axios": "^5.13.6",
@@ -36,7 +37,7 @@
     "popper.js": "^1.16.1",
     "sweetalert": "^2.1.2",
     "swiper": "^5.4.5",
-    "video.js": "^8.21.0",
+    "video.js": "^8.23.3",
     "videojs-contrib-ads": "^7.5.2",
     "videojs-hls-quality-selector": "^2.0.0",
     "videojs-ima": "^2.3.0",

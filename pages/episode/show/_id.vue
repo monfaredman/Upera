@@ -31,6 +31,7 @@
         :stream="videoUrl"
         :poster="posterUrl"
         :title="episodeTitle"
+        :vast-url="vastUrl || ''"
         :tracks="tracks"
         :player-auto-play="true"
         :has-playlist="!!((seasonList && seasonList.length) || (currentEpisodeList && currentEpisodeList.length))"
@@ -124,6 +125,7 @@ export default {
       episodeTitle: '',
       posterUrl: '',
       videoUrl: '',
+      vastUrl: '',
       tracks: [],
       loading: true,
       soon: false,
@@ -274,6 +276,7 @@ computed: {
           this.videoUrl = ep.video.includes('?')
             ? ep.video + '&nosub=1'
             : ep.video + '?nosub=1'
+          this.vastUrl = data.vast
           this.startTime = ep.current_time || 0
           this.series_id = ep.series_id || 0
 

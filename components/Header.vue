@@ -250,7 +250,7 @@
                             زبان فارسی 
                           </div>
                           <div class="custom-control custom-switch">
-                            <input id="language" type="checkbox" class="custom-control-input" disabled :checked="$i18n.locale==='fa'" @change="changelang()">
+                            <input id="language" type="checkbox" class="custom-control-input" :checked="$i18n.locale==='fa'" @change="changelang()">
                             <label class="custom-control-label" for="language" />
                           </div>
                         </div>
