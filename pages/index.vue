@@ -2,35 +2,31 @@
   <div>
     <section v-if="sliders && sliders.length" id="slideshow">
       <div class="swiper-container showcase main-slideshow">
-        <VueSlickCarousel :key="swiperKey" ref="carousel" v-bind="swiperOption3" class="swiper-wrapper" :class="{ 'dir-ltr': sliders.length==1}">
-          <!--         <div class="swiper-slide">
-            <div class="row no-gutters">
-              <div class="col-md-12 col-lg-12 showcase-pic">
-                <template>
-                  <b-img
-                    blank
-                    blank-color="#bbb"
-                    width="1512"
-                    height="461"
-                    show
-                    class="showcase-img d-none d-lg-block"
-                    src="https://thumb.upera.shop/thumb?w=1512&h=461&q=90&a=t&zc=1&fmt=webp&src=https://s35.upera.net/files2/iran.jpg"
-                  />
-                  <b-img
-                    fluid-grow
-                    blank
-                    blank-color="#bbb"
-                    width="375"
-                    height="300"
-                    show
-                    class="showcase-img d-lg-none"
-                    src="https://thumb.upera.shop/thumb?w=375&h=300&q=90&a=t&zc=1&fmt=webp&src=https://s35.upera.net/files2/iran2.png"
-                  />
-                </template>
-              </div>
-            </div>
-          </div> -->
-          <div v-for="(item,index) in sliders" :key="index" class="swiper-slide">
+        <VueSlickCarousel
+          :key="swiperKey"
+          ref="carousel"
+          v-bind="swiperOption3"
+          class="swiper-wrapper"
+          :class="{ 'dir-ltr': sliders.length == 1 }"
+        >
+          // Adding manual backdrops
+          <!--
+          <template v-for="(mediaItem, index) in mediaItems">
+            <MediaCard
+              :key="index"
+              :item="mediaItem"
+              :variant="mediaItem.variant"
+              :size="mediaItem.size"
+              :link-builder="buildIdRoute"
+            />
+          </template>
+          -->
+
+          <div
+            v-for="(item, index) in sliders"
+            :key="index"
+            class="swiper-slide"
+          >
             <div class="row no-gutters">
               <div class="col-md-6 col-lg-7 showcase-pic">
                 <template v-if="item.media_type === 'video2'">
@@ -39,10 +35,10 @@
                     autoplay
                     loop
                     playsinline
-                    :muted="item.muted"           
+                    :muted="item.muted"
                     :src="item.video_src"
                     :poster="item.image_src"
-                    style="width:1120px;height:576px;object-fit:cover;"      
+                    style="width: 1120px; height: 576px; object-fit: cover"
                     @loadeddata="item.is_loading = false"
                   />
                   <video
@@ -53,21 +49,24 @@
                     :muted="item.muted"
                     :src="item.video_src"
                     :poster="item.image_mobile_src"
-                    style="width:375px;height:300px;object-fit:cover;"
+                    style="width: 375px; height: 300px; object-fit: cover"
                     @loadeddata="item.is_loading = false"
                   />
-                  <!-- در صورت تمایل می‌تونی یک اسپینر لودینگ بذاری -->
                   <div
                     v-if="item.is_loading"
                     class="video-loading-spinner"
-                    style="position:absolute;inset:0;
-             display:flex;justify-content:center;align-items:center;z-index:10;"
+                    style="
+                      position: absolute;
+                      inset: 0;
+                      display: flex;
+                      justify-content: center;
+                      align-items: center;
+                      z-index: 10;
+                    "
                   >
                     Loading…
                   </div>
                 </template>
-
-                <!-- در غیر این صورت، همان تصویر قبلی -->
                 <template v-else>
                   <b-img
                     blank
@@ -101,81 +100,143 @@
                 <div class="d-flex h-full align-items-end">
                   <div class="pr-md-4 pr-md-2 showcase-desc-wrapper">
                     <div class="showcase-desc">
-                      <div v-if="item.type!='episode'" class="title text-invert mb-1 mb-md-3">
-                        <nuxt-link :to="{ name: item.type+'-id', params: { id: item.id }}">
-                          {{ ChooseLang(item.name,item.name_fa) }}
+                      <div
+                        v-if="item.type != 'episode'"
+                        class="title text-invert mb-1 mb-md-3"
+                      >
+                        <nuxt-link
+                          :to="{
+                            name: item.type + '-id',
+                            params: { id: item.id },
+                          }"
+                        >
+                          {{ ChooseLang(item.name, item.name_fa) }}
                         </nuxt-link>
                       </div>
                       <div v-else class="title text-invert mb-1 mb-md-3">
-                        <nuxt-link :to="{ name: item.type+'-id', params: { id: item.id }}">
-                          {{ ChooseLang(item.name,item.name_fa) }}<span v-if="item.season_number>1" class="show-mobile"> {{ item.season_number }}</span>
+                        <nuxt-link
+                          :to="{
+                            name: item.type + '-id',
+                            params: { id: item.id },
+                          }"
+                        >
+                          {{ ChooseLang(item.name, item.name_fa)
+                          }}<span
+                            v-if="item.season_number > 1"
+                            class="show-mobile"
+                          >
+                            {{ item.season_number }}</span
+                          >
                         </nuxt-link>
                       </div>
-                      <div v-if="item.type=='episode'" class="p-fs-small text-invert mb-1 mb-md-3 hide-mobile font-weight-normal">
-                        {{ $t('show.season') }}{{ item.season_number }}
-                        - {{ $t('show.episode') }} {{ item.episode_number }}
+                      <div
+                        v-if="item.type == 'episode'"
+                        class="p-fs-small text-invert mb-1 mb-md-3 hide-mobile font-weight-normal"
+                      >
+                        {{ $t('show.season') }}{{ item.season_number }} -
+                        {{ $t('show.episode') }} {{ item.episode_number }}
                       </div>
                       <div class="text-invert mb-1 mb-md-3">
-                        <nuxt-link 
-                          v-for="(persianName, englishName) in item.genre" 
-                          :key="englishName" 
-                          :to="{ name: 'lists-list', params: { list: englishName }}" 
+                        <nuxt-link
+                          v-for="(persianName, englishName) in item.genre"
+                          :key="englishName"
+                          :to="{
+                            name: 'lists-list',
+                            params: { list: englishName },
+                          }"
                           class="tag"
                         >
                           {{ persianName }}
                         </nuxt-link>
                       </div>
-                      <div v-if="item.dubbed" class="text-invert mb-1 mb-md-3 hide-mobile">
+                      <div
+                        v-if="item.dubbed"
+                        class="text-invert mb-1 mb-md-3 hide-mobile"
+                      >
                         دوبله فارسی
                       </div>
-                      <div v-else-if="item.subbed" class="text-invert mb-1 mb-md-3 hide-mobile">
+                      <div
+                        v-else-if="item.subbed"
+                        class="text-invert mb-1 mb-md-3 hide-mobile"
+                      >
                         زیرنویس فارسی
                       </div>
                     </div>
                     <div class="showcase-button-wrapper">
-                      <nuxt-link v-if="item.presale" :to="{ name: item.type+'-id', params: { id: item.id }}" class="btn btn-main">
+                      <nuxt-link
+                        v-if="item.presale"
+                        :to="{
+                          name: item.type + '-id',
+                          params: { id: item.id },
+                        }"
+                        class="btn btn-main"
+                      >
                         به زودی
                       </nuxt-link>
-                      <nuxt-link v-else-if="item.type!='series'" :to="{ name: item.type+'-show-id', params: { id: item.id }}" class="btn btn-main">
-                        نمایش <span class="hide-mobile hide-tablet"><span v-if="item.type=='movie'">فیلم</span><span v-else>این قسمت سریال</span></span>
+                      <nuxt-link
+                        v-else-if="item.type != 'series'"
+                        :to="{
+                          name: item.type + '-show-id',
+                          params: { id: item.id },
+                        }"
+                        class="btn btn-main"
+                      >
+                        نمایش
+                        <span class="hide-mobile hide-tablet"
+                          ><span v-if="item.type == 'movie'">فیلم</span
+                          ><span v-else>این قسمت سریال</span></span
+                        >
                       </nuxt-link>
 
-                      <nuxt-link v-else :to="{ name: 'series-id', params: { id: item.id }}" class="btn btn-main">
+                      <nuxt-link
+                        v-else
+                        :to="{ name: 'series-id', params: { id: item.id } }"
+                        class="btn btn-main"
+                      >
                         قسمت ها
                       </nuxt-link>
 
-                      <nuxt-link :to="{ name: item.type+'-id', params: { id: item.id }}" class="btn btn-dark btn-download ml-md-2 hide-mobile">
+                      <nuxt-link
+                        :to="{
+                          name: item.type + '-id',
+                          params: { id: item.id },
+                        }"
+                        class="btn btn-dark btn-download ml-md-2 hide-mobile"
+                      >
                         توضیحات
                         <i class="icon-info" />
                       </nuxt-link>
 
-                      <nuxt-link :to="{ name: item.type+'-id', params: { id: item.id }}" class="text-invert show-mobile">
+                      <nuxt-link
+                        :to="{
+                          name: item.type + '-id',
+                          params: { id: item.id },
+                        }"
+                        class="text-invert show-mobile"
+                      >
                         <i class="icon-info" />
-                        <!-- <div class="hide-mobile">توضیحات <span v-if="item.type=='movie'">فیلم</span><span v-else-if="item.type=='episode'">این قسمت سریال</span><span v-else>سریال</span></div> -->
-                        <div v-if="item.type!='episode'">
-                          توضیحات
-                        </div>
-                        <div v-else>
-                          قسمت {{ item.episode_number }}
-                        </div>
-                        <!-- <span v-if="item.type=='movie'">فیلم</span><span v-else-if="item.type=='episode'">قسمت</span><span v-else>سریال</span> -->
+                        <div v-if="item.type != 'episode'">توضیحات</div>
+                        <div v-else>قسمت {{ item.episode_number }}</div>
                       </nuxt-link>
-                      
-                      <!--                       <a href="" class="btn btn-dark btn-icon hide-mobile">
-                        <i :class="{ 'icon-bookmark-empty': !item.is_watchlist,'icon-bookmark': item.is_watchlist==1 }" />
-                      </a>
-                      <a href="" class="text-invert show-mobile">
-                        <i :class="{ 'icon-bookmark-empty': !item.is_watchlist,'icon-bookmark': item.is_watchlist==1 }" />
-                        <div v-if="item.is_watchlist==1">حذف از لیست</div>
-                        <div v-else>بعدا می بینم</div>
-                      </a> -->
                     </div>
                   </div>
                   <div class="thumbnail hide-mobile">
-                    <nuxt-link :to="{ name: item.type+'-id', params: { id: item.id }}">
-                      <b-img v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 207,height: 307,show:true}" :src="item.poster" :alt="item.name" class="thumbnail" />
-
-                      <!-- <img loading="lazy" data-back="/images/207x307.png" class="thumbnail" :src="'https://thumb.upera.shop/thumb?w=207&h=307&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster"> -->
+                    <nuxt-link
+                      :to="{ name: item.type + '-id', params: { id: item.id } }"
+                    >
+                      <b-img
+                        v-bind="{
+                          fluidGrow: true,
+                          blank: true,
+                          blankColor: '#bbb',
+                          width: 207,
+                          height: 307,
+                          show: true,
+                        }"
+                        :src="item.poster"
+                        :alt="item.name"
+                        class="thumbnail"
+                      />
                     </nuxt-link>
                   </div>
                 </div>
@@ -183,193 +244,319 @@
             </div>
           </div>
         </VueSlickCarousel>
-        <div v-if="sliders.length>1" dir="rtl">
-          <div class="swiper-next swiper-button-next main-slideshow-next" @click="showPrev" />
-          <div class="swiper-prev swiper-button-prev main-slideshow-prev" @click="showNext" />
+        <div v-if="sliders.length > 1" dir="rtl">
+          <div
+            class="swiper-next swiper-button-next main-slideshow-next"
+            @click="showPrev"
+          />
+          <div
+            class="swiper-prev swiper-button-prev main-slideshow-prev"
+            @click="showNext"
+          />
         </div>
       </div>
     </section>
-    <FilterContents :show="true" :showgenres="true" :savedata="false" :notop="!(sliders && sliders.length > 0)" @execute_content_filtering="execute_content_filtering" />
 
-
+    <FilterContents
+      :show="true"
+      :show-genres="true"
+      :savedata="false"
+      :no-top="!(sliders && sliders.length > 0)"
+      @execute_content_filtering="execute_content_filtering"
+    />
 
     <div v-if="checkuser.show_lives && lives && lives.data.length">
-      <section class="horizontal-list-container  mt-5 reach-begin">
-        <div class="d-flex justify-content-between align-items-center mb-2 container-fluid">
-          <h4 class="font-weight-bold">
-            {{ ChooseLang(lives.list_en, lives.list_fa) }}
-          </h4>
-          <nuxt-link :to="{ name: 'lists-list', params: { list: lives.list } }">
-            {{ $t('new.show_all') }} <img src="@/assets/img/more.svg" height="3">
-          </nuxt-link>
-        </div>
-        <div v-swiper:livesSwip="swiperOption2" class="swiper-container newset-slider2">
-          <div class="swiper-wrapper py-1">
-            <div v-for="(item, index) in lives.data" :key="index" class="swiper-slide" :class="{'movielabel':item.type=='movie'}">
-              <nuxt-link :to="{ name: item.type+'-id', params: { id: item.id }}">
-                <b-img v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 364,height: 190,show:true}" :src="'https://thumb.upera.shop/thumb?w=364&h=190&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/'+item.backdrop" :alt="item.name_fa" />
-              </nuxt-link>
-              <div class="mt-2">
-                <h6 class="mt-2 small font-weight-normal">
-                  {{ ChooseLang(item.name,item.name_fa) }}
-                </h6>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      <HorizontalList
+        :title-en="lives.list_en"
+        :title-fa="lives.list_fa"
+        :show-all-route="{ name: 'lists-list', params: { list: lives.list } }"
+        :items="lives.data"
+        instance-name="livesSwip"
+        :options="SWIPER_OPTION_BACKDROP"
+        card-variant="backdrop"
+        :size="{ w: 364, h: 190 }"
+        :link-builder="buildIdRoute"
+        :show-badges="false"
+        :add-series-class="false"
+      />
     </div>
 
     <div v-if="checkuser.show_ugcs && ugcs && ugcs.data.length">
-      <div v-for="(sec,rootindex) in ugcs.data" :key="rootindex">
-        <section class="horizontal-list-container  mt-5 reach-begin">
-          <div class="d-flex justify-content-between align-items-center mb-2 container-fluid">
-            <h4 class="font-weight-bold">
-              {{ ChooseLang(sec.title_en, sec.title_fa) }}
-            </h4>
-            <nuxt-link :to="{ name: 'lists-list', params: { list: sec.list }}" class="mb-1">
-              {{ $t('new.show_all') }}
-              <img src="@/assets/img/more.svg" height="3" alt="">
-            </nuxt-link>
-          </div>
-          <div v-swiper:[rootindex+9000]="swiperOption2" class="swiper-container watching-slider">
-            <div class="swiper-wrapper py-1">
-              <div v-for="(item, index) in sec.data" :key="index" class="swiper-slide">
-                <nuxt-link :to="{ name: item.type+'-show-id', params: { id: item.id }}">
-                  <b-img v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 364,height: 190,show:true}" :src="'https://thumb.upera.shop/thumb?w=364&h=190&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/'+item.backdrop" :alt="item.name_fa" />
-                </nuxt-link>
-                <div class="mt-2">
-                  <h6 class="mt-2 small font-weight-normal">
-                    {{ item.name_fa }}
-                  </h6>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+      <div v-for="(sec, rootindex) in ugcs.data" :key="rootindex">
+        <HorizontalList
+          :title-en="sec.title_en"
+          :title-fa="sec.title_fa"
+          :show-all-route="{ name: 'lists-list', params: { list: sec.list } }"
+          :items="sec.data"
+          :instance-name="`ugcs${rootindex + 9000}`"
+          :options="SWIPER_OPTION_BACKDROP"
+          card-variant="backdrop"
+          :size="{ w: 364, h: 190 }"
+          :link-builder="buildShowIdRoute"
+          :show-badges="false"
+          :add-series-class="false"
+        />
       </div>
     </div>
+
     <div v-if="offer">
-      <section class="horizontal-list-container  mt-5 reach-begin">
-        <div class="d-flex justify-content-between align-items-center mb-2 container-fluid">
-          <h4 class="font-weight-bold">
-            {{ ChooseLang(offer.list_en,offer.list_fa) }}
-            <!--               <small v-if="list.type === 'Movies'" class="text-muted"> - {{ $t('home.movies') }} </small>
-              <small v-else class="text-muted"> - {{ $t('home.series') }} </small> -->
-          </h4>
-          <nuxt-link :to="{ name: 'lists-list', params: { list: offer.list.toLowerCase() }}" class="mb-1">
-            {{ $t('new.show_all') }}
-            <img src="@/assets/img/more.svg" height="3" alt="">
-          </nuxt-link>
-        </div>
-        <div v-swiper:offerSwip="swiperOption" class="swiper-container newset-slider2">
-          <div class="swiper-wrapper py-1">
-            <div v-for="(item, index) in offer.data" :key="index" class="swiper-slide" :class="{'movielabel':item.type=='movie'}">
-              <nuxt-link :to="{ name: item.type+'-id', params: { id: item.id }}" :class="{'is-series': item.type!='movie'}">
-                <b-img v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 142,height: 212,show:true}" :src="'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name" />
-                <b-img v-if="item.type!='movie'" v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 142,height: 212,show:true}" :src="'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name" />
-                <b-img v-if="item.type!='movie'" v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 142,height: 212,show:true}" :src="'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name" />
-                <span v-if="!item.ir && item.persian" class="label label-rounded label-red label-1">دوبله</span>
-                <span v-if="!item.ir && !item.persian" class="label label-rounded label-warning label-1">زیرنویس</span>
-                <span v-if="item.free && $config.envname=='upera'" class="label label-blue label-2" :class="{'label-rotated':item.type=='movie'}">رایگان</span>
-              </nuxt-link>
-              <div class="mt-2">
-                <h6 class="mt-2 small font-weight-normal">
-                  {{ ChooseLang(item.name,item.name_fa) }}
-                </h6>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      <HorizontalList
+        :title-en="offer.list_en"
+        :title-fa="offer.list_fa"
+        :show-all-route="{
+          name: 'lists-list',
+          params: { list: offer.list.toLowerCase() },
+        }"
+        :items="offer.data"
+        instance-name="offerSwip"
+        :options="SWIPER_OPTION_POSTER"
+        card-variant="poster"
+        :size="{ w: 142, h: 212 }"
+        :link-builder="buildIdRoute"
+        :show-badges="true"
+      />
     </div>
-    <section v-if="recently!==null" id="watching" class="horizontal-list-container mt-lg-4 pt-5">
+
+    <section
+      v-if="recently !== null"
+      id="watching"
+      class="horizontal-list-container mt-lg-4 pt-5"
+    >
       <div class="d-flex align-items-center justify-content-between w-full">
         <h4 class="font-weight-bold text-nowrap mr-5 px-5 in-watching">
-          {{ ChooseLang(recently.list_en,recently.list_fa) }}
+          {{ ChooseLang(recently.list_en, recently.list_fa) }}
         </h4>
-        <div v-swiper:watchSwip="swiperOption2" class="swiper-container watching-slider">
+        <div
+          v-swiper:watchSwip="swiperOption2"
+          class="swiper-container watching-slider"
+        >
           <div class="swiper-wrapper">
-            <!-- Slides -->
-            <div v-for="(item,index) in recently.recently" :key="index" class="swiper-slide">
-              <nuxt-link v-if="item.type=='movie'" :to="{ name: 'movie-show-id', params: { id: item.id }}">
-                <b-img v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 364,height: 190,show:true}" :src="'https://thumb.upera.shop/thumb?w=364&h=190&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/'+item.backdrop" :alt="item.name" />
-
-                <!-- <img loading="lazy" data-back="/images/364x190.png" :src="'https://thumb.upera.shop/thumb?w=364&h=190&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/'+item.backdrop" :alt="item.name"> -->
+            <div
+              v-for="(item, index) in recently.recently"
+              :key="index"
+              class="swiper-slide"
+            >
+              <nuxt-link
+                v-if="item.type == 'movie'"
+                :to="{ name: 'movie-show-id', params: { id: item.id } }"
+              >
+                <b-img
+                  v-bind="{
+                    fluidGrow: true,
+                    blank: true,
+                    blankColor: '#bbb',
+                    width: 364,
+                    height: 190,
+                    show: true,
+                  }"
+                  :src="
+                    'https://thumb.upera.shop/thumb?w=364&h=190&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/' +
+                    item.backdrop
+                  "
+                  :alt="item.name"
+                />
               </nuxt-link>
-              <nuxt-link v-else-if="item.type=='episode'" :to="{ name: 'episode-show-id', params: { id: item.id }}">
-                <b-img v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 364,height: 190,show:true}" :src="'https://thumb.upera.shop/thumb?w=364&h=190&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/'+item.backdrop" :alt="item.name" />
-                <!-- <img loading="lazy" data-back="/images/364x190.png" :src="'https://thumb.upera.shop/thumb?w=364&h=190&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/'+item.backdrop" :alt="item.name"> -->
+              <nuxt-link
+                v-else-if="item.type == 'episode'"
+                :to="{ name: 'episode-show-id', params: { id: item.id } }"
+              >
+                <b-img
+                  v-bind="{
+                    fluidGrow: true,
+                    blank: true,
+                    blankColor: '#bbb',
+                    width: 364,
+                    height: 190,
+                    show: true,
+                  }"
+                  :src="
+                    'https://thumb.upera.shop/thumb?w=364&h=190&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/' +
+                    item.backdrop
+                  "
+                  :alt="item.name"
+                />
               </nuxt-link>
-              <nuxt-link v-else :to="{ name: 'series-show-id', params: { id: item.id }}">
-                <b-img v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 364,height: 190,show:true}" :src="'https://thumb.upera.shop/thumb?w=364&h=190&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/'+item.backdrop" :alt="item.name" />
-                <!-- <img loading="lazy" data-back="/images/364x190.png" :src="'https://thumb.upera.shop/thumb?w=364&h=190&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/'+item.backdrop" :alt="item.name"> -->
+              <nuxt-link
+                v-else
+                :to="{ name: 'series-show-id', params: { id: item.id } }"
+              >
+                <b-img
+                  v-bind="{
+                    fluidGrow: true,
+                    blank: true,
+                    blankColor: '#bbb',
+                    width: 364,
+                    height: 190,
+                    show: true,
+                  }"
+                  :src="
+                    'https://thumb.upera.shop/thumb?w=364&h=190&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/' +
+                    item.backdrop
+                  "
+                  :alt="item.name"
+                />
               </nuxt-link>
               <div class="progress">
-                <div class="progress-bar" :style="'width: '+(item.current_time/item.duration_time)*100+'%'" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" />
+                <div
+                  class="progress-bar"
+                  :style="
+                    'width: ' +
+                    (item.current_time / item.duration_time) * 100 +
+                    '%'
+                  "
+                  role="progressbar"
+                  aria-valuenow="0"
+                  aria-valuemin="0"
+                  aria-valuemax="100"
+                />
               </div>
             </div>
           </div>
         </div>
       </div>
     </section>
+
     <div v-if="data.data">
       <div v-for="(list, rootindex) in data.data" :key="rootindex">
         <div v-if="list.style == 'occasion' && list.data.length > 0">
           <section id="special" class="mb-5">
             <div class="container-fluid">
-              <div class="special d-flex flex-column justify-content-start align-items-start align-items-lg-center flex-lg-row">
-                <h4 class="font-weight-bold text-nowrap mr-lg-5 mb-4 mb-lg-0 special-title">
-                  {{ ChooseLang(list.list_en,list.list_fa) }}
+              <div
+                class="special d-flex flex-column justify-content-start align-items-start align-items-lg-center flex-lg-row"
+              >
+                <h4
+                  class="font-weight-bold text-nowrap mr-lg-5 mb-4 mb-lg-0 special-title"
+                >
+                  {{ ChooseLang(list.list_en, list.list_fa) }}
                 </h4>
                 <div class="position-relative w-full">
                   <div id="special-slides" class="special-slides">
-                    <div v-for="(item,index) in list.data" :key="index" class="special-slide" :class="{ active: index==0 }">
+                    <div
+                      v-for="(item, index) in list.data"
+                      :key="index"
+                      class="special-slide"
+                      :class="{ active: index == 0 }"
+                    >
                       <div class="d-flex justify-content-start w-full special">
-                        <img class="special-image spec-1" :src="'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
-                        <div class="special-content d-flex flex-column justify-content-between justify-content-lg-around align-items-end w-full">
+                        <img
+                          class="special-image spec-1"
+                          :src="
+                            'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/' +
+                            item.poster
+                          "
+                          :alt="item.name"
+                        />
+                        <div
+                          class="special-content d-flex flex-column justify-content-between justify-content-lg-around align-items-end w-full"
+                        >
                           <div class="d-flex justify-content-between w-full">
-                            <div class=" ml-2 ml-lg-5">
+                            <div class="ml-2 ml-lg-5">
                               <h6 class="font-weight-bold mb-0 d-lg-none">
-                                {{ truncate(ChooseLang(item.name,item.name_fa),15 ) }}
+                                {{
+                                  truncate(
+                                    ChooseLang(item.name, item.name_fa),
+                                    15
+                                  )
+                                }}
                               </h6>
-                              <h5 class="font-weight-bold mb-0 d-none d-lg-block">
-                                {{ ChooseLang(item.name,item.name_fa) }}
-                              </h5>                        
+                              <h5
+                                class="font-weight-bold mb-0 d-none d-lg-block"
+                              >
+                                {{ ChooseLang(item.name, item.name_fa) }}
+                              </h5>
                               <p class="mt-1 font-weight-normal">
-                                <span v-for="(genre, index2) in item.genre.split(',')" :key="index2">
-                                  {{ item.new_genres[genre.toLowerCase()] || genre }}
-                                  <span v-if="index2 + 1 < item.genre.split(',').length"> | </span>
+                                <span
+                                  v-for="(genre, index2) in item.genre.split(
+                                    ','
+                                  )"
+                                  :key="index2"
+                                >
+                                  {{
+                                    item.new_genres[genre.toLowerCase()] ||
+                                    genre
+                                  }}
+                                  <span
+                                    v-if="
+                                      index2 + 1 < item.genre.split(',').length
+                                    "
+                                  >
+                                    |
+                                  </span>
                                 </span>
                               </p>
                             </div>
-                            <div class="d-flex flex-column justify-content-center align-items-center small">
-                              <nuxt-link :to="{ name: 'lists-list', params: { list: list.occasion }}">
+                            <div
+                              class="d-flex flex-column justify-content-center align-items-center small"
+                            >
+                              <nuxt-link
+                                :to="{
+                                  name: 'lists-list',
+                                  params: { list: list.occasion },
+                                }"
+                              >
                                 {{ $t('new.show_all') }}
                               </nuxt-link>
-                              <img src="@/assets/img/more.svg" height="3" alt="">
+                              <img
+                                src="@/assets/img/more.svg"
+                                height="3"
+                                alt=""
+                              />
                             </div>
                           </div>
                           <div class="d-flex justify-content-between w-full">
                             <p class="d-lg-none">
-                              {{ truncate( ChooseLang(item.overview,item.overview_fa),60 ) }}
+                              {{
+                                truncate(
+                                  ChooseLang(item.overview, item.overview_fa),
+                                  60
+                                )
+                              }}
                             </p>
-                            <p class="d-none d-lg-block text-justify ml-2 ml-lg-5">
-                              {{ ChooseLang(item.overview,item.overview_fa) }}
+                            <p
+                              class="d-none d-lg-block text-justify ml-2 ml-lg-5"
+                            >
+                              {{ ChooseLang(item.overview, item.overview_fa) }}
                             </p>
                           </div>
 
-                          <nuxt-link v-if="item.type=='movie'" :to="{ name: 'movie-id', params: { id: item.id }}" class="show-btn small">
+                          <nuxt-link
+                            v-if="item.type == 'movie'"
+                            :to="{ name: 'movie-id', params: { id: item.id } }"
+                            class="show-btn small"
+                          >
                             <span>نمایش</span>
-                            <img class="ml-2" src="@/assets/img/play.svg" alt="">
+                            <img
+                              class="ml-2"
+                              src="@/assets/img/play.svg"
+                              alt=""
+                            />
                           </nuxt-link>
-                          <nuxt-link v-else-if="item.type=='episode'" :to="{ name: 'episode-id', params: { id: item.id }}" class="show-btn small">
+                          <nuxt-link
+                            v-else-if="item.type == 'episode'"
+                            :to="{
+                              name: 'episode-id',
+                              params: { id: item.id },
+                            }"
+                            class="show-btn small"
+                          >
                             <span>نمایش</span>
-                            <img class="ml-2" src="@/assets/img/play.svg" alt="">
+                            <img
+                              class="ml-2"
+                              src="@/assets/img/play.svg"
+                              alt=""
+                            />
                           </nuxt-link>
-                          <nuxt-link v-else :to="{ name: 'series-id', params: { id: item.id }}" class="show-btn small">
+                          <nuxt-link
+                            v-else
+                            :to="{ name: 'series-id', params: { id: item.id } }"
+                            class="show-btn small"
+                          >
                             <span>نمایش</span>
-                            <img class="ml-2" src="@/assets/img/play.svg" alt="">
+                            <img
+                              class="ml-2"
+                              src="@/assets/img/play.svg"
+                              alt=""
+                            />
                           </nuxt-link>
                         </div>
                       </div>
@@ -380,92 +567,131 @@
             </div>
           </section>
         </div>
-        <div v-else-if="list.data.length > 0 ">
-          <section class="horizontal-list-container  mt-5 reach-begin">
-            <div class="d-flex justify-content-between align-items-center mb-2 container-fluid">
-              <h4 class="font-weight-bold">
-                {{ ChooseLang(list.list_en,list.list_fa) }}
-              <!--               <small v-if="list.type === 'Movies'" class="text-muted"> - {{ $t('home.movies') }} </small>
-              <small v-else class="text-muted"> - {{ $t('home.series') }} </small> -->
-              </h4>
-              <nuxt-link :to="{ name: 'lists-list', params: { list: list.list.toLowerCase() }}" class="mb-1">
-                {{ $t('new.show_all') }}
-                <img src="@/assets/img/more.svg" height="3" alt="">
-              </nuxt-link>
-            </div>
-            <div v-swiper:[rootindex]="swiperOption" class="swiper-container newset-slider2">
-              <div class="swiper-wrapper py-1">
-                <div v-for="(item, index) in list.data" :key="index" class="swiper-slide" :class="{'movielabel':item.type=='movie'}">
-                  <nuxt-link :to="{ name: item.type+'-id', params: { id: item.id }}" :class="{'is-series': item.type!='movie'}">
-                    <b-img v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 142,height: 212,show:true}" :src="'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name" />
-                    <b-img v-if="item.type!='movie'" v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 142,height: 212,show:true}" :src="'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name" />
-                    <b-img v-if="item.type!='movie'" v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 142,height: 212,show:true}" :src="'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name" />
-                    <!--                   <img loading="lazy" data-back="/images/142x212.png" :src="'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
-                  <img v-if="item.type!='movie'" loading="lazy" data-back="/images/142x212.png" :src="'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
-                  <img v-if="item.type!='movie'" loading="lazy" data-back="/images/142x212.png" :src="'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name"> -->
-                    <span v-if="!item.ir && item.persian" class="label label-rounded label-red label-1">دوبله</span>
-                    <span v-if="!item.ir && !item.persian" class="label label-rounded label-warning label-1">زیرنویس</span>
-                    <span v-if="item.free && $config.envname=='upera'" class="label label-blue label-2" :class="{'label-rotated':item.type=='movie'}">رایگان</span>
-                  </nuxt-link>
-                  <div class="mt-2">
-                    <h6 class="mt-2 small font-weight-normal">
-                      {{ ChooseLang(item.name,item.name_fa) }}
-                    </h6>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
+        <div v-else-if="list.data.length > 0">
+          <HorizontalList
+            :title-en="list.list_en"
+            :title-fa="list.list_fa"
+            :show-all-route="{
+              name: 'lists-list',
+              params: { list: list.list.toLowerCase() },
+            }"
+            :items="list.data"
+            :instance-name="String(rootindex)"
+            :options="SWIPER_OPTION_POSTER"
+            card-variant="poster"
+            :size="{ w: 142, h: 212 }"
+            :link-builder="buildIdRoute"
+            :show-badges="true"
+          />
         </div>
       </div>
     </div>
+
     <div v-else-if="!nocontent" class="d-flex align-items-center">
       <b-spinner class="ml-auto" />
     </div>
-    <div v-if="nocontent" class="container-fluid ">
+    <div v-if="nocontent" class="container-fluid">
       <div class="text-center my-5">
         <h2>محتوایی جهت نمایش وجود ندارد</h2>
       </div>
     </div>
     <client-only>
-      <infinite-loading v-if="data.last_page > 1" :identifier="infiniteId" @infinite="infiniteHandler">
+      <infinite-loading
+        v-if="data.last_page > 1"
+        :identifier="infiniteId"
+        @infinite="infiniteHandler"
+      >
         <span slot="no-more" />
         <span slot="no-results" />
       </infinite-loading>
     </client-only>
   </div>
 </template>
+
 <script>
-  import InfiniteLoading from 'vue-infinite-loading'
-  import FilterContents from "@/components/FilterContents"
-    export default {
-        components: {
-            InfiniteLoading,
-            FilterContents
-        },
-  filters: {
-    // Cut word
-    truncate(string, value) {
-    	if(string.length>value)
-      return string.substring(0, value) + "..."
-  		else
-  			return string
+import InfiniteLoading from 'vue-infinite-loading'
+import FilterContents from '@/components/FilterContents'
+import HorizontalList from '@/components/HorizontalList'
+// import MediaCard from '@/components/MediaCard'
+
+const SWIPER_OPTION_POSTER = {
+  spaceBetween: 10,
+  slidesPerView: 3.3,
+  grabCursor: true,
+  setWrapperSize: true,
+  threshold: 2,
+  countdown: {},
+  breakpoints: {
+    200: { slidesPerView: 2.5 },
+    420: { slidesPerView: 3.5 },
+    768: { slidesPerView: 4.5 },
+    992: { slidesPerView: 5.5 },
+    1024: { slidesPerView: 6.5 },
+    1200: { slidesPerView: 7 },
+    1420: { slidesPerView: 8 },
+    1670: { slidesPerView: 9 },
+  },
+}
+
+const SWIPER_OPTION_BACKDROP = {
+  slidesPerView: 2.5,
+  spaceBetween: 10,
+  grabCursor: true,
+  watchOverflow: true,
+  threshold: 2,
+  breakpoints: {
+    320: { slidesPerView: 1.5 },
+    768: { slidesPerView: 2.5 },
+    992: { slidesPerView: 2.5 },
+    1024: { slidesPerView: 3.5 },
+    1420: { slidesPerView: 4.5 },
+    1670: { slidesPerView: 4.5 },
+  },
+}
+
+const SLICK_MAIN_OPTIONS = {
+  dots: false,
+  arrows: false,
+  infinite: true,
+  speed: 500,
+  slidesToShow: 1,
+  slidesToScroll: 1,
+  touchThreshold: 10,
+  autoplay: true,
+}
+
+export default {
+  components: {
+    InfiniteLoading,
+    FilterContents,
+    HorizontalList,
+    // MediaCard,
+  },
+  async asyncData(context) {
+    try {
+      const filter = context.store.getters.filtercontents
+      const offerRes = await context.app.$axios.get('/get/offer' + filter)
+      return { data: {}, offer: offerRes.data }
+    } catch (error) {
+      console.error('Error fetching offer in asyncData:', error)
+      return { data: {}, offer: null }
     }
   },
-async asyncData(context) {
-  try {
-    const filter = context.store.getters.filtercontents
-    // دریافت داده‌های offer از API "/get/offer"
-    const offerRes = await context.app.$axios.get('/get/offer' + filter)
-    return { data: {}, offer: offerRes.data }
-  } catch (error) {
-    console.error('Error fetching offer in asyncData:', error)
-    return { data: {}, offer: null }
-  }
-},
-    data () {
-      return {
-      	data:{},
+  data() {
+    return {
+      data: {},
+      // mediaItems: [
+      //   {
+      //     backdrop: 'iran.jpg',
+      //     name: 'Iran Showcase',
+      //     name_fa: 'نمایش ایران',
+      //     type: 'movie',
+      //     size: { w: 1120, h: 576 },
+      //     variant: 'backdrop',
+      //     cdnType: 2,
+      //     mobileSrc: 'iran2.png',
+      //   },
+      // ],
       recently: null,
       offer: null,
       lives: null,
@@ -474,392 +700,221 @@ async asyncData(context) {
       infiniteId: +new Date(),
       swiperKey: +new Date(),
       distance: -Infinity,
-      nocontent:false,
-      ghostApi:'/getV2/discover',
-        swiperOption: {
-        spaceBetween: 10,
-        slidesPerView: 3.3,
-        grabCursor: true,
-        setWrapperSize: true,
-        threshold: 2,
-        countdown: {},
-        breakpoints: {
-            200: {
-                slidesPerView: 2.5,
-            },
-            420: {
-                slidesPerView: 3.5,
-            },
-            768: {
-                slidesPerView: 4.5,
-            },
-            992: {
-                slidesPerView: 5.5,
-            },
-            1024: {
-                slidesPerView: 6.5,
-            },
-            1200: {
-                slidesPerView: 7,
-            },
-            1420: {
-                slidesPerView: 8,
-            },
-            1670: {
-                slidesPerView: 9,
-            },
-
-        },
-        },
-        swiperOption3: {
- "dots": false,
- "arrows": false,
-  "infinite": true,
-  "speed": 500,
-  "slidesToShow": 1,
-  "slidesToScroll": 1,
-  "touchThreshold": 10,
-  "autoplay": true
-        },
-        swiperOption2: {
-        slidesPerView: 2.5,
-        spaceBetween: 10,
-        grabCursor: true,
-        watchOverflow: true,
-        threshold: 2,
-        breakpoints: {
-            320: {
-                slidesPerView: 1.5,
-            },
-            768: {
-                slidesPerView: 2.5,
-            },
-            992: {
-                slidesPerView: 2.5,
-            },
-            1024: {
-                slidesPerView: 3.5,
-            },
-            1420: {
-                slidesPerView: 4.5,
-            },
-            1670: {
-                slidesPerView: 4.5,
-            },
-
-        }
-        }
-      }
-    },
+      nocontent: false,
+      ghostApi: '/getV2/discover',
+      SWIPER_OPTION_POSTER,
+      SWIPER_OPTION_BACKDROP,
+      swiperOption3: SLICK_MAIN_OPTIONS,
+      swiperOption2: SWIPER_OPTION_BACKDROP,
+    }
+  },
   computed: {
     sliders() {
       return this.$store.state.slider.sliders
+    },
+  },
+  destroyed() {
+    if (this.data.occasions != null) {
+      let specials = document.getElementsByClassName('special-slides')
+      let k = specials.length
+      if (k) {
+        window.removeEventListener('resize', this.specialsize)
+      }
     }
   },
-    destroyed () {
-if(this.data.occasions!=null){
-  let specials=document.getElementsByClassName('special-slides')
-  let k=specials.length
-  if(k){
-    window.removeEventListener('resize', this.specialsize)
-
-  }
-}
-  },
-    async mounted() {
-      await this.$store.dispatch('slider/fetchSlider', {  filtercontents: this.filtercontents})
-      this.get_recently()
-this.fetchDiscoverData()
-
+  async mounted() {
+    await this.$store.dispatch('slider/fetchSlider', {
+      filtercontents: this.filtercontents,
+    })
+    this.get_recently()
+    this.fetchDiscoverData()
 
     if (this.checkuser.show_lives === 1) {
       try {
-        const livesRes = await this.$axios.get('/get/lives?ref='+this.checkuser.ref)
+        const livesRes = await this.$axios.get(
+          '/get/lives?ref=' + this.checkuser.ref
+        )
         this.lives = livesRes.data
       } catch (e) {
         console.error('fetch lives failed', e)
       }
     }
 
-    // اگر کاربر اجازه نمایش ugcs داره، UGCs رو بگیر
     if (this.checkuser.show_ugcs === 1) {
       try {
-        const ugcsRes = await this.$axios.get('/get/ugcs?ref='+this.checkuser.ref)
+        const ugcsRes = await this.$axios.get(
+          '/get/ugcs?ref=' + this.checkuser.ref
+        )
         this.ugcs = ugcsRes.data
       } catch (e) {
         console.error('fetch ugcs failed', e)
       }
     }
-
-    },
+  },
   methods: {
-    get_recently() {
-      var apiurl
-      if (this.$auth.loggedIn) {
-              apiurl='/get/recently'
-      } else {
-        this.recently=null
-        return
-      }
-      this.$axios.get(apiurl+this.filtercontents).then((res) => {
-         
-        if(res.status === 200){
-          this.recently=res.data.data
-this.$nextTick(() => {
-  const watching = document.getElementById("watching")
-  if (watching && this.watchSwip) {
-    this.watchSwip.on('reachBeginning', () => {
-      watching.classList.remove('swipe')
-    })
-    this.watchSwip.on('fromEdge', () => {
-      watching.classList.add('swipe')
-    })
-  }
-})
-
-
-        }else{
-          this.message=res.data.message
-        }
-      }, (error) => {
-        this.message=error.response.data.message
-        return error
-      })
-
-    },
-        fetchDiscoverData() {
-      this.$axios.get('/getV2/discover' + this.filtercontents)
-        .then(response => {
-          if (response.status === 200) {
-            this.data = response.data.data
-
-            if (!this.data.data.length) {
-  this.nocontent=true
-}
-if(this.data.occasions!=null){
-
-
-
-  let specials=document.getElementsByClassName('special-slides')
-  let k=specials.length
-  var spec
-
-  if(k){
-
-    window.addEventListener('resize', this.specialsize)
-    var h=0
-    var cur = 0
-    var count=0
-    var curr
-    var l
-    var s
-    var na
-
-    for (var i = 0; i < k; i++) {
-      spec = specials[i].getElementsByClassName('special-slide')
-      count=spec.length
-      if(count){
-        h=h+spec[0].offsetHeight
-
-        cur = 0
-
-        na=0
-        for (l = 0; l < count; l++) {
-          if(spec[l].classList.contains("active")===false){
-            spec[l].getElementsByClassName('special-image')[0].style.transform=`translate3d(-${na * 5}px, ${na * 5}px, 0)`
-            spec[l].getElementsByClassName('special-image')[0].style.zIndex=na
-            na++
-          }else{
-            spec[l].getElementsByClassName('special-image')[0].style.transform='translate3d(-15px, 15px, 0)'
-            spec[l].getElementsByClassName('special-image')[0].style.zIndex=9
-          }
-        }
-
-        setInterval(function () {
-            spec[cur].classList.remove('active')
-            cur = (cur + 1) % count
-            spec[cur].classList.add('active')
-
-            spec[cur].getElementsByClassName('special-image')[0].style.transform='translate3d(-15px, 15px, 0)'
-            spec[cur].getElementsByClassName('special-image')[0].style.zIndex=9
-
-            curr = cur
-            na=0
-            for (s = 0; s < count; s++) {
-              if(spec[s].classList.contains("active")===false){
-                curr = (cur + (na + 1)) % count
-                spec[curr].getElementsByClassName('special-image')[0].style.transform=`translate3d(${- na * 5}px, ${na * 5}px, 0)`
-                spec[curr].getElementsByClassName('special-image')[0].style.zIndex= na + 1
-                na++
-              }
-            }
-        }, 3000)
-
-      }
-    }
-
-    document.getElementById('special').style.height=(h+20)+'px'
-
-  }
-
-}
-
-          }
-        })
-        .catch(error => {
-          console.error('Error fetching discover:', error)
-        })
-    },
-    ChooseLang(en,fa){
-        if(fa && this.$i18n.locale=="fa")
-            return fa
-        else
-            return en.charAt(0).toUpperCase() + en.slice(1)
+    ChooseLang(en, fa) {
+      if (fa && this.$i18n.locale === 'fa') return fa
+      if (!en) return fa || ''
+      return en.charAt(0).toUpperCase() + en.slice(1)
     },
     truncate(string, value) {
-      return string.substring(0, value) + "..."
+      if (!string) return ''
+      return string.length > value ? string.substring(0, value) + '...' : string
     },
-
-      showNext() {
-        this.$refs.carousel.next()
-      },
-
-      showPrev() {
-        this.$refs.carousel.prev()
-      },
-    // Add new like or delete it
-    // Params type1 detected if add or delete
-    // ADD_WATCHLIST(id, type, index, is_watchlist) {
-    //     if (this.$auth.loggedIn) {
-
-    //   if (is_watchlist==0) {
-    //     // Add true to data array
-    //     this.top[index].is_watchlist = 1
-    //   } else {
-    //     // Add false to data array
-    //     this.top[index].is_watchlist = 0
-
-    //   }
-
-    //   this.$axios.post('/create/watchlist', {id,type})
-    //             } else {
-    //                 this.$store.dispatch('login/SHOW_MODAL',{premessage: null,premobile: null,preredirect: null,prerefresh: false})
-
-    //             }
-                
-    // },
-    specialsize(e){
-      let specials=document.getElementsByClassName('special-slides')
-      let k=specials.length
-      var spec
-
-      if(k){
-        var h=0
-        for (var i = 0; i < k; i++) {
-          spec = specials[i].getElementsByClassName('special-slide')
-          if(spec.length)
-            h=h+spec[0].offsetHeight
+    buildIdRoute(item) {
+      return { name: item.type + '-id', params: { id: item.id } }
+    },
+    buildShowIdRoute(item) {
+      return { name: item.type + '-show-id', params: { id: item.id } }
+    },
+    async get_recently() {
+      try {
+        if (!this.$auth.loggedIn) {
+          this.recently = null
+          return
         }
-
-        document.getElementById('special').style.height=(h+20)+'px'
+        const apiurl = '/get/recently'
+        const { data, status } = await this.$axios.get(
+          apiurl + this.filtercontents
+        )
+        if (status === 200) {
+          this.recently = data.data
+          this.$nextTick(() => {
+            const watching = document.getElementById('watching')
+            if (watching && this.watchSwip) {
+              this.watchSwip.on('reachBeginning', () => {
+                watching.classList.remove('swipe')
+              })
+              this.watchSwip.on('fromEdge', () => {
+                watching.classList.add('swipe')
+              })
+            }
+          })
+        }
+      } catch (error) {
+        console.error('get_recently failed:', error)
       }
-      return e
     },
-               infiniteHandler($state) {
-                var apiurl
-                  apiurl=this.ghostApi
-                
-                    this.$axios.get(apiurl+this.filtercontents,{params: {discover_page: this.page + 1}}).then(response => {
+    async fetchDiscoverData() {
+      try {
+        const response = await this.$axios.get(
+          this.ghostApi + this.filtercontents
+        )
+        if (response.status === 200) {
+          this.data = response.data.data
+          if (!this.data.data.length) this.nocontent = true
+        }
+      } catch (error) {
+        console.error('Error fetching discover:', error)
+      }
+    },
+    showNext() {
+      this.$refs.carousel.next()
+    },
+    showPrev() {
+      this.$refs.carousel.prev()
+    },
+    async execute_content_filtering() {
+      this.$nuxt.$loading.start()
+      this.$store.dispatch('filter/FILTER_LOADING')
 
-                        if (response.status === 200) {
-                            if (response.data.data.data.length) {
-                              this.data.data = this.data.data.concat(response.data.data.data)
-                              if(response.data.data.last_page==this.page)
-                                $state.complete()
-                              else
-                                $state.loaded()
-                            } else {
-                              $state.complete()
-                            }
-                        }
+      const requests = []
+
+      requests.push(
+        this.$store.dispatch('slider/fetchSlider', {
+          filtercontents: this.filtercontents,
+          loadagain: 1,
+        })
+      )
+
+      requests.push(
+        this.$axios.get('/get/offer' + this.filtercontents).then((response) => {
+          if (response.status === 200) this.offer = response.data
+        })
+      )
+
+      if (this.$auth.loggedIn) {
+        requests.push(
+          this.$axios
+            .get('/get/recently' + this.filtercontents)
+            .then((response) => {
+              if (response.status === 200) {
+                this.recently = response.data.data
+                this.$nextTick(() => {
+                  const watching = document.getElementById('watching')
+                  if (watching && this.watchSwip) {
+                    this.watchSwip.on('reachBeginning', () => {
+                      watching.classList.remove('swipe')
                     })
-                this.page = this.page + 1
-            },
-
-            execute_content_filtering() {
-this.$nuxt.$loading.start()
-this.$store.dispatch('filter/FILTER_LOADING')
-
-let requests = []
-
-// اولین درخواست
-// let apiurl = this.$auth.loggedIn ? '/get/get_top' : '/getV2/get_top'
-let apiurl = ''
-
-  requests.push(
-    this.$store.dispatch('slider/fetchSlider',  { filtercontents: this.filtercontents,loadagain:1})
-  )
-
-  requests.push(
-    this.$axios.get('/get/offer' + this.filtercontents).then(response => {
-      if (response.status === 200) {
-        this.offer = response.data  // دریافت داده offer و اختصاص به this.offer
+                    this.watchSwip.on('fromEdge', () => {
+                      watching.classList.add('swipe')
+                    })
+                  }
+                })
+              }
+            })
+        )
       }
-    })
-  )
 
-// دومین درخواست در صورت ورود کاربر
-if (this.$auth.loggedIn) {
-  apiurl = '/get/recently'
-  requests.push(
-    this.$axios.get(apiurl + this.filtercontents).then(response => {
-      if (response.status === 200) {
-        this.recently = response.data.data
-this.$nextTick(() => {
-  const watching = document.getElementById("watching")
-  if (watching && this.watchSwip) {
-    this.watchSwip.on('reachBeginning', () => {
-      watching.classList.remove('swipe')
-    })
-    this.watchSwip.on('fromEdge', () => {
-      watching.classList.add('swipe')
-    })
-  }
-})
+      requests.push(
+        this.$axios
+          .get(this.ghostApi + this.filtercontents)
+          .then((response) => {
+            if (response.status === 200) {
+              this.nocontent = !response.data.data.data.length
+              this.data = response.data.data
+              this.page = 1
+              this.infiniteId += 1
+              this.swiperKey += 1
+            }
+          })
+      )
 
+      try {
+        await Promise.all(requests)
+      } catch (error) {
+        console.error('Error in requests:', error)
+      } finally {
+        this.$store.dispatch('filter/CLEAN_FILTER_LOADING')
+        this.$nuxt.$loading.finish()
       }
-    })
-  )
+    },
+    infiniteHandler($state) {
+      const apiurl = this.ghostApi
+      const nextPage = this.page + 1
+
+      this.$axios
+        .get(apiurl + this.filtercontents, {
+          params: { discover_page: nextPage },
+        })
+        .then((response) => {
+          if (response.status !== 200) {
+            $state.complete()
+            return
+          }
+
+          const payload =
+            response.data && response.data.data ? response.data.data : null
+          const nextChunk = payload && payload.data ? payload.data : []
+
+          if (nextChunk && nextChunk.length) {
+            this.data.data = this.data.data.concat(nextChunk)
+
+            if (payload.last_page && payload.last_page === this.page) {
+              $state.complete()
+            } else {
+              $state.loaded()
+            }
+          } else {
+            $state.complete()
+          }
+        })
+        .catch(() => {
+          $state.complete()
+        })
+
+      this.page = nextPage
+    },
+  },
 }
-
-// سومین درخواست
-apiurl = this.ghostApi
-requests.push(
-  this.$axios.get(apiurl + this.filtercontents).then(response => {
-    if (response.status === 200) {
-      this.nocontent = !response.data.data.data.length
-      this.data = response.data.data
-      this.page = 1
-      this.infiniteId += 1
-      this.swiperKey += 1
-    }
-  })
-)
-
-// وقتی همه درخواست‌ها کامل شدند
-Promise.all(requests)
-  .then(() => {
-    this.$store.dispatch('filter/CLEAN_FILTER_LOADING')
-    this.$nuxt.$loading.finish()
-  })
-  .catch(error => {
-    console.error('Error in requests:', error)
-    this.$store.dispatch('filter/CLEAN_FILTER_LOADING')
-    this.$nuxt.$loading.finish()
-  })
-
-
-            },
-  }
-  }
 </script>

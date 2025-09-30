@@ -91,3 +91,5 @@ sw.*
 
 /cgi-bin
 /.well-known
+
+package-lock.json

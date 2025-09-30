@@ -1,0 +1,57 @@
+<template>
+  <a
+    href=""
+    class="position-relative d-block"
+    @click.prevent="$emit('play-media')"
+  >
+    <i class="far fa-2x fa-play-circle play-icon" />
+    <OptimizedImage
+      :image-src="previewImageSrc"
+      :alt="`${mediaTypeText} ${data.item.name_fa}`"
+      class="img-fluid"
+      fluid-grow
+      :thumb-options="{ w: 1920, h: 1200, q: 100, a: 'c' }"
+      type="files"
+    />
+  </a>
+</template>
+
+<script>
+import OptimizedImage from '@/components/item/common/OptimizedImage'
+
+export default {
+  name: 'MediaPreview',
+  components: {
+    OptimizedImage,
+  },
+  props: {
+    data: { type: Object, default: () => ({ item: {} }) },
+    mediaType: { type: String, default: '' },
+  },
+  emits: ['play-media'],
+  computed: {
+    mediaTypeText() {
+      const types = {
+        backstage: 'پشت صحنه',
+        musicvideo: 'موزیک ویدئو',
+        next: 'پیش نمایش قسمت بعد',
+      }
+      return types[this.mediaType] || 'مدیا'
+    },
+    previewImageSrc() {
+      // Use back_teaser if available, otherwise use backdrop
+      return this.data.item.back_teaser || this.data.item.backdrop
+    },
+  },
+}
+</script>
+
+<style scoped>
+.play-icon {
+  color: white;
+  position: absolute;
+  top: 45%;
+  left: 45%;
+  z-index: 2;
+}
+</style>

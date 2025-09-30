@@ -236,7 +236,7 @@
                         <div class="d-flex align-items-center justify-content-between pt-3 py-4 border-bottom-gray">
                           <div class="text-black">
                             <i class="fa fa-moon ml-2" />
-                            حالت شب 
+                            حالت شب
                           </div>
                           <div class="custom-control custom-switch">
                             <input id="nightMode" type="checkbox" class="custom-control-input" :checked="$colorMode.value==='dark'" @change="nightmode($event.target.checked)">
@@ -247,7 +247,7 @@
                         <div class="d-flex align-items-center justify-content-between py-4 pt-3 border-bottom-gray">
                           <div class="text-black">
                             <i class="fa fa-globe ml-2" />
-                            زبان فارسی 
+                            زبان فارسی
                           </div>
                           <div class="custom-control custom-switch">
                             <input id="language" type="checkbox" class="custom-control-input" :checked="$i18n.locale==='fa'" @change="changelang()">
@@ -258,7 +258,7 @@
                           <div class="text-black pb-1">
                             فیلترگذاری ثابت محتوا
                           </div>
-                          <FilterContents :show="true" :setting="true" :savedata="true" :notop="false" @execute_content_filtering="execute_content_filtering" />
+                          <FilterContents :show="true" :setting="true" :savedata="true" :no-top="false" @execute_content_filtering="execute_content_filtering" />
                         </div>
                       </div>
                     </div>
@@ -495,7 +495,7 @@ import Subscription from "../components/Subscription"
     DirectDebit,
     Subscription
   },
-  
+
   data() {
     return {
       query: null,
@@ -531,7 +531,7 @@ import Subscription from "../components/Subscription"
       document.body.classList.remove("scroll-down")
     }
     },
-    
+
   destroyed () {
     window.removeEventListener('scroll', this.handleScroll)
   },
@@ -591,7 +591,7 @@ if(footer.length){
         var goftino_w=document.getElementById("goftino_w")
         if(goftino_w)
           goftino_w.classList.remove('goftino_w_hide')
-        
+
         // document.body.classList.add(delta > 0 ? 's-c' : 's-h')
 
         //console.log(document.documentElement.scrollHeight-document.documentElement.clientHeight)
@@ -606,7 +606,7 @@ if(footer.length){
               }else{
                 goftino_w.classList.add('goftino_w_hide')
               }
-            } 
+            }
         }else{
           if(goftino_w)
            goftino_w.classList.add('goftino_w_hide')
@@ -666,7 +666,7 @@ document.body.classList.add("header-fixed-collapsed")
 
             return
         }else{
-           document.body.classList.add("scroll-down") 
+           document.body.classList.add("scroll-down")
 
             return
           }
@@ -682,7 +682,7 @@ document.body.classList.add("header-fixed-collapsed")
               }
               else {
                 this.categoriesNav = false
-              }  
+              }
 
 
               if (this.profile.includes(this.$route.path)) {
@@ -719,7 +719,7 @@ document.body.classList.add("header-fixed-collapsed")
                 })
               }
             },
-            
+
       refresh() {
         this.$nuxt.refresh()
       },
@@ -762,7 +762,7 @@ document.body.classList.add("header-fixed-collapsed")
 
         await this.$auth.logout()
         this.$router.go()
-        
+
 
       },
       execute_content_filtering(){
@@ -776,7 +776,7 @@ document.body.classList.add("header-fixed-collapsed")
            this.$i18n.setLocale('en')
         }
 
-        
+
       }
     },
   }
