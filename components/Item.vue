@@ -46,23 +46,6 @@
       @share="modalsharing = true"
     />
 
-    <ContentDetails
-      :data="data"
-      :type="type"
-      :medias="medias"
-      :total-claps="total_claps"
-      :episode-num="episode_num"
-      :season-num="season_num"
-      :casts="casts"
-      :directors="directors"
-      :producers="producers"
-      :writers="writers"
-      :investors="investors"
-      :comm-num="comm_num"
-      @get-file="GET_FILE"
-      @load-images="LoadImages"
-    />
-
     <!-- Series Last Episode Showcase -->
     <SeriesLastEpisode
       v-if="type === 'series' && last_episode"
@@ -82,8 +65,37 @@
       @select-season="selectseries"
     />
 
+    <!-- Statistics -->
+    <ContentStatistics
+      :data="data"
+      :type="type"
+      :total-claps="total_claps"
+      :episode-num="episode_num"
+      :season-num="season_num"
+    />
+
+    <!-- Story Content -->
+    <StoryContent :data="data" :type="type" />
+
     <!-- Similar Content Section -->
     <SimilarContent v-if="similar && similar.length" :similar="similar" />
+
+    <ContentDetails
+      :data="data"
+      :type="type"
+      :medias="medias"
+      :total-claps="total_claps"
+      :episode-num="episode_num"
+      :season-num="season_num"
+      :casts="casts"
+      :directors="directors"
+      :producers="producers"
+      :writers="writers"
+      :investors="investors"
+      :comm-num="comm_num"
+      @get-file="GET_FILE"
+      @load-images="LoadImages"
+    />
 
     <!-- Modal Components -->
     <Download
@@ -145,6 +157,8 @@ import SimilarContent from '@/components/item/SimilarContent'
 import Download from '@/components/Download'
 import File from '@/components/item/File'
 import Socialsharing from '@/components/Socialsharing'
+import StoryContent from '@/components/item/content/StoryContent'
+import ContentStatistics from '@/components/item/content/ContentStatistics'
 
 export default {
   name: 'ContentShowcase',
@@ -158,6 +172,8 @@ export default {
     Download,
     File,
     Socialsharing,
+    StoryContent,
+    ContentStatistics,
   },
   props: {
     data: {

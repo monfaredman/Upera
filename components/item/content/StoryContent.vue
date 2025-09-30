@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="container-fluid" style="margin-bottom: 3.5rem">
     <div class="title mt-4 mb-3">
       {{ storyTitle }}
     </div>

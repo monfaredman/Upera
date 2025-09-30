@@ -1,5 +1,7 @@
 <template>
-  <div class="statistics d-flex align-items-center justify-content-between">
+  <div
+    class="statistics d-flex align-items-center justify-content-between container-fluid"
+  >
     <StatisticsItem
       v-if="data.item.year"
       icon="icon-calendar"

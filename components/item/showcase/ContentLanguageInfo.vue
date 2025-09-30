@@ -48,15 +48,15 @@ export default {
 <style scoped>
 .persian-dub-badge,
 .persian-sub-badge {
-  display: inline-block;
+  /* display: inline-block;
   padding: 0.25rem 0.75rem;
   background: linear-gradient(45deg, #ff6b6b, #ee5a24);
-  border-radius: 0.25rem;
+  border-radius: 0.25rem; */
   font-size: 0.875rem;
   font-weight: 500;
 }
 
-.persian-sub-badge {
+/* .persian-sub-badge {
   background: linear-gradient(45deg, #4834d4, #686de0);
-}
+} */
 </style>

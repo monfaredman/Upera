@@ -1,6 +1,6 @@
 <template>
   <section id="movie" class="page">
-    <div class="container-fluid">
+    <div>
       <div class="article py-3">
         <!-- Teaser Section -->
         <TeaserPreview
@@ -9,17 +9,6 @@
           :medias="medias"
           @play-teaser="GET_FILE(1)"
         />
-        <!-- Statistics -->
-        <ContentStatistics
-          :data="data"
-          :type="type"
-          :total-claps="totalClaps"
-          :episode-num="episodeNum"
-          :season-num="seasonNum"
-        />
-
-        <!-- Story Content -->
-        <StoryContent :data="data" :type="type" />
 
         <!-- Additional Media Sections -->
         <MediaTabs
@@ -43,16 +32,12 @@
 
 <script>
 import TeaserPreview from '@/components/item/content/TeaserPreview'
-import ContentStatistics from '@/components/item/content/ContentStatistics'
-import StoryContent from '@/components/item/content/StoryContent'
 import MediaTabs from '@/components/item/content/MediaTabs'
 
 export default {
   name: 'ContentDetails',
   components: {
     TeaserPreview,
-    ContentStatistics,
-    StoryContent,
     MediaTabs,
   },
   props: {
