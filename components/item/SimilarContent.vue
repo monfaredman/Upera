@@ -10,7 +10,8 @@
     <div
       v-if="similar && similar.length"
       v-swiper:offerSwiper="swiperOption"
-      class="newset-slider"
+      class="swiper-container"
+      style="height: 300px"
     >
       <div class="swiper-wrapper py-1">
         <div
@@ -24,7 +25,6 @@
               name: (item.type || 'movie') + '-id',
               params: { id: item.id },
             }"
-            :class="{ 'is-series': item.type != 'movie' }"
           >
             <OptimizedImage
               :image-src="item.poster"

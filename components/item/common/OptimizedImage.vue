@@ -4,6 +4,8 @@
       v-bind="computedProps"
       :src="computedSrc"
       :alt="alt"
+      rounded="lg"
+      :class="height === 'full' ? 'h-full' : '' + ' ' + classNames"
       v-on="$listeners"
     />
   </div>
@@ -79,7 +81,7 @@ export default {
         baseProps.fluidGrow = true
       } else if (this.width && this.height) {
         baseProps.width = this.width
-        baseProps.height = this.height
+        baseProps.height = this.height === 'full' ? '100%' : this.height
       }
 
       return baseProps

@@ -7,12 +7,15 @@
           {{ ChooseLang(data.item.name, data.item.name_fa) }}
         </nuxt-link>
       </div>
-      <div v-else class="title text-invert mb-5 mb-md-3">
+      <div
+        v-else
+        class="title text-invert mb-5 mb-md-3"
+        style="max-height: 3rem"
+      >
         <nuxt-link :to="{ name: type + '-id', params: { id: data.item.id } }">
           {{ ChooseLang(data.item.series_name, data.item.series_name_fa) }}
         </nuxt-link>
       </div>
-
       <!-- Episode Info for Mobile -->
       <EpisodeInfo
         v-if="type === 'episode'"

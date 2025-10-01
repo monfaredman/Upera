@@ -5,7 +5,7 @@
       :has-download-button="hasDownloadButton"
       :main-button-label="mainButtonLabel"
       :main-button-action="mainButtonAction"
-      :episode="episode"
+      :episode="derivedEpisode"
       :download-button-label="downloadButtonLabel"
       :clapinterval="clapinterval"
       :user-claps="user_claps"
@@ -21,11 +21,10 @@
       @clap-stop="stopclap"
       @share="modalsharing = true"
     />
-
     <MediaShowcase
       :data="data"
       :type="type"
-      :episode="episode"
+      :episode="derivedEpisode"
       :has-download-button="hasDownloadButton"
       :has-main-button="hasMainButton"
       :main-button-label="mainButtonLabel"
@@ -55,16 +54,6 @@
       @toggle-watchlist="ADD_WATCHLIST"
     />
 
-    <!-- Season Episodes Section -->
-    <SeasonEpisodes
-      v-if="type !== 'movie' && season"
-      :season="season"
-      :selectseriesid="selectseriesid"
-      :seasontitle="seasontitle"
-      :type="type"
-      @select-season="selectseries"
-    />
-
     <!-- Statistics -->
     <ContentStatistics
       :data="data"
@@ -76,6 +65,16 @@
 
     <!-- Story Content -->
     <StoryContent :data="data" :type="type" />
+
+    <!-- Season Episodes Section -->
+    <SeasonEpisodes
+      v-if="type !== 'movie' && season"
+      :season="season"
+      :selectseriesid="selectseriesid"
+      :seasontitle="seasontitle"
+      :type="type"
+      @select-season="selectseries"
+    />
 
     <!-- Similar Content Section -->
     <SimilarContent v-if="similar && similar.length" :similar="similar" />
@@ -262,6 +261,12 @@ export default {
       if (!this.hasDownloadButton) return ''
       const lbl = this.actions.downloadButton.label || {}
       return this.ChooseLang(lbl.en, lbl.fa)
+    },
+    derivedEpisode() {
+      if (this.type === 'episode' && this.data && this.data.item) {
+        return this.data.item
+      }
+      return this.episode || {}
     },
   },
 
