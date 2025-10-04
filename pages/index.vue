@@ -21,7 +21,6 @@
             />
           </template>
           -->
-
           <div
             v-for="(item, index) in sliders"
             :key="index"

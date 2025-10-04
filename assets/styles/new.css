@@ -11031,7 +11031,7 @@ label:after {
 }
 
 .trigger-menu-wrapper {
-  background: #121212;
+  background: linear-gradient(0deg, transparent 0%, #171717 90%);
   transition: transform 0.4s;
   box-shadow: 0px 1px 10px -2px rgb(18, 18, 18);
 }

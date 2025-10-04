@@ -231,11 +231,12 @@ colorMode: {
       'BCollapse',
       'BPopover',
       'BSpinner',
+      'BootstrapVueIcons',
     ],
     directives: ['VBTooltip','VBToggle'],
   },
   build: {
-    /**
+    /**ßßß
      * add external plugins
      */
     extractCSS: true,
