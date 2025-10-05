@@ -216,6 +216,7 @@
   .profile-box {
     width: fit-content !important;
     margin-right: 9rem !important;
+    box-shadow: 0px -3px 12px 0px #97979740;
   }
 }
 
@@ -223,5 +224,8 @@
   .child-cta-btn {
     padding: 0.3rem 0.25rem !important;
   }
+}
+.profile-box {
+  box-shadow: 0px -3px 12px 0px #97979740;
 }
 </style>
