@@ -151,7 +151,7 @@
     let res2
 
   	if (context.app.$auth.loggedIn) {
-  	    res = await context.app.$axios.get('/get/profile/payment/download-billing')
+  	    res = await context.app.$axios.get('/get/payments')
         res2 = await context.app.$axios.post('/get/my_wallet')
 
         return {data:res.data.payments,wallet:res2.data.data.my_credit}
