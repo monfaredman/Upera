@@ -62,7 +62,9 @@
             </thead>
             <tbody>
               <tr v-for="(item,index) in data" :key="index">
-                <td><span v-if="item.status=='pending'"><span v-if="item.for=='Buy Credit'">پرداخت ناموفق شارژ</span><span v-else>پرداخت ناموفق</span></span><span v-else><span v-if="item.for=='Buy Credit'">شارژ مستقیم</span><span v-else>پرداخت موفق</span></span></td>
+                <td><div class="text-fade text-center">
+                    {{item.for}}
+                  </div></td>
                 <td>
                   <div class="text-fade text-center">
                     {{ item.date }}
@@ -78,7 +80,10 @@
                     <div class="payment-desc">
                       درگاه {{ item.method }}
                     </div>
-                    <div v-if="item.status!=='completed'" class="payment-desc-button">
+                    <div v-if="item.status!=='completed' && item._source=='gateway_transactions'" class="payment-desc-button">
+                      <a :href="'/callback?payment_id='+item.transaction_id+'&payment_uri='+item.method+'&ref_num='+item.ref_num+'&check_it_again=1&purchase=subscription'" class="btn btn-sm btn-primary-dark">بررسی پرداخت</a>
+                    </div>
+                    <div v-else-if="item.status!=='completed'" class="payment-desc-button">
                       <a :href="'/callback?payment_id='+item.transaction_id+'&payment_uri='+item.method+'&ref_num='+item.ref_num+'&check_it_again=1'" class="btn btn-sm btn-primary-dark">بررسی پرداخت</a>
                     </div>
                   </div>
@@ -98,7 +103,9 @@
                  data-toggle="collapse" data-target="#collapseOne"
             >
               <div class="font-weight-bold">
-                <span v-if="item.status=='pending'"><span v-if="item.for=='Buy Credit'">پرداخت ناموفق شارژ</span><span v-else>پرداخت ناموفق</span></span><span v-else><span v-if="item.for=='Buy Credit'">شارژ مستقیم</span><span v-else>پرداخت موفق</span></span>
+                <div class="text-fade">
+                  {{ item.for }}
+                </div>
               </div>
               <div class="d-flex align-items-center">
                 <div class="text-fade">
@@ -119,7 +126,10 @@
                   <div class="payment-desc">
                     درگاه {{ item.method }}
                   </div>
-                  <div v-if="item.status!=='completed'" class="payment-desc-button">
+                  <div v-if="item.status!=='completed' && item._source=='gateway_transactions'" class="payment-desc-button">
+                    <a :href="'/callback?payment_id='+item.transaction_id+'&payment_uri='+item.method+'&ref_num='+item.ref_num+'&check_it_again=1&purchase=subscription'" class="btn btn-sm btn-primary-dark">بررسی پرداخت</a>
+                  </div>
+                  <div v-else-if="item.status!=='completed'" class="payment-desc-button">
                     <a :href="'/callback?payment_id='+item.transaction_id+'&payment_uri='+item.method+'&ref_num='+item.ref_num+'&check_it_again=1'" class="btn btn-sm btn-primary-dark">بررسی پرداخت</a>
                   </div>
                 </div>
