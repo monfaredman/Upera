@@ -80,11 +80,8 @@
                     <div class="payment-desc">
                       درگاه {{ item.method }}
                     </div>
-                    <div v-if="item.status!=='completed' && item._source=='gateway_transactions'" class="payment-desc-button">
-                      <a :href="'/callback?payment_id='+item.transaction_id+'&payment_uri='+item.method+'&ref_num='+item.ref_num+'&check_it_again=1&purchase=subscription'" class="btn btn-sm btn-primary-dark">بررسی پرداخت</a>
-                    </div>
-                    <div v-else-if="item.status!=='completed'" class="payment-desc-button">
-                      <a :href="'/callback?payment_id='+item.transaction_id+'&payment_uri='+item.method+'&ref_num='+item.ref_num+'&check_it_again=1'" class="btn btn-sm btn-primary-dark">بررسی پرداخت</a>
+                    <div v-if="item.status!=='completed'" class="payment-desc-button">
+                      <a :href="'/callback?payment_id='+item.transaction_id+'&payment_uri='+item.method+'&ref_num='+item.ref_num+'&check_it_again=1&purchase='+item.purchase" class="btn btn-sm btn-primary-dark">بررسی پرداخت</a>
                     </div>
                   </div>
                 </td>
@@ -126,11 +123,8 @@
                   <div class="payment-desc">
                     درگاه {{ item.method }}
                   </div>
-                  <div v-if="item.status!=='completed' && item._source=='gateway_transactions'" class="payment-desc-button">
-                    <a :href="'/callback?payment_id='+item.transaction_id+'&payment_uri='+item.method+'&ref_num='+item.ref_num+'&check_it_again=1&purchase=subscription'" class="btn btn-sm btn-primary-dark">بررسی پرداخت</a>
-                  </div>
-                  <div v-else-if="item.status!=='completed'" class="payment-desc-button">
-                    <a :href="'/callback?payment_id='+item.transaction_id+'&payment_uri='+item.method+'&ref_num='+item.ref_num+'&check_it_again=1'" class="btn btn-sm btn-primary-dark">بررسی پرداخت</a>
+                  <div v-if="item.status!=='completed'" class="payment-desc-button">
+                    <a :href="'/callback?payment_id='+item.transaction_id+'&payment_uri='+item.method+'&ref_num='+item.ref_num+'&check_it_again=1&purchase='+item.purchase" class="btn btn-sm btn-primary-dark">بررسی پرداخت</a>
                   </div>
                 </div>
               </div>
