@@ -33,8 +33,20 @@
   --banner-height: 700px;
   --banner-min-width: 300px;
   --banner-min-height: 200px;
-  background: var(--banner-image) center/cover no-repeat;
-  height: clamp(var(--banner-min-height), 65vh, var(--banner-height));
+  --banner-shadow-color: rgba(0, 0, 0, 0.758);
+  --banner-shadow-height: 16.666%;
+
+  background-image: linear-gradient(
+      to top,
+      var(--banner-shadow-color) 0%,
+      rgba(0, 0, 0, 0) var(--banner-shadow-height)
+    ),
+    var(--banner-image);
+  background-position: center, center;
+  background-size: cover, cover;
+  background-repeat: no-repeat, no-repeat;
+
+  height: clamp(var(--banner-min-height), 70vh, var(--banner-height));
   width: 100%;
   min-width: var(--banner-min-width);
   min-height: var(--banner-min-height);
@@ -45,7 +57,6 @@ h3 {
   line-height: 5.5rem !important;
   margin-top: 20rem;
   word-spacing: 0.2em;
-  font-family: 'dana-600' !important;
 }
 
 @media (max-width: 992px) {
@@ -58,7 +69,7 @@ h3 {
     line-height: 4.5rem !important;
     margin-top: 20rem;
     word-spacing: 0.2em;
-    font-family: 'dana-600' !important;
+    font-family: 'dana' !important;
   }
 }
 

@@ -4,50 +4,74 @@
     <div v-if="layout === 'slide'" class="swiper-slide">
       <div class="row no-gutters">
         <div class="col-md-12 col-lg-12 showcase-pic">
-          <nuxt-link :to="resolvedLink" :class="computedLinkClass">
-            <!-- Desktop Image -->
-            <b-img
-              v-if="variant === 'poster'"
-              blank
-              blank-color="#bbb"
-              :width="size.w"
-              :height="size.h"
-              show
-              class="showcase-img d-none d-lg-block"
-              :src="posterSrc(item.poster)"
-              :alt="altText"
-            />
-            <b-img
-              v-else
-              blank
-              blank-color="#bbb"
-              :width="size.w"
-              :height="size.h"
-              show
-              class="showcase-img d-none d-lg-block"
-              :src="backdropSrc(item.backdrop, item.cdnType ?? 1)"
-              :alt="altText"
-            />
+          <!-- Desktop Image -->
+          <template v-if="variant === 'poster'">
+            <nuxt-link :to="resolvedLink" :class="computedLinkClass">
+              <b-img
+                blank
+                blank-color="#bbb"
+                :width="size.w"
+                :height="size.h"
+                show
+                class="d-none d-lg-block"
+                :src="
+                  variant === 'poster'
+                    ? posterSrc(item.poster)
+                    : backdropSrc(
+                        item.mobileSrc ? item.mobileSrc : item.backdrop,
+                        item.cdnType ?? 1
+                      )
+                "
+                :alt="altText"
+                rounded
+              />
+            </nuxt-link>
 
-            <!-- Mobile Image -->
-            <b-img
-              blank
-              blank-color="#bbb"
-              width="375"
-              height="300"
-              show
-              class="showcase-img d-lg-none"
-              :src="
-                variant === 'poster'
-                  ? posterSrc(item.poster)
-                  : backdropSrc(
-                      item.mobileSrc ? item.mobileSrc : item.backdrop,
-                      item.cdnType ?? 1
-                    )
-              "
-              :alt="altText"
-            />
-          </nuxt-link>
+            <div class="mt-2 d-none d-md-inline">
+              <h6 class="mt-2 small font-weight-normal">
+                {{ ChooseLang(item.name, item.name_fa) }}
+              </h6>
+            </div>
+          </template>
+          <template v-else>
+            <nuxt-link :to="resolvedLink" :class="computedLinkClass">
+              <b-img
+                blank
+                blank-color="#bbb"
+                :width="size.w"
+                :height="size.h"
+                show
+                class="d-none d-lg-block"
+                :src="backdropSrc(item.backdrop, item.cdnType ?? 1)"
+                :alt="altText"
+                rounded
+              />
+            </nuxt-link>
+          </template>
+          <!-- Mobile Image -->
+          <b-img
+            blank
+            blank-color="#bbb"
+            width="375"
+            height="300"
+            show
+            class="d-lg-none"
+            :src="
+              variant === 'poster'
+                ? posterSrc(item.poster)
+                : backdropSrc(
+                    item.mobileSrc ? item.mobileSrc : item.backdrop,
+                    item.cdnType ?? 1
+                  )
+            "
+            :alt="altText"
+            rounded
+          />
+          <div v-if="variant === 'poster'" class="mt-2 d-block d-md-none">
+            <h6 class="mt-2 small font-weight-normal">
+              {{ ChooseLang(item.name, item.name_fa) }}
+            </h6>
+          </div>
         </div>
       </div>
     </div>
@@ -110,7 +134,7 @@ export default {
       default: () => ({ w: 1512, h: 461 }),
     },
     // Function: (item) => routeObject
-    linkBuilder: { type: Function, required: true },
+    linkBuilder: { type: [Function, String, Object], required: true },
     showBadges: { type: Boolean, default: true },
     addSeriesClass: { type: Boolean, default: true },
     // 'slide' | 'grid'
@@ -125,10 +149,16 @@ export default {
     computedLinkClass() {
       return [
         this.linkBaseClass,
-        { 'is-series': this.addSeriesClass && this.item?.type !== 'movie' },
+        // { 'is-series': this.addSeriesClass && this.item?.type !== 'movie' },
       ]
     },
     resolvedLink() {
+      if (typeof this.linkBuilder === 'string') {
+        return this.linkBuilder
+      }
+      if (typeof this.linkBuilder === 'object') {
+        return this.linkBuilder
+      }
       return this.linkBuilder(this.item)
     },
     // Badges visibility derived from item and env
@@ -159,6 +189,10 @@ export default {
       }
       const base = cdnType === 1 ? CDN_BACKDROPS_1 : CDN_BACKDROPS_2
       return `${THUMB_BASE}?w=${w}&h=${h}&q=90&a=t&zc=1&fmt=webp&src=${base}/${filename}`
+    },
+    ChooseLang(en, fa) {
+      if (fa && this.$i18n.locale === 'fa') return fa
+      return en
     },
   },
 }

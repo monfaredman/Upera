@@ -10,54 +10,57 @@
           />
         </div>
         <div class="col-12 col-lg-6 mb-4 mb-lg-0 align-self-end" dir="rtl">
-          <h2 class="title mb-5 text-right">
+          <h2 class="title mb-5 mr-4 !text-right">
             هر لحظه و هرجا با آپرا فیلم ببین!
           </h2>
 
           <div class="buttons-wrapper">
             <div class="buttons-row">
-              <b-button
-                variant="link"
-                class="text-white d-flex align-items-center flex-shrink-0 hide-mobile"
-                style="width: 150px"
+              <div
+                class="static-btn text-white d-flex align-items-center justify-content-start flex-shrink-0"
+                style="width: 170px"
               >
-                <!-- <b-icon icon="phone" class="ml-2"></b-icon> -->
-                <span class="mr-2">اپ موبایل</span>
-              </b-button>
+                <img
+                  src="@/assets/images/app/mobile.png"
+                  alt="Apps"
+                  class="ml-2"
+                />
+                <span class="mr-2 text-nowrap text-right">اپ موبایل</span>
+              </div>
               <div class="d-flex flex-row buttons-row button-mobile-col">
                 <b-button
-                  variant="primary"
                   v-for="link in appLinks.filter(
                     (item) => item.type === 'mobile'
                   )"
                   :key="link.label"
+                  variant="primary"
                   :href="link.href"
-                  class="app-btn d-flex align-items-center equal-btn"
+                  class="app-btn d-flex align-items-center justify-content-between equal-btn"
                 >
-                  <!-- <b-icon :icon="link.icon" class="icon"></b-icon> -->
-                  <span class="label">{{ link.label }}</span>
+                  <img :src="link.icon" alt="Apps" />
+                  <span style="font-size: 16px">{{ link.label }}</span>
                 </b-button>
               </div>
             </div>
             <div class="buttons-row mt-4">
-              <b-button
+              <div
                 variant="link"
-                class="text-white d-flex align-items-center flex-shrink-0 hide-mobile"
-                style="width: 150px"
+                class="static-btn text-white d-flex align-items-center justify-content-start flex-shrink-0"
+                style="width: 170px"
               >
-                <!-- <b-icon icon="tv" class="ml-2"></b-icon> -->
-                <span class="mr-2">اپ تلویزیون</span>
-              </b-button>
+                <img src="@/assets/images/app/tv.png" alt="Apps" class="ml-2" />
+                <span class="mr-2 text-nowrap text-right">اپ تلویزیون</span>
+              </div>
               <div class="d-flex flex-row buttons-row button-mobile-col">
                 <b-button
-                  variant="primary"
                   v-for="link in appLinks.filter((item) => item.type === 'tv')"
                   :key="link.label"
+                  variant="primary"
                   :href="link.href"
-                  class="app-btn d-flex align-items-center equal-btn"
+                  class="app-btn d-flex align-items-center justify-content-between equal-btn"
                 >
-                  <!-- <b-icon :icon="link.icon" class="icon"></b-icon> -->
-                  <span class="label">{{ link.label }}</span>
+                  <img :src="link.icon" alt="Apps" />
+                  <span style="font-size: 16px">{{ link.label }}</span>
                 </b-button>
               </div>
             </div>
@@ -69,11 +72,36 @@
 </template>
 
 <script setup>
+import iosImg from '@/assets/images/app/ios.png'
+import androidImg from '@/assets/images/app/android.png'
+import desktopImg from '@/assets/images/app/desktop.png'
+
+// Use imported asset URLs so webpack/nuxt resolves them correctly
 const appLinks = [
-  { label: 'نسخه iOS', icon: 'phone', href: '#', type: 'mobile' },
-  { label: 'نسخه اندروید', icon: 'phone-fill', href: '#', type: 'mobile' },
-  { label: 'اپ تلویزیون', icon: 'tv', href: '#', type: 'tv' },
-  { label: 'دسترسی با مرورگر', icon: 'globe', href: '#', type: 'tv' },
+  {
+    label: 'نسخه iOS',
+    icon: iosImg,
+    href: '#',
+    type: 'mobile',
+  },
+  {
+    label: 'نسخه اندروید',
+    icon: androidImg,
+    href: '#',
+    type: 'mobile',
+  },
+  {
+    label: 'اپ تلویزیون',
+    icon: desktopImg,
+    href: '#',
+    type: 'tv',
+  },
+  {
+    label: 'دسترسی با مرورگر',
+    icon: androidImg, // replace with proper icon if available
+    href: '#',
+    type: 'tv',
+  },
 ]
 </script>
 
@@ -89,6 +117,7 @@ const appLinks = [
   font-weight: 700;
   line-height: 1.6;
   font-family: 'dana-600';
+  margin-right: 0 !important;
 }
 
 .buttons-wrapper {
@@ -104,21 +133,22 @@ const appLinks = [
 }
 
 .equal-btn {
+  display: flex !important;
   flex: 1 1 auto;
   min-width: 0;
   height: 40px;
-  justify-content: center;
+  justify-content: space-between !important;
   text-align: center;
   white-space: nowrap;
 }
 
 .buttons-row .app-btn:nth-child(odd) {
   width: 9rem;
-  max-width: 12rem;
+  max-width: 8.5rem;
 }
 
 .buttons-row .app-btn:nth-child(even) {
-  width: 12rem;
+  width: 11rem;
   max-width: 14rem;
 }
 
@@ -139,13 +169,11 @@ const appLinks = [
   background: #111;
   border: 1px solid #222;
   border-radius: 10px;
-  padding: 0.9rem 1.1rem;
+  padding: 0.2rem 0.9rem !important;
   text-decoration: none;
   color: #fff;
   font-size: 0.95rem;
   transition: 0.25s;
-  position: relative;
-  overflow: hidden;
 }
 
 .app-btn:hover {
@@ -185,7 +213,7 @@ const appLinks = [
 
   .equal-btn {
     width: 20% !important;
-    min-width: 9rem !important;
+    min-width: 48% !important;
     flex: none;
   }
 
@@ -207,9 +235,17 @@ const appLinks = [
     margin: 0 auto;
   }
 }
-  .buttons-wrapper {
-    max-width: 420px;
-    margin: 0 auto;
-  }
+.buttons-wrapper {
+  max-width: 420px;
+  margin: 0 0;
+}
 
+.static-btn {
+  padding: 0.375rem 0.75rem;
+}
+@media (max-width: 575px) {
+  .static-btn {
+    padding: 0;
+  }
+}
 </style>

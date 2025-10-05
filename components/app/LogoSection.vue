@@ -11,12 +11,12 @@
   align-items: center;
   width: 100%;
   background-color: #000;
-  margin-bottom: 4rem;
+  margin-bottom: 2rem;
   padding: 0 1rem;
 }
 
 .logo-section img {
-  height: 80px;
+  height: 60px;
   max-width: 100%;
   width: auto;
   object-fit: contain;

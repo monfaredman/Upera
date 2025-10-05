@@ -11033,7 +11033,7 @@ label:after {
 .trigger-menu-wrapper {
   background: linear-gradient(0deg, transparent 0%, #171717 90%);
   transition: transform 0.4s;
-  box-shadow: 0px 1px 10px -2px rgb(18, 18, 18);
+  /* box-shadow: 0px 1px 10px -2px rgb(18, 18, 18); */
 }
 
 .trigger-menu-wrapper2 {
@@ -11043,9 +11043,9 @@ label:after {
 }
 
 .scroll-up .trigger-menu-wrapper2 {
-  background: #121212;
+  background: #121212 !important;
   transition: transform 0.4s;
-  box-shadow: 0px 1px 10px -2px rgb(18, 18, 18);
+  /* box-shadow: 0px 1px 10px -2px rgb(18, 18, 18); */
 }
 
 #header .category .category-menu {

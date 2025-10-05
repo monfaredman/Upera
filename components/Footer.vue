@@ -17,37 +17,78 @@
             </ul>
             <div class="d-flex align-items-center">
               <ul class="nav">
-                <a v-if="checkuser.phone" class="nav-link dir-ltr footer-sticky-link" :href="'tel:'+checkuser.phone">{{ checkuser.phone }}</a>
+                <a
+                  v-if="checkuser.phone"
+                  class="nav-link dir-ltr footer-sticky-link"
+                  :href="'tel:' + checkuser.phone"
+                  >{{ checkuser.phone }}</a
+                >
               </ul>
-              <div class="socials d-flex align-items-center text-center text-md-left">
-                <a v-if="shownotification" id="notif1" class="notification mr-3" href="" @click.prevent="notification('notif1')">
+              <div
+                class="socials d-flex align-items-center text-center text-md-left"
+              >
+                <a
+                  v-if="shownotification"
+                  id="notif1"
+                  class="notification mr-3"
+                  href=""
+                  @click.prevent="notification('notif1')"
+                >
                   <i class="notif-ic" />
                   <i class="icon-notification" />
 
                   <div class="popover popover-3d fade bs-popover-top">
-                    <div class="arrow" style="left: 147px;" />
+                    <div class="arrow" style="left: 147px" />
                     <h3 class="popover-header">اطلاع رسانی</h3>
-                    <div class="popover-body">می خواهید از زمان انتشار فیلم های روز مطلع بشین؟</div>
+                    <div class="popover-body">
+                      می خواهید از زمان انتشار فیلم های روز مطلع بشین؟
+                    </div>
                     <div class="d-flex popover-footer">
                       <div class="pl-1">
-                        <button class="btn btn-secondary btn-block" @click="addnotif()">بله</button>
+                        <button
+                          class="btn btn-secondary btn-block"
+                          @click="addnotif()"
+                        >
+                          بله
+                        </button>
                       </div>
                       <div class="pr-1">
-                        <button class="btn btn-light btn-block" @click="cancelnotif('notif1')">الان نه</button>
+                        <button
+                          class="btn btn-light btn-block"
+                          @click="cancelnotif('notif1')"
+                        >
+                          الان نه
+                        </button>
                       </div>
                     </div>
                   </div>
                 </a>
-                <a v-if="$config.envname=='upera'" href="https://instagram.com/uperatv" class="mr-3">
+                <a
+                  v-if="$config.envname == 'upera'"
+                  href="https://instagram.com/uperatv"
+                  class="mr-3"
+                >
                   <i class="icon-instagram" />
                 </a>
-                <a v-else-if="checkuser.instagram" :href="checkuser.instagram" class="mr-3">
+                <a
+                  v-else-if="checkuser.instagram"
+                  :href="checkuser.instagram"
+                  class="mr-3"
+                >
                   <i class="icon-instagram" />
                 </a>
-                <a v-if="$config.envname=='upera'" href="https://t.me/shop_upera" class="mr-3">
+                <a
+                  v-if="$config.envname == 'upera'"
+                  href="https://t.me/shop_upera"
+                  class="mr-3"
+                >
                   <i class="icon-telegram" />
                 </a>
-                <a v-else-if="checkuser.telegram" :href="checkuser.telegram" class="mr-3">
+                <a
+                  v-else-if="checkuser.telegram"
+                  :href="checkuser.telegram"
+                  class="mr-3"
+                >
                   <i class="icon-telegram" />
                 </a>
               </div>
@@ -56,7 +97,7 @@
         </div>
       </div>
     </section>
-    <footer id="footer" class="mt-3">
+    <footer id="footer">
       <section class="footer-links py-4">
         <div class="container-fluid">
           <div class="row align-items-center">
@@ -71,7 +112,10 @@
                 <nuxt-link to="/profile/terms" class="nav-link text-black">
                   {{ $t('new.term') }}
                 </nuxt-link>
-                <nuxt-link to="/profile/about-contact" class="nav-link text-black">
+                <nuxt-link
+                  to="/profile/about-contact"
+                  class="nav-link text-black"
+                >
                   {{ $t('footer.aboutus') }}
                 </nuxt-link>
               </ul>
@@ -81,29 +125,51 @@
                 <div v-if="checkuser.show_app" class="dl-app" @click="getapp">
                   <div class="d-flex align-items-center justify-content-center">
                     <div class="dl-links-wrapper text-center pl-lg-5">
-                      <div class="text-invert mb-1 pb-1 d-inline-block dl-links-title">
+                      <div
+                        class="text-invert mb-1 pb-1 d-inline-block dl-links-title"
+                      >
                         <nuxt-link to="/app">
                           {{ $t('new.download_app') }}
                         </nuxt-link>
                       </div>
                       <div class="dl-links d-flex justify-content-between">
-                        <a class="text-invert d-flex justify-content-center" href="" to="/app">
+                        <a
+                          class="text-invert d-flex justify-content-center"
+                          href=""
+                          to="/app"
+                        >
                           <i class="icon-android" />
                         </a>
-                        <nuxt-link to="/app" class="text-invert d-flex justify-content-center">
+                        <nuxt-link
+                          to="/app"
+                          class="text-invert d-flex justify-content-center"
+                        >
                           <i class="icon-android" />
                         </nuxt-link>
-                        <nuxt-link to="/app" class="text-invert d-flex justify-content-center">
+                        <nuxt-link
+                          to="/app"
+                          class="text-invert d-flex justify-content-center"
+                        >
                           <i class="icon-tv" />
                         </nuxt-link>
-                        <nuxt-link to="/app" class="text-invert d-flex justify-content-center">
+                        <nuxt-link
+                          to="/app"
+                          class="text-invert d-flex justify-content-center"
+                        >
                           <i class="icon-ios" />
                         </nuxt-link>
                       </div>
                     </div>
                     <div class="dl-qr hide-mobile hide-tablet">
                       <nuxt-link to="/app">
-                        <img v-if="$config.envname=='upera'" :src="'https://web.upera.tv/qr-code/i-'+$cookiz.get('ref')+'.jpg'">
+                        <img
+                          v-if="$config.envname == 'upera'"
+                          :src="
+                            'https://web.upera.tv/qr-code/i-' +
+                            $cookiz.get('ref') +
+                            '.jpg'
+                          "
+                        />
                         <!-- <img v-else :src="'https://chart.apis.google.com/chart?cht=qr&chs=150x150&chld=L|0&chl=https://'+checkuser.domain+'/app?ref='+$cookiz.get('ref')"> -->
                       </nuxt-link>
                     </div>
@@ -112,33 +178,39 @@
               </div>
             </div>
             <div class="col-lg-4 hide-mobile hide-tablet">
-              <div v-if="$config.envname=='upera'" class="d-flex namad-wrapper">
+              <div
+                v-if="$config.envname == 'upera'"
+                class="d-flex namad-wrapper"
+              >
                 <div class="namad pr-2">
                   <div class="namad-box-2">
                     <a href="https://satra.ir/" target="_blank">
-                      <img src="/images/satra.png" width="80">
+                      <img src="/images/satra.png" width="80" />
                     </a>
                   </div>
                   <div class="namad-box-2">
                     <a href="https://sapra.ir/" target="_blank">
-                      <img src="/images/sapra.png" width="80">
+                      <img src="/images/sapra.png" width="80" />
                     </a>
                   </div>
                 </div>
                 <div class="namad pr-2">
                   <div class="namad-box-2" @click="samandehi">
-                    <img src="/images/samandehi.png" width="80">
+                    <img src="/images/samandehi.png" width="80" />
                   </div>
                   <div class="namad-box-2">
-                    <a href="https://tehran.irannsr.org/fa/page/104366-%D9%85%D8%B4%D8%A7%D9%87%D8%AF%D9%87-%D8%A7%D8%B9%D8%B6%D8%A7.html?ctp_id=1086&id=25122" target="_blank">
-                      <img src="/images/irannsr.png" width="80">
+                    <a
+                      href="https://tehran.irannsr.org/fa/page/104366-%D9%85%D8%B4%D8%A7%D9%87%D8%AF%D9%87-%D8%A7%D8%B9%D8%B6%D8%A7.html?ctp_id=1086&id=25122"
+                      target="_blank"
+                    >
+                      <img src="/images/irannsr.png" width="80" />
                     </a>
                   </div>
                 </div>
                 <div class="namad pr-2">
                   <div class="namad-box">
                     <a @click="enamad">
-                      <img src="/images/enamad.png" width="80">
+                      <img src="/images/enamad.png" width="80" />
                     </a>
                   </div>
                 </div>
@@ -147,29 +219,32 @@
                 <div class="namad pr-2">
                   <div class="namad-box-2">
                     <a href="https://satra.ir/" target="_blank">
-                      <img src="/images/satra.png" width="80">
+                      <img src="/images/satra.png" width="80" />
                     </a>
                   </div>
                   <div class="namad-box-2">
                     <a href="https://sapra.ir/" target="_blank">
-                      <img src="/images/sapra.png" width="80">
+                      <img src="/images/sapra.png" width="80" />
                     </a>
                   </div>
                 </div>
                 <div v-show="checkuser.samandehi_id" class="namad pr-2">
                   <div class="namad-box-2" @click="samandehi">
-                    <img src="/images/samandehi.png" width="80">
+                    <img src="/images/samandehi.png" width="80" />
                   </div>
-                  <div v-if="checkuser.ref<=5" class="namad-box-2">
-                    <a href="https://tehran.irannsr.org/fa/page/104366-%D9%85%D8%B4%D8%A7%D9%87%D8%AF%D9%87-%D8%A7%D8%B9%D8%B6%D8%A7.html?ctp_id=1086&id=25122" target="_blank">
-                      <img src="/images/irannsr.png" width="80">
+                  <div v-if="checkuser.ref <= 5" class="namad-box-2">
+                    <a
+                      href="https://tehran.irannsr.org/fa/page/104366-%D9%85%D8%B4%D8%A7%D9%87%D8%AF%D9%87-%D8%A7%D8%B9%D8%B6%D8%A7.html?ctp_id=1086&id=25122"
+                      target="_blank"
+                    >
+                      <img src="/images/irannsr.png" width="80" />
                     </a>
                   </div>
                 </div>
                 <div v-show="checkuser.enamad_id" class="namad pr-2">
                   <div class="namad-box">
                     <a @click="enamad">
-                      <img src="/images/enamad.png" width="80">
+                      <img src="/images/enamad.png" width="80" />
                     </a>
                   </div>
                 </div>
@@ -190,44 +265,88 @@
             </div>
             <div class="col-md-4">
               <div class="footer-info text-center">
-                <a v-if="checkuser.email" class="text-darker font-weight-normal" :href="'mailto:'+checkuser.email">{{ checkuser.email }}</a>
-                <span v-if="checkuser.email && checkuser.phone" class="divider" />
-                <a v-if="checkuser.phone" class="text-darker font-weight-normal" :href="'tel:'+checkuser.phone">{{ checkuser.phone }}</a>
+                <a
+                  v-if="checkuser.email"
+                  class="text-darker font-weight-normal"
+                  :href="'mailto:' + checkuser.email"
+                  >{{ checkuser.email }}</a
+                >
+                <span
+                  v-if="checkuser.email && checkuser.phone"
+                  class="divider"
+                />
+                <a
+                  v-if="checkuser.phone"
+                  class="text-darker font-weight-normal"
+                  :href="'tel:' + checkuser.phone"
+                  >{{ checkuser.phone }}</a
+                >
               </div>
             </div>
             <div class="col-md-4">
               <div class="socials text-center text-md-right">
-                <a v-if="shownotification" id="notif2" class="text-darker notification mr-3" @click.prevent="notification('notif2')">
+                <a
+                  v-if="shownotification"
+                  id="notif2"
+                  class="text-darker notification mr-3"
+                  @click.prevent="notification('notif2')"
+                >
                   <i class="notif-ic" />
                   <i class="icon-notification" />
 
-
                   <div class="popover popover-3d fade bs-popover-top">
-                    <div class="arrow" style="left: 147px;" />
+                    <div class="arrow" style="left: 147px" />
                     <h3 class="popover-header">اطلاع رسانی</h3>
-                    <div class="popover-body">می خواهید از زمان انتشار فیلم های روز مطلع بشین؟</div>
+                    <div class="popover-body">
+                      می خواهید از زمان انتشار فیلم های روز مطلع بشین؟
+                    </div>
                     <div class="d-flex popover-footer">
                       <div class="pl-1">
-                        <button class="btn btn-secondary btn-block" @click="addnotif()">بله</button>
+                        <button
+                          class="btn btn-secondary btn-block"
+                          @click="addnotif()"
+                        >
+                          بله
+                        </button>
                       </div>
                       <div class="pr-1">
-                        <button class="btn btn-light btn-block" @click="cancelnotif('notif2')">الان نه</button>
+                        <button
+                          class="btn btn-light btn-block"
+                          @click="cancelnotif('notif2')"
+                        >
+                          الان نه
+                        </button>
                       </div>
                     </div>
                   </div>
                 </a>
 
-
-                <a v-if="$config.envname=='upera'" class="text-darker mr-3" href="https://instagram.com/uperatv">
+                <a
+                  v-if="$config.envname == 'upera'"
+                  class="text-darker mr-3"
+                  href="https://instagram.com/uperatv"
+                >
                   <i class="icon-instagram" />
                 </a>
-                <a v-else-if="checkuser.instagram" class="text-darker mr-3" :href="checkuser.instagram">
+                <a
+                  v-else-if="checkuser.instagram"
+                  class="text-darker mr-3"
+                  :href="checkuser.instagram"
+                >
                   <i class="icon-instagram" />
                 </a>
-                <a v-if="$config.envname=='upera'" class="text-darker mr-3" href="https://t.me/shop_upera">
+                <a
+                  v-if="$config.envname == 'upera'"
+                  class="text-darker mr-3"
+                  href="https://t.me/shop_upera"
+                >
                   <i class="icon-telegram" />
                 </a>
-                <a v-else-if="checkuser.telegram" class="text-darker mr-3" :href="checkuser.telegram">
+                <a
+                  v-else-if="checkuser.telegram"
+                  class="text-darker mr-3"
+                  :href="checkuser.telegram"
+                >
                   <i class="icon-telegram" />
                 </a>
                 <!--                 <a class="text-darker mr-3" href="#">
@@ -245,40 +364,87 @@
             <div class="d-flex justify-content-end">
               <div class="">
                 <div class="footer-info text-center">
-                  <a v-if="checkuser.email" class="text-darker font-weight-normal" :href="'mailto:'+checkuser.email">{{ checkuser.email }}</a>
-                  <span v-if="checkuser.email && checkuser.phone" class="divider" />
-                  <a v-if="checkuser.phone" class="text-darker font-weight-normal" :href="'tel:'+checkuser.phone">{{ checkuser.phone }}</a>
+                  <a
+                    v-if="checkuser.email"
+                    class="text-darker font-weight-normal"
+                    :href="'mailto:' + checkuser.email"
+                    >{{ checkuser.email }}</a
+                  >
+                  <span
+                    v-if="checkuser.email && checkuser.phone"
+                    class="divider"
+                  />
+                  <a
+                    v-if="checkuser.phone"
+                    class="text-darker font-weight-normal"
+                    :href="'tel:' + checkuser.phone"
+                    >{{ checkuser.phone }}</a
+                  >
                 </div>
               </div>
               <div class="">
                 <div class="socials text-center text-md-left">
-                  <a v-if="shownotification" id="notif3" class="text-darker notification mr-2" href="" @click.prevent="notification('notif3')">
+                  <a
+                    v-if="shownotification"
+                    id="notif3"
+                    class="text-darker notification mr-2"
+                    href=""
+                    @click.prevent="notification('notif3')"
+                  >
                     <i class="notif-ic" />
                     <i class="icon-notification" />
                     <div class="popover popover-3d fade bs-popover-top">
-                      <div class="arrow" style="left: 147px;" />
+                      <div class="arrow" style="left: 147px" />
                       <h3 class="popover-header">اطلاع رسانی</h3>
-                      <div class="popover-body">می خواهید از زمان انتشار فیلم های روز مطلع بشین؟</div>
+                      <div class="popover-body">
+                        می خواهید از زمان انتشار فیلم های روز مطلع بشین؟
+                      </div>
                       <div class="d-flex popover-footer">
                         <div class="pl-1">
-                          <button class="btn btn-secondary btn-block" @click="addnotif()">بله</button>
+                          <button
+                            class="btn btn-secondary btn-block"
+                            @click="addnotif()"
+                          >
+                            بله
+                          </button>
                         </div>
                         <div class="pr-1">
-                          <button class="btn btn-light btn-block" @click="cancelnotif('notif3')">الان نه</button>
+                          <button
+                            class="btn btn-light btn-block"
+                            @click="cancelnotif('notif3')"
+                          >
+                            الان نه
+                          </button>
                         </div>
                       </div>
                     </div>
                   </a>
-                  <a v-if="$config.envname=='upera'" class="text-darker mr-2" href="https://instagram.com/uperatv">
+                  <a
+                    v-if="$config.envname == 'upera'"
+                    class="text-darker mr-2"
+                    href="https://instagram.com/uperatv"
+                  >
                     <i class="icon-instagram" />
                   </a>
-                  <a v-else-if="checkuser.instagram" class="text-darker mr-2" :href="checkuser.instagram">
+                  <a
+                    v-else-if="checkuser.instagram"
+                    class="text-darker mr-2"
+                    :href="checkuser.instagram"
+                  >
                     <i class="icon-instagram" />
                   </a>
-                  <a v-if="$config.envname=='upera'" class="text-darker mr-2" href="https://t.me/shop_upera">
+                  <a
+                    v-if="$config.envname == 'upera'"
+                    class="text-darker mr-2"
+                    href="https://t.me/shop_upera"
+                  >
                     <i class="icon-telegram" />
                   </a>
-                  <a v-else-if="checkuser.telegram" class="text-darker mr-2" :href="checkuser.telegram">
+                  <a
+                    v-else-if="checkuser.telegram"
+                    class="text-darker mr-2"
+                    :href="checkuser.telegram"
+                  >
                     <i class="icon-telegram" />
                   </a>
                   <!--                   <a class="text-darker mr-2" href="#">
@@ -291,40 +457,87 @@
           <div class="row align-items-center show-mobile">
             <div class="col-md-4 mb-3">
               <div class="footer-info text-center">
-                <a v-if="checkuser.email" class="text-darker font-weight-normal" :href="'mailto:'+checkuser.email">{{ checkuser.email }}</a>
-                <span v-if="checkuser.email && checkuser.phone" class="divider" />
-                <a v-if="checkuser.phone" class="text-darker font-weight-normal" :href="'tel:'+checkuser.phone">{{ checkuser.phone }}</a>
+                <a
+                  v-if="checkuser.email"
+                  class="text-darker font-weight-normal"
+                  :href="'mailto:' + checkuser.email"
+                  >{{ checkuser.email }}</a
+                >
+                <span
+                  v-if="checkuser.email && checkuser.phone"
+                  class="divider"
+                />
+                <a
+                  v-if="checkuser.phone"
+                  class="text-darker font-weight-normal"
+                  :href="'tel:' + checkuser.phone"
+                  >{{ checkuser.phone }}</a
+                >
               </div>
             </div>
             <div class="col-md-4 mb-3">
               <div class="socials text-center text-md-left">
-                <a v-if="shownotification" id="notif4" class="text-darker notification mr-2" href="" @click.prevent="notification('notif4')">
+                <a
+                  v-if="shownotification"
+                  id="notif4"
+                  class="text-darker notification mr-2"
+                  href=""
+                  @click.prevent="notification('notif4')"
+                >
                   <i class="notif-ic" />
                   <i class="icon-notification" />
                   <div class="popover popover-3d fade bs-popover-top">
-                    <div class="arrow" style="left: 147px;" />
+                    <div class="arrow" style="left: 147px" />
                     <h3 class="popover-header">اطلاع رسانی</h3>
-                    <div class="popover-body">می خواهید از زمان انتشار فیلم های روز مطلع بشین؟</div>
+                    <div class="popover-body">
+                      می خواهید از زمان انتشار فیلم های روز مطلع بشین؟
+                    </div>
                     <div class="d-flex popover-footer">
                       <div class="pl-1">
-                        <button class="btn btn-secondary btn-block" @click="addnotif()">بله</button>
+                        <button
+                          class="btn btn-secondary btn-block"
+                          @click="addnotif()"
+                        >
+                          بله
+                        </button>
                       </div>
                       <div class="pr-1">
-                        <button class="btn btn-light btn-block" @click="cancelnotif('notif4')">الان نه</button>
+                        <button
+                          class="btn btn-light btn-block"
+                          @click="cancelnotif('notif4')"
+                        >
+                          الان نه
+                        </button>
                       </div>
                     </div>
                   </div>
                 </a>
-                <a v-if="$config.envname=='upera'" class="text-darker mr-2" href="https://instagram.com/uperatv">
+                <a
+                  v-if="$config.envname == 'upera'"
+                  class="text-darker mr-2"
+                  href="https://instagram.com/uperatv"
+                >
                   <i class="icon-instagram" />
                 </a>
-                <a v-else-if="checkuser.instagram" class="text-darker mr-2" :href="checkuser.instagram">
+                <a
+                  v-else-if="checkuser.instagram"
+                  class="text-darker mr-2"
+                  :href="checkuser.instagram"
+                >
                   <i class="icon-instagram" />
                 </a>
-                <a v-if="$config.envname=='upera'" class="text-darker mr-2" href="https://t.me/shop_upera">
+                <a
+                  v-if="$config.envname == 'upera'"
+                  class="text-darker mr-2"
+                  href="https://t.me/shop_upera"
+                >
                   <i class="icon-telegram" />
                 </a>
-                <a v-else-if="checkuser.telegram" class="text-darker mr-2" :href="checkuser.telegram">
+                <a
+                  v-else-if="checkuser.telegram"
+                  class="text-darker mr-2"
+                  :href="checkuser.telegram"
+                >
                   <i class="icon-telegram" />
                 </a>
                 <!--                 <a class="text-darker mr-2" href="#">
@@ -346,99 +559,124 @@
   </div>
 </template>
 <script>
-  export default {
+export default {
   data() {
     return {
-      shownotification: false
-
+      shownotification: false,
     }
-  },   
+  },
   watch: {
-     '$route.path': function () {
-        setTimeout(function () { this.itemsize('e') }.bind(this), 1000)
-       
-      }
-        
+    '$route.path': function () {
+      setTimeout(
+        function () {
+          this.itemsize('e')
+        }.bind(this),
+        1000
+      )
     },
+  },
 
-    destroyed () {
+  destroyed() {
     window.removeEventListener('resize', this.itemsize)
   },
-    mounted() {
-      if(this.$config.envname!='upera' && this.checkuser.ref>5)
-        this.shownotification=true
-      else if(!this.$cookiz.get('ref'))
-        this.shownotification=true
+  mounted() {
+    if (this.$config.envname != 'upera' && this.checkuser.ref > 5)
+      this.shownotification = true
+    else if (!this.$cookiz.get('ref')) this.shownotification = true
 
-      this.itemsize('e')
-      window.addEventListener('resize', this.itemsize)
-    },
+    this.itemsize('e')
+    window.addEventListener('resize', this.itemsize)
+  },
   methods: {
-    install(url){
-      if (this.checkuser.show_app==3) {
+    install(url) {
+      if (this.checkuser.show_app == 3) {
         window.location.href = url
       } else if (this.$auth.loggedIn || !this.$cookiz.get('ref')) {
         window.location.href = url
-      }else{
-        this.$store.dispatch('login/SHOW_MODAL',{premessage: null,premobile: null,preredirect: null,prerefresh: false})
+      } else {
+        this.$store.dispatch('login/SHOW_MODAL', {
+          premessage: null,
+          premobile: null,
+          preredirect: null,
+          prerefresh: false,
+        })
       }
     },
-            itemsize(e){
-      let element=document.getElementById('checkcontainer')
+    itemsize(e) {
+      let element = document.getElementById('checkcontainer')
 
-      if(element){
+      if (element) {
         let vh
-        let header=document.getElementById("header")
-        if(header)
-          vh = document.getElementById("footer").offsetHeight+65
-        else
-          vh = document.getElementById("footer").offsetHeight
+        let header = document.getElementById('header')
+        if (header) vh = document.getElementById('footer').offsetHeight + 65
+        else vh = document.getElementById('footer').offsetHeight
 
-        element.style.setProperty('min-height', `${window.innerHeight-vh}px`)
+        element.style.setProperty('min-height', `${window.innerHeight - vh}px`)
       }
-return e
-            },
-    notification(id){
+      return e
+    },
+    notification(id) {
+      var p =
+        document.getElementById(id).offsetWidth -
+        document.getElementById(id).offsetLeft
 
-      var p=document.getElementById(id).offsetWidth-document.getElementById(id).offsetLeft
+      var popover = document
+        .getElementById(id)
+        .getElementsByClassName('popover-3d')
 
-      var popover=document.getElementById(id).getElementsByClassName("popover-3d")
-
-      if(popover.length){
-        popover[0].style.right=`${p}px`
+      if (popover.length) {
+        popover[0].style.right = `${p}px`
         popover[0].classList.toggle('show')
       }
-
     },
-    addnotif(){
-      this.$swal("این امکان به زودی افزوده می شود")
+    addnotif() {
+      this.$swal('این امکان به زودی افزوده می شود')
     },
-    cancelnotif(id){
+    cancelnotif(id) {
       return id
-
     },
-    getapp(){
+    getapp() {
       this.$router.push({ name: 'app' })
     },
-samandehi(){
-    if(this.$config.envname=='upera'){
-      window.open('https://logo.samandehi.ir/Verify.aspx?id=197123&p=rfthpfvljyoerfthuiwkxlao', 'Popup','toolbar=no, scrollbars=no, location=no, statusbar=no, menubar=no, resizable=0, width=450, height=630, top=30')
-    }else if(this.checkuser.samandehi_id){
-      window.open('https://logo.samandehi.ir/Verify.aspx?id='+this.checkuser.samandehi_id+'&p='+this.checkuser.samandehi_p, 'Popup','toolbar=no, scrollbars=no, location=no, statusbar=no, menubar=no, resizable=0, width=450, height=630, top=30')
-    }else if(this.checkuser.ref<=5){
-      window.open('https://upera.tv/namad', '_blank')
-    }
+    samandehi() {
+      if (this.$config.envname == 'upera') {
+        window.open(
+          'https://logo.samandehi.ir/Verify.aspx?id=197123&p=rfthpfvljyoerfthuiwkxlao',
+          'Popup',
+          'toolbar=no, scrollbars=no, location=no, statusbar=no, menubar=no, resizable=0, width=450, height=630, top=30'
+        )
+      } else if (this.checkuser.samandehi_id) {
+        window.open(
+          'https://logo.samandehi.ir/Verify.aspx?id=' +
+            this.checkuser.samandehi_id +
+            '&p=' +
+            this.checkuser.samandehi_p,
+          'Popup',
+          'toolbar=no, scrollbars=no, location=no, statusbar=no, menubar=no, resizable=0, width=450, height=630, top=30'
+        )
+      } else if (this.checkuser.ref <= 5) {
+        window.open('https://upera.tv/namad', '_blank')
+      }
+    },
+    enamad() {
+      if (this.$config.envname == 'upera') {
+        window.open(
+          'https://trustseal.enamad.ir/?id=204904&Code=ipcUNmaUZGludD970sgm',
+          '_blank'
+        )
+      } else if (this.checkuser.enamad_id) {
+        //amp;
+        window.open(
+          'https://trustseal.enamad.ir/?id=' +
+            this.checkuser.enamad_id +
+            '&Code=' +
+            this.checkuser.enamad_code,
+          '_blank'
+        )
+      } else if (this.checkuser.ref <= 5) {
+        window.open('https://upera.tv/namad', '_blank')
+      }
+    },
   },
-enamad(){
-    if(this.$config.envname=='upera'){
-      window.open('https://trustseal.enamad.ir/?id=204904&Code=ipcUNmaUZGludD970sgm', '_blank')
-    }else if(this.checkuser.enamad_id){
-      //amp;
-      window.open('https://trustseal.enamad.ir/?id='+this.checkuser.enamad_id+'&Code='+this.checkuser.enamad_code, '_blank')
-    }else if(this.checkuser.ref<=5){
-      window.open('https://upera.tv/namad', '_blank')
-    }
-  }
-  }
 }
 </script>

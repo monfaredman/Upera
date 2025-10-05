@@ -37,7 +37,7 @@
           "
         >
           <h4>🎈 بخش اختصاصی کودکان</h4>
-          <p>
+          <p style="text-align: right; margin-bottom: 0">
             آپرا یک بخش ویژه برای کودکان دارد که محیطی امن، سرگرم‌کننده و
             آموزنده را برای فرزندان شما فراهم می‌کند.
           </p>
@@ -55,9 +55,13 @@
             margin-right: 12rem;
           "
         >
-          <h4>👶 پروفایل مخصوص کودک شما</h4>
-          <p>🔒 امنیت و کنترل والدین</p>
-          <p>💡 یادگیری در کنار سرگرمی</p>
+          <h4 style="text-align: right">👶 پروفایل مخصوص کودک شما</h4>
+          <p style="text-align: right; margin-bottom: 0">
+            🔒 امنیت و کنترل والدین
+          </p>
+          <p style="text-align: right; margin-bottom: 0">
+            💡 یادگیری در کنار سرگرمی
+          </p>
         </div>
       </b-col>
 
@@ -74,11 +78,16 @@
         <b-button
           variant="primary"
           size="lg"
+          href="/kids"
           class="child-cta-btn"
           style="border-radius: 0.8rem"
         >
+          <img
+            src="@/assets/images/app/login.png"
+            alt="Icon"
+            class="ml-1 d-none d-md-inline"
+          />
           ورود به آپرا کودک
-          <!-- <b-icon icon="door-open" class="me-2 d-none d-md-inline"></b-icon> -->
         </b-button>
       </b-col>
     </div>
@@ -112,6 +121,7 @@
 
 .child-cta-btn {
   font-size: 1rem;
+  padding: 0.8rem 0.7rem !important;
 }
 
 .mid-col {
@@ -120,6 +130,7 @@
 
 .child-section-container h4 {
   font-size: 1.2rem;
+  text-align: right;
 }
 
 .child-section-container p {
@@ -150,15 +161,16 @@
   }
 
   .cta-col {
-    justify-content: center !important;
+    justify-content: space-between !important;
     align-self: stretch;
   }
 
   .child-cta-btn {
-    width: 9rem !important;
+    width: 10rem !important;
     font-size: 1rem;
     padding: 0.3rem 1.25rem;
     margin-top: 2.5rem;
+    white-space: nowrap;
   }
 
   .hero-icon {
@@ -204,6 +216,12 @@
   .profile-box {
     width: fit-content !important;
     margin-right: 9rem !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .child-cta-btn {
+    padding: 0.3rem 0.25rem !important;
   }
 }
 </style>

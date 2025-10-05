@@ -1,42 +1,28 @@
 <template>
   <div class="top-rated-slider">
     <div class="d-flex justify-content-between align-items-center mb-3">
-      <h5 class="mb-0">فیلم های برگذیده</h5>
-      <b-dropdown
-        :text="`نمایش ${itemsToShow}`"
-        size="sm"
-        variant="text"
-        style="color: white; font-size: 14px"
-        dir="rtl"
+      <h5 class="mb-0">پیشنهادی</h5>
+      <nuxt-link
+        :to="{ name: 'lists-list', params: { list: 'offer' } }"
+        class="mb-1"
       >
-        <b-dropdown-item
-          class="text-white text-right"
-          @click="setItemsToShow(10)"
-        >
-          نمایش 10
-        </b-dropdown-item>
-        <b-dropdown-item
-          class="text-white text-right"
-          @click="setItemsToShow(20)"
-        >
-          نمایش 20
-        </b-dropdown-item>
-        <b-dropdown-item
-          class="text-white text-right"
-          @click="setItemsToShow(50)"
-        >
-          نمایش 50
-        </b-dropdown-item>
-        <b-dropdown-item
-          class="text-white text-right"
-          @click="setItemsToShow(items.length)"
-        >
-          نمایش همه
-        </b-dropdown-item>
-      </b-dropdown>
+        {{ $t('new.show_all') }}
+        <img src="@/assets/img/more.svg" height="3" alt="" />
+      </nuxt-link>
     </div>
     <div class="slider-wrapper">
+      <!-- loading placeholder -->
+      <div
+        v-if="isLoading"
+        class="loading-state d-flex align-items-center justify-content-center"
+        :style="{ minHeight: (size && size.h ? size.h : 200) + 'px' }"
+      >
+        <b-spinner small type="grow" class="ml-2" />
+        <span class="ml-2 text-white">در حال بارگذاری…</span>
+      </div>
+
       <swiper
+        v-else
         ref="topRatedSwiper"
         :options="swiperOptions"
         @slideChange="onSlideChange"
@@ -49,7 +35,7 @@
             :item="item"
             :variant="cardVariant"
             :size="size"
-            :linkBuilder="linkBuilder"
+            :link-builder="buildMediaLink(item)"
             :showBadges="showBadges"
             :showTitle="showTitle"
             :addSeriesClass="addSeriesClass"
@@ -79,8 +65,15 @@ export default {
     },
     // HorizontalList-like config
     cardVariant: { type: String, default: 'poster' },
-    size: { type: Object, default: () => ({ w: 142, h: 212 }) },
-    linkBuilder: { type: Function, required: true },
+    size: {
+      type: Object,
+      default: () => {
+        if (typeof window !== 'undefined' && window.innerWidth <= 576) {
+          return { w: 170, h: 212 }
+        }
+        return { w: 142, h: 212 }
+      },
+    },
     showBadges: { type: Boolean, default: true },
     showTitle: { type: Boolean, default: true },
     addSeriesClass: { type: Boolean, default: true },
@@ -89,6 +82,7 @@ export default {
     return {
       itemsToShow: 20,
       activeIndex: 0,
+      isLoading: true,
       swiperOptions: {
         slidesPerView: 6.5,
         slidesPerGroup: 1,
@@ -102,8 +96,8 @@ export default {
           1200: { slidesPerView: 5.5 },
           992: { slidesPerView: 4.5 },
           768: { slidesPerView: 3.5 },
-          576: { slidesPerView: 2.5 },
-          0: { slidesPerView: 2.5 },
+          576: { slidesPerView: 2 },
+          0: { slidesPerView: 2 },
         },
       },
     }
@@ -118,6 +112,22 @@ export default {
       return arr.slice(0, n)
     },
   },
+  watch: {
+    displayedItems: {
+      immediate: true,
+      handler(newVal) {
+        const ready = Array.isArray(newVal) && newVal.length > 0
+        this.isLoading = !ready
+        if (ready) {
+          this.$nextTick(() => {
+            const inst =
+              this.$refs.topRatedSwiper && this.$refs.topRatedSwiper.$swiper
+            if (inst) inst.update()
+          })
+        }
+      },
+    },
+  },
   mounted() {
     this.$nextTick(() => {
       const inst =
@@ -129,6 +139,17 @@ export default {
     })
   },
   methods: {
+    buildMediaLink(item) {
+      if (item && item.type && item.id) {
+        return { name: item.type + '-id', params: { id: item.id } }
+      }
+      // Tries common fields first, then falls back safely
+      if (item && item.route) return item.route
+      if (item && item.url) return item.url
+      if (item && item.slug) return `/content/${item.slug}`
+      if (item && item.id) return `/content/${item.id}`
+      return '#'
+    },
     setItemsToShow(count) {
       this.itemsToShow = count
       this.$nextTick(() => {
@@ -183,6 +204,11 @@ h5 {
   color: white;
   font-size: 1.2rem;
   text-align: center;
+}
+
+.loading-state {
+  background: black;
+  border-radius: 8px;
 }
 
 @media (max-width: 576px) {

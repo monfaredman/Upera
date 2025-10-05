@@ -6,7 +6,7 @@ export default {
     envname: process.env.ENV,
     envmode: process.env.SSR,
     check_url: process.env.CHECKURL,
-    name_fa: process.env.APP_NAME_FA
+    name_fa: process.env.APP_NAME_FA,
   },
   // server: {
   //   https: {
@@ -17,14 +17,14 @@ export default {
   loadingIndicator: {
     name: 'circle',
     color: process.env.COLOR2,
-    background: 'white'
+    background: 'white',
   },
   loading: {
     color: process.env.COLOR2,
     height: '6px',
     rtl: true,
     continuous: true,
-    duration: 10000
+    duration: 10000,
   },
   /*
    ** Nuxt rendering mode
@@ -35,9 +35,9 @@ export default {
    ** Nuxt target
    ** See https://nuxtjs.org/api/configuration-target
    */
-  target: "server",
+  target: 'server',
   server: {
-    host: '0.0.0.0'
+    host: '0.0.0.0',
   },
   /*
    ** Headers of the page
@@ -46,15 +46,21 @@ export default {
   head: {
     title: process.env.APP_NAME_FA,
     meta: [
-      { charset: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { charset: 'utf-8' },
+      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       {
-        hid: "description",
-        name: "description",
-        content: process.env.npm_package_description || "",
+        hid: 'description',
+        name: 'description',
+        content: process.env.npm_package_description || '',
       },
     ],
-    link: [{ rel: "icon", type: "image/x-icon", href: "/favicon-"+process.env.ENV+".ico"}]
+    link: [
+      {
+        rel: 'icon',
+        type: 'image/x-icon',
+        href: '/favicon-' + process.env.ENV + '.ico',
+      },
+    ],
   },
   /*
    ** Global CSS
@@ -73,26 +79,32 @@ export default {
   //   "../assets/styles/Edited-Style-Dark.css",
   // ],
   css: [
-    "../assets/styles/fa.css",
-    "../assets/styles/new.css",
-    "../assets/styles/rtl.css",
-    ...process.env.ENV=='igapp'?["assets/styles/theme.css"]:[],
-    "vue-slick-carousel/dist/vue-slick-carousel.css",
-    "../assets/styles/dark.css",
+    '../assets/styles/fa.css',
+    '../assets/styles/new.css',
+    '../assets/styles/rtl.css',
+    ...(process.env.ENV == 'igapp' ? ['assets/styles/theme.css'] : []),
+    'vue-slick-carousel/dist/vue-slick-carousel.css',
+    '../assets/styles/dark.css',
     'video.js/dist/video-js.css', // Video.js styles
     'videojs-contrib-ads/dist/videojs.ads.css', // Ads styles
   ],
   router: {
-      linkActiveClass: 'active',
-    middleware: ["clearValidationErrors"]
+    linkActiveClass: 'active',
+    middleware: ['clearValidationErrors'],
   },
   /*
    ** Plugins to load before mounting the App
    ** https://nuxtjs.org/guide/plugins
    */
-  plugins: ["~plugins/slick","~plugins/swiper",'~/plugins/swal',
-    "./plugins/axios",
-    "./plugins/mixins/validation","~/plugins/lightGallery.client","~/plugins/awesomeCountdown.client"],
+  plugins: [
+    '~plugins/slick',
+    '~plugins/swiper',
+    '~/plugins/swal',
+    './plugins/axios',
+    './plugins/mixins/validation',
+    '~/plugins/lightGallery.client',
+    '~/plugins/awesomeCountdown.client',
+  ],
   /*
    ** Auto import components
    ** See https://nuxtjs.org/api/configuration-components
@@ -101,9 +113,9 @@ export default {
   /*
    ** Nuxt.js dev-modules
    */
-   buildModules: [ ['@nuxtjs/dotenv', { filename: '.env.' + process.env.ENV }], ],
-    eslint: {
-    fix: true
+  buildModules: [['@nuxtjs/dotenv', { filename: '.env.' + process.env.ENV }]],
+  eslint: {
+    fix: true,
   },
   /*
    ** Nuxt.js modules
@@ -111,58 +123,67 @@ export default {
   modules: [
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/i18n',
-    "@nuxtjs/axios",
+    '@nuxtjs/axios',
     '@nuxtjs/auth',
-    "@nuxtjs/pwa",
+    '@nuxtjs/pwa',
     '@nuxtjs/color-mode',
-    "bootstrap-vue/nuxt",
-    "nuxt-clipboard2",
+    'bootstrap-vue/nuxt',
+    'nuxt-clipboard2',
     // "@nuxtjs/device",
     ['cookie-universal-nuxt', { alias: 'cookiz' }],
     'vue-social-sharing/nuxt',
-    ['nuxt-lazy-load', {
-      images: true,
-      videos: false,
-      audios: false,
-      iframes: false,
-      native: false,
-      polyfill: true,
-      directiveOnly: false
-    }]
+    [
+      'nuxt-lazy-load',
+      {
+        images: true,
+        videos: false,
+        audios: false,
+        iframes: false,
+        native: false,
+        polyfill: true,
+        directiveOnly: false,
+      },
+    ],
   ],
   i18n: {
-    locales: [{ code: 'fa', iso: 'fa-IR', file: 'fa.json' },
-  { code: 'en', iso: 'en-US', file: 'en.json' }],
+    locales: [
+      { code: 'fa', iso: 'fa-IR', file: 'fa.json' },
+      { code: 'en', iso: 'en-US', file: 'en.json' },
+    ],
     defaultLocale: 'fa',
     strategy: 'no_prefix',
     langDir: '~/locales/',
     vueI18n: {
-      fallbackLocale: 'fa'
-    }
+      fallbackLocale: 'fa',
+    },
   },
   auth: {
-  redirect: {
-    login: '/login',
-    logout: false,
-    callback: false,
-    home: false
-  },
-  strategies: {
-    local: {
-      endpoints: {
-        login: { url: '/login', method: 'post', propertyName: 'token' },
-        logout: { url: '/logout', method: 'post' },
-        user: { url: process.env.USERURL, method: 'get', propertyName: 'user' }
+    redirect: {
+      login: '/login',
+      logout: false,
+      callback: false,
+      home: false,
+    },
+    strategies: {
+      local: {
+        endpoints: {
+          login: { url: '/login', method: 'post', propertyName: 'token' },
+          logout: { url: '/logout', method: 'post' },
+          user: {
+            url: process.env.USERURL,
+            method: 'get',
+            propertyName: 'user',
+          },
+        },
+        autoLogout: true,
+        // tokenRequired: true,
+        // tokenType: 'bearer',
+        // globalToken: true,
+        // autoFetchUser: true
       },
-      autoLogout: true,
-      // tokenRequired: true,
-      // tokenType: 'bearer',
-      // globalToken: true,
-      // autoFetchUser: true
-    }
+    },
+    plugins: ['~/plugins/auth.js'],
   },
-  plugins: [ '~/plugins/auth.js' ]
-},
   /*
    ** Axios module configuration
    ** See https://axios.nuxtjs.org/options
@@ -175,43 +196,46 @@ export default {
    ** Build configuration
    ** See https://nuxtjs.org/api/configuration-build/
    */
-pwa: {
-  icon: {
-    fileName:'icon-'+process.env.ENV+'.png'
+  pwa: {
+    icon: {
+      fileName: 'icon-' + process.env.ENV + '.png',
+    },
+    manifest: {
+      name: process.env.APP_NAME_FA,
+      short_name: process.env.APP_NAME_EN,
+      lang: 'fa',
+      description: 'سینمای آنلاین شما',
+    },
+    // workbox: {
+    //  runtimeCaching: [
+    //    {
+    //      strategyPlugins: [{
+    //         use: 'Expiration',
+    //         config: {
+    //           maxEntries: 1000,
+    //           maxAgeSeconds: 1000
+    //         }
+    //       }]
+    //    }
+    //  ]
+    // }
   },
-  manifest: {
-    name: process.env.APP_NAME_FA,
-    short_name: process.env.APP_NAME_EN,
-    lang: 'fa',
-    description: 'سینمای آنلاین شما'
+  colorMode: {
+    classPrefix: 'theme-',
+    classSuffix: '',
+    preference: 'system',
+    fallback: 'light',
   },
-  // workbox: {
-  //  runtimeCaching: [
-  //    {
-  //      strategyPlugins: [{
-  //         use: 'Expiration',
-  //         config: {
-  //           maxEntries: 1000,
-  //           maxAgeSeconds: 1000
-  //         }
-  //       }]
-  //    }
-  //  ]
-  // }
-},
-colorMode: {
-  classPrefix: 'theme-',
-  classSuffix: '',
-  preference: 'system',
-  fallback: 'light'
-},
 
   pageTransition: {
-    name: "fade",
-    mode: "out-in",
+    name: 'fade',
+    mode: 'out-in',
   },
   bootstrapVue: {
     components: [
+      'BContainer',
+      'BRow',
+      'BCol',
       'BTooltip',
       'BTab',
       'BTabs',
@@ -233,7 +257,7 @@ colorMode: {
       'BSpinner',
       'BootstrapVueIcons',
     ],
-    directives: ['VBTooltip','VBToggle'],
+    directives: ['VBTooltip', 'VBToggle'],
   },
   build: {
     /**ßßß
@@ -246,12 +270,12 @@ colorMode: {
     extend(config, { isDev, isClient }) {
       if (isDev && isClient) {
         config.module.rules.push({
-          enforce: "pre",
+          enforce: 'pre',
           test: /\.(js|vue)$/,
-          loader: "eslint-loader",
+          loader: 'eslint-loader',
           exclude: /(node_modules)/,
         })
       }
     },
-  }
+  },
 }

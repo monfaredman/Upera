@@ -66,7 +66,7 @@ export default {
     size: { type: Object, default: () => ({ w: 142, h: 212 }) },
 
     // Route builder: (item) => { name, params }
-    linkBuilder: { type: Function, required: true },
+    linkBuilder: { type: [Function, String, Object], required: true },
 
     // UI toggles
     showBadges: { type: Boolean, default: true },

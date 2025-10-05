@@ -844,6 +844,7 @@ export default {
         'genres-genre',
         'lives-live',
         'lists-list',
+        'app',
       ],
       itemmenu: [
         'callback',

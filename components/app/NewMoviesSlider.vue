@@ -2,56 +2,46 @@
   <div class="new-movies-slider">
     <div class="d-flex justify-content-between align-items-center mb-3">
       <h5 class="mb-0">{{ header }}</h5>
+      <nuxt-link
+        :to="{ name: 'lists-list', params: { list: 'new_titles' } }"
+        class="mb-1"
+      >
+        {{ $t('new.show_all') }}
+        <img src="@/assets/img/more.svg" height="3" alt="" />
+      </nuxt-link>
     </div>
     <div class="slider-wrapper">
+      <!-- loading placeholder -->
+      <div
+        v-if="isLoading"
+        class="loading-state d-flex align-items-center justify-content-center"
+        :style="{ minHeight: (size && size.h ? size.h : 200) + 'px' }"
+      >
+        <b-spinner small type="grow" class="ml-2" />
+        <span class="ml-2 text-white">در حال بارگذاری…</span>
+      </div>
+
       <swiper
+        v-else
         ref="newMoviesSwiper"
         :options="swiperOptions"
         @slideChange="onSlideChange"
       >
         <swiper-slide
-          v-for="(item, index) in newMovies"
+          v-for="(item, index) in displayedItems"
           :key="item.id || index"
         >
           <MediaCard
             :item="item"
-            :variant="cardVariant"
+            :variant="'backdrop'"
             :size="size"
-            :linkBuilder="linkBuilder"
+            :link-builder="buildMediaLink(item)"
             :showBadges="showBadges"
             :showTitle="showTitle"
             :addSeriesClass="addSeriesClass"
           />
         </swiper-slide>
       </swiper>
-      <div class="new-movies-nav">
-        <!-- <b-icon
-          v-show="activeIndex > 0"
-          class="nav-btn prev rounded-lg"
-          aria-label="Previous"
-          @click="slidePrev"
-          icon="chevron-right"
-          style="
-            background: white;
-            color: black;
-            border-radius: 1rem !important;
-            font-size: 1rem !important;
-          "
-        ></b-icon> -->
-        <!-- <b-icon
-          v-show="activeIndex < newMovies.length - swiperOptions.slidesPerView"
-          class="nav-btn next rounded-lg"
-          aria-label="Next"
-          @click="slideNext"
-          icon="chevron-left"
-          style="
-            background: white;
-            color: black;
-            border-radius: 1rem !important;
-            font-size: 1rem !important;
-          "
-        ></b-icon> -->
-      </div>
     </div>
   </div>
 </template>
@@ -59,6 +49,7 @@
 <script>
 import { Swiper, SwiperSlide } from 'vue-awesome-swiper'
 import MediaCard from '@/components/MediaCard'
+import 'swiper/css/swiper.css' // keep consistent with TopRatedSlider
 
 export default {
   components: {
@@ -73,14 +64,15 @@ export default {
     },
     // HorizontalList-like config
     cardVariant: { type: String, default: 'poster' },
-    size: { type: Object, default: () => ({ w: 142, h: 212 }) },
-    linkBuilder: { type: Function, required: true },
+    size: { type: Object, default: () => ({ w: 370, h: 200 }) },
+    // linkBuilder: { type: Function, required: true },
     showBadges: { type: Boolean, default: true },
     showTitle: { type: Boolean, default: true },
     addSeriesClass: { type: Boolean, default: true },
   },
   data() {
     return {
+      itemsToShow: 20,
       header: 'تازه های آپرا',
       swiperOptions: {
         slidesPerView: 3,
@@ -99,12 +91,37 @@ export default {
         },
       },
       activeIndex: 0,
+      isLoading: true,
     }
   },
   computed: {
     newMovies() {
-      console.log(1, this.ugcMovies)
-      return this.ugcMovies[0]?.data || []
+      const list = this.ugcMovies
+      if (Array.isArray(list) && list.length && Array.isArray(list[0]?.data)) {
+        return list[0]?.data
+      }
+      return Array.isArray(list) ? list : []
+    },
+    displayedItems() {
+      const arr = this.newMovies
+      const n = Math.min(this.itemsToShow, arr.length || this.itemsToShow)
+      return arr.slice(0, n)
+    },
+  },
+  watch: {
+    displayedItems: {
+      immediate: true,
+      handler(newVal) {
+        const ready = Array.isArray(newVal) && newVal.length > 0
+        this.isLoading = !ready
+        if (ready) {
+          this.$nextTick(() => {
+            const inst =
+              this.$refs.newMoviesSwiper && this.$refs.newMoviesSwiper.$swiper
+            if (inst) inst.update()
+          })
+        }
+      },
     },
   },
   mounted() {
@@ -118,6 +135,17 @@ export default {
     })
   },
   methods: {
+    buildMediaLink(item) {
+      if (item && item.type && item.id) {
+        return { name: item.type + '-id', params: { id: item.id } }
+      }
+      // Tries common fields first, then falls back safely
+      if (item && item.route) return item.route
+      if (item && item.url) return item.url
+      if (item && item.slug) return `/content/${item.slug}`
+      if (item && item.id) return `/content/${item.id}`
+      return '#'
+    },
     onSlideChange() {
       const inst =
         this.$refs.newMoviesSwiper && this.$refs.newMoviesSwiper.$swiper
@@ -171,10 +199,11 @@ h5 {
   inset: 0;
   direction: rtl;
   z-index: 20;
+  pointer-events: none; /* allow dragging/interaction with swiper underneath */
 }
 
 .new-movies-nav .nav-btn {
-  pointer-events: auto;
+  pointer-events: auto; /* keep buttons clickable when enabled */
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
@@ -205,6 +234,11 @@ h5 {
 
 .new-movies-nav .nav-btn:active {
   transform: translateY(-50%) scale(0.92);
+}
+
+.loading-state {
+  background: black;
+  border-radius: 8px;
 }
 
 @media (max-width: 575.98px) {

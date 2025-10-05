@@ -1,17 +1,12 @@
 <template>
-  <div style="background-color: black">
+  <div style="background-color: black" class="mb-4 mb-md-0">
     <Banner />
     <AppLinks />
-    <NewMoviesSlider
-      :ugc-movies="ugcs ? ugcs : []"
-      :link-builder="buildMediaLink"
-    />
-    <TopRatedSlider
-      :ugc-movies="offers ? offers : []"
-      :link-builder="buildMediaLink"
-    />
+    <NewMoviesSlider :ugc-movies="ugcs ? ugcs : []" />
+    <TopRatedSlider :ugc-movies="offers ? offers : []" />
     <ChildSection />
     <LogoSection />
+    <Highlights />
   </div>
 </template>
 <script>
@@ -22,6 +17,7 @@ import NewMoviesSlider from '@/components/app/NewMoviesSlider'
 import TopRatedSlider from '@/components/app/TopRatedSlider.vue'
 import ChildSection from '@/components/app/ChildSection'
 import LogoSection from '@/components/app/LogoSection.vue'
+import Highlights from '../components/app/Highlights.vue'
 export default {
   components: {
     // pwa,
@@ -31,6 +27,7 @@ export default {
     TopRatedSlider,
     ChildSection,
     LogoSection,
+    Highlights,
   },
   data() {
     return {
@@ -81,21 +78,12 @@ export default {
     this.fetchOfferData()
   },
   methods: {
-    buildMediaLink(item) {
-      // Tries common fields first, then falls back safely
-      if (item && item.route) return item.route
-      if (item && item.url) return item.url
-      if (item && item.slug) return `/content/${item.slug}`
-      if (item && item.id) return `/content/${item.id}`
-      return '#'
-    },
     async fetchDiscoverData() {
       try {
         const response = await this.$axios.get(
           this.ghostApi + this.filtercontents
         )
         if (response.status === 200) {
-          console.log(response.data.data.data)
           this.ugcs = response.data.data.data.filter(
             (item) => item.list_en === 'New Titles'
           )
