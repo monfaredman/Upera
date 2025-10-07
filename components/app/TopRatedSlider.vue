@@ -21,7 +21,7 @@
         <span class="ml-2 text-white">در حال بارگذاری…</span>
       </div>
 
-      <swiper
+      <!-- <swiper
         v-else
         ref="topRatedSwiper"
         :options="swiperOptions"
@@ -30,18 +30,28 @@
         <swiper-slide
           v-for="(item, index) in displayedItems"
           :key="item.id || index"
-        >
-          <MediaCard
-            :item="item"
-            :variant="cardVariant"
-            :size="size"
-            :link-builder="buildMediaLink(item)"
-            :showBadges="showBadges"
-            :showTitle="showTitle"
-            :addSeriesClass="addSeriesClass"
-          />
-        </swiper-slide>
-      </swiper>
+        > -->
+      <div v-swiper:[1]="swiperOptions" class="swiper-container newset-slider2">
+        <div class="swiper-wrapper py-1">
+          <div
+            v-for="(item, index) in displayedItems"
+            :key="item.id || index"
+            class="swiper-slide"
+          >
+            <MediaCard
+              :item="item"
+              :variant="cardVariant"
+              :size="size"
+              :link-builder="buildMediaLink(item)"
+              :showBadges="showBadges"
+              :showTitle="showTitle"
+              :addSeriesClass="addSeriesClass"
+            />
+            <!-- </swiper-slide>
+      </swiper> -->
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -50,12 +60,12 @@
 import 'swiper/css/swiper.css'
 import MediaCard from '@/components/MediaCard'
 
-import { Swiper, SwiperSlide } from 'vue-awesome-swiper'
+// import { Swiper, SwiperSlide } from 'vue-awesome-swiper'
 
 export default {
   components: {
-    Swiper,
-    SwiperSlide,
+    // Swiper,
+    // SwiperSlide,
     MediaCard,
   },
   props: {
@@ -68,9 +78,6 @@ export default {
     size: {
       type: Object,
       default: () => {
-        if (typeof window !== 'undefined' && window.innerWidth <= 576) {
-          return { w: 170, h: 212 }
-        }
         return { w: 142, h: 212 }
       },
     },
@@ -84,20 +91,21 @@ export default {
       activeIndex: 0,
       isLoading: true,
       swiperOptions: {
-        slidesPerView: 6.5,
-        slidesPerGroup: 1,
-        spaceBetween: 15,
-        loop: false,
-        watchOverflow: true,
-        observer: true,
-        observeParents: true,
+        spaceBetween: 10,
+        slidesPerView: 3.3,
+        grabCursor: true,
+        setWrapperSize: true,
+        threshold: 2,
+        countdown: {},
         breakpoints: {
-          1400: { slidesPerView: 6.5 },
-          1200: { slidesPerView: 5.5 },
-          992: { slidesPerView: 4.5 },
-          768: { slidesPerView: 3.5 },
-          576: { slidesPerView: 2 },
-          0: { slidesPerView: 2 },
+          200: { slidesPerView: 2.5 },
+          420: { slidesPerView: 3.5 },
+          768: { slidesPerView: 4.5 },
+          992: { slidesPerView: 5.5 },
+          1024: { slidesPerView: 6.5 },
+          1200: { slidesPerView: 7 },
+          1420: { slidesPerView: 8 },
+          1670: { slidesPerView: 9 },
         },
       },
     }

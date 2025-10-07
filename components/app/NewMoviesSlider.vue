@@ -64,7 +64,7 @@ export default {
     },
     // HorizontalList-like config
     cardVariant: { type: String, default: 'poster' },
-    size: { type: Object, default: () => ({ w: 370, h: 200 }) },
+    size: { type: Object, default: () => ({ w: 370, h: 208 }) },
     // linkBuilder: { type: Function, required: true },
     showBadges: { type: Boolean, default: true },
     showTitle: { type: Boolean, default: true },
@@ -84,8 +84,8 @@ export default {
         observeParents: true,
         breakpoints: {
           1200: { slidesPerView: 3.5 },
-          992: { slidesPerView: 3.5 },
-          768: { slidesPerView: 3.5 },
+          992: { slidesPerView: 2.5 },
+          768: { slidesPerView: 1.5 },
           576: { slidesPerView: 1.5 },
           0: { slidesPerView: 1.5 },
         },

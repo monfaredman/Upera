@@ -6,16 +6,7 @@
 دنیایی از فیلم‌های متنوع ایرانی و خارجی
 آماده تماشا هستید؟"
   >
-    <h3
-      class="display-4"
-      style="
-        font-size: 2.3rem;
-        line-height: 4.5rem;
-        font-weight: 700;
-        margin-top: 18rem;
-        word-spacing: 0.2em;
-      "
-    >
+    <h3 class="display-4">
       <slot
         >"تو تصمیم می‌گیری چقدر پرداخت کنی!"
         <br />
@@ -46,7 +37,7 @@
   background-size: cover, cover;
   background-repeat: no-repeat, no-repeat;
 
-  height: clamp(var(--banner-min-height), 70vh, var(--banner-height));
+  height: clamp(var(--banner-min-height), 80vh, var(--banner-height));
   width: 100%;
   min-width: var(--banner-min-width);
   min-height: var(--banner-min-height);
@@ -55,8 +46,9 @@
 h3 {
   font-size: 3rem !important;
   line-height: 5.5rem !important;
-  margin-top: 20rem;
+  margin-top: 18rem;
   word-spacing: 0.2em;
+  font-weight: 700 !important;
 }
 
 @media (max-width: 992px) {
@@ -65,11 +57,11 @@ h3 {
   }
 
   h3 {
-    font-size: 2.5rem !important;
-    line-height: 4.5rem !important;
+    font-size: 3rem !important;
+    line-height: 5.5rem !important;
     margin-top: 20rem;
+    font-weight: 600 !important;
     word-spacing: 0.2em;
-    font-family: 'dana' !important;
   }
 }
 
@@ -79,10 +71,12 @@ h3 {
   }
 
   .banner h3 {
-    font-size: 1.2rem !important;
+    /* mobile: 22px = 1.375rem */
+    font-size: 1.375rem !important;
     line-height: 3rem !important;
     margin-top: 10rem !important;
     word-spacing: 0.1em !important;
+    font-weight: 500 !important;
   }
 }
 </style>

@@ -3,12 +3,28 @@
     <div
       class="d-flex justify-content-between align-items-center mb-2 container-fluid"
     >
-      <h4 class="font-weight-bold">
+      <h4 class="font-weight-bold" style="z-index: 4">
         {{ localizedTitle }}
       </h4>
-      <nuxt-link v-if="showAllRoute" :to="showAllRoute" class="mb-1">
+      <nuxt-link
+        v-if="showAllRoute"
+        :to="showAllRoute"
+        class="mb-1"
+        :class="{
+          'text-white': localizedTitle === 'پیشنهادی',
+          '': localizedTitle !== 'پیشنهادی',
+        }"
+        style="z-index: 4"
+      >
         {{ $t('new.show_all') }}
-        <img src="@/assets/img/more.svg" height="3" alt="" />
+        <i v-if="localizedTitle === 'پیشنهادی'" class="fa fa-ellipsis-h mt-2" />
+        <img
+          v-else
+          src="@/assets/img/more.svg"
+          class="text-white"
+          height="3"
+          alt=""
+        />
       </nuxt-link>
     </div>
 

@@ -11,9 +11,27 @@
                 blank
                 blank-color="#bbb"
                 :width="size.w"
-                :height="size.h"
+                :height="223"
                 show
-                class="d-none d-lg-block"
+                class="d-none d-lg-block d-xl-none d-xxl-none"
+                :src="
+                  variant === 'poster'
+                    ? posterSrc(item.poster)
+                    : backdropSrc(
+                        item.mobileSrc ? item.mobileSrc : item.backdrop,
+                        item.cdnType ?? 1
+                      )
+                "
+                :alt="altText"
+                rounded
+              />
+              <b-img
+                blank
+                blank-color="#bbb"
+                :width="size.w"
+                :height="241"
+                show
+                class="d-none d-lg-none d-xl-block d-xxl-none"
                 :src="
                   variant === 'poster'
                     ? posterSrc(item.poster)
@@ -52,10 +70,28 @@
           <b-img
             blank
             blank-color="#bbb"
-            width="375"
-            height="300"
+            width="142"
+            height="159"
             show
-            class="d-lg-none"
+            class="d-sm-none"
+            :src="
+              variant === 'poster'
+                ? posterSrc(item.poster, true)
+                : backdropSrc(
+                    item.mobileSrc ? item.mobileSrc : item.backdrop,
+                    item.cdnType ?? 1
+                  )
+            "
+            :alt="altText"
+            rounded
+          />
+          <b-img
+            blank
+            width="142"
+            height="232"
+            blank-color="#bbb"
+            show
+            class="d-none d-sm-block d-lg-none"
             :src="
               variant === 'poster'
                 ? posterSrc(item.poster)
@@ -174,10 +210,10 @@ export default {
     },
   },
   methods: {
-    posterSrc(filename) {
+    posterSrc(filename, isMobile = false) {
       if (!filename) return ''
-      const { w, h } = this.size
-      return `${THUMB_BASE}?w=${w}&h=${h}&q=90&a=t&zc=1&fmt=webp&src=${CDN_POSTERS}/${filename}`
+      const { w, h } = isMobile ? { w: 142, h: 212 } : this.size
+      return `${THUMB_BASE}?w=${w}&h=${h}&q=100&a=c&src=${CDN_POSTERS}/${filename}`
     },
     backdropSrc(filename, cdnType = 1) {
       if (!filename) return ''

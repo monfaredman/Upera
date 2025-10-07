@@ -2,248 +2,14 @@
   <div>
     <section v-if="sliders && sliders.length" id="slideshow">
       <div class="swiper-container showcase main-slideshow">
-        <VueSlickCarousel
+        <!-- replaced inline VueSlickCarousel + slides with external component -->
+        <ShowcaseCarousel
           :key="swiperKey"
           ref="carousel"
-          v-bind="swiperOption3"
-          class="swiper-wrapper"
-          :class="{ 'dir-ltr': sliders.length == 1 }"
-        >
-          // Adding manual backdrops
-          <!--
-          <template v-for="(mediaItem, index) in mediaItems">
-            <MediaCard
-              :key="index"
-              :item="mediaItem"
-              :variant="mediaItem.variant"
-              :size="mediaItem.size"
-              :link-builder="buildIdRoute"
-            />
-          </template>
-          -->
-          <div
-            v-for="(item, index) in sliders"
-            :key="index"
-            class="swiper-slide"
-          >
-            <div class="row no-gutters">
-              <div class="col-md-6 col-lg-7 showcase-pic">
-                <template v-if="item.media_type === 'video2'">
-                  <video
-                    class="showcase-img d-none d-lg-block"
-                    autoplay
-                    loop
-                    playsinline
-                    :muted="item.muted"
-                    :src="item.video_src"
-                    :poster="item.image_src"
-                    style="width: 1120px; height: 576px; object-fit: cover"
-                    @loadeddata="item.is_loading = false"
-                  />
-                  <video
-                    class="showcase-img d-lg-none"
-                    autoplay
-                    loop
-                    playsinline
-                    :muted="item.muted"
-                    :src="item.video_src"
-                    :poster="item.image_mobile_src"
-                    style="width: 375px; height: 300px; object-fit: cover"
-                    @loadeddata="item.is_loading = false"
-                  />
-                  <div
-                    v-if="item.is_loading"
-                    class="video-loading-spinner"
-                    style="
-                      position: absolute;
-                      inset: 0;
-                      display: flex;
-                      justify-content: center;
-                      align-items: center;
-                      z-index: 10;
-                    "
-                  >
-                    Loading…
-                  </div>
-                </template>
-                <template v-else>
-                  <b-img
-                    blank
-                    blank-color="#bbb"
-                    width="1120"
-                    height="576"
-                    show
-                    class="showcase-img d-none d-lg-block"
-                    :src="item.image_src"
-                    :alt="item.name"
-                  />
-                  <b-img
-                    fluid-grow
-                    blank
-                    blank-color="#bbb"
-                    width="375"
-                    height="300"
-                    show
-                    class="showcase-img d-lg-none"
-                    :src="item.image_mobile_src"
-                    :alt="item.name"
-                  />
-                </template>
-              </div>
-              <div class="col-md-6 col-lg-5" />
-            </div>
-            <div
-              class="showcase-thumbnail-wrapper-outter d-flex align-items-center justify-content-between pr-gutter pr-md-3"
-            >
-              <div class="showcase-thumbnail-wrapper w-full">
-                <div class="d-flex h-full align-items-end">
-                  <div class="pr-md-4 pr-md-2 showcase-desc-wrapper">
-                    <div class="showcase-desc">
-                      <div
-                        v-if="item.type != 'episode'"
-                        class="title text-invert mb-1 mb-md-3"
-                      >
-                        <nuxt-link
-                          :to="{
-                            name: item.type + '-id',
-                            params: { id: item.id },
-                          }"
-                        >
-                          {{ ChooseLang(item.name, item.name_fa) }}
-                        </nuxt-link>
-                      </div>
-                      <div v-else class="title text-invert mb-1 mb-md-3">
-                        <nuxt-link
-                          :to="{
-                            name: item.type + '-id',
-                            params: { id: item.id },
-                          }"
-                        >
-                          {{ ChooseLang(item.name, item.name_fa)
-                          }}<span
-                            v-if="item.season_number > 1"
-                            class="show-mobile"
-                          >
-                            {{ item.season_number }}</span
-                          >
-                        </nuxt-link>
-                      </div>
-                      <div
-                        v-if="item.type == 'episode'"
-                        class="p-fs-small text-invert mb-1 mb-md-3 hide-mobile font-weight-normal"
-                      >
-                        {{ $t('show.season') }}{{ item.season_number }} -
-                        {{ $t('show.episode') }} {{ item.episode_number }}
-                      </div>
-                      <div class="text-invert mb-1 mb-md-3">
-                        <nuxt-link
-                          v-for="(persianName, englishName) in item.genre"
-                          :key="englishName"
-                          :to="{
-                            name: 'lists-list',
-                            params: { list: englishName },
-                          }"
-                          class="tag"
-                        >
-                          {{ persianName }}
-                        </nuxt-link>
-                      </div>
-                      <div
-                        v-if="item.dubbed"
-                        class="text-invert mb-1 mb-md-3 hide-mobile"
-                      >
-                        دوبله فارسی
-                      </div>
-                      <div
-                        v-else-if="item.subbed"
-                        class="text-invert mb-1 mb-md-3 hide-mobile"
-                      >
-                        زیرنویس فارسی
-                      </div>
-                    </div>
-                    <div class="showcase-button-wrapper">
-                      <nuxt-link
-                        v-if="item.presale"
-                        :to="{
-                          name: item.type + '-id',
-                          params: { id: item.id },
-                        }"
-                        class="btn btn-main"
-                      >
-                        به زودی
-                      </nuxt-link>
-                      <nuxt-link
-                        v-else-if="item.type != 'series'"
-                        :to="{
-                          name: item.type + '-show-id',
-                          params: { id: item.id },
-                        }"
-                        class="btn btn-main"
-                      >
-                        نمایش
-                        <span class="hide-mobile hide-tablet"
-                          ><span v-if="item.type == 'movie'">فیلم</span
-                          ><span v-else>این قسمت سریال</span></span
-                        >
-                      </nuxt-link>
-
-                      <nuxt-link
-                        v-else
-                        :to="{ name: 'series-id', params: { id: item.id } }"
-                        class="btn btn-main"
-                      >
-                        قسمت ها
-                      </nuxt-link>
-
-                      <nuxt-link
-                        :to="{
-                          name: item.type + '-id',
-                          params: { id: item.id },
-                        }"
-                        class="btn btn-dark btn-download ml-md-2 hide-mobile"
-                      >
-                        توضیحات
-                        <i class="icon-info" />
-                      </nuxt-link>
-
-                      <nuxt-link
-                        :to="{
-                          name: item.type + '-id',
-                          params: { id: item.id },
-                        }"
-                        class="text-invert show-mobile"
-                      >
-                        <i class="icon-info" />
-                        <div v-if="item.type != 'episode'">توضیحات</div>
-                        <div v-else>قسمت {{ item.episode_number }}</div>
-                      </nuxt-link>
-                    </div>
-                  </div>
-                  <div class="thumbnail hide-mobile">
-                    <nuxt-link
-                      :to="{ name: item.type + '-id', params: { id: item.id } }"
-                    >
-                      <b-img
-                        v-bind="{
-                          fluidGrow: true,
-                          blank: true,
-                          blankColor: '#bbb',
-                          width: 207,
-                          height: 307,
-                          show: true,
-                        }"
-                        :src="item.poster"
-                        :alt="item.name"
-                        class="thumbnail"
-                      />
-                    </nuxt-link>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </VueSlickCarousel>
-        <div v-if="sliders.length > 1" dir="rtl">
+          :options="swiperOption3"
+          :sliders="sliders"
+        />
+        <!-- <div v-if="sliders.length > 1" dir="rtl">
           <div
             class="swiper-next swiper-button-next main-slideshow-next"
             @click="showPrev"
@@ -252,17 +18,9 @@
             class="swiper-prev swiper-button-prev main-slideshow-prev"
             @click="showNext"
           />
-        </div>
+        </div> -->
       </div>
     </section>
-
-    <FilterContents
-      :show="true"
-      :show-genres="true"
-      :savedata="false"
-      :no-top="!(sliders && sliders.length > 0)"
-      @execute_content_filtering="execute_content_filtering"
-    />
 
     <div v-if="checkuser.show_lives && lives && lives.data.length">
       <HorizontalList
@@ -298,7 +56,7 @@
       </div>
     </div>
 
-    <div v-if="offer">
+    <div v-if="offer" style="margin-top: -16rem">
       <HorizontalList
         :title-en="offer.list_en"
         :title-fa="offer.list_fa"
@@ -315,6 +73,14 @@
         :show-badges="true"
       />
     </div>
+
+    <FilterContents
+      :show="true"
+      :show-genres="true"
+      :savedata="false"
+      :no-top="!(sliders && sliders.length > 0)"
+      @execute_content_filtering="execute_content_filtering"
+    />
 
     <section
       v-if="recently !== null"
@@ -611,7 +377,7 @@
 import InfiniteLoading from 'vue-infinite-loading'
 import FilterContents from '@/components/FilterContents'
 import HorizontalList from '@/components/HorizontalList'
-// import MediaCard from '@/components/MediaCard'
+import ShowcaseCarousel from '@/components/ShowcaseCarousel'
 
 const SWIPER_OPTION_POSTER = {
   spaceBetween: 10,
@@ -664,6 +430,7 @@ export default {
     InfiniteLoading,
     FilterContents,
     HorizontalList,
+    ShowcaseCarousel,
     // MediaCard,
   },
   async asyncData(context) {

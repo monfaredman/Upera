@@ -256,6 +256,7 @@ export default {
       'BPopover',
       'BSpinner',
       'BootstrapVueIcons',
+      'BIcon',
     ],
     directives: ['VBTooltip', 'VBToggle'],
   },
