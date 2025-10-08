@@ -54,7 +54,7 @@
                             </div>
                           </div>
 
-                 
+
 
                           <div v-if="item.screening.ekran" class="col-sm-6">
                             <div class="d-flex h-100 align-items-end">
@@ -98,7 +98,7 @@
                       <span v-for="(item,index) in files" :key="index">
                         <span v-if="!item.screening.ekran">
                           <br><br>
-                    
+
                           در گوشی های اندروید از برنامه adm جهت دانلود فیلم استفاده کنید ( <a href="https://play.google.com/store/apps/details?id=com.dv.adm&amp;hl=fa" target="_blank">نصب</a>)<br>
                           در گوشی ios از برنامه Documents جهت دانلود فیلم استفاده کنید (<a href="https://itunes.apple.com/us/app/documents-by-readdle/id364901807?mt=8" target="_blank">آیتیونز</a>)<br>
                           در کامپیوتر از برنامه Flash Get یا idm جهت دانلود فیلم استفاده نمایید
@@ -141,7 +141,7 @@
                       <div class="offset-2 col-8">
                         <img class="img-fluid" src="@/assets/img/success.png">
                       </div>
-                      
+
                       <button class="btn btn-copy btn-light btn-block" @click="SHOW_MODAL_DIRECTDEBIT()">
                         تنظیمات پرداخت خودکار
                       </button>
@@ -154,7 +154,7 @@
                       <b>متاسفانه خرید شما موفقیت آمیز نبود</b>
 
                       <br><br>
-                    
+
                       اگر مبلغی از حساب شما کسر شده است، نهایتا ظرف ۷۲ ساعت آینده به حساب شما برگشت داده خواهد شد
                     </div>
                     <div v-else-if="!loading && !buyloading && show_login==0" class="text-center">
@@ -165,7 +165,7 @@
                       و یا در حین انجام تراکنش مشکلی رخ داده است
 
                       <br><br> <br><br>
-                    
+
                       می توانید پرداخت خود را بررسی کنید و یا نسبت به پرداخت مجدد اقدام کنید
                     </div>
 
@@ -262,8 +262,16 @@
                     </div>
                   </div>
                   <div v-if="title!=null" class="download-links-item">
-                    <div class="row">
-                      <div class="col-12">
+                    <div v-if="$route.query.reactnative&&$route.query.reactnative=='1'" class="row">
+                     <div  class="col-12">
+                       <a  :href="`uperaapp://callback?${queryString}`" class="btn btn-second btn-block" >
+                        بازگشت به اپلیکیشن
+                        <i class="fa fa-arrow-alt-circle-left" />
+                       </a>
+                      </div>
+                   </div>
+                    <div v-else class="row">
+                      <div  class="col-12">
                         <a v-if="title.type=='movie'" href="" class="btn btn-second btn-block" @click.prevent="Push2(title.id,title.type)">
                           بازگشت به صفحه فیلم
                           <i class="fa fa-arrow-alt-circle-left" />
@@ -291,7 +299,7 @@
 
 <script>
 import {mapGetters} from 'vuex'
-  
+
   export default {
     layout: "nofooter",
     data() {
@@ -315,13 +323,24 @@ import {mapGetters} from 'vuex'
     },
   head() {
 
-    return { 
+    return {
     bodyAttrs: {
       class: 'callback'
     },title:  'پرداخت' }
   },
     computed: {
         ...mapGetters({cart: "download/cart"}),
+
+        queryString() {
+         const params = new URLSearchParams()
+        // Add all query parameters dynamically
+         Object.entries(this.$route.query).forEach(([key, value]) => {
+         if (value) params.append(key, value)
+         })
+
+         return params.toString()
+        },
+
     },
     watch: {
       async success(val) {
@@ -345,7 +364,7 @@ import {mapGetters} from 'vuex'
 
                 this.showModal()
                 document.getElementsByClassName('modal-content')[0].removeAttribute('tabindex')
-        
+
 
 
         this.$refs['callbackModal'].$on('hide', () => {
@@ -389,7 +408,7 @@ import {mapGetters} from 'vuex'
           purchase='download'
         }
 
-                      
+
 
         if (this.$auth.loggedIn) {
             api_url='/payments/'+purchase+'/callback'
@@ -510,7 +529,7 @@ if (this.$auth.loggedIn) {
                                 content_type: content_type,
                                 ref: ref
                             }).then((res) => {
-          
+
           if(res.status === 200){
 
              this.data = res.data
@@ -553,7 +572,7 @@ if (this.$auth.loggedIn) {
         this.buyloading=true
 
 
- 
+
 
         this.$axios.post(api_url, {
             cart: this.cart,
@@ -612,7 +631,7 @@ this.$refs['callbackModal'].$on('shown', () => {
 
     if(element.length)
       element[0].style.setProperty('--vh', `${vh}px`)
-    
+
     return e
   },
   Login() {
