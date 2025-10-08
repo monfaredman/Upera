@@ -2606,11 +2606,8 @@ a.thumbnail-wrapper {
   top: 0;
   bottom: 0;
   left: 0;
-  background: radial-gradient(
-    50% 50% at 50% 50%,
-    rgba(0, 0, 0, 0.18) 0%,
-    rgba(0, 0, 0, 0.426) 100%
-  );
+  background: linear-gradient(180deg, rgba(18, 18, 18, 0) 79.79%, #121212 100%),
+    linear-gradient(270deg, #121212 0%, rgba(18, 18, 18, 0) 100%);
 }
 @media (min-width: 768px) {
   .showcase .showcase-pic::before {
@@ -9974,6 +9971,9 @@ small,
 }
 
 .download-links-poster2::after {
+  /* Limit the overlay to only the bottom 20% of the element */
+  background: linear-gradient(180deg, rgba(18, 18, 18, 0) 0%, #121212 100%)
+    bottom / 100% 20% no-repeat;
   background: linear-gradient(180deg, rgba(18, 18, 18, 0) 79.79%, #121212 100%),
     linear-gradient(270deg, #121212 50%, rgba(18, 18, 18, 0) 100%);
 }

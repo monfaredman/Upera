@@ -3,7 +3,9 @@
     :key="swiperKey"
     ref="innerCarousel"
     v-bind="options"
+    :rtl="true"
     :arrows="true"
+    :dots="true"
     class="swiper-wrapper"
     :class="{ 'dir-ltr': sliders.length === 1 }"
   >
@@ -37,7 +39,7 @@
 
     <div v-for="(item, index) in sliders" :key="index" class="swiper-slide">
       <div class="row no-gutters">
-        <div class="col-md-6 col-lg-7 col-xl-12 showcase-pic">
+        <div class="col-12 showcase-pic">
           <template v-if="item.media_type === 'video2'">
             <video
               class="showcase-img d-none d-lg-block"
@@ -88,7 +90,6 @@
               :alt="item.name"
             />
             <b-img
-              fluid-grow
               blank
               blank-color="#bbb"
               width="375"
@@ -103,89 +104,84 @@
         <div class="col-md-6 col-lg-5" />
       </div>
       <div
-        class="showcase-thumbnail-wrapper-outter d-flex align-items-center justify-content-between pr-gutter pr-md-3"
+        class="showcase-thumbnail-wrapper-outter d-flex align-items-center justify-content-between pr-md-3 showcases-desc-wrapper"
       >
         <div class="showcase-thumbnail-wrapper w-full">
           <div
             class="d-flex h-full align-items-end d-flex align-items-center justify-content-start"
           >
-            <div class="pr-md-4 pr-md-2 showcase-desc-wrapper">
+            <div class="showcase-desc-wrapper">
               <div class="showcase-desc">
-                <!--Logo-->
-                <div v-if="item.type != 'episode'">
-                  <div v-if="item.logo" class="showcase-logo mb-2">
-                    <b-img
-                      :src="item.logo"
-                      :alt="item.name"
-                      style="
-                        max-width: 220px !important;
-                        min-height: 180px !important;
-                      "
-                      v-bind="{
-                        fluidGrow: true,
-                        blank: true,
-                        blankColor: '#bbb',
-                        width: 207,
-                        height: 307,
-                        show: true,
-                      }"
-                    />
-                  </div>
-                  <div v-else class="title text-invert mb-1 mb-md-3">
-                    <nuxt-link
-                      :to="{ name: item.type + '-id', params: { id: item.id } }"
+                <div v-if="item.logo" class="showcase-logo mb-2">
+                  <b-img
+                    :src="item.logo"
+                    :alt="item.name"
+                    v-bind="{
+                      fluidGrow: true,
+                      blank: true,
+                      blankColor: '#bbb',
+                      width: 207,
+                      height: 307,
+                      show: true,
+                    }"
+                  />
+                </div>
+                <div class="showcase-details">
+                  <!--Logo-->
+                  <div v-if="item.type != 'episode'">
+                    <div
+                      v-if="!item.logo"
+                      class="title text-invert mb-1 mb-md-3"
                     >
-                      {{ ChooseLang(item.name, item.name_fa) }}
-                    </nuxt-link>
+                      <nuxt-link
+                        :to="{
+                          name: item.type + '-id',
+                          params: { id: item.id },
+                        }"
+                      >
+                        {{ ChooseLang(item.name, item.name_fa) }}
+                      </nuxt-link>
+                    </div>
                   </div>
-                </div>
-                <div v-else>
-                  <div v-if="item.logo" class="showcase-logo mb-2">
-                    <b-img
-                      :src="item.logo"
-                      :alt="item.name"
-                      style="
-                        max-width: 220px !important;
-                        min-height: 180px !important;
-                      "
-                      v-bind="{
-                        fluidGrow: true,
-                        blank: true,
-                        blankColor: '#bbb',
-                        width: 207,
-                        height: 307,
-                        show: true,
-                      }"
-                    />
-                  </div>
-                  <div v-else class="title text-invert mb-1 mb-md-3">
-                    <nuxt-link
-                      :to="{ name: item.type + '-id', params: { id: item.id } }"
+                  <div v-else>
+                    <div
+                      v-if="!item.logo"
+                      class="title text-invert mb-1 mb-md-3"
                     >
-                      {{ ChooseLang(item.name, item.name_fa) }}
-                      <span v-if="item.season_number > 1" class="show-mobile">
-                        {{ item.season_number }}
-                      </span>
-                    </nuxt-link>
+                      <nuxt-link
+                        :to="{
+                          name: item.type + '-id',
+                          params: { id: item.id },
+                        }"
+                      >
+                        {{ ChooseLang(item.name, item.name_fa) }}
+                        <span v-if="item.season_number > 1" class="show-mobile">
+                          {{ item.season_number }}
+                        </span>
+                      </nuxt-link>
+                    </div>
                   </div>
-                </div>
-                <!--Description-->
-                <div
-                  v-if="item.type == 'episode'"
-                  class="p-fs-small text-invert mb-1 mb-md-3 hide-mobile font-weight-normal"
-                >
-                  {{ $t('show.season') }}{{ item.season_number }} -
-                  {{ $t('show.episode') }} {{ item.episode_number }}
-                </div>
-                <div v-else class="text-invert mb-1 mb-md-3">
-                  <nuxt-link
-                    v-for="(persianName, englishName) in item.genre"
-                    :key="englishName"
-                    :to="{ name: 'lists-list', params: { list: englishName } }"
-                    class="tag"
+                  <!--Description-->
+                  <div
+                    v-if="item.type == 'episode'"
+                    class="p-fs-small text-invert mb-1 mb-md-3 hide-mobile font-weight-normal"
                   >
-                    {{ persianName }}
-                  </nuxt-link>
+                    {{ $t('show.season') }}{{ item.season_number }} -
+                    {{ $t('show.episode') }} {{ item.episode_number }}
+                  </div>
+                  <div v-else class="text-invert mb-2 mb-md-3">
+                    <nuxt-link
+                      v-for="(persianName, englishName) in item.genre"
+                      :key="englishName"
+                      :to="{
+                        name: 'lists-list',
+                        params: { list: englishName },
+                      }"
+                      class="tag"
+                    >
+                      {{ persianName }}
+                    </nuxt-link>
+                  </div>
                 </div>
                 <!--
                 <div
@@ -218,7 +214,7 @@
                     name: item.type + '-show-id',
                     params: { id: item.id },
                   }"
-                  class="btn btn-main d-flex justify-content-between align-items-center"
+                  class="btn btn-main d-flex justify-content-center align-items-center watch-btn"
                 >
                   <span>تماشا</span>
                   <div class="mr-1"><i class="fa fa-play fa-xs" /></div>
@@ -241,24 +237,26 @@
 
                 <nuxt-link
                   :to="{ name: item.type + '-id', params: { id: item.id } }"
-                  class="btn btn-download ml-md-2 hide-mobile text-white showcase-about-btn"
+                  class="btn btn-download ml-md-2 text-white showcase-about-btn"
                 >
                   درباره
-                  <span class="hide-mobile hide-tablet">
+                  <span>
                     <span v-if="item.type == 'movie'">فیلم</span>
                     <span v-else> سریال</span>
                   </span>
                   <i class="fa fa-chevron-left fa-xs mr-2" />
                 </nuxt-link>
-
+                <!--
                 <nuxt-link
                   :to="{ name: item.type + '-id', params: { id: item.id } }"
                   class="text-invert show-mobile"
+                  style="display: none"
                 >
                   <i class="icon-info" />
                   <div v-if="item.type != 'episode'">توضیحات</div>
                   <div v-else>قسمت {{ item.episode_number }}</div>
                 </nuxt-link>
+                -->
               </div>
             </div>
 
@@ -323,14 +321,77 @@ export default {
 }
 </script>
 <style scoped>
+.showcases-desc-wrapper {
+  padding: 0 5.6rem !important;
+}
+
 .col-md-6.col-lg-7.col-xl-12.showcase-pic {
   height: 100vh !important;
+}
+.showcase-desc {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-end;
+  min-height: 160px;
+}
+.showcase-button-wrapper {
+  display: flex;
+  width: 100%;
+}
+.showcase-details {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.showcase-logo {
+  max-width: 220px;
+  min-height: 60px;
+  margin-bottom: 0.5rem;
+}
+.showcase-logo >>> img {
+  width: 100%;
+  height: 100px;
+  object-fit: contain;
 }
 .showcase-about-btn {
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(8px);
   border: 1px solid #fff !important;
   color: #fff;
+  border-radius: 8px;
+}
+.swiper-wrapper >>> .slick-dots {
+  position: absolute;
+  bottom: 19rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  display: flex !important;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+.swiper-wrapper >>> .slick-dots li {
+  margin: 0 4px;
+}
+.swiper-wrapper >>> .slick-dots li button {
+  font-size: 0;
+  line-height: 0;
+  display: block;
+  width: 6px;
+  height: 6px;
+  padding: 0;
+  cursor: pointer;
+  border: 0;
+  outline: none;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 9999px;
+  transition: all 0.3s ease;
+}
+.swiper-wrapper >>> .slick-dots li.slick-active button {
+  background: #fff;
+  width: 40px;
 }
 .col-md-6.col-lg-7.col-xl-12.showcase-pic {
   height: 100vh !important;
@@ -345,38 +406,194 @@ export default {
   bottom: 16px;
   top: auto;
   transform: none;
-  width: 44px;
-  height: 44px;
+  width: 42px;
+  height: 42px;
   border-radius: 9999px;
-  background: rgba(0, 0, 0, 0.35);
-  border: 1px solid rgba(255, 255, 255, 0.6);
+  background: transparent;
+  border: 1px solid #ffffff;
   color: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 20;
-  backdrop-filter: blur(6px);
+  backdrop-filter: blur(8px);
   outline: none;
 }
 .custom-arrow:hover {
   background: rgba(0, 0, 0, 0.55);
 }
 .custom-prev {
-  left: 12px;
-  bottom: 400px;
+  left: 5.6rem;
+  right: auto;
+  bottom: 18rem;
 }
 .custom-next {
-  left: 64px; /* 12(left) + 44(width) + 8(gap) */
+  left: 9rem;
   right: auto;
-  bottom: 400px;
+  bottom: 18rem;
 }
+
 @media (max-width: 768px) {
   .custom-arrow {
-    width: 36px;
-    height: 36px;
+    display: none;
+  }
+}
+
+@media (max-width: 576px) {
+  .swiper-wrapper >>> .slick-dots {
+    position: relative;
+    justify-content: center;
+    bottom: 0 !important;
+  }
+  .showcase-button-wrapper {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .showcase-button-wrapper .btn {
+    flex: 1 1 calc(50% - 0.25rem);
+    text-align: center;
+    margin: 0;
+  }
+  .showcase-logo {
+    max-width: 150px !important;
+    max-height: fit-content !important;
+    min-height: 60px !important;
+    margin-bottom: 0.5rem;
+  }
+
+  .showcase-thumbnail-wrapper {
+    padding: 0 1rem !important;
+    margin-top: 4rem !important;
+  }
+
+  .showcase .showcase-img {
+    height: 100% !important;
+  }
+
+  .swiper-wrapper >>> .slick-dots li.slick-active button {
+    width: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .showcase-button-wrapper {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .showcase-button-wrapper .btn {
+    flex: 1 1 calc(50% - 0.25rem);
+    text-align: center;
+    margin: 0;
+  }
+
+  .swiper-wrapper >>> .slick-dots {
+    bottom: 19rem;
+  }
+
+  .custom-next {
+    left: 56px;
+    right: auto;
+  }
+
+  .showcases-desc-wrapper {
+    padding: 0 2.6rem !important;
+  }
+
+  .showcase-thumbnail-wrapper {
+    padding: 0 1rem !important;
+  }
+
+  .swiper-wrapper >>> .slick-dots li.slick-active button {
+    width: 20px;
+  }
+}
+
+@media (max-width: 992px) {
+  .showcase .showcase-img {
+    height: 100%;
+  }
+
+  .swiper-wrapper >>> .slick-dots {
+    bottom: 19rem;
+  }
+
+  .showcase-thumbnail-wrapper {
+    margin-top: 10rem !important;
+  }
+  .custom-prev {
+    left: 12px;
+    right: auto;
+    bottom: 11rem !important;
   }
   .custom-next {
-    left: 56px; /* 12 + 36 + 8 */
+    left: 64px;
+    right: auto;
+    bottom: 11rem !important;
   }
+}
+
+@media (max-width: 1300px) {
+  .showcases-desc-wrapper {
+    padding: 0 1rem !important;
+  }
+
+  .swiper-wrapper >>> .slick-dots {
+    bottom: 7rem;
+  }
+
+  .showcase-thumbnail-wrapper {
+    margin-top: 10rem !important;
+  }
+
+  .custom-prev {
+    left: 1rem;
+    right: auto;
+    bottom: 8rem;
+  }
+  .custom-next {
+    left: 4rem;
+    right: auto;
+    bottom: 8rem;
+  }
+}
+@media (min-width: 1300px) and (max-width: 1500px) {
+  .swiper-wrapper >>> .slick-dots {
+    bottom: 12rem !important;
+  }
+  .custom-prev {
+    left: 5.6rem;
+    right: auto;
+    bottom: 10rem;
+  }
+  .custom-next {
+    left: 9rem;
+    right: auto;
+    bottom: 10rem;
+  }
+}
+@media (min-width: 1300px) {
+  .showcase-thumbnail-wrapper {
+    margin-top: 14rem;
+  }
+  .swiper-wrapper >>> .slick-dots {
+    bottom: 14rem;
+  }
+}
+
+@media (min-width: 1500px) and (max-width: 1700px) {
+  .custom-prev {
+    left: 5.6rem;
+    right: auto;
+    bottom: 12rem;
+  }
+  .custom-next {
+    left: 9rem;
+    right: auto;
+    bottom: 12rem;
+  }
+}
+
+.watch-btn {
+  border-radius: 8px !important;
 }
 </style>

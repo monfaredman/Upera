@@ -56,7 +56,7 @@
       </div>
     </div>
 
-    <div v-if="offer" style="margin-top: -16rem">
+    <div v-if="offer" class="offer-section">
       <HorizontalList
         :title-en="offer.list_en"
         :title-fa="offer.list_fa"
@@ -684,3 +684,41 @@ export default {
   },
 }
 </script>
+<style scoped>
+.offer-section {
+  margin-top: -11rem;
+}
+
+@media (max-width: 1500px) {
+  .offer-section {
+    margin-top: -7rem;
+  }
+}
+
+@media (max-width: 1400px) {
+  .offer-section {
+    margin-top: -5rem;
+  }
+}
+
+@media (max-width: 1200px) {
+  .offer-section {
+    margin-top: -3rem;
+  }
+}
+@media (max-width: 992px) {
+  .offer-section {
+    margin-top: -2rem;
+  }
+}
+@media (max-width: 768px) {
+  .offer-section {
+    margin-top: -1rem;
+  }
+}
+@media (max-width: 576px) {
+  .offer-section {
+    margin-top: 2rem;
+  }
+}
+</style>

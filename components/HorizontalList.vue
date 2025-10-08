@@ -1,5 +1,5 @@
 <template>
-  <section class="horizontal-list-container mt-5 reach-begin">
+  <section class="horizontal-list-container reach-begin">
     <div
       class="d-flex justify-content-between align-items-center mb-2 container-fluid"
     >
