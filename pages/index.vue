@@ -56,7 +56,7 @@
       </div>
     </div>
 
-    <div v-if="offer" class="offer-section">
+    <!-- <div v-if="offer" class="offer-section">
       <HorizontalList
         :title-en="offer.list_en"
         :title-fa="offer.list_fa"
@@ -66,13 +66,16 @@
         }"
         :items="offer.data"
         instance-name="offerSwip"
-        :options="SWIPER_OPTION_POSTER"
+        :options="SWIPER_OPTION_OFFER"
         card-variant="poster"
         :size="{ w: 142, h: 212 }"
         :link-builder="buildIdRoute"
         :show-badges="true"
+        :is-offer="true"
       />
-    </div>
+    </div> -->
+
+    <OfferSection :offer="offer" />
 
     <FilterContents
       :show="true"
@@ -378,6 +381,18 @@ import InfiniteLoading from 'vue-infinite-loading'
 import FilterContents from '@/components/FilterContents'
 import HorizontalList from '@/components/HorizontalList'
 import ShowcaseCarousel from '@/components/ShowcaseCarousel'
+import OfferSection from '@/components/OfferSection'
+
+const SWIPER_OPTION_OFFER = {
+  slidesPerView: 5.5,
+  spaceBetween: 10,
+  breakpoints: {
+    320: { slidesPerView: 1.5 },
+    768: { slidesPerView: 3.5 },
+    1200: { slidesPerView: 5.5 },
+    1600: { slidesPerView: 7.5 },
+  },
+}
 
 const SWIPER_OPTION_POSTER = {
   spaceBetween: 10,
@@ -431,6 +446,7 @@ export default {
     FilterContents,
     HorizontalList,
     ShowcaseCarousel,
+    OfferSection,
     // MediaCard,
   },
   async asyncData(context) {
@@ -470,6 +486,7 @@ export default {
       ghostApi: '/getV2/discover',
       SWIPER_OPTION_POSTER,
       SWIPER_OPTION_BACKDROP,
+      SWIPER_OPTION_OFFER,
       swiperOption3: SLICK_MAIN_OPTIONS,
       swiperOption2: SWIPER_OPTION_BACKDROP,
     }

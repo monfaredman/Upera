@@ -45,7 +45,7 @@
               />
             </nuxt-link>
 
-            <div class="mt-2 d-none d-md-inline">
+            <div v-if="!isOffer" class="mt-2 d-none d-md-inline">
               <h6 class="mt-2 small font-weight-normal">
                 {{ ChooseLang(item.name, item.name_fa) }}
               </h6>
@@ -103,7 +103,10 @@
             :alt="altText"
             rounded
           />
-          <div v-if="variant === 'poster'" class="mt-2 d-block d-md-none">
+          <div
+            v-if="variant === 'poster' && !isOffer"
+            class="mt-2 d-block d-md-none"
+          >
             <h6 class="mt-2 small font-weight-normal">
               {{ ChooseLang(item.name, item.name_fa) }}
             </h6>
@@ -177,6 +180,7 @@ export default {
     layout: { type: String, default: 'slide' },
     // additional class for nuxt-link (e.g., 'actor' in poster grid)
     linkBaseClass: { type: [String, Object, Array], default: '' },
+    isOffer: { type: Boolean, default: false },
   },
   computed: {
     altText() {

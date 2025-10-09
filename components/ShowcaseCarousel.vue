@@ -112,7 +112,7 @@
           >
             <div class="showcase-desc-wrapper">
               <div class="showcase-desc">
-                <div v-if="item.logo" class="showcase-logo mb-2">
+                <div v-if="item.logo" class="showcase-logo mb-2 mb-md-4">
                   <b-img
                     :src="item.logo"
                     :alt="item.name"
@@ -131,7 +131,7 @@
                   <div v-if="item.type != 'episode'">
                     <div
                       v-if="!item.logo"
-                      class="title text-invert mb-1 mb-md-3"
+                      class="detail-title text-invert mb-1 mb-md-2"
                     >
                       <nuxt-link
                         :to="{
@@ -146,7 +146,7 @@
                   <div v-else>
                     <div
                       v-if="!item.logo"
-                      class="title text-invert mb-1 mb-md-3"
+                      class="detail-title text-invert mb-1 mb-md-2"
                     >
                       <nuxt-link
                         :to="{
@@ -161,15 +161,16 @@
                       </nuxt-link>
                     </div>
                   </div>
+
                   <!--Description-->
                   <div
                     v-if="item.type == 'episode'"
-                    class="p-fs-small text-invert mb-1 mb-md-3 hide-mobile font-weight-normal"
+                    class="detail-paragraph text-invert mb-1 mb-md-3 hide-mobile font-weight-normal"
                   >
                     {{ $t('show.season') }}{{ item.season_number }} -
                     {{ $t('show.episode') }} {{ item.episode_number }}
                   </div>
-                  <div v-else class="text-invert mb-2 mb-md-3">
+                  <div v-else class="detail-paragraph text-invert mb-2 mb-md-3">
                     <nuxt-link
                       v-for="(persianName, englishName) in item.genre"
                       :key="englishName"
@@ -183,6 +184,8 @@
                     </nuxt-link>
                   </div>
                 </div>
+
+                <!-- Dubbed / Subbed -->
                 <!--
                 <div
                   v-if="item.dubbed"
@@ -198,6 +201,7 @@
                 </div>
                  -->
               </div>
+
               <!-- Buttons -->
               <div class="showcase-button-wrapper">
                 <nuxt-link
@@ -216,8 +220,10 @@
                   }"
                   class="btn btn-main d-flex justify-content-center align-items-center watch-btn"
                 >
-                  <span>تماشا</span>
-                  <div class="mr-1"><i class="fa fa-play fa-xs" /></div>
+                  <div>
+                    <i class="fa fa-play fa-xs" />
+                  </div>
+                  <span class="mr-2">تماشا</span>
 
                   <!--
                   <span class="hide-mobile hide-tablet">
@@ -230,21 +236,21 @@
                 <nuxt-link
                   v-else
                   :to="{ name: 'series-id', params: { id: item.id } }"
-                  class="btn btn-main"
+                  class="btn btn-main watch-btn"
                 >
-                  قسمت ها
+                  <span> قسمت ها </span>
                 </nuxt-link>
 
                 <nuxt-link
                   :to="{ name: item.type + '-id', params: { id: item.id } }"
                   class="btn btn-download ml-md-2 text-white showcase-about-btn"
                 >
-                  درباره
+                  <i class="fa fa-chevron-right fa-xs mr-2 ml-0" />
+                  <span> درباره </span>
                   <span>
                     <span v-if="item.type == 'movie'">فیلم</span>
                     <span v-else> سریال</span>
                   </span>
-                  <i class="fa fa-chevron-left fa-xs mr-2" />
                 </nuxt-link>
                 <!--
                 <nuxt-link
@@ -321,8 +327,18 @@ export default {
 }
 </script>
 <style scoped>
+.detail-paragraph {
+  font-size: 17px !important;
+  font-weight: 500 !important;
+}
+.detail-title {
+  font-size: 44px !important;
+  font-weight: 700 !important;
+  text-wrap: nowrap;
+}
+
 .showcases-desc-wrapper {
-  padding: 0 5.6rem !important;
+  padding: 0 2.6rem !important;
 }
 
 .col-md-6.col-lg-7.col-xl-12.showcase-pic {
@@ -355,11 +371,16 @@ export default {
   object-fit: contain;
 }
 .showcase-about-btn {
-  background: rgba(255, 255, 255, 0.1);
+  background: #00000040;
   backdrop-filter: blur(8px);
-  border: 1px solid #fff !important;
+  border: 1px solid #ffffff !important;
   color: #fff;
   border-radius: 8px;
+  width: 132px !important;
+  padding: 0.3rem 0.75rem !important;
+}
+.showcase-about-btn span {
+  font-size: 14px !important;
 }
 .swiper-wrapper >>> .slick-dots {
   position: absolute;
@@ -423,12 +444,12 @@ export default {
   background: rgba(0, 0, 0, 0.55);
 }
 .custom-prev {
-  left: 5.6rem;
+  left: 2.6rem;
   right: auto;
   bottom: 18rem;
 }
 .custom-next {
-  left: 9rem;
+  left: 6rem;
   right: auto;
   bottom: 18rem;
 }
@@ -440,6 +461,15 @@ export default {
 }
 
 @media (max-width: 576px) {
+  .detail-paragraph {
+    font-size: 0.875rem !important;
+    font-weight: 500 !important;
+  }
+  .detail-title {
+    font-size: 1.125rem !important;
+    font-weight: 700 !important;
+  }
+
   .swiper-wrapper >>> .slick-dots {
     position: relative;
     justify-content: center;
@@ -456,9 +486,15 @@ export default {
   }
   .showcase-logo {
     max-width: 150px !important;
-    max-height: fit-content !important;
+    max-height: 90px !important;
     min-height: 60px !important;
     margin-bottom: 0.5rem;
+  }
+
+  .showcase-logo >>> img {
+    width: 100%;
+    height: 90px;
+    object-fit: contain;
   }
 
   .showcase-thumbnail-wrapper {
@@ -558,17 +594,17 @@ export default {
 }
 @media (min-width: 1300px) and (max-width: 1500px) {
   .swiper-wrapper >>> .slick-dots {
-    bottom: 12rem !important;
+    bottom: 11rem !important;
   }
   .custom-prev {
-    left: 5.6rem;
+    left: 2.6rem;
     right: auto;
-    bottom: 10rem;
+    bottom: 10.3rem;
   }
   .custom-next {
-    left: 9rem;
+    left: 5.8rem;
     right: auto;
-    bottom: 10rem;
+    bottom: 10.3rem;
   }
 }
 @media (min-width: 1300px) {
@@ -582,12 +618,12 @@ export default {
 
 @media (min-width: 1500px) and (max-width: 1700px) {
   .custom-prev {
-    left: 5.6rem;
+    left: 2.6rem;
     right: auto;
     bottom: 12rem;
   }
   .custom-next {
-    left: 9rem;
+    left: 5.8rem;
     right: auto;
     bottom: 12rem;
   }
@@ -595,5 +631,11 @@ export default {
 
 .watch-btn {
   border-radius: 8px !important;
+  width: 121px !important;
+  padding: 0.3rem 0.75rem !important;
+}
+.watch-btn span {
+  font-size: 14px !important;
+  padding: 0 !important;
 }
 </style>

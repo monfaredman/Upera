@@ -1899,8 +1899,8 @@ a.subtitle {
   .container-md,
   .container-lg,
   .container-xl {
-    padding-left: 5.6rem;
-    padding-right: 5.6rem;
+    padding-left: 2.6rem;
+    padding-right: 2.6rem;
   }
 
   .pr-gutter {
@@ -3311,8 +3311,8 @@ a.thumbnail-wrapper {
 }
 @media (min-width: 1300px) {
   .horizontal-list-container .swiper-container {
-    padding-right: 5.6rem;
-    padding-left: 5.6rem;
+    padding-right: 2.6rem;
+    padding-left: 2.6rem;
   }
 }
 .horizontal-list-container .swiper-slide .lazyload-wrapper {
