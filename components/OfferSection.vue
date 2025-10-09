@@ -15,6 +15,7 @@
       :link-builder="buildIdRoute"
       :show-badges="true"
       :is-offer="true"
+      :hoverable="true"
     />
   </div>
 </template>

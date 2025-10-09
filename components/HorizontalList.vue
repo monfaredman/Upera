@@ -44,7 +44,7 @@
             :showBadges="showBadges"
             :showTitle="showTitle"
             :addSeriesClass="addSeriesClass"
-            :is-offer="isOffer"
+            :hoverable="hoverable"
           />
         </div>
       </div>
@@ -61,6 +61,7 @@ export default {
   props: {
     // Titles
     titleEn: { type: String, default: '' },
+    hoverable: { type: Boolean, default: false },
     titleFa: { type: String, default: '' },
     isOffer: { type: Boolean, default: false },
 

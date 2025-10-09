@@ -3,56 +3,138 @@
     <!-- Slide layout (default) -->
     <div v-if="layout === 'slide'" class="swiper-slide">
       <div class="row no-gutters">
-        <div v-if="!isOffer" class="col-md-12 col-lg-12 showcase-pic">
+        <div class="col-md-12 col-lg-12 showcase-pic">
           <!-- Desktop Image -->
           <template v-if="variant === 'poster'">
-            <nuxt-link :to="resolvedLink" :class="computedLinkClass">
-              <b-img
-                blank
-                blank-color="#bbb"
-                :width="size.w"
-                :height="223"
-                show
-                class="d-none d-lg-block d-xl-none d-xxl-none"
-                :src="
-                  variant === 'poster'
-                    ? posterSrc(item.poster)
-                    : backdropSrc(
-                        item.mobileSrc ? item.mobileSrc : item.backdrop,
-                        item.cdnType ?? 1
-                      )
-                "
-                :alt="altText"
-                rounded
-              />
-              <b-img
-                blank
-                blank-color="#bbb"
-                :width="size.w"
-                :height="241"
-                show
-                class="d-none d-lg-none d-xl-block d-xxl-none"
-                :src="
-                  variant === 'poster'
-                    ? posterSrc(item.poster)
-                    : backdropSrc(
-                        item.mobileSrc ? item.mobileSrc : item.backdrop,
-                        item.cdnType ?? 1
-                      )
-                "
-                :alt="altText"
-                rounded
-              />
+            <nuxt-link
+              :to="resolvedLink"
+              :class="(computedLinkClass, ['media-card', { offer: hoverable }])"
+            >
+              <template v-if="hoverable">
+                <div class="media-image-wrapper">
+                  <b-img
+                    blank
+                    blank-color="#bbb"
+                    :width="size.w"
+                    :height="223"
+                    show
+                    class="d-none d-lg-block d-xl-none d-xxl-none media-image"
+                    :src="
+                      variant === 'poster'
+                        ? posterSrc(item.poster)
+                        : backdropSrc(
+                            item.mobileSrc ? item.mobileSrc : item.backdrop,
+                            item.cdnType ?? 1
+                          )
+                    "
+                    :alt="altText"
+                    rounded
+                  />
+                  <b-img
+                    blank
+                    blank-color="#bbb"
+                    :width="size.w"
+                    :height="241"
+                    show
+                    class="d-none d-lg-none d-xl-block d-xxl-none media-image"
+                    :src="
+                      variant === 'poster'
+                        ? posterSrc(item.poster)
+                        : backdropSrc(
+                            item.mobileSrc ? item.mobileSrc : item.backdrop,
+                            item.cdnType ?? 1
+                          )
+                    "
+                    :alt="altText"
+                    rounded
+                  />
+
+                  <!-- Hover Overlay -->
+                  <div v-if="hoverable" class="hover-overlay">
+                    <h5 class="media-title">
+                      {{ ChooseLang(item.name, item.name_fa) }}
+                    </h5>
+                    <p class="media-genre">
+                      {{ item.genre || '...' }}
+                    </p>
+                  </div>
+                </div>
+              </template>
+              <template v-else>
+                <b-img
+                  blank
+                  blank-color="#bbb"
+                  :width="size.w"
+                  :height="223"
+                  show
+                  class="d-none d-lg-block d-xl-none d-xxl-none"
+                  :src="
+                    variant === 'poster'
+                      ? posterSrc(item.poster)
+                      : backdropSrc(
+                          item.mobileSrc ? item.mobileSrc : item.backdrop,
+                          item.cdnType ?? 1
+                        )
+                  "
+                  :alt="altText"
+                  rounded
+                />
+                <b-img
+                  blank
+                  blank-color="#bbb"
+                  :width="size.w"
+                  :height="241"
+                  show
+                  class="d-none d-lg-none d-xl-block d-xxl-none"
+                  :src="
+                    variant === 'poster'
+                      ? posterSrc(item.poster)
+                      : backdropSrc(
+                          item.mobileSrc ? item.mobileSrc : item.backdrop,
+                          item.cdnType ?? 1
+                        )
+                  "
+                  :alt="altText"
+                  rounded
+                />
+              </template>
             </nuxt-link>
 
-            <div v-if="!isOffer" class="mt-2 d-none d-md-inline">
+            <div v-if="!hoverable" class="mt-2 d-none d-md-inline">
               <h6 class="mt-2 small font-weight-normal">
                 {{ ChooseLang(item.name, item.name_fa) }}
               </h6>
             </div>
           </template>
           <template v-else>
-            <nuxt-link :to="resolvedLink" :class="computedLinkClass">
+            <nuxt-link
+              v-if="hoverable"
+              :to="resolvedLink"
+              :class="(computedLinkClass, ['media-card', { offer: hoverable }])"
+            >
+              <div class="media-image-wrapper">
+                <b-img
+                  v-if="variant === 'backdrop'"
+                  :src="backdropSrc(item.backdrop, item.cdnType ?? 1)"
+                  :alt="altText"
+                  :width="size.w"
+                  :height="size.h"
+                  class="media-image"
+                  rounded
+                />
+
+                <!-- Hover Overlay -->
+                <div v-if="hoverable" class="hover-overlay">
+                  <h5 class="media-title">
+                    {{ ChooseLang(item.name, item.name_fa) }}
+                  </h5>
+                  <p class="media-genre">
+                    {{ item.genre || '...' }}
+                  </p>
+                </div>
+              </div>
+            </nuxt-link>
+            <nuxt-link v-else :to="resolvedLink" :class="computedLinkClass">
               <b-img
                 blank
                 blank-color="#bbb"
@@ -105,42 +187,12 @@
               rounded
             />
           </nuxt-link>
-          <div
-            v-if="variant === 'poster' && !isOffer"
-            class="mt-2 d-block d-md-none"
-          >
+          <div v-if="variant === 'poster'" class="mt-2 d-block d-md-none">
             <h6 class="mt-2 small font-weight-normal">
               {{ ChooseLang(item.name, item.name_fa) }}
             </h6>
           </div>
         </div>
-        <nuxt-link
-          v-else
-          :to="resolvedLink"
-          :class="['media-card', { offer: isOffer }]"
-        >
-          <div class="media-image-wrapper">
-            <b-img
-              v-if="variant === 'backdrop'"
-              :src="backdropSrc(item.backdrop, item.cdnType ?? 1)"
-              :alt="altText"
-              :width="size.w"
-              :height="size.h"
-              class="media-image"
-              rounded
-            />
-
-            <!-- Hover Overlay -->
-            <div v-if="isOffer" class="hover-overlay">
-              <h5 class="media-title">
-                {{ ChooseLang(item.name, item.name_fa) }}
-              </h5>
-              <p class="media-genre">
-                {{ item.genre || '...' }}
-              </p>
-            </div>
-          </div>
-        </nuxt-link>
       </div>
     </div>
 
@@ -194,6 +246,7 @@ export default {
   name: 'MediaCard',
   props: {
     item: { type: Object, required: true },
+    hoverable: { type: Boolean, default: false },
     // 'poster' or 'backdrop'
     variant: { type: String, default: 'poster' },
     // { w: number, h: number }
@@ -209,7 +262,6 @@ export default {
     layout: { type: String, default: 'slide' },
     // additional class for nuxt-link (e.g., 'actor' in poster grid)
     linkBaseClass: { type: [String, Object, Array], default: '' },
-    isOffer: { type: Boolean, default: false },
   },
   computed: {
     altText() {
