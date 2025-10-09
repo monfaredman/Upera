@@ -33,7 +33,7 @@
         >
           <MediaCard
             :item="item"
-            :variant="'backdrop'"
+            :variant="'md_backdrop'"
             :size="size"
             :link-builder="buildMediaLink(item)"
             :showBadges="showBadges"
@@ -64,7 +64,7 @@ export default {
     },
     // HorizontalList-like config
     cardVariant: { type: String, default: 'poster' },
-    size: { type: Object, default: () => ({ w: 370, h: 208 }) },
+    size: { type: Object, default: () => ({ w: 382, h: 220 }) },
     // linkBuilder: { type: Function, required: true },
     showBadges: { type: Boolean, default: true },
     showTitle: { type: Boolean, default: true },

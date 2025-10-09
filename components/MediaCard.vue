@@ -67,42 +67,44 @@
             </nuxt-link>
           </template>
           <!-- Mobile Image -->
-          <b-img
-            blank
-            blank-color="#bbb"
-            width="142"
-            height="159"
-            show
-            class="d-sm-none"
-            :src="
-              variant === 'poster'
-                ? posterSrc(item.poster, true)
-                : backdropSrc(
-                    item.mobileSrc ? item.mobileSrc : item.backdrop,
-                    item.cdnType ?? 1
-                  )
-            "
-            :alt="altText"
-            rounded
-          />
-          <b-img
-            blank
-            width="142"
-            height="232"
-            blank-color="#bbb"
-            show
-            class="d-none d-sm-block d-lg-none"
-            :src="
-              variant === 'poster'
-                ? posterSrc(item.poster)
-                : backdropSrc(
-                    item.mobileSrc ? item.mobileSrc : item.backdrop,
-                    item.cdnType ?? 1
-                  )
-            "
-            :alt="altText"
-            rounded
-          />
+          <nuxt-link :to="resolvedLink" :class="computedLinkClass">
+            <b-img
+              blank
+              blank-color="#bbb"
+              width="142"
+              height="159"
+              show
+              class="d-sm-none"
+              :src="
+                variant === 'poster'
+                  ? posterSrc(item.poster, true)
+                  : backdropSrc(
+                      item.mobileSrc ? item.mobileSrc : item.backdrop,
+                      item.cdnType ?? 1
+                    )
+              "
+              :alt="altText"
+              rounded
+            />
+            <b-img
+              blank
+              width="142"
+              height="232"
+              blank-color="#bbb"
+              show
+              class="d-none d-sm-block d-lg-none"
+              :src="
+                variant === 'poster'
+                  ? posterSrc(item.poster)
+                  : backdropSrc(
+                      item.mobileSrc ? item.mobileSrc : item.backdrop,
+                      item.cdnType ?? 1
+                    )
+              "
+              :alt="altText"
+              rounded
+            />
+          </nuxt-link>
           <div
             v-if="variant === 'poster' && !isOffer"
             class="mt-2 d-block d-md-none"
@@ -228,7 +230,10 @@ export default {
         h = 300
       }
       const base = cdnType === 1 ? CDN_BACKDROPS_1 : CDN_BACKDROPS_2
-      return `${THUMB_BASE}?w=${w}&h=${h}&q=90&a=t&zc=1&fmt=webp&src=${base}/${filename}`
+
+      return this.variant === 'md_backdrop'
+        ? `${THUMB_BASE}?w=${w}&h=${h}&q=100&src=${base}/${filename}`
+        : `${THUMB_BASE}?w=${w}&h=${h}&q=100&a=c&src=${base}/${filename}`
     },
     ChooseLang(en, fa) {
       if (fa && this.$i18n.locale === 'fa') return fa
@@ -241,5 +246,8 @@ export default {
 <style scoped>
 .showcase-img {
   object-fit: cover;
+}
+.rounded {
+  border-radius: 6px !important;
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div style="background-color: black" class="mb-4 mb-md-0">
+  <div style="background-color: black" class="pb-4 pb-md-0 mb-md-0">
     <Banner />
     <AppLinks />
     <NewMoviesSlider :ugc-movies="ugcs ? ugcs : []" />

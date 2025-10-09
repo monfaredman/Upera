@@ -68,6 +68,7 @@ h3 {
 @media (max-width: 576px) {
   .banner {
     height: clamp(240px, 38vh, 520px);
+    background-position: none !important;
   }
 
   .banner h3 {

@@ -27,7 +27,7 @@
 
       <b-col md="6" class="text-right mid-col">
         <div
-          class="mb-4 feature-box"
+          class="mb-4 feature-box first-section"
           style="
             background-color: #1c2163;
             padding: 1rem;
@@ -206,7 +206,7 @@
   }
 
   .feature-box {
-    padding: 0.55rem !important;
+    padding: 0.95rem !important;
   }
 
   .mid-col .feature-box {
@@ -224,8 +224,17 @@
   .child-cta-btn {
     padding: 0.3rem 0.25rem !important;
   }
+  .child-section-container {
+    margin-top: 1rem;
+  }
 }
 .profile-box {
   box-shadow: 0px -3px 12px 0px #97979740;
+}
+
+@media (min-width: 1790px) {
+  .first-section.feature-box {
+    margin-left: 8rem !important;
+  }
 }
 </style>
