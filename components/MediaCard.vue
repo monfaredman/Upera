@@ -3,7 +3,7 @@
     <!-- Slide layout (default) -->
     <div v-if="layout === 'slide'" class="swiper-slide">
       <div class="row no-gutters">
-        <div class="col-md-12 col-lg-12 showcase-pic">
+        <div v-if="!isOffer" class="col-md-12 col-lg-12 showcase-pic">
           <!-- Desktop Image -->
           <template v-if="variant === 'poster'">
             <nuxt-link :to="resolvedLink" :class="computedLinkClass">
@@ -114,6 +114,33 @@
             </h6>
           </div>
         </div>
+        <nuxt-link
+          v-else
+          :to="resolvedLink"
+          :class="['media-card', { offer: isOffer }]"
+        >
+          <div class="media-image-wrapper">
+            <b-img
+              v-if="variant === 'backdrop'"
+              :src="backdropSrc(item.backdrop, item.cdnType ?? 1)"
+              :alt="altText"
+              :width="size.w"
+              :height="size.h"
+              class="media-image"
+              rounded
+            />
+
+            <!-- Hover Overlay -->
+            <div v-if="isOffer" class="hover-overlay">
+              <h5 class="media-title">
+                {{ ChooseLang(item.name, item.name_fa) }}
+              </h5>
+              <p class="media-genre">
+                {{ item.genre || '...' }}
+              </p>
+            </div>
+          </div>
+        </nuxt-link>
       </div>
     </div>
 
@@ -249,5 +276,57 @@ export default {
 }
 .rounded {
   border-radius: 6px !important;
+}
+
+.media-card.offer .media-image-wrapper {
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.media-card.offer .media-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+.media-card.offer:hover .media-image {
+  transform: scale(1.05);
+  filter: brightness(0.7);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+}
+
+.media-card.offer .hover-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 1rem;
+  color: #fff;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.3s ease;
+  background: linear-gradient(to bottom rgba(0, 0, 0, 0.8), transparent);
+}
+
+.media-card.offer:hover .hover-overlay {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.media-card.offer .media-title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+  line-height: 1.3;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
+}
+
+.media-card.offer .media-genre {
+  font-size: 0.875rem;
+  opacity: 0.8;
+  line-height: 1.2;
 }
 </style>
