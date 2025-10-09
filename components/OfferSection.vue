@@ -88,7 +88,7 @@ export default {
 
 @media (max-width: 768px) {
   .offer-section {
-    margin-top: -1rem;
+    margin-top: 1rem !important;
   }
 }
 

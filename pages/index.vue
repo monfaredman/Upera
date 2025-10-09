@@ -88,10 +88,12 @@
     <section
       v-if="recently !== null"
       id="watching"
-      class="horizontal-list-container mt-lg-4 pt-5"
+      class="horizontal-list-container mt-lg-4 pt-4 pb-4"
     >
       <div class="d-flex align-items-center justify-content-between w-full">
-        <h4 class="font-weight-bold text-nowrap mr-5 px-5 in-watching">
+        <h4
+          class="font-weight-bold text-nowrap mr-5 ml-0 ml-sm-4 ml-xl-0 px-5 in-watching"
+        >
           {{ ChooseLang(recently.list_en, recently.list_fa) }}
         </h4>
         <div

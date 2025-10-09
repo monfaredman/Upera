@@ -1,7 +1,7 @@
 <template>
   <div
     v-show="show"
-    :class="{ 'container-fluid pt-2 pb-1 bg-filtermenu': !setting }"
+    :class="{ 'container-fluid pt-4 pb-1 bg-filtermenu': !setting }"
   >
     <div :class="{ 'mt-5 pt-lg-2 pt-md-2 pt-1': noTop }">
       <b-button
