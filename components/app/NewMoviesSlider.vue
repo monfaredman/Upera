@@ -33,12 +33,13 @@
         >
           <MediaCard
             :item="item"
-            :variant="'md_backdrop'"
+            :variant="'backdrop'"
             :size="size"
             :link-builder="buildMediaLink(item)"
             :showBadges="showBadges"
             :showTitle="showTitle"
             :addSeriesClass="addSeriesClass"
+            :hoverable="true"
           />
         </swiper-slide>
       </swiper>

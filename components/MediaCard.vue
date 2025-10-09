@@ -149,7 +149,11 @@
             </nuxt-link>
           </template>
           <!-- Mobile Image -->
-          <nuxt-link :to="resolvedLink" :class="computedLinkClass">
+          <nuxt-link
+            v-if="!isOffer && !hoverable"
+            :to="resolvedLink"
+            :class="computedLinkClass"
+          >
             <b-img
               blank
               blank-color="#bbb"
@@ -262,6 +266,7 @@ export default {
     layout: { type: String, default: 'slide' },
     // additional class for nuxt-link (e.g., 'actor' in poster grid)
     linkBaseClass: { type: [String, Object, Array], default: '' },
+    isOffer: { type: Boolean, default: false },
   },
   computed: {
     altText() {

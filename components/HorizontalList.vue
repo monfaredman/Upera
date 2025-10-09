@@ -45,6 +45,7 @@
             :showTitle="showTitle"
             :addSeriesClass="addSeriesClass"
             :hoverable="hoverable"
+            :is-offer="isOffer"
           />
         </div>
       </div>
