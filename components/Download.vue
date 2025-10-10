@@ -15,66 +15,238 @@
       no-enforce-focus
     >
       <div class="download-links">
-        <DownloadHeader
-          :backdrop="backdrop"
-          :poster="posterf"
-          :content="contentInfo"
-          :item-type="type"
-          :content-id="id"
-          :is-static-modal="staticmodal"
-          @close="hideModal"
-          @title-click="onContentNavigate"
-        />
+        <!-- Simple Header -->
+        <div class="download-links-header-simple">
+          <div class="download-links-title-simple">
+            خرید {{ getContentTitle() }}
+          </div>
+          <button
+            v-show="!staticmodal"
+            type="button"
+            class="close"
+            @click="hideModal"
+          >
+            <i class="fas fa-times" style="color: black" />
+          </button>
+        </div>
 
-        <DownloadBody
-          :has-items-in-cart="hasItemsInCart"
-          :is-loading="isLoading"
-          :downloads-list="downloadslist"
-          :cart="cart"
-          :content-info="contentInfo"
-          :user="user"
-          :payment-method="method"
-          :errors="errors"
-          :is-static-modal="staticmodal"
-          :seasons="season"
-          :selected-season-id="selectedSeasonId"
-          :episode-title="episodeTitle"
-          :user-tax="checkuser && checkuser.tax ? checkuser.tax : 0"
-          :screening="screening"
-          :total-amount="totalamount"
-          :disable-button="disable_button || !totalamount"
-          :mobile="mobile"
-          @update:mobile="mobile = $event"
-          @payment-method-change="onPaymentMethodChange"
-          @buy="onBuy"
-          @buy-keyup="onBuyKeyup"
-          @season-selected="onSeasonSelected"
-          @episode-selected="onEpisodeSelected"
-          @remove-from-cart="onRemoveFromCart"
-          @add-to-cart="ADDTOCART"
-          @play-content="onPlayContent"
-          @ussd-call="onUssdCall"
-          @ekran="EKRAN"
-          @show-again="SHOWAGAIN"
-          @download="DOWNLOAD"
-          @link-download="LINK_DOWNLOAD"
-          @copy-download="COPY_DOWNLOAD"
-          @uperaplus="UPERAPLUS"
-          @hide-modal="hideModal"
-          @content-navigate="onContentNavigate"
-          @cleanup="cleanup"
-          @initialize-modal="initializeModal"
-          @buy-click="onBuy"
-        />
+        <!-- Modal Content -->
+        <div class="download-links-body-simple">
+          <!-- Loading State -->
+          <div v-if="loading" class="loading-state">
+            <div class="spinner-border" role="status">
+              <span class="sr-only">Loading...</span>
+            </div>
+            <p>در حال بارگذاری...</p>
+          </div>
 
-        <DownloadFooter
-          :total-amount="totalamount"
-          :user="user"
-          :is-loading="buyloading"
-          :is-disabled="disable_button || !totalamount"
-          :has-screening="Boolean(screening.ekran)"
-          @payment="onBuyPayment"
-        />
+          <!-- Error State -->
+          <div v-else-if="error" class="error-state">
+            <p class="text-danger">{{ error }}</p>
+            <button class="btn btn-primary" @click="loadContentData(type, id)">
+              تلاش مجدد
+            </button>
+          </div>
+
+          <!-- Content Loaded -->
+          <div v-else class="tvod-content">
+            <!-- Main Content Card -->
+            <div class="content-card">
+              <!-- List of added cards -->
+              <div v-if="addedItems.length > 0" class="added-items-list">
+                <div
+                  v-for="item in addedItems"
+                  :key="item.id"
+                  class="added-item-card"
+                >
+                  <div class="card-content">
+                    <div class="card-image">
+                      <img :src="posterSrc(item.poster)" alt="Poster" />
+                    </div>
+                    <div class="card-details">
+                      <div class="content-name">
+                        {{ getContentTitle(item) }}
+                      </div>
+                      <div class="content-info">
+                        <span v-if="item.season && item.episode">
+                          فصل {{ item.season_number }} - قسمت
+                          {{ item.episode_number }}
+                        </span>
+                      </div>
+                      <div class="content-price">
+                        {{ formatPrice(item.tvod_price) }} تومان
+                      </div>
+                    </div>
+                    <div class="card-actions">
+                      <button
+                        class="btn-delete"
+                        @click="removeAddedItem(item.id)"
+                      >
+                        <i
+                          class="fas fa-trash-alt fa-2x"
+                          style="color: #ff6633"
+                        />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- Add More Items Button (for cases 1 and 3) -->
+            </div>
+            <div v-if="showAddMoreButton" class="add-more-section">
+              <button
+                class="btn-add-more"
+                @click="showAddMoreDropdown = !showAddMoreDropdown"
+              >
+                <i class="fas fa-plus" />
+                افزودن بخش دیگر
+              </button>
+              <!-- Dropdown for adding more items -->
+              <div
+                v-if="showAddMoreDropdown"
+                class="add-more-dropdown text-black"
+              >
+                <div class="dropdown-content">
+                  <!-- This would be populated with available items from API -->
+                  <div
+                    class="dropdown-item"
+                    v-for="item in availableItems"
+                    :key="item.id"
+                    @click="addItem(item)"
+                  >
+                    <div class="item-info">
+                      <span class="item-name">{{ item.name_fa }}</span>
+                      <!-- <span class="item-price"
+                        >{{ formatPrice(item.price) }} تومان</span> -->
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Payment Method Selection (for cases 1 and 2) -->
+            <div v-if="showPaymentMethods" class="payment-section">
+              <div class="section-title">انتخاب روش پرداخت</div>
+              <div class="payment-options">
+                <div
+                  class="payment-option"
+                  v-for="method in paymentMethods"
+                  :key="method.value"
+                >
+                  <div class="payment-option-content">
+                    <div class="payment-image">
+                      <img :src="require(`@/assets/images/${method.src}`)" />
+                    </div>
+                    <div class="payment-info">
+                      <div class="payment-name">{{ method.name }}</div>
+                    </div>
+                    <div class="payment-radio">
+                      <input
+                        :id="`payment-${method.value}`"
+                        v-model="paymentMethod"
+                        type="radio"
+                        name="payment"
+                        :value="method.value"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Wallet Section (for cases 1 and 2) -->
+            <div v-if="showWalletSection" class="wallet-section">
+              <div class="d-flex justify-content-start align-content-center">
+                <i
+                  class="fas fa-wallet fa-2x"
+                  style="color: #525252; padding: 1rem 0 1rem 1rem"
+                />
+                <div class="wallet-option">
+                  <label for="use-wallet" class="text-sm mb-0">کیف پول</label>
+                  <div class="wallet-balance">
+                    <span>موجودی :</span>
+                    <span class="balance-amount">
+                      {{ formatPrice(user?.wallet_balance || 0) }} تومان
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div class="custom-control custom-switch ml-2 mb-2" dir="rtl">
+                <input
+                  id="use-wallet"
+                  class="custom-control-input"
+                  type="checkbox"
+                />
+                <label class="custom-control-label" for="use-wallet"> </label>
+              </div>
+              <!-- <input id="use-wallet" v-model="useWallet" type="checkbox" /> -->
+            </div>
+
+            <!-- Mobile Input (for case 3 - no login) -->
+            <div v-if="showMobileInput" class="mobile-section">
+              <div class="section-title">ورود شماره موبایل</div>
+              <div class="mobile-input-container">
+                <label for="mobile-input">شماره موبایل</label>
+                <input
+                  id="mobile-input"
+                  v-model="mobile"
+                  type="tel"
+                  placeholder="۰۹۱۲۳۴۵۶۷۸۹"
+                  class="form-control"
+                  dir="ltr"
+                  @input="validateMobile"
+                />
+                <div class="input-note">
+                  لینک‌های دانلود برای این شماره ارسال خواهد شد
+                </div>
+                <div v-if="mobileError" class="error-message">
+                  {{ mobileError }}
+                </div>
+              </div>
+            </div>
+
+            <!-- Price Summary -->
+            <div class="price-summary">
+              <div class="price-row">
+                <span>قیمت کل:</span>
+                <span>{{ formatPrice(subtotalAmount) }} تومان</span>
+              </div>
+              <div v-if="taxAmount > 0" class="price-row">
+                <span>مالیات (۹٪):</span>
+                <span>{{ formatPrice(taxAmount) }} تومان</span>
+              </div>
+              <!-- <div class="price-row total">
+                <span>مبلغ قابل پرداخت:</span>
+                <span class="total-amount"
+                  >{{ formatPrice(totalAmount) }} تومان</span
+                >
+              </div> -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div v-if="!loading && !error" class="download-links-footer-simple">
+          <div class="footer-content">
+            <div class="payable-amount">
+              <span class="amount-label">مبلغ قابل پرداخت:</span>
+              <span class="amount-value">
+                {{ formatPrice(totalAmount) }} تومان
+              </span>
+            </div>
+            <button
+              class="btn btn-primary btn-payment"
+              :disabled="!canPurchase || processing"
+              @click="handlePurchase"
+            >
+              <span
+                v-if="processing"
+                class="spinner-border spinner-border-sm"
+              />
+              <span v-else>پرداخت</span>
+            </button>
+          </div>
+        </div>
       </div>
     </b-modal>
   </div>
@@ -82,41 +254,15 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import DownloadHeader from '@/components/download/DownloadHeader'
-import DownloadBody from '@/components/download/DownloadBody'
-import DownloadFooter from '@/components/download/DownloadFooter'
+
+const THUMB_BASE = 'https://thumb.upera.shop/thumb'
+const CDN_POSTERS = 'https://cdn.upera.shop/s3/posters'
 
 export default {
   name: 'Download',
-  components: {
-    DownloadHeader,
-    DownloadBody,
-    DownloadFooter,
-  },
   props: {
     show: Boolean,
     staticmodal: Boolean,
-    owned: {
-      type: Number,
-      default: 0,
-    },
-    traffic: {
-      type: Number,
-      default: 0,
-    },
-    trafficoo: {
-      type: Number,
-      default: 0,
-    },
-    vod: {
-      type: Number,
-      default: 0,
-    },
-    free: {
-      type: Number,
-      default: 0,
-    },
-    ftb: Boolean,
     id: {
       type: String,
       default: null,
@@ -141,144 +287,126 @@ export default {
       type: String,
       default: null,
     },
-    season: {
+    itemdata: {
       type: Object,
       default: null,
     },
-    itemdata: {
-      type: Object,
+    season: {
+      type: [Array, Object],
       default: null,
     },
   },
   data() {
     return {
-      method: 'saman3',
+      loading: false,
+      error: null,
+      processing: false,
+      paymentMethod: 'saman3',
       mobile: null,
-      buyloading: false,
-      disable_button: false,
-      // ADDED: Missing reactive properties
-      selectedSeasonId: 1,
-      episodeTitle: 'قسمت ها',
-      // ADDED: Other missing properties from original code
-      login: 0,
-      ftb2: 0,
-      mref: 0,
-      i: 0,
-      downloadloading: false,
-      message: null,
-      premessage: null,
-      operator_fullrate: 'همراه اول یا ایرانسل',
-      season_num: 0,
-      episode_num: 0,
-      showinfo: true,
-      lastseason: {},
-      showBoxAnimation: false,
-      seasontitle: 'فصل 1',
-      directdebit_payment_id: 0,
-      // errors: null,
+      mobileError: '',
+      useWallet: false,
+      showAddMoreDropdown: false,
+      addedItems: [],
+      availableItems: [],
+      paymentMethods: [
+        {
+          value: 'sep',
+          name: 'درگاه بانکی',
+          description: 'پرداخت با کلیه کارت‌های بانکی',
+          icon: 'BankIcon',
+          src: 'Shaparak.png',
+        },
+        // {
+        //   value: 'directdebit',
+        //   name: 'پرداخت خودکار',
+        //   description: 'خرید خودکار بدون وارد کردن اطلاعات بانکی',
+        //   icon: 'AutoPaymentIcon',
+        //   src: 'kart.png',
+        // },
+        {
+          value: 'credit',
+          name: 'موجودی آپرا',
+          description: 'پرداخت با اعتبار حساب آپرا',
+          icon: 'OperaCreditIcon',
+          src: 'logo.svg',
+        },
+        // {
+        //   value: 'tally',
+        //   name: 'اعتبار تالی',
+        //   description: 'پرداخت با اعتبار تالی',
+        //   icon: 'TallyIcon',
+        //   src: 'tally.png',
+        // },
+      ],
     }
   },
   computed: {
     ...mapGetters({
-      downloadslist: 'download/downloadslist',
-      cartloading: 'download/cartloading',
-      cart: 'download/cart',
-      presale: 'download/presale',
-      screening: 'download/screening',
-      totalamount: 'download/total_amount',
       user: 'auth/user',
-      // ADDED: Missing getters from original code
-      presale_date: 'download/presale_date',
-      pass: 'download/pass',
-      title_poster: 'download/title_poster',
-      ussd: 'download/ussd',
-      fullrate_data: 'download/fullrate_data',
-      show_free: 'download/show_free',
-      play_button: 'download/play_button',
-      sub_button: 'download/sub_button',
-      show_buy: 'download/show_buy',
-      notes: 'download/notes',
-      divcount: 'download/divcount',
-      checkuser: 'auth/user',
     }),
 
-    contentInfo() {
-      return {
-        id: this.id,
-        name: this.name,
-        name_fa: this.namefa,
-        type: this.type,
-        itemdata: this.itemdata,
+    // Determine user state
+    userState() {
+      if (!this.$auth.loggedIn) return 3 // No login
+      return !this.user?.has_activated_cart ? 1 : 2 // 1: activated cart, 2: not activated
+    },
+
+    // Show conditions based on user state
+    showAddMoreButton() {
+      return this.userState === 1 || this.userState === 3
+    },
+
+    showPaymentMethods() {
+      return this.userState === 1 || this.userState === 2
+    },
+
+    showWalletSection() {
+      return this.userState === 1 || this.userState === 2
+    },
+
+    showMobileInput() {
+      return this.userState === 3
+    },
+
+    subtotalAmount() {
+      return this.addedItems.reduce((sum, item) => sum + item.tvod_price, 0)
+    },
+
+    taxAmount() {
+      return Math.floor(this.subtotalAmount * 0.09) // 9% VAT
+    },
+
+    totalAmount() {
+      return this.subtotalAmount + this.taxAmount
+    },
+
+    canPurchase() {
+      // For logged-in users (states 1 and 2)
+      if (this.userState === 1 || this.userState === 2) {
+        return this.subtotalAmount > 0
       }
-    },
-
-    hasItemsInCart() {
-      return (
-        this.cart.length > 0 &&
-        this.cart.some((cartItem) =>
-          this.downloadslist.some(
-            (downloadItem) => cartItem.itemid === downloadItem.id
-          )
-        )
-      )
-    },
-
-    isLoading() {
-      return this.cartloading || this.buyloading
+      // For guest users (state 3)
+      if (this.userState === 3) {
+        return this.subtotalAmount > 0 && this.mobile && !this.mobileError
+      }
+      return false
     },
   },
   watch: {
     show(val) {
       if (val) {
         this.showModal()
+        this.loadContentData(this.type, this.id)
+        this.loadAvailableItems()
       } else {
         this.hideModal()
       }
     },
-    // ADDED: Missing watchers from original code
-    show_free() {
-      this.checkdiv()
-    },
-    show_buy() {
-      this.checkdiv()
-    },
   },
   mounted() {
-    // ADDED: Missing initialization from original code
-    this.mref = this.$cookiz.get('ref')
-
-    if (this.checkuser?.operator_fullrate) {
-      this.operator_fullrate = this.checkuser.operator_fullrate
-    } else {
-      this.operator_fullrate = 'Default Value' // Provide a fallback value
-    }
-
-    if (this.staticmodal) {
-      this.showModal()
-      document.querySelector('.modal-content')?.removeAttribute('tabindex')
-    }
-
-    // ADDED: Season/episode initialization from original code
-    if (this.type == 'episode') {
-      this.selectedSeasonId = this.itemdata.season_number
-      this.seasontitle = 'فصل ' + this.selectedSeasonId
-      this.episodeTitle = 'قسمت ' + this.itemdata.episode_number
-    } else if (this.type == 'series' && this.season) {
-      this.selectedSeasonId = Object.keys(this.season)[0]
-      this.seasontitle = 'فصل ' + this.selectedSeasonId
-    }
-
     this.setupModalEvents()
-
-    document.body.classList.add('loaded')
   },
   methods: {
-    initializeModal() {
-      if (this.staticmodal) {
-        this.showModal()
-      }
-    },
-
     setupModalEvents() {
       this.$refs.downloadLinks?.$on('hide', () => {
         this.cleanup()
@@ -286,58 +414,180 @@ export default {
       })
     },
 
-    loadDownloadData() {
-      const payload = {
-        id: this.id,
-        type: this.type,
-        quality: this.$route.query.quality,
-        force_to_buy: this.ftb || this.$route.query.force_to_buy,
+    async loadContentData(type, id) {
+      this.loading = true
+      this.error = null
+
+      try {
+        let endpoint
+        if (type === 'movie') {
+          endpoint = `/getV2/movie/${id}`
+        } else if (type === 'episode' || type === 'series') {
+          endpoint = `/getV2/episode/${id}`
+        }
+
+        const resp = await this.$axios.get(endpoint)
+        const api = resp.data
+
+        // Normalize getV2 response to a flat object with cdn + entity fields
+        let normalized = null
+        if (api?.data?.episode) {
+          normalized = { ...api.data.episode, cdn: api.data.cdn }
+        } else if (api?.data?.movie) {
+          normalized = { ...api.data.movie, cdn: api.data.cdn }
+        } else if (api?.data) {
+          normalized = api.data
+        } else {
+          normalized = api
+        }
+
+        this.addedItems.push(normalized)
+        // this.showAddMoreDropdown = false
+      } catch (error) {
+        this.error = 'خطا در بارگذاری اطلاعات محتوا'
+        console.error('Error loading content data:', error)
+      } finally {
+        this.showAddMoreDropdown = false
+        this.loading = false
       }
-
-      const action = this.$auth.loggedIn
-        ? 'download/GET_DOWNLOAD'
-        : 'download/GET_GHOST_DOWNLOAD'
-
-      this.$store.dispatch(action, payload)
     },
 
-    onPaymentMethodChange(method) {
-      this.method = method
+    loadAvailableItems() {
+      console.log(this.season)
+      if (this.season && typeof this.season === 'object') {
+        this.availableItems = Object.values(this.season).flat()
+      } else {
+        this.availableItems = []
+      }
+      console.log(this.availableItems)
     },
 
-    onBuy({ mobile }) {
-      if (!mobile || mobile.length < 10) {
-        this.$swal('لطفا شماره موبایل معتبر وارد کنید', { icon: 'error' })
+    // getPosterUrl() {
+    //   // Prefer API response (cdn + poster), fallback to prop-based poster
+    //   if (this.contentData?.poster && this.contentData?.cdn?.sm_poster) {
+    //     return `${this.contentData.cdn.sm_poster}${this.contentData.poster}`
+    //   }
+    //   if (this.posterf) {
+    //     return `https://thumb.upera.shop/thumb?w=70&h=103&q=100&a=c&src=https://cdn.upera.shop/s3/posters/${this.posterf}`
+    //   }
+    //   return ''
+    // },
+
+    getContentTitle(item) {
+      if (item) {
+        const en = item.name || item.title
+        const fa = item.name_fa || item.title_fa
+        const title = this.chooseLang(en, fa)
+        if (title) return title
+      }
+      return this.chooseLang(this.name, this.namefa)
+    },
+
+    formatPrice(cents) {
+      if (!cents) return '0'
+      const tomans = Math.floor(cents / 10)
+      const tomansStr = String(tomans)
+      const length = tomansStr.length
+
+      if (length === 4)
+        return tomansStr.substring(0, 1) + '.' + tomansStr.substring(1)
+      else if (length === 5)
+        return tomansStr.substring(0, 2) + '.' + tomansStr.substring(2)
+      else return tomansStr.substring(0, 3) + '.' + tomansStr.substring(3)
+    },
+
+    removeItem() {
+      // Logic to remove the main item
+      // This would need to be handled based on your business logic
+      this.hideModal()
+    },
+
+    addItem(item) {
+      this.loadContentData(item.type, item.id)
+      this.showAddMoreDropdown = true
+    },
+
+    removeAddedItem(itemId) {
+      if (this.addedItems.length <= 1) {
+        this.hideModal()
         return
       }
-      this.mobile = mobile
+      this.addedItems = this.addedItems.filter((item) => item.id !== itemId)
     },
-    onBuyPayment() {
-      if (!this.mobile || this.mobile.length < 10) {
-        this.$swal('لطفا شماره موبایل معتبر وارد کنید', { icon: 'error' })
-        return
+
+    validateMobile() {
+      const mobileRegex = /^09[0-9]{9}$/
+      if (!this.mobile) {
+        this.mobileError = 'شماره موبایل الزامی است'
+      } else if (!mobileRegex.test(this.mobile)) {
+        this.mobileError = 'شماره موبایل معتبر نیست'
+      } else {
+        this.mobileError = ''
       }
-      console.log('onBuyPayment called with:', {
-        mobile: this.mobile,
-      })
-      this.BUY()
     },
-    onBuyKeyup({ mobile }) {
-      if (!mobile || mobile.length < 10) {
-        this.$swal('لطفا شماره موبایل معتبر وارد کنید', { icon: 'error' })
-        return
+
+    async handlePurchase() {
+      if (!this.canPurchase) return
+
+      this.processing = true
+
+      try {
+        const payload = {
+          method: this.paymentMethod,
+          use_wallet: this.useWallet,
+          cart: [],
+          ekran: 0,
+          callback_url: 'string',
+          ref: 0,
+          sms: false,
+        }
+
+        // Add main item
+        // if (this.type === 'movie') {
+        //   payload.movie_id = this.id
+        // }
+
+        // else if (this.type === 'episode' || this.type === 'series') {
+        //   payload.episode_id = this.id
+        // }
+
+        // Add additional items
+        if (this.addedItems.length > 0) {
+          payload.cart = this.addedItems.map((item) => item.id)
+        }
+
+        // Add mobile for guest users
+        if (this.userState === 3) {
+          payload.mobile = this.mobile
+        }
+
+        const endpoint = this.$auth.loggedIn ? '/get/buy' : '/ghost/get/buy'
+
+        const response = await this.$axios.post(endpoint, payload)
+
+        if (response.data.payment_link) {
+          // Redirect to payment gateway
+          window.location.href = response.data.payment_link
+        } else {
+          this.error = 'خطا در ایجاد لینک پرداخت'
+        }
+      } catch (error) {
+        this.error = 'خطا در انجام عملیات پرداخت'
+        console.error('Purchase error:', error)
+      } finally {
+        this.processing = false
       }
-      this.mobile = mobile
-      console.log('onBuy called with:', {
-        mobile,
-      })
-      this.BUY()
     },
 
     cleanup() {
-      window.removeEventListener('resize', this.Resize)
-      this.$store.dispatch('download/RESET_DOWNLOAD')
-      document.querySelector('.default')?.classList.remove('blure')
+      this.error = null
+      this.mobile = null
+      this.mobileError = ''
+      this.useWallet = false
+      this.showAddMoreDropdown = false
+      this.addedItems = []
+      this.availableItems = []
+      this.addedItems = []
     },
 
     chooseLang(en, fa) {
@@ -345,537 +595,548 @@ export default {
       else return en
     },
 
-    onContentNavigate(id, type) {
-      if (this.staticmodal || id != this.id) {
-        this.$router.push({
-          name: type + '-id',
-          params: { id },
-        })
-      }
-    },
-
-    onPlayContent() {
-      this.$router.push({
-        name: this.type + '-show-id',
-        params: { id: this.id },
-      })
-    },
-
-    onUssdCall() {
-      // USSD call logic
-    },
-
-    sizeofobj(obj) {
-      if (!obj) return 0
-      let size = 0
-      for (const key in obj) {
-        if (Object.prototype.hasOwnProperty.call(obj, key)) size++
-      }
-      return size
-    },
-
-    charAt2(string) {
-      string = String(string)
-      const l = string.length
-      if (l == 4) return string.substring(0, 1)
-      else if (l == 5) return string.substring(0, 2)
-      else return string.substring(0, 3)
-    },
-
-    substring2(string) {
-      string = String(string)
-      const l = string.length
-      if (l == 4) return string.substring(1)
-      else if (l == 5) return string.substring(2)
-      else return string.substring(3)
-    },
-
     showModal() {
       this.$refs.downloadLinks?.show()
-      if (!this.staticmodal) {
-        document.querySelector('.default')?.classList.add('blure')
-      }
-
-      if (window.innerHeight <= 500) {
-        this.lastseason = null
-      } else {
-        this.lastseason = this.season
-      }
-
-      this.$refs.downloadLinks?.$on('shown', () => {
-        window.addEventListener('resize', this.Resize)
-        this.Resize('e')
-        if (this.lastseason) {
-          this.season_num = this.sizeofobj(this.lastseason)
-          this.episode_num = this.sizeofobj(
-            this.lastseason[this.selectedSeasonId]
-          )
-        }
-      })
-
-      if (!this.ftb) this.ftb2 = 0
-      else this.ftb2 = 1
-
-      if (this.ftb2 != 1 && this.$route.query.force_to_buy == 1) this.ftb2 = 1
-
-      if (this.$auth.loggedIn) {
-        this.$store.dispatch('download/GET_DOWNLOAD', {
-          id: this.id,
-          type: this.type,
-          quality: this.$route.query.quality,
-          force_to_buy: this.ftb2,
-        })
-      } else {
-        this.$store.dispatch('download/GET_GHOST_DOWNLOAD', {
-          id: this.id,
-          type: this.type,
-          quality: this.$route.query.quality,
-          force_to_buy: this.ftb2,
-        })
-      }
-
-      this.checkdiv()
-
-      if (this.$route.query.quality) {
-        this.showinfo = false
-      }
-
-      this.$route.query.quality = 0
-      this.$route.query.force_to_buy = 0
     },
 
     hideModal() {
       this.$refs.downloadLinks?.hide()
       this.$emit('hide-modal', null)
-      this.$store.dispatch('download/RESET_DOWNLOAD')
-      document.querySelector('.default')?.classList.remove('blure')
+      this.cleanup()
     },
-
-    Resize(e) {
-      const vh = window.innerHeight * 0.01
-      const element = document.querySelector('.download-links')
-      if (element) element.style.setProperty('--vh', `${vh}px`)
-      return e
-    },
-
-    // ADDTOCART(itemid, amount, size, quality) {
-    //   let name
-    //   if (this.type == 'episode') {
-    //     if (this.itemdata.season_number == 1) {
-    //       name =
-    //         this.chooseLang(
-    //           this.itemdata.series_name,
-    //           this.itemdata.series_name_fa
-    //         ) +
-    //         ',قسمت ' +
-    //         this.itemdata.episode_number
-    //     } else {
-    //       name =
-    //         this.chooseLang(
-    //           this.itemdata.series_name,
-    //           this.itemdata.series_name_fa
-    //         ) +
-    //         ',قسمت ' +
-    //         this.itemdata.episode_number +
-    //         ' فصل ' +
-    //         this.itemdata.season_number
-    //     }
-    //   } else {
-    //     name = this.chooseLang(this.name, this.namefa)
-    //   }
-
-    //   this.$store.dispatch('download/ADD_NEW_TO_DOWNLOAD', {
-    //     itemid,
-    //     amount,
-    //     size,
-    //     name,
-    //     quality,
-    //     id: this.id,
-    //     type: this.type,
-    //     poster: `https://thumb.upera.shop/thumb?w=70&h=103&q=100&a=c&src=https://cdn.upera.shop/s3/posters/${this.posterf}`,
-    //   })
-
-    //   document.getElementById('download-links-items')?.scrollTo(0, 0)
-    // },
-
-    ADDTOCART({ id, amount, size, quality }) {
-      console.log('Adding to cart:', { id, amount, size, quality })
-      var name
-
-      if (this.type == 'episode') {
-        if (this.itemdata.season_number == 1)
-          name =
-            this.chooseLang(
-              this.itemdata.series_name,
-              this.itemdata.series_name_fa
-            ) +
-            ',قسمت ' +
-            this.itemdata.episode_number
-        else
-          name =
-            this.chooseLang(
-              this.itemdata.series_name,
-              this.itemdata.series_name_fa
-            ) +
-            ',قسمت ' +
-            this.itemdata.episode_number +
-            ' فصل ' +
-            this.itemdata.season_number
-      } else name = this.chooseLang(this.name, this.namefa)
-
-      this.$store.dispatch('download/ADD_NEW_TO_DOWNLOAD', {
-        itemid: id,
-        amount: amount,
-        size: size,
-        name: name,
-        quality: quality,
-        id: this.id,
-        type: this.type,
-        poster:
-          'https://thumb.upera.shop/thumb?w=70&h=103&q=100&a=c&src=https://cdn.upera.shop/s3/posters/' +
-          this.posterf,
-      })
-
-      document.getElementById('download-links-items').scrollTop = 0
-    },
-
-    onRemoveFromCart(item) {
-      console.log('Removing from cart:', item)
-      this.REMOVEFROMCART(item.itemid || item.id, item.amount)
-    },
-
-    REMOVEFROMCART(itemid, amount) {
-      console.log('Removing from cart - itemid:', itemid, 'amount:', amount)
-      this.$store.dispatch('download/DELETE_FROM_DOWNLOAD', {
-        itemid: itemid,
-        amount: amount,
-      })
-      document.getElementById('download-links-items')?.scrollTo(0, 0)
-    },
-
-    EKRAN(ekranid) {
-      this.$router.push({
-        name: 'ekran-id',
-        params: { id: ekranid },
-      })
-    },
-
-    SHOWAGAIN(force_to_buy) {
-      this.ftb2 = force_to_buy
-      if (this.$auth.loggedIn) {
-        this.$store.dispatch('download/GET_DOWNLOAD', {
-          id: this.id,
-          type: this.type,
-          quality: 0,
-          force_to_buy,
-        })
-      } else {
-        this.$store.dispatch('download/GET_GHOST_DOWNLOAD', {
-          id: this.id,
-          type: this.type,
-          quality: 0,
-          force_to_buy,
-        })
-      }
-      this.checkdiv()
-    },
-
-    checkdiv() {
-      let free = this.free
-      if (this.show_free == 1) free = 0
-      if (this.show_buy == 1) free = 1
-
-      if (
-        this.show_free == 0 &&
-        (this.owned ||
-          (free && this.vod) ||
-          (this.vod && this.checkuser.access))
-      ) {
-        this.$store.dispatch('download/ADD_DIVCOUNT')
-      } else {
-        this.$store.dispatch('download/MIN_DIVCOUNT')
-      }
-
-      if (!this.owned && this.vod && !this.checkuser.access) {
-        this.$store.dispatch('download/ADD_DIVCOUNT2')
-      } else {
-        this.$store.dispatch('download/MIN_DIVCOUNT2')
-      }
-    },
-
-    DOWNLOAD(itemid) {
-      this.downloadloading = true
-      const api_url = this.$auth.loggedIn
-        ? '/get/download'
-        : '/ghost/get/download'
-      const ref = this.$cookiz.get('ref') || 0
-
-      this.$axios
-        .post(api_url, {
-          itemid,
-          ref,
-          content: this.$route.query.content,
-        })
-        .then((res) => {
-          this.downloadloading = false
-          if (res.status === 200) {
-            // Download success logic
-          } else {
-            this.message = res.data.message
-          }
-        })
-        .catch((error) => {
-          this.downloadloading = false
-          return error
-        })
-    },
-
-    LINK_DOWNLOAD(itemid) {
-      this.downloadloading = true
-      const api_url = this.$auth.loggedIn
-        ? '/get/download'
-        : '/ghost/get/download'
-      const ref = this.$cookiz.get('ref') || 0
-
-      this.$axios
-        .post(api_url, {
-          itemid,
-          ref,
-          content: this.$route.query.content,
-        })
-        .then((res) => {
-          this.downloadloading = false
-          if (res.status === 200) {
-            window.location.href = res.data.data.url
-          } else {
-            this.message = res.data.message
-          }
-        })
-        .catch((error) => {
-          this.downloadloading = false
-          return error
-        })
-    },
-
-    COPY_DOWNLOAD(itemid) {
-      this.downloadloading = true
-      const api_url = this.$auth.loggedIn
-        ? '/get/download'
-        : '/ghost/get/download'
-      const ref = this.$cookiz.get('ref') || 0
-
-      this.$axios
-        .post(api_url, {
-          itemid,
-          ref,
-          content: this.$route.query.content,
-        })
-        .then((res) => {
-          this.downloadloading = false
-          if (res.status === 200) {
-            this.copy(res.data.data.url)
-          } else {
-            this.message = res.data.message
-          }
-        })
-        .catch((error) => {
-          this.downloadloading = false
-          return error
-        })
-    },
-
-    async copy(text) {
-      try {
-        await this.$copyText(text)
-        this.$swal('لینک کپی شد', { icon: 'success' })
-      } catch (e) {
-        this.$swal('لینک در دیوایس شما قابل کپی نیست.')
-        return e
-      }
-    },
-
-    onSeasonSelected({ seasonId, firstEpisodeId }) {
-      if (firstEpisodeId && firstEpisodeId != this.id) {
-        this.$router.push({
-          name: 'episode-download-id',
-          params: { id: firstEpisodeId },
-        })
-      } else {
-        this.selectedSeasonId = seasonId
-        this.seasontitle = 'فصل ' + seasonId
-      }
-    },
-
-    onEpisodeSelected(id) {
-      if (id != this.id) {
-        this.$router.push({
-          name: 'episode-download-id',
-          params: { id },
-        })
-      }
-    },
-
-    UPERAPLUS() {
-      this.$store.dispatch('subscription/SHOW_MODAL', {
-        content_type: this.type,
-        content_id: this.id,
-      })
-    },
-
-    BUY() {
-      if (this.mobile) {
-        this.mobile = this.mobile.replace(/۱/g, '1')
-        this.mobile = this.mobile.replace(/۲/g, '2')
-        this.mobile = this.mobile.replace(/۳/g, '3')
-        this.mobile = this.mobile.replace(/۴/g, '4')
-        this.mobile = this.mobile.replace(/۵/g, '5')
-        this.mobile = this.mobile.replace(/۶/g, '6')
-        this.mobile = this.mobile.replace(/۷/g, '7')
-        this.mobile = this.mobile.replace(/۸/g, '8')
-        this.mobile = this.mobile.replace(/۹/g, '9')
-        this.mobile = this.mobile.replace(/۰/g, '0')
-        this.mobile = this.mobile.replace(/\D/g, '')
-      }
-
-      var ref = this.$cookiz.get('ref')
-      if (!ref || isNaN(ref)) ref = 0
-
-      if (this.method == 'directdebit' && !this.$auth.loggedIn) {
-        this.$store.dispatch('login/SHOW_MODAL', {
-          premessage: this.premessage,
-          premobile: this.mobile,
-          preredirect: null,
-          prerefresh: 'directdebit',
-        })
-      } else if (this.method == 'credit' && !this.$auth.loggedIn) {
-        this.$store.dispatch('login/SHOW_MODAL', {
-          premessage: this.premessage,
-          premobile: this.mobile,
-          preredirect: null,
-          prerefresh: false,
-        })
-      }
-      var api_url
-      if (this.$auth.loggedIn) {
-        api_url = '/get/buy'
-      } else {
-        api_url = '/ghost/get/buy'
-      }
-      this.buyloading = true
-      this.$axios
-        .post(api_url, {
-          cart: this.cart,
-          mobile: this.mobile,
-          ekran: this.screening.ekran,
-          callback_url: location.origin + '/callback?mobile=' + this.mobile,
-          method: this.method,
-          ref: ref,
-        })
-        .then(
-          (res) => {
-            this.buyloading = false
-            if (res.status === 200) {
-              if (res.data.data.login) {
-                this.$store.dispatch('login/SHOW_MODAL', {
-                  premessage: this.premessage,
-                  premobile: this.mobile,
-                  preredirect: null,
-                  prerefresh: false,
-                })
-              } else if (this.method == 'directdebit') {
-                if (res.data.data.payment_id) {
-                  this.directdebit_payment_id = res.data.data.payment_id
-                }
-                if (res.data.data.showdirectdebitbox == 1)
-                  this.SHOW_MODAL_DIRECTDEBIT()
-                else {
-                  localStorage.removeItem('_cart')
-                  // if(!this.staticmodal)
-                  // this.$router.replace({query: { force_download: 1 }})
-                  this.$router.go()
-                }
-              } else if (this.method == 'credit') {
-                localStorage.removeItem('_cart')
-                if (this.$auth.loggedIn) {
-                  // if(!this.staticmodal)
-                  // this.$router.replace({query: { force_download: 1 }})
-                  this.$router.go()
-                } else {
-                  this.$swal(
-                    'لینک های دانلود پیامک شدند. لطفا جهت دسترسی از طریق سایت وارد سایت شوید',
-                    {
-                      icon: 'success',
-                    }
-                  )
-                }
-              } else {
-                window.location.href = res.data.data.pay_url
-              }
-            } else {
-              this.message = res.data.message
-            }
-          },
-          (error) => {
-            this.buyloading = false
-            this.premessage = error.response.data.message
-            if (error.response.data.login)
-              this.$store.dispatch('login/SHOW_MODAL', {
-                premessage: this.premessage,
-                premobile: this.mobile,
-                preredirect: null,
-                prerefresh: false,
-              })
-            else if (
-              (this.$auth.loggedIn ||
-                (this.method != 'credit' && this.method != 'directdebit')) &&
-              error.response.data.message
-            ) {
-              var dlsmbuttons = {
-                back: {
-                  text: 'ok',
-                  value: 'back',
-                  closeModal: true,
-                  className: 'swal-back',
-                },
-              }
-
-              if (this.method == 'credit') {
-                Object.assign(dlsmbuttons, {
-                  addcredit: {
-                    text: 'افزایش موجودی آپرا',
-                    value: 'addcredit',
-                    closeModal: true,
-                  },
-                })
-              }
-
-              this.$swal({
-                icon: 'error',
-                title: error.response.data.message,
-                dangerMode: true,
-                buttons: dlsmbuttons,
-              }).then((value) => {
-                switch (value) {
-                  case 'back':
-                    this.$swal.close()
-                    if (!this.$auth.loggedIn) this.$refs.focusMe.focus()
-                    break
-
-                  case 'addcredit':
-                    this.SHOW_MODAL_CREDIT()
-                    this.$swal.close()
-                    break
-
-                  default:
-                    this.$swal.close()
-                    if (!this.$auth.loggedIn) this.$refs.focusMe.focus()
-                    break
-                }
-              })
-            }
-          }
-        )
+    posterSrc(filename) {
+      if (!filename) return ''
+      const { w, h } = { w: 142, h: 212 }
+      return `${THUMB_BASE}?w=${w}&h=${h}&q=100&a=c&src=${CDN_POSTERS}/${filename}`
     },
   },
 }
 </script>
+
+<style scoped>
+.download-links {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.download-links-header-simple {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0;
+  margin: 0 1rem;
+  border-bottom: 1px solid #e9ecef;
+  font-family: 'dana';
+}
+
+.download-links-title-simple {
+  font-weight: bold;
+  font-size: 1.1rem;
+  color: #121212;
+}
+
+.download-links-body-simple {
+  padding: 1rem 1rem 0 1rem;
+  min-height: 200px;
+}
+
+.download-links-footer-simple {
+  padding: 1rem;
+  border-top: 1px solid #e9ecef;
+  background-color: #f8f9fa;
+  border-radius: 0 0 32px 32px;
+  color: black;
+}
+
+.footer-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.payable-amount {
+  display: flex;
+  justify-content: start;
+  gap: 0.5rem;
+}
+
+.amount-label {
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+.amount-value {
+  font-weight: bold;
+  font-size: 1.2rem;
+  color: #007bff;
+}
+
+.loading-state,
+.error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  text-align: center;
+}
+
+.tvod-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.content-card {
+  border-radius: 12px;
+  overflow: hidden;
+  background: white;
+  border-radius: 0 0 8px 8px;
+  overflow: auto;
+  max-height: 212px !important;
+}
+
+.card-content {
+  display: flex;
+  align-items: end;
+  padding-bottom: 1rem;
+}
+
+.card-image {
+  width: 120px;
+  height: 180px;
+  margin-left: 1rem;
+  flex-shrink: 0;
+  border-radius: 11.15px !important;
+}
+
+.card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.card-details {
+  flex: 1;
+}
+
+.content-name {
+  font-weight: bold;
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.content-info {
+  color: #6c757d;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.content-price {
+  font-weight: bold;
+  font-size: 16pxrem;
+  color: #ff6633;
+  background: #ffece5;
+  padding: 10px;
+  width: 100%;
+  text-align: center;
+  border-radius: 8px;
+  padding-top: 14px !important;
+}
+
+.card-actions {
+  margin-right: 1rem;
+}
+
+.btn-delete {
+  background: none;
+  border: none;
+  color: #dc3545;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.btn-delete:hover {
+  background-color: #f8f9fa;
+}
+
+.add-more-section {
+  position: relative;
+}
+
+.btn-add-more {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: #ffffff;
+  border: 1px solid #ff6633;
+  border-radius: 8px;
+  color: #ff6633;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
+  justify-content: center;
+}
+
+.btn-add-more:hover {
+  border-color: #007bff;
+  color: #007bff;
+}
+
+.add-more-dropdown {
+  position: absolute;
+  width: 100%;
+  top: 100%;
+  background: rgb(158, 158, 158);
+  border: 1px solid #e9ecefe7;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 10000 !important;
+  border: 1px solid gray;
+  margin-top: 0.5rem;
+}
+
+.dropdown-content {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.dropdown-item {
+  padding: 1rem;
+  border-bottom: 1px solid #f8f9fa;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.dropdown-item:hover {
+  background-color: #f8f9fa;
+}
+
+.dropdown-item:last-child {
+  border-bottom: none;
+}
+
+.item-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.item-name {
+  font-weight: 500;
+}
+
+.item-price {
+  color: #007bff;
+  font-weight: bold;
+}
+
+.added-items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.added-item-card {
+  background: white;
+}
+
+.mobile-section,
+.payment-section,
+.wallet-section {
+  color: #404040;
+}
+
+.wallet-section {
+  display: flex;
+  justify-content: space-between;
+  align-content: center;
+  gap: 1rem;
+  align-items: center;
+}
+
+.section-title {
+  font-weight: bold;
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+  color: #333;
+}
+
+.mobile-input-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.mobile-input-container label {
+  font-weight: bold;
+  color: #333;
+}
+
+.mobile-input-container input {
+  padding: 0.75rem;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+.mobile-input-container input:focus {
+  border-color: #007bff;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+.input-note {
+  font-size: 0.85rem;
+  color: #6c757d;
+  line-height: 1.4;
+}
+
+.error-message {
+  color: #dc3545;
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+}
+
+/* Payment Methods Styles */
+.payment-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.payment-option {
+  border: 1px solid #e9ecef;
+  border-radius: 12px;
+  background: white;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.payment-option:hover {
+  border-color: #007bff;
+  box-shadow: 0 2px 8px rgba(0, 123, 255, 0.1);
+}
+
+.payment-option-content {
+  display: flex;
+  align-items: center;
+  padding: 0.6rem;
+  gap: 1rem;
+}
+
+.payment-image {
+  flex-shrink: 0;
+  width: 50px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.payment-icon {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-shape {
+  width: 40px;
+  height: 25px;
+  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+  border-radius: 4px;
+  position: relative;
+  border: 1px solid #dee2e6;
+}
+
+.card-shape.blue {
+  background: linear-gradient(135deg, #007bff, #0056b3);
+}
+
+.card-chip {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  width: 12px;
+  height: 8px;
+  background: #ffd700;
+  border-radius: 2px;
+}
+
+.card-lines {
+  position: absolute;
+  top: 15px;
+  left: 5px;
+  right: 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.line {
+  height: 2px;
+  background: #6c757d;
+  border-radius: 1px;
+}
+
+.line:first-child {
+  width: 80%;
+}
+
+.line:last-child {
+  width: 60%;
+}
+
+.logo-circle,
+.logo-square {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  background: #007bff;
+  color: white;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.logo-circle {
+  border-radius: 50%;
+}
+
+.logo-square {
+  border-radius: 6px;
+  background: #28a745;
+}
+
+.payment-info {
+  flex: 1;
+}
+
+.payment-name {
+  font-weight: 600;
+  font-size: 1rem;
+  color: #333;
+  margin-bottom: 0.25rem;
+}
+
+.payment-description {
+  font-size: 0.85rem;
+  color: #6c757d;
+}
+
+.payment-radio {
+  flex-shrink: 0;
+}
+
+.payment-radio input[type='radio'] {
+  width: 17px;
+  height: 17px;
+  accent-color: #007bff;
+  cursor: pointer;
+}
+
+.wallet-option {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: start;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.wallet-balance {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+.balance-amount {
+  font-weight: 500;
+  color: #000000;
+  font-size: 1.1rem;
+}
+
+.price-summary {
+}
+
+.price-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+}
+
+.price-row.total {
+  border-top: 1px solid #e9ecef;
+  margin-top: 0.5rem;
+  padding-top: 1rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.total-amount {
+  color: #007bff;
+  font-size: 1.2rem;
+}
+
+.btn-payment {
+  min-width: 280px !important;
+  border-radius: 7px !important;
+}
+
+.wallet-balance {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+.price-summary {
+  color: black;
+  margin-top: -1rem;
+}
+
+.price-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+}
+
+.price-row.total {
+  border-top: 1px solid #e9ecef;
+  margin-top: 0.5rem;
+  padding-top: 1rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.total-amount {
+  color: #007bff;
+  font-size: 1.2rem;
+}
+
+.btn-payment {
+  min-width: 120px;
+}
+
+.payment-image img {
+  max-width: 100%;
+  max-height: 40px !important;
+  object-fit: contain;
+}
+</style>

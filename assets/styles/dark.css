@@ -18,7 +18,8 @@
 .theme-dark .modal-xl .modal-content,
 .theme-dark .modal-download-link .modal-content,
 .theme-dark .subscription .modal-content {
-  background-color: #121212;
+  background-color: #ffffff;
+  border-radius: 32px !important;
 
   color: #f2f2f2;
 }

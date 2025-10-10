@@ -5777,7 +5777,7 @@ div.download-links-poster::after {
     }*/
 .modal-download-link .download-links {
   height: 85vh;
-  height: calc(var(--vh, 1vh) * 100 - 70px);
+  height: calc(var(--vh, 1vh) * 90 - 70px);
 }
 
 .credit .download-links {
