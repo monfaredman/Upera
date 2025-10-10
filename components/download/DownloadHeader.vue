@@ -1,19 +1,16 @@
 <template>
   <div
-    class="download-links-poster download-links-poster2"
-    :style="posterStyle"
+    class="d-flex justify-content-between align-items-center download-header p-3"
   >
-    <div class="download-links-info d-flex align-items-center">
-      <div class="download-links-thumbnail">
+    <!-- <div class="download-links-thumbnail">
         <img class="download-links-thumbnail" :src="thumbnailUrl" />
-      </div>
-      <div class="download-links-title font-weight-bold">
-        <ContentTitle
-          :content="content"
-          :item-type="itemType"
-          @title-click="onTitleClick"
-        />
-      </div>
+      </div> -->
+    <div
+      class="d-flex justify-content-start align-items-center download-header ح-۴"
+    >
+      <h6 class="ml-1">خرید</h6>
+      <h6 v-if="itemType == 'episode'">قسمت</h6>
+      <h6 v-else>فیلم</h6>
     </div>
 
     <button v-if="!isStaticModal" type="button" class="close" @click="onClose">
@@ -23,13 +20,9 @@
 </template>
 
 <script>
-import ContentTitle from '@/components/download/ContentTitle.vue'
-
 export default {
   name: 'DownloadHeader',
-  components: {
-    ContentTitle,
-  },
+  components: {},
   props: {
     backdrop: {
       type: String,
