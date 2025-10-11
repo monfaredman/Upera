@@ -2606,17 +2606,34 @@ a.thumbnail-wrapper {
   top: 0;
   bottom: 0;
   left: 0;
-  background: linear-gradient(180deg, rgba(18, 18, 18, 0) 79.79%, #121212 100%),
-    linear-gradient(270deg, #121212 0%, rgba(18, 18, 18, 0) 100%);
+  background: linear-gradient(
+    360deg,
+    rgba(217, 217, 217, 0) 0%,
+    #000000 27.21%
+  );
+}
+.showcase .showcase-pic-main::before {
+  background: linear-gradient(
+    360deg,
+    #000000 0%,
+    rgba(217, 217, 217, 0) 27%
+  ) !important;
 }
 @media (min-width: 768px) {
   .showcase .showcase-pic::before {
     background: linear-gradient(
-        180deg,
+        360deg,
         rgba(18, 18, 18, 0) 79.79%,
         #121212 100%
       ),
       linear-gradient(270deg, #121212 0%, rgba(18, 18, 18, 0) 100%);
+  }
+  .showcase .showcase-pic-main::before {
+    background: linear-gradient(
+      360deg,
+      #000000 0%,
+      rgba(217, 217, 217, 0) 27%
+    ) !important;
   }
 }
 .showcase .showcase-thumbnail-wrapper-outter,
@@ -8615,6 +8632,11 @@ body widget .-bold {
 
   #actor {
     margin-top: 110px;
+  }
+
+  .modal-lg,
+  .modal-xl {
+    max-width: 650px;
   }
 }
 

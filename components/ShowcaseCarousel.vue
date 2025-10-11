@@ -39,7 +39,7 @@
 
     <div v-for="(item, index) in sliders" :key="index" class="swiper-slide">
       <div class="row no-gutters">
-        <div class="col-12 showcase-pic">
+        <div class="col-12 showcase-pic showcase-pic-main">
           <template v-if="item.media_type === 'video2'">
             <video
               class="showcase-img d-none d-lg-block"
@@ -594,7 +594,7 @@ export default {
 }
 @media (min-width: 1300px) and (max-width: 1500px) {
   .swiper-wrapper >>> .slick-dots {
-    bottom: 11rem !important;
+    bottom: 10rem !important;
   }
   .custom-prev {
     left: 2.6rem;

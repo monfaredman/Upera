@@ -264,24 +264,17 @@ const getAppLinksByType = (type) => {
   display: flex;
   flex-wrap: wrap;
   width: 100%;
-  margin-top: 0.5rem;
 }
 
 @media (min-width: 576px) {
   .section-links {
     width: 66%;
     flex-wrap: nowrap;
-  }
-}
-
-@media (min-width: 1200px) {
-  .section-links {
     margin-right: 5rem;
   }
 }
 
 .app-link-group {
-  margin-top: 0.5rem;
   width: 100%;
 }
 
@@ -395,6 +388,11 @@ const getAppLinksByType = (type) => {
   .web-link-btn {
     width: 150px;
     height: 45px;
+  }
+  .section-links {
+    width: 66%;
+    flex-wrap: nowrap;
+    margin-right: 3rem;
   }
 }
 

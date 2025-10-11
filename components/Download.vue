@@ -16,222 +16,239 @@
     >
       <div class="download-links">
         <!-- Simple Header -->
-        <div class="download-links-header-simple">
-          <div class="download-links-title-simple">
-            خرید {{ getContentTitle() }}
-          </div>
-          <button
-            v-show="!staticmodal"
-            type="button"
-            class="close"
-            @click="hideModal"
-          >
-            <i class="fas fa-times" style="color: black" />
-          </button>
-        </div>
-
-        <!-- Modal Content -->
-        <div class="download-links-body-simple">
-          <!-- Loading State -->
-          <div v-if="loading" class="loading-state">
-            <div class="spinner-border" role="status">
-              <span class="sr-only">Loading...</span>
+        <div class="top-section">
+          <div class="download-links-header-simple">
+            <div class="download-links-title-simple">
+              {{ getContentTitleHeader() }}
             </div>
-            <p>در حال بارگذاری...</p>
-          </div>
-
-          <!-- Error State -->
-          <div v-else-if="error" class="error-state">
-            <p class="text-danger">{{ error }}</p>
-            <button class="btn btn-primary" @click="loadContentData(type, id)">
-              تلاش مجدد
+            <button
+              v-show="!staticmodal"
+              type="button"
+              class="close"
+              @click="hideModal"
+            >
+              <i class="fas fa-times" style="color: black" />
             </button>
           </div>
 
-          <!-- Content Loaded -->
-          <div v-else class="tvod-content">
-            <!-- Main Content Card -->
-            <div class="content-card">
-              <!-- List of added cards -->
-              <div v-if="addedItems.length > 0" class="added-items-list">
-                <div
-                  v-for="item in addedItems"
-                  :key="item.id"
-                  class="added-item-card"
-                >
-                  <div class="card-content">
-                    <div class="card-image">
-                      <img :src="posterSrc(item.poster)" alt="Poster" />
-                    </div>
-                    <div class="card-details">
-                      <div class="content-name">
-                        {{ getContentTitle(item) }}
-                      </div>
-                      <div class="content-info">
-                        <span v-if="item.season && item.episode">
-                          فصل {{ item.season_number }} - قسمت
-                          {{ item.episode_number }}
-                        </span>
-                      </div>
-                      <div class="content-price">
-                        {{ formatPrice(item.tvod_price) }} تومان
-                      </div>
-                    </div>
-                    <div class="card-actions">
-                      <button
-                        class="btn-delete"
-                        @click="removeAddedItem(item.id)"
-                      >
-                        <i
-                          class="fas fa-trash-alt fa-2x"
-                          style="color: #ff6633"
-                        />
-                      </button>
-                    </div>
-                  </div>
-                </div>
+          <!-- Modal Content -->
+          <div class="download-links-body-simple">
+            <!-- Loading State -->
+            <div v-if="loading" class="loading-state">
+              <div class="spinner-border" role="status">
+                <span class="sr-only">Loading...</span>
               </div>
-              <!-- Add More Items Button (for cases 1 and 3) -->
+              <p>در حال بارگذاری...</p>
             </div>
-            <div v-if="showAddMoreButton" class="add-more-section">
+
+            <!-- Error State -->
+            <div v-else-if="error" class="error-state">
+              <p class="text-danger">{{ error }}</p>
               <button
-                class="btn-add-more"
-                @click="showAddMoreDropdown = !showAddMoreDropdown"
+                class="btn btn-primary"
+                @click="loadContentData(type, id)"
               >
-                <i class="fas fa-plus" />
-                افزودن بخش دیگر
+                تلاش مجدد
               </button>
-              <!-- Dropdown for adding more items -->
-              <div
-                v-if="showAddMoreDropdown"
-                class="add-more-dropdown text-black"
-              >
-                <div class="dropdown-content">
-                  <!-- This would be populated with available items from API -->
+            </div>
+
+            <!-- Content Loaded -->
+            <div v-else class="tvod-content">
+              <!-- Main Content Card -->
+              <div class="content-card">
+                <!-- List of added cards -->
+                <div v-if="addedItems.length > 0" class="added-items-list">
                   <div
-                    class="dropdown-item"
-                    v-for="item in availableItems"
+                    v-for="item in addedItems"
                     :key="item.id"
-                    @click="addItem(item)"
+                    class="added-item-card"
                   >
-                    <div class="item-info">
-                      <span class="item-name">{{ item.name_fa }}</span>
-                      <!-- <span class="item-price"
-                        >{{ formatPrice(item.price) }} تومان</span> -->
+                    <div class="card-content">
+                      <div class="card-image">
+                        <img :src="posterSrc(item.poster)" alt="Poster" />
+                      </div>
+                      <div class="card-details">
+                        <div class="content-name">
+                          {{ getContentTitle(item) }}
+                        </div>
+                        <div class="content-info">
+                          <span
+                            v-if="item.season_number && item.episode_number"
+                          >
+                            فصل {{ item.season_number }} - قسمت
+                            {{ item.episode_number }}
+                          </span>
+                        </div>
+                        <div class="content-price">
+                          {{ formatPrice(item.tvod_price) }}
+                          <span class="toman-title">تومان</span>
+                        </div>
+                      </div>
+                      <div class="card-actions">
+                        <button
+                          class="btn-delete"
+                          @click="removeAddedItem(item.id)"
+                        >
+                          <i
+                            class="fas fa-trash-alt"
+                            style="color: #ff6633; font-size: 1.5rem"
+                          />
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
+                <!-- Add More Items Button (for cases 1 and 3) -->
               </div>
-            </div>
-
-            <!-- Payment Method Selection (for cases 1 and 2) -->
-            <div v-if="showPaymentMethods" class="payment-section">
-              <div class="section-title">انتخاب روش پرداخت</div>
-              <div class="payment-options">
-                <div
-                  class="payment-option"
-                  v-for="method in paymentMethods"
-                  :key="method.value"
+              <div v-if="showAddMoreButton" class="add-more-section">
+                <button
+                  class="btn-add-more"
+                  @click="showAddMoreDropdown = !showAddMoreDropdown"
                 >
-                  <div class="payment-option-content">
-                    <div class="payment-image">
-                      <img :src="require(`@/assets/images/${method.src}`)" />
-                    </div>
-                    <div class="payment-info">
-                      <div class="payment-name">{{ method.name }}</div>
-                    </div>
-                    <div class="payment-radio">
-                      <input
-                        :id="`payment-${method.value}`"
-                        v-model="paymentMethod"
-                        type="radio"
-                        name="payment"
-                        :value="method.value"
-                      />
+                  <i class="fas fa-plus" />اضافه کردن قسمت های دیگر
+                </button>
+                <!-- Dropdown for adding more items -->
+                <div
+                  v-if="showAddMoreDropdown"
+                  class="add-more-dropdown text-black"
+                >
+                  <div class="dropdown-content">
+                    <!-- This would be populated with available items from API -->
+                    <div
+                      class="dropdown-item"
+                      v-for="item in availableItems"
+                      :key="item.id"
+                      @click="addItem(item)"
+                    >
+                      <div class="item-info">
+                        <span class="item-name">{{ item.name_fa }}</span>
+                        <!-- <span class="item-price"
+                        >{{ formatPrice(item.price) }} تومان</span> -->
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
 
-            <!-- Wallet Section (for cases 1 and 2) -->
-            <div v-if="showWalletSection" class="wallet-section">
-              <div class="d-flex justify-content-start align-content-center">
-                <i
-                  class="fas fa-wallet fa-2x"
-                  style="color: #525252; padding: 1rem 0 1rem 1rem"
-                />
-                <div class="wallet-option">
-                  <label for="use-wallet" class="text-sm mb-0">کیف پول</label>
-                  <div class="wallet-balance">
-                    <span>موجودی :</span>
-                    <span class="balance-amount">
-                      {{ formatPrice(user?.wallet_balance || 0) }} تومان
-                    </span>
+              <!-- Payment Method Selection (for cases 1 and 2) -->
+              <div v-if="showPaymentMethods" class="payment-section">
+                <div class="section-title">انتخاب روش پرداخت</div>
+                <div class="payment-options">
+                  <div
+                    class="payment-option"
+                    v-for="method in paymentMethods"
+                    :key="method.value"
+                  >
+                    <div class="payment-option-content">
+                      <div class="payment-image">
+                        <img :src="require(`@/assets/images/${method.src}`)" />
+                      </div>
+                      <div class="payment-info">
+                        <div class="payment-name">{{ method.name }}</div>
+                      </div>
+                      <div class="payment-radio">
+                        <input
+                          :id="`payment-${method.value}`"
+                          v-model="paymentMethod"
+                          type="radio"
+                          name="payment"
+                          :value="method.value"
+                        />
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
-              <div class="custom-control custom-switch ml-2 mb-2" dir="rtl">
-                <input
-                  id="use-wallet"
-                  class="custom-control-input"
-                  type="checkbox"
-                />
-                <label class="custom-control-label" for="use-wallet"> </label>
-              </div>
-              <!-- <input id="use-wallet" v-model="useWallet" type="checkbox" /> -->
-            </div>
 
-            <!-- Mobile Input (for case 3 - no login) -->
-            <div v-if="showMobileInput" class="mobile-section">
-              <div class="section-title">ورود شماره موبایل</div>
-              <div class="mobile-input-container">
-                <label for="mobile-input">شماره موبایل</label>
-                <input
-                  id="mobile-input"
-                  v-model="mobile"
-                  type="tel"
-                  placeholder="۰۹۱۲۳۴۵۶۷۸۹"
-                  class="form-control"
-                  dir="ltr"
-                  @input="validateMobile"
-                />
-                <div class="input-note">
-                  لینک‌های دانلود برای این شماره ارسال خواهد شد
+              <!-- Wallet Section (for cases 1 and 2) -->
+              <div v-if="showWalletSection" class="wallet-section">
+                <div class="d-flex justify-content-start align-content-center">
+                  <i
+                    class="fas fa-wallet fa-2x"
+                    style="color: #525252; padding: 1rem"
+                  />
+                  <div class="wallet-option">
+                    <label
+                      for="use-wallet"
+                      class="text-sm mb-0"
+                      style="font-weight: 600"
+                      >کیف پول</label
+                    >
+                    <div class="wallet-balance">
+                      <span>موجودی :</span>
+                      <span class="balance-amount">
+                        {{ my_credit }}
+                      </span>
+                    </div>
+                  </div>
                 </div>
-                <div v-if="mobileError" class="error-message">
-                  {{ mobileError }}
+                <div class="custom-control custom-switch ml-2 mb-2" dir="rtl">
+                  <input
+                    id="use-wallet"
+                    class="custom-control-input"
+                    type="checkbox"
+                  />
+                  <label class="custom-control-label" for="use-wallet"> </label>
                 </div>
+                <!-- <input id="use-wallet" v-model="useWallet" type="checkbox" /> -->
               </div>
-            </div>
 
-            <!-- Price Summary -->
-            <div class="price-summary">
-              <div class="price-row">
-                <span>قیمت کل:</span>
-                <span>{{ formatPrice(subtotalAmount) }} تومان</span>
+              <!-- Mobile Input (for case 3 - no login) -->
+              <div v-if="showMobileInput" class="mobile-section">
+                <div class="mobile-input-container">
+                  <label for="mobile-input">شماره موبایل</label>
+                  <input
+                    id="mobile-input"
+                    v-model="mobile"
+                    type="tel"
+                    placeholder="شماره موبایل خود را وارد کنید"
+                    class="form-control"
+                    dir="rtl"
+                    @input="validateMobile"
+                  />
+                  <div class="input-note">
+                    برای خرید شماره تلفن خودرا وارد کنید
+                  </div>
+                  <div v-if="mobileError" class="error-message">
+                    {{ mobileError }}
+                  </div>
+                </div>
               </div>
-              <div v-if="taxAmount > 0" class="price-row">
-                <span>مالیات (۹٪):</span>
-                <span>{{ formatPrice(taxAmount) }} تومان</span>
-              </div>
-              <!-- <div class="price-row total">
+
+              <!-- Price Summary -->
+              <div class="price-summary">
+                <div class="price-row">
+                  <span>جمع</span>
+                  <span class="amount-value"
+                    >{{ formatPrice(subtotalAmount) }}
+                    <span class="toman-title">تومان</span>
+                  </span>
+                </div>
+                <div v-if="taxAmount > 0" class="price-row">
+                  <span>ارزش افزوده (۱۰٪)</span>
+                  <span class="amount-value"
+                    >{{ formatPrice(taxAmount) }}
+                    <span class="toman-title">تومان</span>
+                  </span>
+                </div>
+                <!-- <div class="price-row total">
                 <span>مبلغ قابل پرداخت:</span>
                 <span class="total-amount"
                   >{{ formatPrice(totalAmount) }} تومان</span
                 >
               </div> -->
+              </div>
             </div>
           </div>
         </div>
-
         <!-- Footer -->
         <div v-if="!loading && !error" class="download-links-footer-simple">
           <div class="footer-content">
             <div class="payable-amount">
               <span class="amount-label">مبلغ قابل پرداخت:</span>
               <span class="amount-value">
-                {{ formatPrice(totalAmount) }} تومان
+                {{ formatPrice(totalAmount) }}
+                <span class="toman-title">تومان</span>
               </span>
             </div>
             <button
@@ -344,11 +361,15 @@ export default {
     ...mapGetters({
       user: 'auth/user',
     }),
+    ...mapGetters({ my_credit: 'my_credit' }),
 
     // Determine user state
     userState() {
       if (!this.$auth.loggedIn) return 3 // No login
       return !this.user?.has_activated_cart ? 1 : 2 // 1: activated cart, 2: not activated
+    },
+    userLogin() {
+      return this.$auth.loggedIn
     },
 
     // Show conditions based on user state
@@ -482,11 +503,19 @@ export default {
       }
       return this.chooseLang(this.name, this.namefa)
     },
+    getContentTitleHeader() {
+      if (this.addedItems[0]?.type === 'series') {
+        return 'خرید سریال '
+      } else if (this.addedItems[0]?.type === 'episode') {
+        return 'خرید قسمت '
+      } else if (this.addedItems[0]?.type === 'movie') {
+        return 'خرید فیلم '
+      }
+    },
 
     formatPrice(cents) {
       if (!cents) return '0'
-      const tomans = Math.floor(cents / 10)
-      const tomansStr = String(tomans)
+      const tomansStr = String(cents)
       const length = tomansStr.length
 
       if (length === 4)
@@ -532,14 +561,26 @@ export default {
       this.processing = true
 
       try {
-        const payload = {
-          method: this.paymentMethod,
-          use_wallet: this.useWallet,
-          cart: [],
-          ekran: 0,
-          callback_url: 'string',
-          ref: 0,
-          sms: false,
+        let payload = {}
+        if (this.userLogin) {
+          payload = {
+            method: this.paymentMethod,
+            cart: [],
+            ekran: 0,
+            callback_url: 'https://upera.tv/callback',
+            ref: 0,
+            sms: false,
+            mobile: this.mobile,
+          }
+        } else {
+          payload = {
+            method: this.paymentMethod,
+            cart: [],
+            ekran: 0,
+            callback_url: 'https://upera.tv/callback',
+            ref: 0,
+            sms: false,
+          }
         }
 
         // Add main item
@@ -553,7 +594,12 @@ export default {
 
         // Add additional items
         if (this.addedItems.length > 0) {
-          payload.cart = this.addedItems.map((item) => item.id)
+          console.log(this.addedItems)
+          payload.cart = this.addedItems.map((item) => {
+            return item.type === 'movie'
+              ? { movie_id: item.id }
+              : { episode_id: item.id }
+          })
         }
 
         // Add mobile for guest users
@@ -561,19 +607,25 @@ export default {
           payload.mobile = this.mobile
         }
 
-        const endpoint = this.$auth.loggedIn ? '/get/buy' : '/ghost/get/buy'
+        const endpoint = this.userLogin ? '/get/buy' : '/ghost/get/buy'
 
         const response = await this.$axios.post(endpoint, payload)
-
-        if (response.data.payment_link) {
+        if (response.data.data.pay_url) {
           // Redirect to payment gateway
-          window.location.href = response.data.payment_link
+          window.location.href = response.data.data.pay_url
         } else {
           this.error = 'خطا در ایجاد لینک پرداخت'
         }
       } catch (error) {
+        if (
+          error.response &&
+          error.response.data &&
+          error.response.data.message
+        ) {
+          this.error = error.response.data.message
+          return
+        }
         this.error = 'خطا در انجام عملیات پرداخت'
-        console.error('Purchase error:', error)
       } finally {
         this.processing = false
       }
@@ -618,6 +670,7 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  height: auto !important;
 }
 .download-links-header-simple {
   display: flex;
@@ -626,12 +679,11 @@ export default {
   padding: 1rem 0;
   margin: 0 1rem;
   border-bottom: 1px solid #e9ecef;
-  font-family: 'dana';
 }
 
 .download-links-title-simple {
-  font-weight: bold;
-  font-size: 1.1rem;
+  font-weight: 700;
+  font-size: 1rem;
   color: #121212;
 }
 
@@ -641,11 +693,11 @@ export default {
 }
 
 .download-links-footer-simple {
-  padding: 1rem;
+  padding: 1rem 0;
   border-top: 1px solid #e9ecef;
-  background-color: #f8f9fa;
   border-radius: 0 0 32px 32px;
   color: black;
+  margin: 0 1rem;
 }
 
 .footer-content {
@@ -661,14 +713,14 @@ export default {
 }
 
 .amount-label {
-  font-weight: bold;
+  font-weight: 600;
   font-size: 0.9rem;
+  color: #525252;
 }
 
 .amount-value {
-  font-weight: bold;
+  font-weight: 600;
   font-size: 1.2rem;
-  color: #007bff;
 }
 
 .loading-state,
@@ -679,6 +731,7 @@ export default {
   justify-content: center;
   padding: 2rem;
   text-align: center;
+  color: black;
 }
 
 .tvod-content {
@@ -840,7 +893,6 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  margin-top: 1rem;
 }
 
 .added-item-card {
@@ -862,9 +914,9 @@ export default {
 }
 
 .section-title {
-  font-weight: bold;
+  font-weight: 400;
   margin-bottom: 1rem;
-  font-size: 1.1rem;
+  font-size: 1rem;
   color: #333;
 }
 
@@ -875,7 +927,7 @@ export default {
 }
 
 .mobile-input-container label {
-  font-weight: bold;
+  font-weight: 600;
   color: #333;
 }
 
@@ -1024,8 +1076,8 @@ export default {
 }
 
 .payment-name {
-  font-weight: 600;
-  font-size: 1rem;
+  font-weight: 500;
+  font-size: 14px;
   color: #333;
   margin-bottom: 0.25rem;
 }
@@ -1050,9 +1102,8 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: start;
-  justify-content: start;
-  gap: 0.75rem;
-  margin-bottom: 1rem;
+  justify-content: center;
+  gap: 0.2rem;
 }
 
 .wallet-balance {
@@ -1064,12 +1115,10 @@ export default {
 }
 
 .balance-amount {
-  font-weight: 500;
+  font-weight: 400;
   color: #000000;
-  font-size: 1.1rem;
-}
-
-.price-summary {
+  font-size: 1rem;
+  margin-right: 0.5rem;
 }
 
 .price-row {
@@ -1138,5 +1187,41 @@ export default {
   max-width: 100%;
   max-height: 40px !important;
   object-fit: contain;
+}
+
+.top-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+}
+
+.toman-title {
+  font-size: 14px !important;
+}
+
+.amount-value {
+  font-size: 18px !important;
+  font-weight: 400 !important;
+}
+
+.payment-radio {
+  display: flex;
+  justify-content: center;
+}
+
+@media (max-width: 576px) {
+  .btn-payment {
+    min-width: 150px !important;
+  }
+}
+@media (max-width: 768px) {
+  .btn-payment {
+    min-width: 190px;
+  }
+}
+@media (max-width: 992px) {
+  .btn-payment {
+    min-width: 200px;
+  }
 }
 </style>
