@@ -141,7 +141,7 @@ export default {
   emits: ['change', 'update:formData', 'update:autoRenewal'],
   data() {
     return {
-      localFormData: { ...this.formData },
+      localFormData: JSON.parse(JSON.stringify(this.formData)),
       selectedPlan: 'monthly',
       localAutoRenewal: this.autoRenewal,
     }
@@ -149,7 +149,7 @@ export default {
   watch: {
     formData: {
       handler(newVal) {
-        this.localFormData = { ...newVal }
+        this.localFormData = JSON.parse(JSON.stringify(newVal))
       },
       deep: true,
     },
@@ -182,7 +182,6 @@ export default {
 <style scoped>
 /* Main Section */
 .payment-options-section {
-  overflow: auto !important;
   max-height: 70vh !important;
 }
 
@@ -191,7 +190,6 @@ export default {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
-  overflow: auto !important;
   max-height: 70vh !important;
 }
 

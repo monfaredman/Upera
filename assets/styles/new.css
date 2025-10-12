@@ -5584,9 +5584,9 @@ nav a:hover {
 
 .modal-body {
   flex: 1 1 auto;
-  overflow-y: auto;
+  overflow-y: hidden;
   overflow-x: hidden;
-  max-height: calc(90vh - 120px);
+  /* max-height: calc(90vh - 120px); */
   padding: 1rem 1.5rem;
 }
 

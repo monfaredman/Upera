@@ -1670,9 +1670,8 @@
 }
 
 .theme-dark .modal-body {
-  overflow-y: auto;
+  overflow-y: hidden;
   overflow-x: hidden;
-  max-height: calc(90vh - 120px);
 }
 
 .theme-dark .directdebit .modal-header {
@@ -1840,7 +1839,6 @@
 }
 
 .theme-dark .modal-body {
-  overflow-y: auto;
+  overflow-y: hidden;
   overflow-x: hidden;
-  max-height: calc(90vh - 120px);
 }

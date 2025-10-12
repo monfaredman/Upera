@@ -18,20 +18,33 @@
 
         <template v-else>
           <!-- Edit Mode: Registered Card Display -->
-          <div
-            v-if="isEditMode && subscriptions.length > 0"
-            class="registered-card-box mb-4"
-          >
-            <div class="card-info">
-              <h6 class="font-weight-bold">کارت ثبت شده:</h6>
-              <div class="d-flex justify-content-between align-items-center">
-                <span class="bank-name">{{ subscriptions[0].bank }}</span>
+          <div v-if="isEditMode && configs.id" class="registered-card-box mb-4">
+            <p>شماره کارت ثبت شده</p>
+            <div class="card-display">
+              <div class="bank-info-row">
+                <div class="bank-logo-container">
+                  <img
+                    :src="
+                      require(`@/assets/images/banks/${
+                        formData.bank || '012'
+                      }.png`)
+                    "
+                    alt="Bank Logo"
+                    class="bank-logo-img"
+                  />
+                </div>
+                <div class="mobile-info">
+                  <p class="mobile-number">{{ configs.mobile }}</p>
+                </div>
+              </div>
+              <div class="card-actions">
                 <b-button
-                  variant="outline-primary"
-                  size="sm"
+                  variant="link"
+                  class="action-btn edit-btn"
                   @click="changeCardNumber"
                 >
-                  تغییر شماره کارت
+                  <i class="fa fa-edit ml-1"></i>
+                  تنظیم شماره کارت جدید
                 </b-button>
               </div>
             </div>
@@ -116,6 +129,7 @@
               <i class="fa fa-arrow-right pl-2"></i>
               مرحله قبل
             </b-button>
+
             <submit-button
               :is-loading="isSubmitting"
               :variant="'primary'"
@@ -123,6 +137,15 @@
               :icon="'fa fa-money-bill pr-2'"
               @click="handleSubmit(false)"
             />
+            <b-button
+              v-if="isEditMode"
+              variant="link"
+              class="action-btn remove-btn"
+              @click="handleDeleteBank"
+            >
+              <i class="fa fa-trash ml-1"></i>
+              حذف اشتراک
+            </b-button>
           </template>
         </div>
       </div>
@@ -295,7 +318,16 @@ export default {
       this.subscriptions = data.subscriptions || []
       this.showAddBank = this.subscriptions.length === 0
       this.configs = data.configs || {}
-      this.formData.series = data.series || []
+
+      // Get series data from API response
+      const seriesData = data.series || []
+
+      // Map series data with directdebit flag from API
+      this.formData.series = seriesData.map((series) => ({
+        ...series,
+        directdebit: series.directdebit || false,
+      }))
+
       this.formData.subscribe_fee = data.subscribe_fee || 0
       this.formData.days_period_to_end = data.days_period_to_end || 0
       this.formData.subscription = !!this.configs.subscription
@@ -305,8 +337,8 @@ export default {
         this.formData.mobile = this.formatMobile(data.mobile)
       }
 
-      // Set edit mode if subscriptions exist
-      this.isEditMode = this.subscriptions.length > 0
+      // Set edit mode if configs exist (user has registered card)
+      this.isEditMode = !!this.configs.id
 
       // Initialize autoRenewal based on formData.subscription
       this.autoRenewal = this.formData.subscription
@@ -338,26 +370,31 @@ export default {
     buildSubmitData() {
       const selectedSeries = this.formData.series
         .filter((series) => series.directdebit)
-        .map((series) => series.id)
+        .map((series) => String(series.id))
 
       return {
-        subscription: this.formData.subscription,
-        pay_anything: this.formData.pay_anything,
-        bank: this.formData.bank,
+        subscription: Boolean(this.formData.subscription),
+        pay_anything: Boolean(this.formData.pay_anything),
+        bank: String(this.formData.bank),
         series: selectedSeries,
         add_new_bank: Number(this.showAddBank),
-        payment_id: this.paymentid,
-        forsubscription: this.forsubscription,
-        mobile: this.formData.mobile,
-        ref: this.getReferrerCode(),
-        callback_url: `${location.origin}${CALLBACK_PATH}`,
+        payment_id: Number(this.paymentid || 0),
+        forsubscription: Boolean(this.forsubscription),
+        mobile: String(this.formData.mobile),
+        ref: Number(this.getReferrerCode()),
+        callback_url: String(`${location.origin}${CALLBACK_PATH}`),
       }
     },
 
-    async handleDeleteBank(index, id, bankName) {
+    async handleDeleteBank() {
+      if (!this.configs.id) {
+        this.message = 'اطلاعات پرداخت خودکار یافت نشد'
+        return
+      }
+
       const confirmed = await this.showConfirmationDialog(
         'حذف پرداخت خودکار',
-        `آیا از حذف پرداخت خودکار ${bankName} اطمینان دارید؟`,
+        `آیا از حذف پرداخت خودکار برای شماره ${this.configs.mobile} اطمینان دارید؟`,
         'error'
       )
 
@@ -365,12 +402,39 @@ export default {
 
       this.isSubmitting = true
       try {
-        await this.$axios.post(API_ENDPOINTS.DELETE, { id })
-        this.subscriptions.splice(index, 1)
-        this.showAddBank = this.subscriptions.length === 0
-        this.message = 'بانک با موفقیت حذف شد'
+        await this.$axios.post(API_ENDPOINTS.DELETE, {
+          id: this.configs.id,
+        })
+
+        // Reset configs and form data after successful deletion
+        this.configs = {}
+        this.isEditMode = false
+        this.currentStep = 1
+        this.formData.subscription = false
+        this.formData.pay_anything = true
+        this.formData.series = this.formData.series.map((series) => ({
+          ...series,
+          directdebit: false,
+        }))
+        this.autoRenewal = false
+        this.showAddBank = true
+
+        this.message = 'پرداخت خودکار با موفقیت حذف شد'
+
+        // Optionally show success message
+        this.$swal({
+          icon: 'success',
+          title: 'موفق',
+          text: 'پرداخت خودکار با موفقیت حذف شد',
+          timer: 2000,
+        })
       } catch (error) {
         this.message = this.handleError(error)
+        this.$swal({
+          icon: 'error',
+          title: 'خطا',
+          text: this.message,
+        })
       } finally {
         this.isSubmitting = false
       }
@@ -576,15 +640,120 @@ export default {
 
 /* Registered Card Box */
 .registered-card-box {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 1.5rem;
+  background: white;
+  padding: 0;
   border-radius: 0.5rem;
-  color: white;
+  overflow: hidden;
 }
 
-.registered-card-box .bank-name {
-  font-size: 1.2rem;
-  font-weight: 600;
+.card-display {
+  display: flex;
+  flex-direction: column;
+}
+
+.bank-info-row {
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  height: 60px;
+  padding: 0 1rem;
+  border: 1px solid #e5e5e5;
+  border-radius: 0.5rem;
+  gap: 1rem;
+  background: #fafafa;
+}
+
+.bank-logo-container {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f9fafb;
+  border-radius: 0.375rem;
+}
+
+.bank-logo-img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.mobile-info {
+  flex: 1;
+  display: flex;
+  justify-content: start;
+  gap: 0.25rem;
+}
+
+.mobile-label {
+  font-size: 0.75rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.mobile-number {
+  font-size: 1rem;
+  color: #64748b;
+  font-weight: ۵00;
+  direction: ltr;
+  text-align: left;
+  margin: 0 !important;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-content: center;
+  padding: 0.5rem 0;
+}
+
+.card-actions {
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+}
+
+.action-btn {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.action-btn:hover {
+  text-decoration: none;
+}
+
+.edit-btn {
+  color: #ff6633;
+}
+
+.edit-btn:hover {
+  color: #1d4ed8;
+}
+
+.remove-btn {
+  color: #dc2626;
+}
+
+.remove-btn:hover {
+  color: #b91c1c;
+}
+
+.registered-card-box .d-flex.gap-2 {
+  gap: 0.5rem;
+}
+
+.registered-card-box .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
 }
 
 /* Step Indicator */
