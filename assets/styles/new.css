@@ -5547,6 +5547,123 @@ nav a:hover {
   border: none;
   box-shadow: 0px 0px 5px rgba(151, 151, 151, 0.5) !important;
 }
+
+/* ========================================
+   MODAL HEIGHT & CONTENT FIT FIXES
+   ======================================== */
+
+/* Base Modal Structure */
+.modal-dialog {
+  max-height: 90vh;
+  margin: 1.75rem auto;
+}
+
+.modal-content {
+  border-radius: 32px !important;
+  max-height: 90vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Modal Sizes */
+.modal-sm .modal-content,
+.modal-md .modal-content,
+.modal-lg .modal-content,
+.modal-xl .modal-content {
+  border-radius: 32px !important;
+  max-height: 90vh;
+}
+
+/* Modal Parts */
+.modal-header {
+  flex-shrink: 0;
+  border-radius: 32px 32px 0 0;
+  padding: 1rem 1.5rem;
+}
+
+.modal-body {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: calc(90vh - 120px);
+  padding: 1rem 1.5rem;
+}
+
+.modal-footer {
+  flex-shrink: 0;
+  border-radius: 0 0 32px 32px;
+  padding: 1rem 1.5rem;
+}
+
+/* Specific Modal Classes */
+.modal-download-link .modal-content,
+.subscription .modal-content,
+.directdebit .modal-content,
+.credit .modal-content {
+  border-radius: 32px !important;
+  max-height: 90vh;
+}
+
+.modal-fullscreen .modal-dialog {
+  max-height: 100vh;
+  margin: 0;
+}
+
+.modal-fullscreen .modal-content {
+  height: 100vh;
+  max-height: 100vh;
+  border-radius: 0 !important;
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+  .modal-dialog {
+    max-height: 95vh;
+    margin: 0.5rem;
+  }
+
+  .modal-content {
+    max-height: 95vh;
+  }
+
+  .modal-body {
+    max-height: calc(95vh - 100px);
+  }
+}
+
+@media (min-width: 576px) {
+  .modal-dialog {
+    max-width: 500px;
+  }
+}
+
+@media (min-width: 768px) {
+  .modal-lg {
+    max-width: 800px;
+  }
+}
+
+@media (min-width: 992px) {
+  .modal-xl {
+    max-width: 1140px;
+  }
+}
+
+/* Fix for nested scrollable content */
+.modal-body .scrollable-content {
+  max-height: 100%;
+  overflow-y: auto;
+}
+
+/* Ensure proper spacing */
+.modal-body > *:first-child {
+  margin-top: 0;
+}
+
+.modal-body > *:last-child {
+  margin-bottom: 0;
+}
 .download-links-poster,
 div.download-links-poster::after {
   border-radius: 0.35rem 0.35rem 0 0;
@@ -8634,13 +8751,16 @@ body widget .-bold {
     margin-top: 110px;
   }
 
-  .modal-lg,
-  .modal-xl {
+  .modal-lg {
     max-width: 650px;
   }
 }
 
 @media (min-width: 1200px) {
+  .modal-xl {
+    max-width: 750px;
+  }
+
   .app_container img {
     max-width: 100%;
   }
@@ -11402,4 +11522,9 @@ background-color: #f6f6f6 !important;
   justify-content: center !important;
   border-radius: 50%;
   transition: background-color 0.3s ease, transform 0.2s ease !important;
+}
+
+.modal-dialog.modal-lg.modal-dialog-centered
+  div#directdebitModal___BV_modal_body_ {
+  height: 80vh !important;
 }

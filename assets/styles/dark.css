@@ -16,12 +16,14 @@
 
 .theme-dark .modal-md .modal-content,
 .theme-dark .modal-xl .modal-content,
+.theme-dark .modal-lg .modal-content,
 .theme-dark .modal-download-link .modal-content,
-.theme-dark .subscription .modal-content {
-  background-color: #ffffff;
+.theme-dark .subscription .modal-content,
+.theme-dark .directdebit .modal-content {
+  background-color: #1e1e1e !important;
   border-radius: 32px !important;
-
   color: #f2f2f2;
+  max-height: 90vh;
 }
 
 .theme-dark .modal-download-link .overlay_price_label > i:before {
@@ -813,16 +815,6 @@
   .theme-dark #feature .bg-img {
     -webkit-filter: brightness(0.8);
     filter: brightness(0.8);
-  }
-
-  .theme-dark .raychat_main_button {
-    -webkit-transition: all 300ms ease-in-out !important;
-    transition: all 300ms ease-in-out !important;
-    transition-delay: 1s !important;
-  }
-
-  .theme-dark #feature .feature .tags {
-    color: #fff;
   }
 
   .theme-dark .show-btn {
@@ -1668,4 +1660,187 @@
 }
 .theme-dark .dropdown-menu-list .disabled {
   color: #d4d4d4;
+}
+
+/* DirectDebit Modal Dark Mode Styles */
+.theme-dark .directdebit .modal-content {
+  background-color: #1e1e1e !important;
+  color: #f2f2f2;
+  max-height: 90vh;
+}
+
+.theme-dark .modal-body {
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: calc(90vh - 120px);
+}
+
+.theme-dark .directdebit .modal-header {
+  background-color: #1e1e1e;
+  border-bottom: 1px solid #3a3a3a;
+}
+
+.theme-dark .directdebit .modal-header .modal-title {
+  color: #f6f6f6;
+}
+
+.theme-dark .directdebit .modal-footer-fixed {
+  background: #1e1e1e;
+  border-top: 1px solid #3a3a3a;
+}
+
+.theme-dark .directdebit .registered-card-box {
+  background: linear-gradient(135deg, #4a5568 0%, #5a4ba2 100%);
+}
+
+.theme-dark .directdebit .bank-card {
+  background: #2d2d2d;
+  border: 1px solid #3a3a3a;
+}
+
+.theme-dark .directdebit .bank-card:hover {
+  border-color: #4b4bf9;
+  box-shadow: 0 4px 12px rgba(75, 75, 249, 0.25);
+}
+
+.theme-dark .directdebit .bank-card.selected {
+  border: 2px solid #4b4bf9;
+  background: #373737;
+}
+
+.theme-dark .directdebit .bank-card .bank-name {
+  color: #f2f2f2;
+}
+
+.theme-dark .directdebit .form-control {
+  background-color: #2d2d2d;
+  border-color: #3a3a3a;
+  color: #f2f2f2;
+}
+
+.theme-dark .directdebit .form-control:focus {
+  background-color: #2d2d2d;
+  border-color: #4b4bf9;
+  color: #f2f2f2;
+}
+
+.theme-dark .directdebit .form-control::placeholder {
+  color: #979797;
+}
+
+.theme-dark .directdebit .series-card {
+  background: #2d2d2d;
+  border: 2px solid #3a3a3a;
+}
+
+.theme-dark .directdebit .series-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.theme-dark .directdebit .series-card.active {
+  border-color: #28a745;
+  background: #1a3a24;
+}
+
+.theme-dark .directdebit .series-poster {
+  background: #1a1a1a;
+}
+
+.theme-dark .directdebit .series-title {
+  color: #f2f2f2;
+}
+
+.theme-dark .directdebit .series-price {
+  color: #4b4bf9;
+}
+
+.theme-dark .directdebit .auto-renewal-card {
+  background-color: #2d2d2d;
+  border: 2px solid #17a2b8;
+}
+
+.theme-dark .directdebit .auto-renewal-card .card-body {
+  background-color: #2d2d2d;
+}
+
+.theme-dark .directdebit .subscription-options {
+  border-top: 1px solid #3a3a3a;
+}
+
+.theme-dark .directdebit .information-notice {
+  background: #2d2d2d;
+  color: #cacaca;
+  border-right: 4px solid #ffc107;
+}
+
+.theme-dark .directdebit .text-muted {
+  color: #979797 !important;
+}
+
+.theme-dark .directdebit .step-indicator .step-number {
+  background: #3a3a3a;
+  color: #979797;
+}
+
+.theme-dark .directdebit .step-indicator .step.active .step-number,
+.theme-dark .directdebit .step-indicator .step.completed .step-number {
+  background: #4b4bf9;
+  color: white;
+}
+
+.theme-dark .directdebit .step-indicator .step-label {
+  color: #979797;
+}
+
+.theme-dark .directdebit .step-indicator .step.active .step-label {
+  color: #4b4bf9;
+}
+
+.theme-dark .directdebit .step-indicator .step-line {
+  background: #3a3a3a;
+}
+
+.theme-dark .directdebit .step-indicator .step-line.active {
+  background: #4b4bf9;
+}
+
+.theme-dark .directdebit h5,
+.theme-dark .directdebit h6,
+.theme-dark .directdebit strong {
+  color: #f6f6f6;
+}
+
+.theme-dark .directdebit .custom-control-label {
+  color: #f2f2f2;
+}
+
+.theme-dark .directdebit a {
+  color: #4b4bf9;
+}
+
+.theme-dark .directdebit a:hover {
+  color: #6b6bfa;
+}
+
+.theme-dark .directdebit .btn-outline-secondary {
+  color: #f2f2f2;
+  border-color: #6c757d;
+}
+
+.theme-dark .directdebit .btn-outline-secondary:hover {
+  background-color: #6c757d;
+  border-color: #6c757d;
+  color: #fff;
+}
+
+.theme-dark .directdebit .alert-warning {
+  background-color: #3a3520;
+  border-color: #5a5130;
+  color: #f6f6f6;
+}
+
+.theme-dark .modal-body {
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: calc(90vh - 120px);
 }

@@ -670,8 +670,10 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: auto !important;
+  height: auto;
+  max-height: 90vh;
 }
+
 .download-links-header-simple {
   display: flex;
   justify-content: space-between;
@@ -679,6 +681,7 @@ export default {
   padding: 1rem 0;
   margin: 0 1rem;
   border-bottom: 1px solid #e9ecef;
+  flex-shrink: 0;
 }
 
 .download-links-title-simple {
@@ -690,6 +693,9 @@ export default {
 .download-links-body-simple {
   padding: 1rem 1rem 0 1rem;
   min-height: 200px;
+  flex: 1;
+  overflow-y: auto;
+  max-height: calc(90vh - 180px);
 }
 
 .download-links-footer-simple {
@@ -698,6 +704,7 @@ export default {
   border-radius: 0 0 32px 32px;
   color: black;
   margin: 0 1rem;
+  flex-shrink: 0;
 }
 
 .footer-content {

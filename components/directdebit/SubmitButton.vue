@@ -13,7 +13,6 @@
       </template>
       <template v-else>
         {{ text }}
-        <i v-if="icon" :class="icon" />
       </template>
     </b-button>
   </div>
@@ -64,14 +63,28 @@ export default {
 </script>
 
 <style scoped>
+.submit-button-section {
+  display: inline-block;
+}
+
 .submit-btn {
   font-weight: 600;
   padding: 0.75rem 1.5rem;
   transition: all 0.3s ease;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
 }
 
 .submit-btn:not(:disabled):hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.submit-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
 }
 </style>

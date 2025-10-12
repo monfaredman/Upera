@@ -1,46 +1,53 @@
 <template>
   <div class="bank-management-section">
-    <div v-if="Object.keys(subscriptions).length > 0">
-      <h6 class="font-weight-bold mb-3">
-        بانک های فعال شما جهت پرداخت خودکار:
-      </h6>
-      <div class="bank-buttons mb-3">
-        <b-button
-          v-for="(item, index) in subscriptions"
-          :key="index"
-          variant="dark"
-          class="mr-2 mb-2"
-          @click="$emit('delete-bank', index, item.id, item.bank)"
-        >
-          {{ item.bank }}
-          <i class="fa fa-trash-alt pr-2" />
-        </b-button>
-        <b-button variant="success" @click="$emit('add-bank')">
-          <i class="fa fa-plus pr-2" />
-          افزودن بانک جدید
-        </b-button>
+    <!-- Registered Card Display (Edit Mode) -->
+    <div
+      v-if="isEditMode && subscriptions.length > 0"
+      class="registered-card-box mb-4"
+    >
+      <div class="card-info">
+        <h6 class="font-weight-bold mb-2">کارت ثبت شده:</h6>
+        <div class="d-flex justify-content-between align-items-center">
+          <span class="bank-name">{{ subscriptions[0].bank }}</span>
+          <b-button
+            variant="outline-light"
+            size="sm"
+            @click="$emit('change-card')"
+          >
+            تغییر شماره کارت
+          </b-button>
+        </div>
       </div>
     </div>
+    <!-- Bank Grid Selection (Step 1) -->
+    <div v-if="!isEditMode" class="bank-selection-container mt-4">
+      <h5 class="font-weight-bold mb-3">بانک کارت خودتان را انتخاب کنید</h5>
 
-    <!-- Add New Bank Form -->
-    <b-card v-show="showAddBank" class="mt-2 mb-3 px-2 bank-form-card">
-      <b-form-group
-        label="انتخاب بانک:"
-        label-for="bank-select"
-        description="بانک مورد نظر خود را انتخاب کنید"
-      >
-        <b-form-select
-          id="bank-select"
-          v-model="localFormData.bank"
-          :options="banks"
-          class="form-control"
-        />
-      </b-form-group>
+      <!-- Bank Grid -->
+      <div class="bank-grid mb-3">
+        <div
+          v-for="bank in banks"
+          :key="bank.value"
+          class="bank-card"
+          :class="{ selected: localFormData.bank === bank.value }"
+          @click="selectBank(bank.value)"
+        >
+          <div class="bank-logo">
+            <img
+              :src="require(`@/assets/images/banks/${bank.value}.png`)"
+              :alt="bank.text"
+            />
+          </div>
+          <div class="bank-name">{{ bank.text }}</div>
+        </div>
+      </div>
 
+      <!-- Mobile Number Input -->
       <b-form-group
-        label="شماره موبایلی را که به بانک شما متصل است را وارد کنید:"
+        label="شماره موبایل متصل به بانک:"
         label-for="mobile-input"
-        description="شماره موبایل مرتبط با حساب بانکی خود را وارد کنید"
+        class="mb-3"
+        label-class="text-black"
       >
         <b-form-input
           id="mobile-input"
@@ -52,26 +59,19 @@
         />
       </b-form-group>
 
-      <div class="row mt-2">
-        <div class="col-12">
-          <b-button
-            variant="success"
-            block
-            :disabled="isLoading"
-            @click="handleSubmit"
-          >
-            <template v-if="isLoading">
-              <b-spinner small class="mr-2" />
-              در حال پردازش...
-            </template>
-            <template v-else>
-              افزودن کارت بانکی شما به سیستم پرداخت خودکار
-              <i class="fa fa-money-bill pr-2" />
-            </template>
-          </b-button>
-        </div>
+      <!-- Terms Acceptance -->
+      <div class="mb-3 mt-4 d-flex justify-content-start align-items-center">
+        <b-form-checkbox
+          v-model="acceptedTerms"
+          class="ml-2"
+          style="direction: ltr"
+        ></b-form-checkbox>
+        <span>
+          <a href="#" @click.prevent="$emit('show-terms')">قوانین و مقررات</a>
+          پرداخت خودکار را مطالعه کرده و با آن موافقم.
+        </span>
       </div>
-    </b-card>
+    </div>
   </div>
 </template>
 
@@ -82,10 +82,6 @@ export default {
     subscriptions: {
       type: Array,
       default: () => [],
-    },
-    showAddBank: {
-      type: Boolean,
-      default: false,
     },
     banks: {
       type: Array,
@@ -102,13 +98,50 @@ export default {
       type: Boolean,
       default: false,
     },
+    isEditMode: {
+      type: Boolean,
+      default: false,
+    },
+    acceptTerms: {
+      type: Boolean,
+      default: false,
+    },
   },
-  emits: ['add-bank', 'delete-bank', 'submit'],
+  emits: [
+    'change-card',
+    'next-step',
+    'show-terms',
+    'update:formData',
+    'update:acceptTerms',
+  ],
   data() {
     return {
       localFormData: { ...this.formData },
     }
   },
+  computed: {
+    canProceed() {
+      console.log(
+        this.localFormData.bank,
+        this.localFormData.mobile,
+        this.acceptedTerms
+      )
+      return (
+        this.localFormData.bank &&
+        this.localFormData.mobile &&
+        this.acceptedTerms
+      )
+    },
+    acceptedTerms: {
+      get() {
+        return this.acceptTerms
+      },
+      set(value) {
+        this.$emit('update:acceptTerms', value)
+      },
+    },
+  },
+
   watch: {
     formData: {
       handler(newVal) {
@@ -116,23 +149,92 @@ export default {
       },
       deep: true,
     },
+    'localFormData.mobile': {
+      handler() {
+        this.$emit('update:formData', { ...this.localFormData })
+      },
+    },
   },
   methods: {
-    handleSubmit() {
-      this.$emit('submit', this.localFormData)
+    selectBank(bankValue) {
+      this.localFormData.bank = bankValue
+      this.$emit('update:formData', { ...this.localFormData })
     },
   },
 }
 </script>
 
 <style scoped>
-.bank-buttons {
-  display: flex;
-  flex-wrap: wrap;
+/* Registered Card Box */
+.registered-card-box {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  color: white;
+}
+
+.registered-card-box .bank-name {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+/* Bank Grid */
+.bank-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
   gap: 0.5rem;
 }
 
-.bank-form-card {
-  border-right: 4px solid #28a745;
+.bank-card {
+  width: 18%;
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: white;
+  width: 100% !important;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.bank-card:hover {
+  border-color: #007bff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.15);
+}
+
+.bank-card.selected {
+  width: 20%;
+  border: 2px solid #007bff;
+}
+
+.bank-logo {
+  width: 40px;
+  height: 40px;
+  margin: 0 auto 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bank-logo img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.bank-card .bank-name {
+  font-weight: 600;
+  color: #333;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .bank-grid {
+    grid-template-columns: 1fr;
+  }
 }
 </style>
