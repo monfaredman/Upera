@@ -337,7 +337,7 @@
             </div>
           </section>
         </div>
-        <div v-else-if="list.data.length > 0">
+        <div v-else-if="list.data.length > 0" class="mt-4">
           <HorizontalList
             :title-en="list.list_en"
             :title-fa="list.list_fa"

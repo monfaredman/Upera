@@ -1,16 +1,30 @@
 <template>
   <nuxt-link :to="logoTo" class="logo" :class="additionalClasses">
-    <template v-if="$config.envname === 'upera'">
-      <i v-if="showLogotype" class="icon-upera-fa-logotype" />
-      <i v-if="showLogo" class="icon-upera-logo" />
+    <template v-if="isUpera">
+      <!-- Desktop Logo for Upera -->
+      <template v-if="isAnotherPage">
+        <i class="icon-upera-fa-logotype" />
+        <i class="icon-upera-logo" />
+      </template>
+      <template v-else>
+        <img
+          src="@/assets/img/logo.svg"
+          :class="{ 'd-none d-md-block': bannerNav }"
+          :alt="$config.name_fa"
+        />
+      </template>
+
+      <!-- Mobile Logo for Upera -->
       <img
-        v-else-if="bannerNav"
+        v-if="bannerNav"
         src="/images/logo-mobile.svg"
         class="d-md-none"
         :alt="$config.name_fa"
       />
     </template>
-    <template v-else-if="$config.envname === 'plus'">
+
+    <template v-else-if="isPlus">
+      <!-- Desktop Logo for Plus -->
       <img
         :src="logoUrl"
         :class="{ 'd-none d-md-block': bannerNav }"
@@ -18,9 +32,11 @@
         width="42"
         height="42"
       />
+
+      <!-- Mobile Logo for Plus -->
       <img
-        v-if="bannerNav && checkuser.ref > 2"
-        :src="'https://cdn.upera.shop/s3/vods/' + checkuser.logo_dark"
+        v-if="bannerNav && showMobileLogo"
+        :src="mobileLogo"
         class="d-md-none"
         :alt="$config.name_fa"
       />
@@ -44,13 +60,9 @@ export default {
       type: String,
       default: '',
     },
-    showLogotype: {
+    isAnotherPage: {
       type: Boolean,
-      default: true,
-    },
-    showLogo: {
-      type: Boolean,
-      default: true,
+      default: false,
     },
     checkuser: {
       type: Object,
@@ -62,14 +74,31 @@ export default {
     },
   },
   computed: {
+    isUpera() {
+      return this.$config.envname === 'upera'
+    },
+    isPlus() {
+      return this.$config.envname === 'plus'
+    },
     logoUrl() {
-      if (this.$config.envname === 'plus') {
-        const baseUrl = 'https://cdn.upera.shop/s3/vods/'
-        return this.$colorMode.value === 'light'
-          ? baseUrl + (this.checkuser.logo || '')
-          : baseUrl + (this.checkuser.logo_dark || '')
+      if (!this.isPlus) return ''
+
+      const baseUrl = 'https://cdn.upera.shop/s3/vods/'
+      const logoFile =
+        this.$colorMode.value === 'light'
+          ? this.checkuser.logo
+          : this.checkuser.logo_dark
+
+      return baseUrl + (logoFile || '')
+    },
+    showMobileLogo() {
+      return this.checkuser.ref > 2
+    },
+    mobileLogo() {
+      if (this.showMobileLogo) {
+        return 'https://cdn.upera.shop/s3/vods/' + this.checkuser.logo_dark
       }
-      return ''
+      return '@/assets/images/mobile.png'
     },
   },
 }

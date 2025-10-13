@@ -317,7 +317,7 @@ export default {
 
       return this.variant === 'md_backdrop'
         ? `${THUMB_BASE}?w=${w}&h=${h}&q=100&src=${base}/${filename}`
-        : `${THUMB_BASE}?w=${w}&h=${h}&q=100&a=c&src=${base}/${filename}`
+        : `${THUMB_BASE}?w=${w}&h=${h}&q=100&a=t&src=${base}/${filename}`
     },
     ChooseLang(en, fa) {
       if (fa && this.$i18n.locale === 'fa') return fa

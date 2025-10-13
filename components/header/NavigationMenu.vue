@@ -7,19 +7,29 @@
   >
     <div
       class="header-links d-md-flex align-items-center mr-md-2 mr-lg-3 h-full"
+      :class="linkClasses"
     >
-      <HeaderLink
+      <nuxt-link
         :to="mainLink.to"
-        :icon="mainLink.icon"
-        :text="mainLink.text"
-        :additional-classes="mainLink.classes"
-      />
+        class="d-flex align-items-center header-link"
+        :class="mainLink.classes"
+      >
+        <i v-if="mainLink.icon" :class="mainLink.icon" />
+        <span :class="{ 'ml-md-2': mainLink.icon }">{{ mainLink.text }}</span>
+        <i
+          v-if="hasDropdown"
+          class="icon-expand-arrow"
+          :class="{ 'hide-mobile': hideOnMobile }"
+        />
+      </nuxt-link>
     </div>
+
     <ul
-      v-if="showMenu && !hideOnMobile"
+      v-if="showMenu"
       class="container-fluid category-menu header-menu mega-menu hide-mobile"
+      :class="menuClasses"
     >
-      <li v-for="item in menuItems" :key="item.to">
+      <li v-for="item in visibleMenuItems" :key="item.to">
         <nuxt-link :to="item.to">
           {{ item.text }}
         </nuxt-link>
@@ -29,13 +39,8 @@
 </template>
 
 <script>
-import HeaderLink from './HeaderLink.vue'
-
 export default {
   name: 'NavigationMenu',
-  components: {
-    HeaderLink,
-  },
   props: {
     isOpen: {
       type: Boolean,
@@ -54,10 +59,24 @@ export default {
       type: Boolean,
       default: false,
     },
+    linkClasses: {
+      type: String,
+      default: '',
+    },
+    menuClasses: {
+      type: String,
+      default: '',
+    },
   },
   computed: {
     showMenu() {
       return this.menuItems.length > 0 && this.isOpen
+    },
+    hasDropdown() {
+      return this.menuItems.length > 0
+    },
+    visibleMenuItems() {
+      return this.menuItems.filter((item) => item.show !== false)
     },
   },
   methods: {

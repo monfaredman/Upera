@@ -1674,153 +1674,222 @@
   overflow-x: hidden;
 }
 
-.theme-dark .directdebit .modal-header {
-  background-color: #1e1e1e;
-  border-bottom: 1px solid #3a3a3a;
+/* Registered Card Box Dark Mode */
+.theme-dark .registered-card-box {
+  background: #2d2d2d !important;
+  color: #f2f2f2;
+  padding: 0.6rem !important
+  ;
 }
 
-.theme-dark .directdebit .modal-header .modal-title {
-  color: #f6f6f6;
+.theme-dark .registered-card-box p.mobile-number {
+  color: black;
+}
+.theme-dark .registered-card-box p.cart-payment {
+  color: white;
 }
 
-.theme-dark .directdebit .modal-footer-fixed {
-  background: #1e1e1e;
-  border-top: 1px solid #3a3a3a;
+.theme-dark .bank-info-row {
+  background: #3a3a3a;
+  border-color: #4a4a4a;
 }
 
-.theme-dark .directdebit .registered-card-box {
-  background: linear-gradient(135deg, #4a5568 0%, #5a4ba2 100%);
+.theme-dark .mobile-number {
+  color: #e0e0e0;
 }
 
-.theme-dark .directdebit .bank-card {
+.theme-dark .card-actions {
+  border-top-color: #4a4a4a;
+}
+
+.theme-dark .action-btn.edit-btn {
+  color: #ff6633;
+}
+
+.theme-dark .action-btn.edit-btn:hover {
+  color: #ff8866;
+}
+
+.theme-dark .action-btn.remove-btn {
+  color: #ff4444;
+}
+.theme-dark .card-image {
+  padding: 1rem 1rem 0 0;
+}
+
+.theme-dark .action-btn.remove-btn:hover {
+  color: #ff6666;
+}
+
+/* Modal Footer Dark Mode */
+.theme-dark .modal-footer-fixed {
+  background: #2d2d2d !important;
+  border-top-color: #4a4a4a;
+}
+
+/* Bank Selection Dark Mode */
+.theme-dark .bank-card {
+  background: #3a3a3a !important;
+  border-color: #4a4a4a;
+}
+
+.theme-dark .bank-card:hover {
+  border-color: #ff6633 !important;
+  box-shadow: 0 4px 12px rgba(255, 102, 51, 0.15);
+}
+
+.theme-dark .bank-card.selected {
+  border-color: #ff6633 !important;
+  background: #4a4a4a;
+}
+
+.theme-dark .bank-card .bank-name {
+  color: #f2f2f2 !important;
+}
+
+/* Series Card Dark Mode */
+.theme-dark .series-card {
+  background: #3a3a3a;
+  border-color: #4a4a4a;
+}
+
+.theme-dark .series-card:hover {
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.1);
+}
+
+.theme-dark .series-card.active {
+  border-color: #ff6633 !important;
+  background: #2d4a3a;
+}
+
+.theme-dark .series-poster {
   background: #2d2d2d;
-  border: 1px solid #3a3a3a;
 }
 
-.theme-dark .directdebit .bank-card:hover {
-  border-color: #4b4bf9;
-  box-shadow: 0 4px 12px rgba(75, 75, 249, 0.25);
-}
-
-.theme-dark .directdebit .bank-card.selected {
-  border: 2px solid #4b4bf9;
-  background: #373737;
-}
-
-.theme-dark .directdebit .bank-card .bank-name {
+.theme-dark .series-title {
   color: #f2f2f2;
 }
 
+.theme-dark .series-price {
+  color: #e0e0e0;
+}
+
+.theme-dark .series-price p {
+  color: #e0e0e0;
+}
+
+/* Auto Renewal Card Dark Mode */
+.theme-dark .auto-renewal-card {
+  background: #2d2d2d !important;
+  border-color: #4a4a4a;
+}
+
+.theme-dark .auto-renewal-card .card-body {
+  background: #2d2d2d;
+  border-radius: 0.5rem;
+}
+
+/* Subscription Plans Dark Mode */
+.theme-dark .subscription-plan {
+  background: #3a3a3a;
+  border-color: #4a4a4a;
+  border-radius: 0.5rem;
+}
+
+.theme-dark .subscription-plan:hover {
+  box-shadow: 0 2px 8px rgba(255, 255, 255, 0.1);
+}
+
+.theme-dark .subscription-plan.active {
+  border-color: #ff6633 !important;
+  background: #4a3a35;
+}
+
+.theme-dark .plan-title {
+  color: #f2f2f2;
+}
+
+.theme-dark .plan-price {
+  color: #ff6633;
+}
+
+/* Information Notice Dark Mode */
+.theme-dark .information-notice {
+  color: white !important;
+}
+
+/* Form Elements Dark Mode */
 .theme-dark .directdebit .form-control {
-  background-color: #2d2d2d;
-  border-color: #3a3a3a;
+  background-color: #3a3a3a;
+  border-color: #4a4a4a;
   color: #f2f2f2;
 }
 
 .theme-dark .directdebit .form-control:focus {
-  background-color: #2d2d2d;
-  border-color: #4b4bf9;
+  background-color: #3a3a3a;
+  border-color: #ff6633;
   color: #f2f2f2;
 }
 
 .theme-dark .directdebit .form-control::placeholder {
-  color: #979797;
+  color: #888;
 }
 
-.theme-dark .directdebit .series-card {
-  background: #2d2d2d;
-  border: 2px solid #3a3a3a;
-}
-
-.theme-dark .directdebit .series-card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-}
-
-.theme-dark .directdebit .series-card.active {
-  border-color: #28a745;
-  background: #1a3a24;
-}
-
-.theme-dark .directdebit .series-poster {
-  background: #1a1a1a;
-}
-
-.theme-dark .directdebit .series-title {
-  color: #f2f2f2;
-}
-
-.theme-dark .directdebit .series-price {
-  color: #4b4bf9;
-}
-
-.theme-dark .directdebit .auto-renewal-card {
-  background-color: #2d2d2d;
-  border: 2px solid #17a2b8;
-}
-
-.theme-dark .directdebit .auto-renewal-card .card-body {
-  background-color: #2d2d2d;
-}
-
-.theme-dark .directdebit .subscription-options {
-  border-top: 1px solid #3a3a3a;
-}
-
-.theme-dark .directdebit .information-notice {
-  background: #2d2d2d;
-  color: #cacaca;
-  border-right: 4px solid #ffc107;
-}
-
-.theme-dark .directdebit .text-muted {
-  color: #979797 !important;
-}
-
-.theme-dark .directdebit .step-indicator .step-number {
+/* Step Indicator Dark Mode */
+.theme-dark .step-number {
   background: #3a3a3a;
-  color: #979797;
+  color: #888;
 }
 
-.theme-dark .directdebit .step-indicator .step.active .step-number,
-.theme-dark .directdebit .step-indicator .step.completed .step-number {
-  background: #4b4bf9;
+.theme-dark .step.active .step-number,
+.theme-dark .step.completed .step-number {
+  background: #ff6633;
   color: white;
 }
 
-.theme-dark .directdebit .step-indicator .step-label {
-  color: #979797;
+.theme-dark .step-label {
+  color: #888;
 }
 
-.theme-dark .directdebit .step-indicator .step.active .step-label {
-  color: #4b4bf9;
+.theme-dark .step.active .step-label {
+  color: #ff6633;
 }
 
-.theme-dark .directdebit .step-indicator .step-line {
+.theme-dark .step-line {
   background: #3a3a3a;
 }
 
-.theme-dark .directdebit .step-indicator .step-line.active {
-  background: #4b4bf9;
+.theme-dark .step-line.active {
+  background: #ff6633;
 }
 
-.theme-dark .directdebit h5,
-.theme-dark .directdebit h6,
-.theme-dark .directdebit strong {
-  color: #f6f6f6;
+/* Alert Dark Mode */
+.theme-dark .directdebit .alert-warning {
+  background-color: #4a3a2a;
+  border-color: #6a5a4a;
+  color: #ffcc99;
 }
 
+/* Section Headers Dark Mode */
+.theme-dark .bank-selection-container h5,
+.theme-dark .series-section h5 {
+  color: #f2f2f2;
+}
+
+/* Custom Checkbox Dark Mode */
 .theme-dark .directdebit .custom-control-label {
   color: #f2f2f2;
 }
 
-.theme-dark .directdebit a {
-  color: #4b4bf9;
+.theme-dark
+  .directdebit
+  .custom-control-input:checked
+  ~ .custom-control-label::before {
+  background-color: #ff6633;
+  border-color: #ff6633;
 }
 
-.theme-dark .directdebit a:hover {
-  color: #6b6bfa;
-}
-
+/* Button Variants Dark Mode */
 .theme-dark .directdebit .btn-outline-secondary {
   color: #f2f2f2;
   border-color: #6c757d;
@@ -1828,17 +1897,467 @@
 
 .theme-dark .directdebit .btn-outline-secondary:hover {
   background-color: #6c757d;
-  border-color: #6c757d;
   color: #fff;
 }
 
-.theme-dark .directdebit .alert-warning {
-  background-color: #3a3520;
-  border-color: #5a5130;
+.theme-dark .directdebit .btn-primary {
+  background-color: #ff6633;
+  border-color: #ff6633;
+}
+
+.theme-dark .directdebit .btn-primary:hover {
+  background-color: #ff8866;
+  border-color: #ff8866;
+}
+
+/* Bank Logo Container Dark Mode */
+.theme-dark .bank-logo-container {
+  background: #2d2d2d;
+}
+
+/* Series Info Dark Mode */
+.theme-dark .series-info {
+  background-color: black;
+}
+
+.theme-dark .series-details {
+  color: #e0e0e0;
+}
+
+/* Modal Content Area Dark Mode */
+.theme-dark .modal-content-area {
+  background: #1e1e1e;
+}
+
+/* Bank Selection Container Dark Mode */
+.theme-dark .bank-selection-container {
+  color: #f2f2f2;
+}
+
+.theme-dark .bank-selection-container label {
+  color: #f2f2f2;
+}
+
+/* Series Section Dark Mode */
+.theme-dark .series-section {
+  background: transparent;
+}
+
+.theme-dark .series-grid {
+  background: transparent;
+}
+
+/* Form Group Dark Mode */
+.theme-dark .directdebit .form-group label {
+  color: #f2f2f2;
+}
+
+/* Checkbox Links Dark Mode */
+.theme-dark .directdebit a {
+  color: #ff6633;
+}
+
+.theme-dark .directdebit a:hover {
+  color: #ff8866;
+}
+
+/* Card Body Dark Mode */
+.theme-dark .directdebit .card {
+  background-color: #2d2d2d;
+  border-color: #4a4a4a;
+}
+
+.theme-dark .directdebit .card-body {
+  background-color: #2d2d2d;
+  color: #f2f2f2;
+}
+
+/* Subscription Options Dark Mode */
+.theme-dark .subscription-options {
+  color: #f2f2f2;
+}
+
+.theme-dark .subscription-options label {
+  color: #f2f2f2;
+}
+
+/* Text Muted Dark Mode in DirectDebit */
+.theme-dark .directdebit .text-muted {
+  color: #888 !important;
+}
+
+/* Text Danger Dark Mode in DirectDebit */
+.theme-dark .directdebit .text-danger {
+  color: #ff6666 !important;
+}
+
+/* Switch Control Dark Mode */
+.theme-dark .directdebit .custom-switch .custom-control-label::before {
+  background-color: #4a4a4a;
+  border-color: #4a4a4a;
+}
+
+.theme-dark
+  .directdebit
+  .custom-switch
+  .custom-control-input:checked
+  ~ .custom-control-label::before {
+  background-color: #ff6633;
+  border-color: #ff6633;
+}
+
+.theme-dark .directdebit .custom-switch .custom-control-label::after {
+  background-color: #e0e0e0;
+}
+
+/* Download Modal Dark Mode Styles */
+.theme-dark .modal-download-link .download-links {
+  background-color: #1e1e1e;
+  color: #f2f2f2;
+}
+
+.theme-dark .modal-download-link .download-links-header-simple {
+  border-bottom: 1px solid #3a3a3a;
+}
+
+.theme-dark .modal-download-link .download-links-title-simple {
   color: #f6f6f6;
 }
 
-.theme-dark .modal-body {
-  overflow-y: hidden;
-  overflow-x: hidden;
+.theme-dark .modal-download-link .download-links-body-simple {
+  background-color: #1e1e1e;
+  color: #f2f2f2;
+}
+
+.theme-dark .modal-download-link .download-links-footer-simple {
+  border-top: 1px solid #3a3a3a;
+  color: #f2f2f2;
+}
+
+.theme-dark .modal-download-link .content-card {
+  background: #2d2d2d;
+  border: 1px solid #3a3a3a;
+}
+
+.theme-dark .modal-download-link .card-content {
+  background: #2d2d2d;
+}
+
+.theme-dark .modal-download-link .content-name {
+  color: #f2f2f2;
+}
+
+.theme-dark .modal-download-link .content-info {
+  color: #979797;
+}
+
+.theme-dark .modal-download-link .content-price {
+  color: #ff6633;
+  background: #3a2419;
+}
+
+.theme-dark .modal-download-link .btn-add-more {
+  background: #2d2d2d;
+  border-color: #ff6633;
+  color: #ff6633;
+}
+
+.theme-dark .modal-download-link .btn-add-more:hover {
+  background: #373737;
+  border-color: #ff7f50;
+  color: #ff7f50;
+}
+
+.theme-dark .modal-download-link .add-more-dropdown {
+  background: #2d2d2d;
+  border: 1px solid #3a3a3a;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+.theme-dark .modal-download-link .dropdown-item {
+  color: #f2f2f2;
+  border-bottom: 1px solid #3a3a3a;
+}
+
+.theme-dark .modal-download-link .dropdown-item:hover {
+  background-color: #373737;
+}
+
+.theme-dark .modal-download-link .added-item-card {
+  background: #2d2d2d;
+}
+
+.theme-dark .modal-download-link .section-title {
+  color: #f2f2f2;
+}
+
+.theme-dark .modal-download-link .mobile-section,
+.theme-dark .modal-download-link .payment-section,
+.theme-dark .modal-download-link .wallet-section {
+  color: #f2f2f2;
+}
+
+.theme-dark .modal-download-link .mobile-input-container label {
+  color: #f2f2f2;
+}
+
+.theme-dark .modal-download-link .mobile-input-container input {
+  background-color: #2d2d2d;
+  border-color: #3a3a3a;
+  color: #f2f2f2;
+}
+
+.theme-dark .modal-download-link .mobile-input-container input:focus {
+  border-color: #4b4bf9;
+  background-color: #2d2d2d;
+  box-shadow: 0 0 0 3px rgba(75, 75, 249, 0.2);
+}
+
+.theme-dark .modal-download-link .input-note {
+  color: #979797;
+}
+
+.theme-dark .modal-download-link .payment-option {
+  background: #2d2d2d;
+  border-color: #3a3a3a;
+}
+
+.theme-dark .modal-download-link .payment-option:hover {
+  border-color: #4b4bf9;
+  box-shadow: 0 2px 8px rgba(75, 75, 249, 0.2);
+}
+
+.theme-dark .modal-download-link .payment-name {
+  color: #f2f2f2;
+}
+
+.theme-dark .modal-download-link .payment-description {
+  color: #979797;
+}
+
+.theme-dark .modal-download-link .payment-radio input[type='radio'] {
+  accent-color: #4b4bf9;
+}
+
+.theme-dark .modal-download-link .wallet-section {
+  background: #2d2d2d;
+  border: 1px solid #3a3a3a;
+  border-radius: 8px;
+  padding: 0.75rem;
+}
+
+.theme-dark .modal-download-link .wallet-balance {
+  color: #f2f2f2;
+}
+
+.theme-dark .modal-download-link .balance-amount {
+  color: #4b4bf9;
+}
+
+.theme-dark .modal-download-link .price-summary {
+  color: #f2f2f2;
+}
+
+.theme-dark .modal-download-link .price-row {
+  color: #f2f2f2;
+}
+
+.theme-dark .modal-download-link .price-row.total {
+  border-top-color: #3a3a3a;
+  color: #f6f6f6;
+}
+
+.theme-dark .modal-download-link .amount-label {
+  color: #979797;
+}
+
+.theme-dark .modal-download-link .amount-value {
+  color: #f2f2f2;
+}
+
+.theme-dark .modal-download-link .loading-state,
+.theme-dark .modal-download-link .error-state {
+  color: #f2f2f2;
+}
+
+.theme-dark .modal-download-link .close {
+  color: #f2f2f2;
+}
+
+.theme-dark .modal-download-link .close:hover {
+  color: #ffffff;
+  opacity: 0.8;
+}
+
+.theme-dark .modal-download-link .text-black {
+  color: #f2f2f2 !important;
+}
+
+.theme-dark .modal-download-link .btn-delete:hover {
+  background-color: #3a3a3a;
+}
+
+.theme-dark .modal-download-link .wallet-section .fa-wallet {
+  color: #f2f2f2 !important;
+}
+
+.theme-dark .modal-download-link .custom-control-label {
+  color: #f2f2f2;
+}
+
+.theme-dark .modal-download-link .spinner-border {
+  color: #f2f2f2;
+}
+
+/* Basket Popover Content Dark Mode Styles */
+.theme-dark .basket-popover-content {
+  background: #1e1e1e !important;
+  color: #f2f2f2;
+  min-width: 500px;
+  max-width: 500px;
+}
+
+.theme-dark .basket-popover-content .empty-basket {
+  color: #979797;
+}
+
+.theme-dark .basket-popover-content .empty-icon {
+  color: #4a4a4a;
+}
+
+.theme-dark .basket-popover-content .basket-item-compact {
+  background: #2d2d2d !important;
+  border: 1px solid #3a3a3a;
+}
+
+.theme-dark .basket-popover-content .item-title-compact {
+  color: #f2f2f2;
+}
+
+.theme-dark .basket-popover-content .item-info-compact {
+  color: #979797;
+}
+
+.theme-dark .basket-popover-content .item-price-compact {
+  color: #ff6633;
+}
+
+.theme-dark .basket-popover-content .btn-remove-compact {
+  color: #ff6666;
+}
+
+.theme-dark .basket-popover-content .btn-remove-compact:hover {
+  background-color: #3a2419;
+}
+
+.theme-dark .basket-popover-content .payment-section-compact {
+  border-top-color: #3a3a3a;
+}
+
+.theme-dark .basket-popover-content .payment-option-compact {
+  background: #2d2d2d !important;
+  border-color: #3a3a3a;
+}
+
+.theme-dark .basket-popover-content .payment-option-compact:hover {
+  border-color: #ff6633;
+  box-shadow: 0 2px 8px rgba(255, 102, 51, 0.15);
+}
+
+.theme-dark .basket-popover-content .payment-option-compact.active {
+  background: #3a2419 !important;
+  border-color: #ff6633;
+}
+
+.theme-dark .basket-popover-content .payment-name-compact {
+  color: #f2f2f2;
+}
+
+.theme-dark .basket-popover-content .wallet-section-compact {
+  background: #2d2d2d !important;
+}
+
+.theme-dark .basket-popover-content .wallet-info-compact {
+  color: #f2f2f2;
+}
+
+.theme-dark .basket-popover-content .wallet-info-compact i {
+  color: #ff6633;
+}
+
+.theme-dark .basket-popover-content .mobile-section-compact .form-control {
+  background-color: #2d2d2d;
+  border-color: #3a3a3a;
+  color: #f2f2f2;
+}
+
+.theme-dark
+  .basket-popover-content
+  .mobile-section-compact
+  .form-control:focus {
+  background-color: #2d2d2d;
+  border-color: #ff6633;
+  box-shadow: 0 0 0 0.2rem rgba(255, 102, 51, 0.25);
+}
+
+.theme-dark
+  .basket-popover-content
+  .mobile-section-compact
+  .form-control::placeholder {
+  color: #888;
+}
+
+.theme-dark .basket-popover-content .error-message-compact {
+  color: #ff6666;
+}
+
+.theme-dark .basket-popover-content .price-summary-compact {
+  border-top-color: #3a3a3a;
+}
+
+.theme-dark .basket-popover-content .price-row-compact {
+  color: #f2f2f2;
+}
+
+.theme-dark .basket-popover-content .price-row-compact.total-compact {
+  border-top-color: #3a3a3a;
+  color: #f6f6f6;
+}
+
+.theme-dark .basket-popover-content .total-amount-compact {
+  color: #ff6633;
+}
+
+.theme-dark .basket-popover-content .btn-checkout-compact {
+  background-color: #ff6633;
+  border-color: #ff6633;
+}
+
+.theme-dark .basket-popover-content .btn-checkout-compact:hover:not(:disabled) {
+  background-color: #ff8866;
+  border-color: #ff8866;
+}
+
+.theme-dark .basket-popover-content .btn-checkout-compact:disabled {
+  background-color: #4a4a4a;
+  border-color: #4a4a4a;
+  color: #888;
+}
+
+.theme-dark
+  .basket-popover-content
+  .items-list-compact::-webkit-scrollbar-track {
+  background: #2d2d2d;
+}
+
+.theme-dark
+  .basket-popover-content
+  .items-list-compact::-webkit-scrollbar-thumb {
+  background: #ff6633;
+}
+
+.theme-dark
+  .basket-popover-content
+  .items-list-compact::-webkit-scrollbar-thumb:hover {
+  background: #ff8866;
 }

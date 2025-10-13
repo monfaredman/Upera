@@ -74,6 +74,26 @@
         </ul>
       </b-popover>
     </div>
+    <!-- Basket Icon -->
+    <div
+      v-if="$store?.state?.basketActive !== false"
+      class="header-links header-links-basket d-md-flex align-items-center h-full ml-lg-1 mr-lg-1 float-left hide-mobile"
+    >
+      <b-link id="popover-basket" class="d-flex align-items-center header-link">
+        <i class="fa fa-shopping-basket ml-2" />
+      </b-link>
+      <b-popover
+        id="popover-d-basket"
+        target="popover-basket"
+        triggers="hover"
+        placement="bottom"
+        fallback-placement="flip"
+        boundary-padding="1"
+        custom-class="basket-popover"
+      >
+        <BasketPopoverContent @close-popover="closeBasketPopover" />
+      </b-popover>
+    </div>
 
     <!-- Subscription Buttons -->
     <div class="btn-app">
@@ -161,6 +181,7 @@
       v-if="isLoggedIn"
       :user-data="checkuser"
       :subscription-type="subscriptionType"
+      :my-credit="myCredit"
       @show-credit-modal="$emit('show-credit-modal')"
       @show-subscription-modal="$emit('show-subscription-modal')"
       @show-directdebit-modal="$emit('show-directdebit-modal')"
@@ -180,11 +201,13 @@
 
 <script>
 import UserProfileDropdown from './UserProfileDropdown.vue'
+import BasketPopoverContent from './BasketPopoverContent.vue'
 
 export default {
   name: 'HeaderActions',
   components: {
     UserProfileDropdown,
+    BasketPopoverContent,
   },
   props: {
     isLoggedIn: {
@@ -207,6 +230,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    myCredit: {
+      type: [String, Number],
+      default: '',
+    },
   },
   computed: {
     content_subscription() {
@@ -228,6 +255,23 @@ export default {
     execute_content_filtering() {
       this.$router.go()
     },
+    closeBasketPopover() {
+      this.$root.$emit('bv::hide::popover', 'popover-basket')
+    },
   },
 }
 </script>
+
+<style scoped>
+.basket-popover {
+  min-width: fit-content !important;
+  max-width: 400px !important;
+  width: auto;
+  padding: 0;
+  border-radius: 12px !important;
+}
+
+.basket-popover-content {
+  border-radius: 10px;
+}
+</style>

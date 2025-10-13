@@ -27,7 +27,12 @@
               class="close"
               @click="hideModal"
             >
-              <i class="fas fa-times" style="color: black" />
+              <i
+                class="fas fa-times"
+                :style="{
+                  color: $colorMode.value === 'dark' ? 'white' : 'black',
+                }"
+              />
             </button>
           </div>
 
@@ -101,33 +106,9 @@
                 <!-- Add More Items Button (for cases 1 and 3) -->
               </div>
               <div v-if="showAddMoreButton" class="add-more-section">
-                <button
-                  class="btn-add-more"
-                  @click="showAddMoreDropdown = !showAddMoreDropdown"
-                >
+                <button class="btn-add-more" @click="hideModal">
                   <i class="fas fa-plus" />اضافه کردن قسمت های دیگر
                 </button>
-                <!-- Dropdown for adding more items -->
-                <div
-                  v-if="showAddMoreDropdown"
-                  class="add-more-dropdown text-black"
-                >
-                  <div class="dropdown-content">
-                    <!-- This would be populated with available items from API -->
-                    <div
-                      class="dropdown-item"
-                      v-for="item in availableItems"
-                      :key="item.id"
-                      @click="addItem(item)"
-                    >
-                      <div class="item-info">
-                        <span class="item-name">{{ item.name_fa }}</span>
-                        <!-- <span class="item-price"
-                        >{{ formatPrice(item.price) }} تومان</span> -->
-                      </div>
-                    </div>
-                  </div>
-                </div>
               </div>
 
               <!-- Payment Method Selection (for cases 1 and 2) -->
@@ -138,6 +119,7 @@
                     class="payment-option"
                     v-for="method in paymentMethods"
                     :key="method.value"
+                    :class="{ disabled: useWalletCredit }"
                   >
                     <div class="payment-option-content">
                       <div class="payment-image">
@@ -153,6 +135,7 @@
                           type="radio"
                           name="payment"
                           :value="method.value"
+                          :disabled="useWalletCredit"
                         />
                       </div>
                     </div>
@@ -185,12 +168,13 @@
                 <div class="custom-control custom-switch ml-2 mb-2" dir="rtl">
                   <input
                     id="use-wallet"
+                    v-model="useWalletCredit"
                     class="custom-control-input"
                     type="checkbox"
+                    :disabled="!hasEnoughWalletBalance"
                   />
                   <label class="custom-control-label" for="use-wallet"> </label>
                 </div>
-                <!-- <input id="use-wallet" v-model="useWallet" type="checkbox" /> -->
               </div>
 
               <!-- Mobile Input (for case 3 - no login) -->
@@ -280,6 +264,10 @@ export default {
   props: {
     show: Boolean,
     staticmodal: Boolean,
+    viewOnly: {
+      type: Boolean,
+      default: false,
+    },
     id: {
       type: String,
       default: null,
@@ -318,10 +306,11 @@ export default {
       loading: false,
       error: null,
       processing: false,
-      paymentMethod: 'saman3',
+      paymentMethod: 'sep',
       mobile: null,
       mobileError: '',
       useWallet: false,
+      useWalletCredit: false,
       showAddMoreDropdown: false,
       addedItems: [],
       availableItems: [],
@@ -341,11 +330,11 @@ export default {
         //   src: 'kart.png',
         // },
         {
-          value: 'credit',
-          name: 'موجودی آپرا',
+          value: 'directdebit',
+          name: 'پرداخت خودکار',
           description: 'پرداخت با اعتبار حساب آپرا',
           icon: 'OperaCreditIcon',
-          src: 'logo.svg',
+          src: 'directdebit.png',
         },
         // {
         //   value: 'tally',
@@ -366,7 +355,7 @@ export default {
     // Determine user state
     userState() {
       if (!this.$auth.loggedIn) return 3 // No login
-      return !this.user?.has_activated_cart ? 1 : 2 // 1: activated cart, 2: not activated
+      return this.$store?.state?.basketActive ? 1 : 2 // 1: activated cart, 2: not activated
     },
     userLogin() {
       return this.$auth.loggedIn
@@ -374,7 +363,7 @@ export default {
 
     // Show conditions based on user state
     showAddMoreButton() {
-      return this.userState === 1 || this.userState === 3
+      return this.$store?.state?.basketActive
     },
 
     showPaymentMethods() {
@@ -412,20 +401,51 @@ export default {
       }
       return false
     },
+
+    // Check if wallet has sufficient balance
+    hasEnoughWalletBalance() {
+      return this.myCreditValue >= this.totalAmount
+    },
+
+    myCreditValue() {
+      if (!this.my_credit) return 0
+      // Remove non-digit characters
+      const num = this.my_credit.replace(/[^\d.]/g, '')
+      return Number(num) || 0
+    },
   },
   watch: {
     show(val) {
       if (val) {
         this.showModal()
-        this.loadContentData(this.type, this.id)
+        this.syncWithCart()
+        if (!this.viewOnly) {
+          this.loadContentData(this.type, this.id)
+        }
         this.loadAvailableItems()
       } else {
         this.hideModal()
       }
     },
+    useWalletCredit(val) {
+      if (val) {
+        // When wallet is enabled, set payment method to credit
+        this.paymentMethod = 'credit'
+      } else {
+        // When wallet is disabled, reset to default payment method
+        this.paymentMethod = 'sep'
+      }
+    },
+    addedItems: {
+      deep: true,
+      handler() {
+        this.syncToCart()
+      },
+    },
   },
   mounted() {
     this.setupModalEvents()
+    this.syncWithCart()
   },
   methods: {
     setupModalEvents() {
@@ -433,6 +453,80 @@ export default {
         this.cleanup()
         this.$emit('hide-modal')
       })
+    },
+
+    syncWithCart() {
+      try {
+        const cart = localStorage.getItem('_cart')
+        if (cart) {
+          const parsedCart = JSON.parse(cart)
+          if (parsedCart.content && Array.isArray(parsedCart.content)) {
+            this.addedItems = parsedCart.content
+          }
+        }
+      } catch (error) {
+        console.error('Error syncing with cart:', error)
+      }
+    },
+
+    syncToCart() {
+      try {
+        const cart = {
+          content: this.addedItems,
+          amount: this.totalAmount,
+        }
+        localStorage.setItem('_cart', JSON.stringify(cart))
+      } catch (error) {
+        console.error('Error syncing to cart:', error)
+      }
+    },
+
+    addToCart(item) {
+      try {
+        let cart = localStorage.getItem('_cart')
+        let parsedCart = cart ? JSON.parse(cart) : { content: [], amount: 0 }
+
+        // Check if item already exists
+        const existingIndex = parsedCart.content.findIndex(
+          (cartItem) => cartItem.id === item.id
+        )
+
+        if (existingIndex === -1) {
+          parsedCart.content.push(item)
+        } else {
+          parsedCart.content[existingIndex] = item
+        }
+
+        parsedCart.amount = parsedCart.content.reduce(
+          (sum, i) => sum + (i.tvod_price || 0),
+          0
+        )
+
+        localStorage.setItem('_cart', JSON.stringify(parsedCart))
+        this.addedItems = parsedCart.content
+      } catch (error) {
+        console.error('Error adding to cart:', error)
+      }
+    },
+
+    removeFromCart(itemId) {
+      try {
+        let cart = localStorage.getItem('_cart')
+        let parsedCart = cart ? JSON.parse(cart) : { content: [], amount: 0 }
+
+        parsedCart.content = parsedCart.content.filter(
+          (item) => item.id !== itemId
+        )
+        parsedCart.amount = parsedCart.content.reduce(
+          (sum, i) => sum + (i.tvod_price || 0),
+          0
+        )
+
+        localStorage.setItem('_cart', JSON.stringify(parsedCart))
+        this.addedItems = parsedCart.content
+      } catch (error) {
+        console.error('Error removing from cart:', error)
+      }
     },
 
     async loadContentData(type, id) {
@@ -462,7 +556,8 @@ export default {
           normalized = api
         }
 
-        this.addedItems.push(normalized)
+        // Add to cart instead of directly pushing
+        this.addToCart(normalized)
         // this.showAddMoreDropdown = false
       } catch (error) {
         this.error = 'خطا در بارگذاری اطلاعات محتوا'
@@ -541,7 +636,7 @@ export default {
         this.hideModal()
         return
       }
-      this.addedItems = this.addedItems.filter((item) => item.id !== itemId)
+      this.removeFromCart(itemId)
     },
 
     validateMobile() {
@@ -557,6 +652,19 @@ export default {
 
     async handlePurchase() {
       if (!this.canPurchase) return
+
+      // Check if payment method is 'directdebit' (پرداخت خودکار)
+      if (this.paymentMethod === 'directdebit') {
+        this.hideModal()
+        this.$store.dispatch('directdebit/SHOW_MODAL', {
+          premobile: null,
+          forsubscription: false,
+          id: null,
+          type: null,
+          paymentid: 0,
+        })
+        return
+      }
 
       this.processing = true
 
@@ -637,9 +745,10 @@ export default {
       this.mobileError = ''
       this.useWallet = false
       this.showAddMoreDropdown = false
-      this.addedItems = []
       this.availableItems = []
-      this.addedItems = []
+      // Clear cart from localStorage
+      // localStorage.removeItem('_cart')
+      // this.addedItems = []
     },
 
     chooseLang(en, fa) {
@@ -696,6 +805,32 @@ export default {
   flex: 1;
   overflow-y: auto;
   max-height: calc(90vh - 180px);
+  direction: rtl;
+}
+
+/* Custom Scrollbar Styles */
+.download-links-body-simple::-webkit-scrollbar {
+  width: 8px;
+}
+
+.download-links-body-simple::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.download-links-body-simple::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+.download-links-body-simple::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Firefox Scrollbar */
+.download-links-body-simple {
+  scrollbar-width: thin;
+  scrollbar-color: #888 #f1f1f1;
 }
 
 .download-links-footer-simple {
@@ -754,6 +889,31 @@ export default {
   border-radius: 0 0 8px 8px;
   overflow: auto;
   max-height: 212px !important;
+  direction: rtl;
+}
+
+/* Custom Scrollbar for Content Card */
+.content-card::-webkit-scrollbar {
+  width: 6px;
+}
+
+.content-card::-webkit-scrollbar-track {
+  background: #f8f9fa;
+  border-radius: 10px;
+}
+
+.content-card::-webkit-scrollbar-thumb {
+  background: #ff6633;
+  border-radius: 10px;
+}
+
+.content-card::-webkit-scrollbar-thumb:hover {
+  background: #ff4400;
+}
+
+.content-card {
+  scrollbar-width: thin;
+  scrollbar-color: #ff6633 #f8f9fa;
 }
 
 .card-content {
@@ -864,6 +1024,31 @@ export default {
 .dropdown-content {
   max-height: 200px;
   overflow-y: auto;
+  direction: rtl;
+}
+
+/* Custom Scrollbar for Dropdown */
+.dropdown-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.dropdown-content::-webkit-scrollbar-track {
+  background: #e9ecef;
+  border-radius: 10px;
+}
+
+.dropdown-content::-webkit-scrollbar-thumb {
+  background: #6c757d;
+  border-radius: 10px;
+}
+
+.dropdown-content::-webkit-scrollbar-thumb:hover {
+  background: #495057;
+}
+
+.dropdown-content {
+  scrollbar-width: thin;
+  scrollbar-color: #6c757d #e9ecef;
 }
 
 .dropdown-item {
@@ -982,6 +1167,17 @@ export default {
 .payment-option:hover {
   border-color: #007bff;
   box-shadow: 0 2px 8px rgba(0, 123, 255, 0.1);
+}
+
+.payment-option.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.payment-option.disabled:hover {
+  border-color: #e9ecef;
+  box-shadow: none;
 }
 
 .payment-option-content {

@@ -19,7 +19,7 @@
         <template v-else>
           <!-- Edit Mode: Registered Card Display -->
           <div v-if="isEditMode && configs.id" class="registered-card-box mb-4">
-            <p>شماره کارت ثبت شده</p>
+            <p class="cart-payment">شماره کارت ثبت شده</p>
             <div class="card-display">
               <div class="bank-info-row">
                 <div class="bank-logo-container">
@@ -712,7 +712,7 @@ export default {
   align-items: center;
   justify-content: start;
   gap: 1rem;
-  padding: 0.75rem 1rem;
+  padding: 0.75rem 0 0.75rem 1rem;
 }
 
 .action-btn {

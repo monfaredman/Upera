@@ -21,6 +21,7 @@
               :banner-nav="bannerNav"
               :logo-to="logoTo"
               :additional-classes="logoClasses"
+              :is-another-page="isAnotherPage"
               :checkuser="checkuser"
             />
 
@@ -41,12 +42,14 @@
 
               <KidsSection v-if="$config.envname === 'upera'" />
 
-              <NavigationMenu
+              <!-- <NavigationMenu
                 :is-open="profileNav"
                 :main-link="profileMainLink"
                 :menu-items="profileMenuItems"
                 :hide-on-mobile="true"
-              />
+                @menu-hover="categoriesHover"
+                @menu-leave="categoriesleave"
+              /> -->
             </div>
           </div>
 
@@ -55,6 +58,7 @@
             :checkuser="checkuser"
             :subscription-type="currentSubscriptionType"
             :content_subscription="!!content_subscription"
+            :myCredit="my_credit"
             @show-modal="SHOW_MODAL"
             @show-credit-modal="SHOW_MODAL_CREDIT"
             @show-subscription-modal="SHOW_MODAL_SUBSCRIPTION"
@@ -72,7 +76,6 @@
         :profile="profile"
       />
     </header>
-
     <ModalManager />
   </div>
 </template>
@@ -168,10 +171,14 @@ export default {
     },
 
     logoClasses() {
-      return this.categories.includes(this.$route.path) ||
+      return this.isAnotherPage ? 'logo_another_pages' : ''
+    },
+
+    isAnotherPage() {
+      return (
+        this.categories.includes(this.$route.path) ||
         this.profile.includes(this.$route.path)
-        ? 'logo logo_another_pages'
-        : 'logo'
+      )
     },
 
     categoriesMainLink() {
@@ -243,13 +250,18 @@ export default {
 
   methods: {
     categoriesHover() {
+      console.log('hover')
+      console.log(this.profileNav)
       if (this.profileNav) {
         this.profileNav = false
+      } else {
+        this.categoriesNav = true
       }
     },
 
     categoriesleave() {
-      // Navigation leave handler
+      this.categoriesNav = false
+      this.profileNav = false
     },
 
     handleSearch(query) {
