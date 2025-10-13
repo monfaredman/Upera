@@ -263,15 +263,15 @@
                   </div>
                   <div v-if="title!=null" class="download-links-item">
                     <div v-if="$route.query.reactnative&&$route.query.reactnative=='1'" class="row">
-                     <div  class="col-12">
-                       <a  :href="`uperaapp://callback?${queryString}`" class="btn btn-second btn-block" >
-                        بازگشت به اپلیکیشن
-                        <i class="fa fa-arrow-alt-circle-left" />
-                       </a>
+                      <div class="col-12">
+                        <a :href="`uperaapp://callback?${queryString}`" class="btn btn-second btn-block">
+                          بازگشت به اپلیکیشن
+                          <i class="fa fa-arrow-alt-circle-left" />
+                        </a>
                       </div>
-                   </div>
+                    </div>
                     <div v-else class="row">
-                      <div  class="col-12">
+                      <div class="col-12">
                         <a v-if="title.type=='movie'" href="" class="btn btn-second btn-block" @click.prevent="Push2(title.id,title.type)">
                           بازگشت به صفحه فیلم
                           <i class="fa fa-arrow-alt-circle-left" />

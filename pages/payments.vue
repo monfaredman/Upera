@@ -62,9 +62,11 @@
             </thead>
             <tbody>
               <tr v-for="(item,index) in data" :key="index">
-                <td><div class="text-fade text-center">
-                    {{item.for}}
-                  </div></td>
+                <td>
+                  <div class="text-fade text-center">
+                    {{ item.for }}
+                  </div>
+                </td>
                 <td>
                   <div class="text-fade text-center">
                     {{ item.date }}
