@@ -3,9 +3,18 @@
     <div
       class="d-flex justify-content-between align-items-center mb-2 container-fluid"
     >
-      <h4 class="font-weight-bold" style="z-index: 4">
-        {{ localizedTitle }}
-      </h4>
+      <div class="d-flex align-items-center justify-content-start">
+        <img
+          v-if="items[0].type === 'video'"
+          src="@/assets/images/ugcs.png"
+          alt="UGC"
+          height="30"
+          class="ml-2"
+        />
+        <h4 class="font-weight-bold" style="z-index: 4">
+          {{ localizedTitle }}
+        </h4>
+      </div>
       <nuxt-link
         v-if="showAllRoute"
         :to="showAllRoute"
@@ -92,6 +101,26 @@ export default {
   },
   computed: {
     localizedTitle() {
+      // Check if items contain live content and use live item title
+      if (
+        this.items &&
+        this.items.length > 0 &&
+        this.items[0].type === 'live'
+      ) {
+        const isFa = this.$i18n && this.$i18n.locale === 'fa'
+        return isFa ? 'پخش زنده' : 'Live '
+      }
+
+      if (
+        this.items &&
+        this.items.length > 0 &&
+        this.items[0].type === 'video'
+      ) {
+        const isFa = this.$i18n && this.$i18n.locale === 'fa'
+        return isFa ? 'ویدیو کست' : 'Video Cast'
+      }
+
+      // Default behavior for other content types
       const isFa = this.$i18n && this.$i18n.locale === 'fa'
       const en = this.titleEn || ''
       const fa = this.titleFa || ''

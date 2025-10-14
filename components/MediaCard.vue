@@ -113,8 +113,17 @@
               :class="(computedLinkClass, ['media-card', { offer: hoverable }])"
             >
               <div class="media-image-wrapper">
+                <!-- Non Hover Overlay -->
+                <div v-if="item.type === 'video'" class="none-hover-overlay">
+                  <p class="none-media-title">
+                    {{ ChooseLang(item.studio_list_en, item.studio_list_fa) }}
+                  </p>
+                </div>
+
                 <b-img
                   v-if="variant === 'backdrop'"
+                  blank
+                  blank-color="#bbb"
                   :src="backdropSrc(item.backdrop, item.cdnType ?? 1)"
                   :alt="altText"
                   :width="size.w"
@@ -122,15 +131,68 @@
                   class="media-image"
                   rounded
                 />
-
                 <!-- Hover Overlay -->
-                <div v-if="hoverable" class="hover-overlay">
-                  <h5 class="media-title">
-                    {{ ChooseLang(item.name, item.name_fa) }}
-                  </h5>
-                  <p class="media-genre">
-                    {{ item.genre || '...' }}
-                  </p>
+                <div
+                  v-if="hoverable"
+                  class="hover-overlay"
+                  :class="{ 'video-overlay': item.type === 'video' }"
+                >
+                  <template v-if="item.type !== 'video'">
+                    <h5 class="media-title">
+                      {{ ChooseLang(item.name, item.name_fa) }}
+                    </h5>
+                    <p class="media-genre">
+                      {{ item.genre || '...' }}
+                    </p>
+                  </template>
+                  <div v-else class="video-stats">
+                    <div class="stat-item">
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                      >
+                        <path
+                          d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+                        ></path>
+                      </svg>
+                      <span>{{ item.likes || 0 }}</span>
+                    </div>
+                    <div class="stat-item">
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                      >
+                        <path
+                          d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
+                        ></path>
+                      </svg>
+                      <span>{{ item.comments || 0 }}</span>
+                    </div>
+                    <div class="stat-item">
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                      >
+                        <path
+                          d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"
+                        ></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                      </svg>
+                      <span>{{ item.watching || 0 }}</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </nuxt-link>
@@ -147,6 +209,11 @@
                 rounded
               />
             </nuxt-link>
+            <div v-if="item.type === 'video'" class="mt-2 d-none d-md-inline">
+              <h6 class="mt-2 small font-weight-normal">
+                {{ ChooseLang(item.name, item.name_fa) }}
+              </h6>
+            </div>
           </template>
           <!-- Mobile Image -->
           <nuxt-link
@@ -191,7 +258,10 @@
               rounded
             />
           </nuxt-link>
-          <div v-if="variant === 'poster'" class="mt-2 d-block d-md-none">
+          <div
+            v-if="variant === 'poster' || item.type === 'video'"
+            class="mt-2 d-block d-md-none"
+          >
             <h6 class="mt-2 small font-weight-normal">
               {{ ChooseLang(item.name, item.name_fa) }}
             </h6>
@@ -308,6 +378,14 @@ export default {
     backdropSrc(filename, cdnType = 1) {
       if (!filename) return ''
       let { w, h } = this.size
+
+      // Special config for video type
+      if (this.item?.type === 'video') {
+        w = 364
+        h = 190
+        return `${THUMB_BASE}?w=${w}&h=${h}&q=100&a=c&src=${CDN_BACKDROPS_1}/${filename}`
+      }
+
       // only use mobile dimensions in slide layout when mobileSrc exists
       if (this.item?.mobileSrc && this.layout === 'slide') {
         w = 375
@@ -368,6 +446,11 @@ export default {
   background: linear-gradient(to bottom rgba(0, 0, 0, 0.8), transparent);
 }
 
+.media-card.offer .hover-overlay.video-overlay {
+  background-color: #00000099;
+  padding: 0.5rem;
+}
+
 .media-card.offer:hover .hover-overlay {
   opacity: 1;
   transform: translateY(0);
@@ -385,5 +468,86 @@ export default {
   font-size: 0.875rem;
   opacity: 0.8;
   line-height: 1.2;
+}
+
+.media-card.offer .video-stats {
+  width: 100%;
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.5rem;
+  align-items: center;
+  gap: 5rem;
+  justify-content: space-between !important;
+}
+
+.media-card.offer .stat-item {
+  width: 33%;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.75rem;
+  color: #fff;
+  justify-content: center;
+}
+
+.media-card.offer .stat-item svg {
+  width: 16px;
+  height: 16px;
+  opacity: 0.9;
+}
+
+.none-hover-overlay {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 0.5rem 1rem;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.7);
+  border-bottom-left-radius: 8px;
+  z-index: 10;
+}
+
+.media-card.offer:hover .none-hover-overlay {
+  background: rgba(0, 0, 0, 0.85);
+}
+
+.none-hover-overlay .media-title {
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.none-hover-overlay {
+  width: fit-content;
+  height: 28px;
+  top: 8px;
+  right: 8px;
+  opacity: 1;
+
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-image-source: linear-gradient(
+    83.46deg,
+    rgba(0, 0, 0, 0.2) 0.19%,
+    rgba(102, 102, 102, 0) 100.19%
+  ) !important;
+  border-radius: 6px;
+  padding-right: 5.33px;
+  padding-left: 5.33px;
+  border-width: 0.5px;
+}
+.none-media-title {
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 24px;
+  text-align: center;
+  margin: 0 !important;
 }
 </style>
