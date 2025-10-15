@@ -939,25 +939,33 @@
     display: none !important;
   }
 
-  .theme-dark #feature .feature .feature-buttons .feature-btn i {
-    color: #f63 !important;
+  /* Dark theme: same vertical-centering helpers as new.css */
+  .btn,
+  .nav-link,
+  .nuxt-link,
+  .header-mobile .header-link,
+  .header-links .header-link,
+  .menu-bar a,
+  .show-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.45rem;
   }
 
-  .theme-dark .show-btn {
-    border-radius: 5px;
+  [class^='icon-'],
+  [class*=' icon-'] {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    vertical-align: middle !important;
+    line-height: 1 !important;
   }
 
-  /*    .theme-dark #header .category .category-menu {
-        background-color: #121212 !important;
-        background: linear-gradient(to left, #121212 0%, rgba(23, 23, 23, 0) 100%);
-
-    }*/
-
-  .theme-dark #header .search input {
-    border-radius: 15px;
-    border: 1px solid #121212;
-    outline: none;
-    color: #121212;
+  .btn [class^='icon-'],
+  .btn [class*=' icon-'] {
+    top: 0 !important;
+    margin: 0 0.45rem 0 0 !important;
   }
 }
 

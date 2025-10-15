@@ -29,11 +29,19 @@ export default {
 <style scoped>
 .genre-tags {
   display: flex;
+  font-size: 17px !important;
+  font-weight: 500 !important;
+}
+
+@media (max-width: 576px) {
+  .genre-tags {
+    font-size: 0.875rem !important;
+    font-weight: 500 !important;
+  }
 }
 
 .tag {
   color: white;
   gap: 0.5rem;
-  font-size: 1rem;
 }
 </style>

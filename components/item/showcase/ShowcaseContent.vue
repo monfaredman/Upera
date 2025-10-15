@@ -1,30 +1,32 @@
 <template>
   <div
     id="showcase-thumbnail-wrapper-outter"
-    class="showcase-thumbnail-wrapper-outter d-flex align-items-center justify-content-between pr-gutter p-lg-3 p-md-3"
+    class="showcase-thumbnail-wrapper-outter d-flex align-items-center justify-content-between"
   >
     <div class="showcase-thumbnail-wrapper w-full container-fluid">
-      <div class="d-flex h-full align-items-end">
-        <!-- Poster Thumbnail -->
-        <div class="thumbnail">
-          <nuxt-link :to="{ name: type + '-id', params: { id: data.item.id } }">
-            <OptimizedImage
-              v-if="data.item.poster"
-              class="thumbnail"
-              :image-src="data.item.poster"
-              :alt="data.item.name"
-              :width="207"
-              :height="307"
-              :thumb-options="{ w: 207, h: 307, q: 100, a: 'c' }"
-              type="posters"
-              fluid-grow
-              @load="itemsize('e')"
-              @error="itemsize('e')"
-            />
-          </nuxt-link>
-        </div>
+      <div
+        class="d-flex h-full align-items-end d-flex align-items-center justify-content-start"
+      >
         <!-- Description and Actions -->
-        <div class="pr-md-4 pr-2 pr-0 mr-0 showcase-desc-wrapper h-full">
+        <div class="showcase-desc-wrapper h-full">
+          <!-- Optional Logo like homepage slider -->
+          <div
+            v-if="data && data.item && data.item.logo"
+            class="showcase-logo mb-2 mb-md-4"
+          >
+            <b-img
+              :src="logoSrc"
+              :alt="data.item.name"
+              v-bind="{
+                fluidGrow: true,
+                blank: true,
+                blankColor: '#bbb',
+                width: 207,
+                height: 307,
+                show: true,
+              }"
+            />
+          </div>
           <!-- Title and Metadata -->
           <ShowcaseDescription :data="data" :type="type" :episode="episode" />
 
@@ -58,14 +60,12 @@
 </template>
 
 <script>
-import OptimizedImage from '@/components/item/common/OptimizedImage'
 import ShowcaseDescription from '@/components/item/showcase/ShowcaseDescription'
 import ShowcaseActions from '@/components/item/showcase/ShowcaseActions'
 
 export default {
   name: 'ShowcaseContent',
   components: {
-    OptimizedImage,
     ShowcaseDescription,
     ShowcaseActions,
   },
@@ -100,6 +100,18 @@ export default {
     'clap-stop',
     'share',
   ],
+  computed: {
+    logoSrc() {
+      const prefix =
+        'https://thumb.upera.shop/thumb?w=400&q=90&fmt=webp&src=https://thumb.upera.shop/s3/files/'
+      const logo =
+        this.data && this.data.item && this.data.item.logo
+          ? String(this.data.item.logo)
+          : ''
+      if (!logo) return logo
+      return logo.startsWith(prefix) ? logo : prefix + logo
+    },
+  },
   methods: {
     itemsize(e) {
       // Implementation from original code
@@ -137,3 +149,51 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+.showcase-logo {
+  max-width: 220px;
+  min-height: 60px;
+  margin-bottom: 0.5rem;
+}
+.showcase-logo >>> img {
+  width: 100%;
+  height: 100px;
+  object-fit: contain;
+}
+@media (max-width: 576px) {
+  .showcase-logo {
+    max-width: 150px !important;
+    max-height: 90px !important;
+    min-height: 60px !important;
+    margin-bottom: 0.5rem;
+  }
+  .showcase-thumbnail-wrapper {
+    padding: 0 1rem !important;
+    margin-top: 4rem !important;
+  }
+
+  .showcase-logo >>> img {
+    width: 100%;
+    height: 90px;
+    object-fit: contain;
+  }
+}
+
+@media (max-width: 992px) {
+  .showcase-thumbnail-wrapper {
+    margin-top: 10rem !important;
+  }
+}
+
+@media (max-width: 1300px) {
+  .showcase-thumbnail-wrapper {
+    margin-top: 10rem !important;
+  }
+}
+@media (min-width: 1300px) {
+  .showcase-thumbnail-wrapper {
+    margin-top: 14rem;
+  }
+}
+</style>

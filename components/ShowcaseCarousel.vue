@@ -220,9 +220,7 @@
                   }"
                   class="btn btn-main d-flex justify-content-center align-items-center watch-btn"
                 >
-                  <div>
-                    <i class="fa fa-play fa-xs" />
-                  </div>
+                  <i class="fa fa-play fa-xs" />
                   <span class="mr-2">تماشا</span>
 
                   <!--
@@ -378,6 +376,7 @@ export default {
   border-radius: 8px;
   width: 132px !important;
   padding: 0.3rem 0.75rem !important;
+  gap: 0.3rem !important;
 }
 .showcase-about-btn span {
   font-size: 14px !important;
@@ -630,6 +629,9 @@ export default {
 }
 
 .watch-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   border-radius: 8px !important;
   width: 121px !important;
   padding: 0.3rem 0.75rem !important;
@@ -637,5 +639,25 @@ export default {
 .watch-btn span {
   font-size: 14px !important;
   padding: 0 !important;
+}
+
+/* Ensure each carousel slide content is vertically centered */
+.showcase-carousel,
+.showcase-carousel .swiper-slide,
+.showcase-carousel .carousel-item,
+.showcase-carousel .showcase-thumbnail-wrapper,
+.showcase-carousel .showcase-desc,
+.showcase-carousel .showcase-button-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Icons inside the carousel keep centered */
+.showcase-carousel [class^='icon-'],
+.showcase-carousel [class*=' icon-'] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 </style>

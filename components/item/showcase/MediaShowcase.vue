@@ -3,8 +3,9 @@
     <div class="swiper-container showcase showcase-theme-m-tn">
       <div class="swiper-slide">
         <div class="row no-gutters">
-          <div class="col-md-6 col-lg-5" />
-          <div class="col-md-6 col-lg-7 showcase-pic">
+          <div />
+          <!-- Add showcase-pic-main to align gradient/overlay with homepage slider -->
+          <div class="col-12 showcase-pic showcase-pic-main">
             <!-- Desktop Backdrop -->
             <OptimizedImage
               v-if="backdropSrc"

@@ -2713,12 +2713,12 @@ a.thumbnail-wrapper {
 }
 @media (min-width: 1300px) {
   .showcase .showcase-thumbnail-wrapper .showcase-desc {
-    width: 28%;
+    width: 50%;
   }
 }
 @media (min-width: 992px) {
   .showcase .showcase-thumbnail-wrapper .showcase-desc {
-    width: 23%;
+    width: 46%;
   }
 }
 .showcase .showcase-thumbnail-wrapper .showcase-desc-wrapper {

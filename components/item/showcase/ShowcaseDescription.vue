@@ -2,20 +2,22 @@
   <div class="showcase-desc">
     <div class="showcase-top">
       <!-- Main Title -->
-      <div v-if="type !== 'episode'" class="title text-invert mb-5 mb-md-3">
-        <nuxt-link :to="{ name: type + '-id', params: { id: data.item.id } }">
-          {{ ChooseLang(data.item.name, data.item.name_fa) }}
-        </nuxt-link>
-      </div>
-      <div
-        v-else
-        class="title text-invert mb-5 mb-md-3"
-        style="max-height: 3rem"
-      >
-        <nuxt-link :to="{ name: type + '-id', params: { id: data.item.id } }">
-          {{ ChooseLang(data.item.series_name, data.item.series_name_fa) }}
-        </nuxt-link>
-      </div>
+      <template v-if="data && data.item && !data.item.logo">
+        <div v-if="type !== 'episode'" class="title text-invert mb-5 mb-md-3">
+          <nuxt-link :to="{ name: type + '-id', params: { id: data.item.id } }">
+            {{ ChooseLang(data.item.name, data.item.name_fa) }}
+          </nuxt-link>
+        </div>
+        <div
+          v-else
+          class="title text-invert mb-5 mb-md-3"
+          style="max-height: 3rem"
+        >
+          <nuxt-link :to="{ name: type + '-id', params: { id: data.item.id } }">
+            {{ ChooseLang(data.item.series_name, data.item.series_name_fa) }}
+          </nuxt-link>
+        </div>
+      </template>
       <!-- Episode Info for Mobile -->
       <EpisodeInfo
         v-if="type === 'episode'"
@@ -38,10 +40,10 @@
       </div>
 
       <!-- Language Info -->
-      <ContentLanguageInfo
+      <!-- <ContentLanguageInfo
         :is-iranian="data.item.ir"
         :has-persian-dub="data.item.persian"
-      />
+      /> -->
     </div>
   </div>
 </template>
@@ -49,14 +51,14 @@
 <script>
 import EpisodeInfo from '@/components/item/showcase/EpisodeInfo'
 import GenreTags from '@/components/item/showcase/GenreTags'
-import ContentLanguageInfo from '@/components/item/showcase/ContentLanguageInfo'
+// import ContentLanguageInfo from '@/components/item/showcase/ContentLanguageInfo'
 
 export default {
   name: 'ShowcaseDescription',
   components: {
     EpisodeInfo,
     GenreTags,
-    ContentLanguageInfo,
+    // ContentLanguageInfo,
   },
   props: {
     data: { type: Object, default: () => ({}) },
