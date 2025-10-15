@@ -119,6 +119,16 @@
                     {{ ChooseLang(item.studio_list_en, item.studio_list_fa) }}
                   </p>
                 </div>
+                <div
+                  v-if="item.type === 'live'"
+                  class="none-hover-overlay-live"
+                >
+                  <img
+                    :src="require('~/assets/images/live-stream.png')"
+                    class="image-live"
+                  />
+                  <p class="none-media-title">نمایش همزمان</p>
+                </div>
 
                 <b-img
                   v-if="variant === 'backdrop'"
@@ -135,9 +145,14 @@
                 <div
                   v-if="hoverable"
                   class="hover-overlay"
-                  :class="{ 'video-overlay': item.type === 'video' }"
+                  :class="{
+                    'video-overlay':
+                      item.type === 'video' || item.type === 'live',
+                  }"
                 >
-                  <template v-if="item.type !== 'video'">
+                  <template
+                    v-if="item.type !== 'video' && item.type !== 'live'"
+                  >
                     <h5 class="media-title">
                       {{ ChooseLang(item.name, item.name_fa) }}
                     </h5>
@@ -145,7 +160,7 @@
                       {{ item.genre || '...' }}
                     </p>
                   </template>
-                  <div v-else class="video-stats">
+                  <div v-else-if="item.type === 'video'" class="video-stats">
                     <div class="stat-item">
                       <svg
                         width="16"
@@ -191,6 +206,16 @@
                         <circle cx="12" cy="12" r="3"></circle>
                       </svg>
                       <span>{{ item.watching || 0 }}</span>
+                    </div>
+                  </div>
+                  <div v-else-if="item.type === 'live'" class="live-stats">
+                    <p>{{ ChooseLang(item.name, item.name_fa) }}</p>
+                    <div>
+                      <i
+                        class="fa fa-dot-circle fa-xs"
+                        style="color: #1b6be5"
+                      />
+                      <span>۱۲</span> <span>بیننده</span>
                     </div>
                   </div>
                 </div>
@@ -543,11 +568,69 @@ export default {
   padding-left: 5.33px;
   border-width: 0.5px;
 }
+
+.none-hover-overlay-live {
+  position: absolute;
+  padding: 0.5rem 0.6rem;
+  z-index: 10;
+  width: fit-content;
+  height: 28px;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ff0000;
+  border-radius: 8px;
+}
+
+.media-card.offer .live-stats {
+  width: 100%;
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.5rem;
+  align-items: center;
+  gap: 5rem;
+  justify-content: space-between !important;
+}
+
+.media-card.offer:hover .none-hover-overlay-live {
+  background: rgba(0, 0, 0, 0.85);
+}
+
+.none-hover-overlay-live .none-media-title {
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin: 0;
+  line-height: 1.3;
+  color: white !important;
+}
+.none-hover-overlay-live .image-live {
+  width: 24px;
+  height: 24px;
+  margin-left: 4px;
+  object-fit: none;
+}
+
 .none-media-title {
   font-weight: 400;
   font-size: 14px;
   line-height: 24px;
   text-align: center;
   margin: 0 !important;
+}
+
+@media (max-width: 576px) {
+  .live-stats span {
+    font-size: 10px !important;
+  }
+  .live-stats p {
+    font-size: 12px !important;
+    margin: 0 !important;
+  }
+  .live-stats {
+    gap: 2rem !important;
+    margin: 0 !important;
+  }
 }
 </style>
