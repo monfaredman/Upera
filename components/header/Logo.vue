@@ -64,14 +64,6 @@ export default {
       type: Boolean,
       default: false,
     },
-    checkuser: {
-      type: Object,
-      default: () => ({
-        ref: 0,
-        logo: '',
-        logo_dark: '',
-      }),
-    },
   },
   computed: {
     isUpera() {

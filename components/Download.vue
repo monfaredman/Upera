@@ -569,13 +569,11 @@ export default {
     },
 
     loadAvailableItems() {
-      console.log(this.season)
       if (this.season && typeof this.season === 'object') {
         this.availableItems = Object.values(this.season).flat()
       } else {
         this.availableItems = []
       }
-      console.log(this.availableItems)
     },
 
     // getPosterUrl() {
@@ -702,7 +700,6 @@ export default {
 
         // Add additional items
         if (this.addedItems.length > 0) {
-          console.log(this.addedItems)
           payload.cart = this.addedItems.map((item) => {
             return item.type === 'movie'
               ? { movie_id: item.id }

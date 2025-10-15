@@ -22,7 +22,6 @@
               :logo-to="logoTo"
               :additional-classes="logoClasses"
               :is-another-page="isAnotherPage"
-              :checkuser="checkuser"
             />
 
             <div class="d-none d-md-flex align-items-center h-full">
@@ -52,10 +51,8 @@
               /> -->
             </div>
           </div>
-
           <HeaderActions
             :is-logged-in="$auth.loggedIn"
-            :checkuser="checkuser"
             :subscription-type="currentSubscriptionType"
             :content_subscription="!!content_subscription"
             :myCredit="my_credit"
@@ -160,7 +157,6 @@ export default {
       showSubscriptionModal: 'subscription/showModal',
       content_subscription: 'content_subscription',
       my_credit: 'my_credit',
-      checkuser: 'user/checkuser',
     }),
 
     logoTo() {
@@ -224,7 +220,7 @@ export default {
         this.content_subscription ||
         this.checkuser?.subscription == 1
       ) {
-        return this.checkuser.access ? 'renewal' : 'subscription'
+        return this.checkuser?.access ? 'renewal' : 'subscription'
       }
       return ''
     },
@@ -250,8 +246,6 @@ export default {
 
   methods: {
     categoriesHover() {
-      console.log('hover')
-      console.log(this.profileNav)
       if (this.profileNav) {
         this.profileNav = false
       } else {

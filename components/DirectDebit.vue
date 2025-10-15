@@ -313,8 +313,6 @@ export default {
     },
 
     processSubscriptionData(data) {
-      console.log(data)
-      console.log(data.subscriptions.length)
       this.subscriptions = data.subscriptions || []
       this.showAddBank = this.subscriptions.length === 0
       this.configs = data.configs || {}

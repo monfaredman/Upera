@@ -76,7 +76,7 @@
     </div>
     <!-- Basket Icon -->
     <div
-      v-if="$store?.state?.basketActive !== false"
+      v-if="$store?.state?.basketActive !== false || !$auth.loggedIn"
       class="header-links header-links-basket d-md-flex align-items-center h-full ml-lg-1 mr-lg-1 float-left hide-mobile"
     >
       <b-link id="popover-basket" class="d-flex align-items-center header-link">
@@ -175,13 +175,12 @@
     >
       {{ $t('nav.login') }}
     </b-button>
-
     <!-- User Profile Dropdown -->
     <UserProfileDropdown
       v-if="isLoggedIn"
-      :user-data="checkuser"
-      :subscription-type="subscriptionType"
       :my-credit="myCredit"
+      :show-payments="true"
+      :content_subscription="!!contentSubscription"
       @show-credit-modal="$emit('show-credit-modal')"
       @show-subscription-modal="$emit('show-subscription-modal')"
       @show-directdebit-modal="$emit('show-directdebit-modal')"
@@ -214,14 +213,7 @@ export default {
       type: Boolean,
       default: false,
     },
-    checkuser: {
-      type: Object,
-      default: () => ({
-        subscription: 0,
-        access: false,
-        show_app: false,
-      }),
-    },
+
     subscriptionType: {
       type: String,
       default: '',

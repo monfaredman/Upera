@@ -2129,7 +2129,6 @@ export default {
         ],
       }
       this.ugcs = this.transformUgcsData(this.ugcs)
-      console.log('ugcs data', this.ugcs)
     } catch (e) {
       console.error('fetch ugcs failed', e)
     }

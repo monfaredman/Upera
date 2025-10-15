@@ -11,7 +11,6 @@
       <span>{{ profileText }}</span>
       <i class="fa fa-angle-down mr-2" />
     </nuxt-link>
-
     <b-popover
       id="popover-d-profile"
       target="popover-profile"
@@ -171,11 +170,6 @@
 export default {
   name: 'UserProfileDropdown',
   props: {
-    checkuser: {
-      type: Object,
-      required: true,
-      default: () => ({}),
-    },
     contentSubscription: {
       type: Boolean,
       default: false,
@@ -200,7 +194,7 @@ export default {
       if (!contentSubscription && checkuser?.subscription != 1) {
         return 'پرداخت خودکار'
       } else if (contentSubscription || checkuser?.subscription == 1) {
-        return checkuser.access ? 'تمدید اشتراک' : 'خرید اشتراک'
+        return checkuser?.access ? 'تمدید اشتراک' : 'خرید اشتراک'
       }
       return 'پرداخت خودکار'
     },
