@@ -117,6 +117,7 @@
             :total-claps="total_claps"
             :episode-num="episode_num"
             :season-num="season_num"
+            :directors="directors"
           />
         </b-tab>
 
@@ -126,7 +127,16 @@
         </b-tab>
 
         <!-- دیدگاه‌ها : CommentsTab -->
-        <b-tab title="دیدگاه‌ها">
+        <b-tab>
+          <template #title>
+            <b-spinner
+              v-if="commentsloading"
+              type="border"
+              class="mb-1 ml-1"
+              small
+            />
+            دیدگاه‌ها ({{ comm_num }})
+          </template>
           <CommentsTab
             :id="data.item.id"
             :type="type"
@@ -986,9 +996,5 @@ export default {
   box-shadow: 0 8px 22px rgba(175, 0, 45, 0.22) !important;
   border-radius: 10px !important;
   transform: none !important;
-}
-
-section {
-  margin-top: -6.5rem !important;
 }
 </style>

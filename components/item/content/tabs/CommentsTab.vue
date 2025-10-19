@@ -1,11 +1,7 @@
 <template>
-  <b-tab @click="handleTabClick">
-    <template #title>
-      <b-spinner v-if="commentsLoading" type="border" class="mb-1 ml-1" small />
-      {{ $t('comment.comments') }} ({{ commNum }})
-    </template>
+  <div class="comments-tab-container">
     <Comments :id="id" :type="type" :name="name" :namefa="namefa" />
-  </b-tab>
+  </div>
 </template>
 
 <script>
@@ -21,17 +17,6 @@ export default {
     type: { type: String, default: '' },
     name: { type: String, default: '' },
     namefa: { type: String, default: '' },
-    commNum: { type: Number, default: 0 },
-  },
-  computed: {
-    commentsLoading() {
-      return this.$store.getters['comments/commentsloading']
-    },
-  },
-  methods: {
-    handleTabClick() {
-      // Additional logic when comments tab is clicked
-    },
   },
 }
 </script>

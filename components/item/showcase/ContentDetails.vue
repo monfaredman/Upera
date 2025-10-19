@@ -146,7 +146,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 2rem;
+  margin-top: -6rem;
 }
 
 .no-content-message .text-muted {
