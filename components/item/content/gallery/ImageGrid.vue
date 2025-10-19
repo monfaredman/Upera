@@ -10,13 +10,11 @@
         class="d-block mb-4 h-100"
         @click.prevent="$emit('image-click', index)"
       >
-        <OptimizedImage
-          :image-src="image"
+        <img
+          :src="getThumbnailUrl(image)"
           :alt="`تصویر ${index + 1} ${itemName}`"
           class="img-fluid img-thumbnail"
-          fluid-grow
-          :thumb-options="{ w: 1920, h: 1200, q: 100, a: 'c' }"
-          type="files"
+          loading="lazy"
         />
       </a>
     </div>
@@ -24,13 +22,9 @@
 </template>
 
 <script>
-import OptimizedImage from '@/components/item/common/OptimizedImage'
-
 export default {
   name: 'ImageGrid',
-  components: {
-    OptimizedImage,
-  },
+  components: {},
   props: {
     images: {
       type: Array,
@@ -42,6 +36,13 @@ export default {
     },
   },
   emits: ['image-click'],
+  methods: {
+    getThumbnailUrl(fullImageUrl) {
+      // Convert the full-size URL to a smaller thumbnail for the grid
+      // Replace the large dimensions with smaller ones for grid display
+      return fullImageUrl.replace('w=1920&h=1200', 'w=400&h=300')
+    },
+  },
 }
 </script>
 

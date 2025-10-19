@@ -83,7 +83,7 @@
                   blank
                   blank-color="#bbb"
                   :width="size.w"
-                  :height="241"
+                  :height="219"
                   show
                   class="d-none d-lg-none d-xl-block d-xxl-none"
                   :src="
@@ -107,8 +107,42 @@
             </div>
           </template>
           <template v-else>
+            <div
+              v-if="hoverable && item.type === 'teaser'"
+              :class="(computedLinkClass, ['media-card', { offer: hoverable }])"
+              style="cursor: pointer"
+              @click="handleTeaserClick"
+            >
+              <div class="media-image-wrapper">
+                <b-img
+                  v-if="variant === 'backdrop'"
+                  blank
+                  blank-color="#bbb"
+                  :src="backdropSrc(item.backdrop, item.cdnType ?? 1)"
+                  :alt="altText"
+                  :width="size.w"
+                  :height="size.h"
+                  class="media-image"
+                  rounded
+                />
+
+                <!-- Teaser Play Icon Overlay -->
+                <div class="teaser-play-overlay">
+                  <div class="teaser-play-icon-circle">
+                    <i class="icon-play" />
+                  </div>
+                </div>
+
+                <!-- Hover Overlay -->
+                <div class="hover-overlay teaser-overlay">
+                  <h5 class="media-title">
+                    {{ ChooseLang(item.name, item.name_fa) }}
+                  </h5>
+                </div>
+              </div>
+            </div>
             <nuxt-link
-              v-if="hoverable"
+              v-else-if="hoverable"
               :to="resolvedLink"
               :class="(computedLinkClass, ['media-card', { offer: hoverable }])"
             >
@@ -141,6 +175,7 @@
                   class="media-image"
                   rounded
                 />
+
                 <!-- Hover Overlay -->
                 <div
                   v-if="hoverable"
@@ -395,6 +430,17 @@ export default {
     },
   },
   methods: {
+    handleTeaserClick() {
+      if (
+        this.item.type === 'teaser' &&
+        typeof this.linkBuilder === 'function'
+      ) {
+        const result = this.linkBuilder(this.item)
+        if (result && typeof result.click === 'function') {
+          result.click()
+        }
+      }
+    },
     posterSrc(filename, isMobile = false) {
       if (!filename) return ''
       const { w, h } = isMobile ? { w: 142, h: 212 } : this.size
@@ -631,6 +677,70 @@ export default {
   .live-stats {
     gap: 2rem !important;
     margin: 0 !important;
+  }
+}
+
+/* Teaser Play Icon Overlay */
+.teaser-play-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.3);
+  transition: background 0.3s ease;
+  border-radius: 8px;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.media-card.offer:hover .teaser-play-overlay {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.teaser-play-icon-circle {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.media-card.offer:hover .teaser-play-icon-circle {
+  transform: scale(1.1);
+  background: rgba(255, 255, 255, 1);
+}
+
+.teaser-play-icon-circle i {
+  font-size: 24px;
+  color: #000;
+  margin-left: 4px;
+}
+
+.hover-overlay.teaser-overlay {
+  bottom: 0;
+  top: auto;
+  height: auto;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
+  padding: 12px;
+  z-index: 6;
+}
+
+@media (max-width: 767.98px) {
+  .teaser-play-icon-circle {
+    width: 48px;
+    height: 48px;
+  }
+
+  .teaser-play-icon-circle i {
+    font-size: 18px;
   }
 }
 </style>

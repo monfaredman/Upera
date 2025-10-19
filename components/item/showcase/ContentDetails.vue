@@ -9,7 +9,6 @@
           :medias="medias"
           @play-teaser="GET_FILE(1)"
         />
-
         <!-- Additional Media Sections -->
         <MediaTabs
           v-if="hasMediaTabs"
@@ -22,9 +21,21 @@
           :writers="writers"
           :investors="investors"
           :comm-num="commNum"
+          :light-images="lightImages"
+          :images-loading="imagesLoading"
           @get-file="GET_FILE"
           @load-images="loadImages"
         />
+        <!-- No Content Message -->
+        <div
+          v-if="!hasMediaTabs || medias.teaser !== 1"
+          class="no-content-message"
+        >
+          <div class="text-center py-5">
+            <i class="fas fa-folder-open fa-3x mb-3 text-muted"></i>
+            <p class="text-muted">محتوایی برای نمایش وجود ندارد</p>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -87,6 +98,14 @@ export default {
       type: Number,
       default: 0,
     },
+    lightImages: {
+      type: Array,
+      default: () => [],
+    },
+    imagesLoading: {
+      type: Boolean,
+      default: false,
+    },
   },
   emits: ['get-file', 'load-images'],
   computed: {
@@ -112,3 +131,26 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+::v-deep .item-tabs-nav .nav-link.active,
+::v-deep .item-tabs-nav .nav-link:active {
+  color: #1b6be5 !important;
+  box-shadow: 0 8px 22px rgba(175, 0, 45, 0.22) !important;
+  border-radius: 10px !important;
+  transform: none !important;
+}
+
+.no-content-message {
+  min-height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.no-content-message .text-muted {
+  opacity: 0.6;
+  font-size: 1.1rem;
+}
+</style>

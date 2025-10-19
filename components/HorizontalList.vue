@@ -34,7 +34,8 @@
     </div>
 
     <div
-      v-swiper:[instanceName]="options"
+      ref="swiperContainer"
+      v-swiper:[instanceName]="mergedOptions"
       class="swiper-container newset-slider2"
       :class="{ 'offer-slider': isOffer }"
     >
@@ -126,6 +127,34 @@ export default {
       const fa = this.titleFa || ''
       return isFa ? fa || en : this.capitalize(en || fa)
     },
+    mergedOptions() {
+      // Merge default options that help swiper recalculate on DOM changes
+      const defaults = {
+        observer: true,
+        observeParents: true,
+        watchOverflow: true,
+      }
+      return { ...defaults, ...(this.options || {}) }
+    },
+  },
+  watch: {
+    items: {
+      handler() {
+        // Force swiper update when items change
+        this.$nextTick(() => {
+          this.updateSwiper()
+        })
+      },
+      deep: true,
+    },
+  },
+  mounted() {
+    // Force swiper update after mount to fix sizing issues
+    this.$nextTick(() => {
+      setTimeout(() => {
+        this.updateSwiper()
+      }, 100)
+    })
   },
   methods: {
     capitalize(text) {
@@ -140,6 +169,13 @@ export default {
     },
     offerSlideClass(index) {
       return index === 0 ? 'offer-slide-large' : 'offer-slide-small'
+    },
+    updateSwiper() {
+      // Access swiper instance via the directive binding
+      const container = this.$refs.swiperContainer
+      if (container && container.swiper) {
+        container.swiper.update()
+      }
     },
   },
 }

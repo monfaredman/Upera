@@ -6,12 +6,12 @@
   >
     <i class="far fa-2x fa-play-circle play-icon" />
     <OptimizedImage
-      :image-src="previewImageSrc"
+      :image-src="data.item.backdrop"
       :alt="`${mediaTypeText} ${data.item.name_fa}`"
       class="img-fluid"
       fluid-grow
       :thumb-options="{ w: 1920, h: 1200, q: 100, a: 'c' }"
-      type="files"
+      type="backdrops"
     />
   </a>
 </template>
@@ -39,8 +39,12 @@ export default {
       return types[this.mediaType] || 'مدیا'
     },
     previewImageSrc() {
-      // Use back_teaser if available, otherwise use backdrop
-      return this.data.item.back_teaser || this.data.item.backdrop
+      const imageUrl = this.data.item.back_teaser || this.data.item.backdrop
+      if (!imageUrl) return ''
+      console.log(
+        `https://thumb.upera.shop/thumb?w=1920&h=1200&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/${imageUrl}`
+      )
+      return `https://thumb.upera.shop/thumb?w=1920&h=1200&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/${imageUrl}`
     },
   },
 }

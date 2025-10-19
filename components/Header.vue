@@ -4,7 +4,6 @@
       v-if="!itemmenu.includes($route.name)"
       :current-route="$route.name"
     />
-
     <header id="header" class="page-header">
       <div
         id="trigger-menu-wrapper"
@@ -228,12 +227,15 @@ export default {
 
   watch: {
     '$route.path': function () {
+      this.Nav()
       document.body.classList.remove('scroll-up')
       document.body.classList.remove('scroll-down')
     },
   },
 
   mounted() {
+    this.Nav()
+
     window.addEventListener('scroll', this.handleScroll)
 
     if (this.$route.params.search) this.query = this.$route.params.search
@@ -264,6 +266,152 @@ export default {
           name: 'search-search',
           params: { search: query },
         })
+      }
+    },
+
+    handleScroll(e) {
+      var footer = document.getElementsByClassName('footer-sticky')
+
+      if (footer.length) {
+        if (
+          document.documentElement.scrollTop + window.innerHeight >=
+          document.documentElement.scrollHeight - 100
+        ) {
+          footer[0].classList.add('d-none')
+        } else if (
+          document.documentElement.scrollTop + window.innerHeight <
+          document.documentElement.scrollHeight - 100
+        ) {
+          footer[0].classList.remove('d-none')
+        }
+      }
+      var delta
+      if (this.scrollCheckTimer) {
+        clearTimeout(this.scrollCheckTimer)
+      }
+
+      var st = window.pageYOffset || document.documentElement.scrollTop
+      if (st > this.lastScrollTop) {
+        delta = 1
+        // downscroll code
+      } else {
+        delta = -1
+        // upscroll code
+      }
+      this.lastScrollTop = st <= 0 ? 0 : st // For Mobile or negative scrolling
+
+      this.scrollCheckTimer = setTimeout(() => {
+        document.body.classList.remove('s-c')
+        document.body.classList.remove('s-h')
+        var goftino_w = document.getElementById('goftino_w')
+        if (goftino_w) goftino_w.classList.remove('goftino_w_hide')
+
+        // document.body.classList.add(delta > 0 ? 's-c' : 's-h')
+
+        if (
+          document.documentElement.scrollHeight -
+            document.documentElement.clientHeight <=
+          20
+        ) {
+          document.body.classList.add('s-h')
+        } else if (
+          window.innerHeight + window.pageYOffset >=
+          document.body.offsetHeight
+        ) {
+          document.body.classList.add('s-c')
+          if (goftino_w) {
+            if (delta > 0) {
+              goftino_w.classList.remove('goftino_w_hide')
+            } else {
+              goftino_w.classList.add('goftino_w_hide')
+            }
+          }
+        } else {
+          if (goftino_w) goftino_w.classList.add('goftino_w_hide')
+          document.body.classList.add('s-h')
+        }
+      }, 200)
+
+      let height = document.documentElement.scrollHeight
+      if (
+        height > 780 ||
+        !document
+          .getElementById('trigger-menu-wrapper')
+          .classList.contains('trigger-menu-wrapper2')
+      ) {
+        var scroll = document.documentElement.scrollTop
+        if (scroll >= 100) {
+          document.body.classList.add('header-fixed-collapsed')
+        }
+        if (scroll >= 300) {
+          document.body.classList.add('header-fixed')
+        } else if (scroll == 0) {
+          document.body.classList.remove('header-fixed')
+          document.body.classList.remove('header-fixed-collapsed')
+        }
+
+        const currentScroll = window.pageYOffset
+
+        if (currentScroll <= 10) {
+          document.body.classList.remove('scroll-up')
+          document.body.classList.remove('scroll-down')
+
+          return
+        }
+
+        if (
+          currentScroll > this.lastScroll &&
+          !document.body.classList.contains('scroll-down')
+        ) {
+          // down
+          document.body.classList.remove('scroll-up')
+          document.body.classList.add('scroll-down')
+        } else if (
+          currentScroll < this.lastScroll &&
+          document.body.classList.contains('scroll-down')
+        ) {
+          // up
+          document.body.classList.remove('scroll-down')
+          document.body.classList.add('scroll-up')
+        }
+        this.lastScroll = currentScroll
+      } else {
+        document.body.classList.remove('header-fixed')
+        document.body.classList.add('header-fixed-collapsed')
+
+        const currentScroll = window.pageYOffset
+
+        if (currentScroll <= 10) {
+          document.body.classList.remove('scroll-up')
+          document.body.classList.remove('scroll-down')
+
+          return
+        } else {
+          document.body.classList.add('scroll-down')
+
+          return
+        }
+      }
+
+      return e
+    },
+    Nav() {
+      if (this.categories.includes(this.$route.path)) {
+        this.categoriesNav = true
+      } else {
+        this.categoriesNav = false
+      }
+
+      if (this.profile.includes(this.$route.path)) {
+        this.profileNav = true
+      } else {
+        this.profileNav = false
+      }
+
+      if (this.banner.includes(this.$route.name)) {
+        this.bannerNav = true
+      } else {
+        this.bannerNav = false
       }
     },
 
@@ -298,6 +446,7 @@ export default {
     SHOW_MODAL_CREDIT() {
       this.$store.dispatch('credit/SHOW_MODAL', { prewallet: null })
     },
+
     HIDE_MODAL_CREDIT() {
       this.$store.dispatch('credit/HIDE_MODAL')
     },

@@ -20,6 +20,13 @@
         @image-click="galleryIndex = $event"
       />
     </div>
+
+    <div v-else-if="!imagesLoading" class="no-content-message">
+      <div class="text-center py-5">
+        <i class="fas fa-images fa-3x mb-3 text-muted"></i>
+        <p class="text-muted">محتوایی برای نمایش وجود ندارد</p>
+      </div>
+    </div>
   </b-tab>
 </template>
 
@@ -33,12 +40,12 @@ export default {
   },
   props: {
     data: { type: Object, default: () => ({ item: {} }) },
+    lightImages: { type: Array, default: () => [] },
+    imagesLoading: { type: Boolean, default: false },
   },
   data() {
     return {
       galleryIndex: null,
-      imagesLoading: false,
-      lightImages: [],
     }
   },
   methods: {
@@ -50,3 +57,16 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+.no-content-message {
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.no-content-message .text-muted {
+  opacity: 0.6;
+}
+</style>

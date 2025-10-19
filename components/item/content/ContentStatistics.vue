@@ -2,6 +2,7 @@
   <div
     class="statistics d-flex align-items-center justify-content-between container-fluid"
   >
+    {{ data.item }}
     <StatisticsItem
       v-if="data.item.year"
       icon="icon-calendar"

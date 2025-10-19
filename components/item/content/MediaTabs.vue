@@ -1,28 +1,14 @@
 <template>
   <section class="horizontal-list-container mt-4">
     <div class="swiper-container horizontal-list">
-      <div id="movie-tabs" class="border-top border-dark">
+      <div id="movie-tabs" :class="{ 'border-top border-dark': hasAnyMedia }">
         <div class="nav mt-3" role="tablist">
-          <b-tabs v-model="activeTab" content-class="mt-4" class="w-full">
-            <!-- Casts Tab -->
-            <CastsTab
-              v-if="hasCasts"
-              :casts="casts"
-              :directors="directors"
-              :producers="producers"
-              :writers="writers"
-              :investors="investors"
-            />
-
-            <!-- Comments Tab -->
-            <CommentsTab
-              :id="data.item.id"
-              :type="type"
-              :name="data.item.name"
-              :namefa="data.item.name_fa"
-              :comm-num="commNum"
-            />
-
+          <b-tabs
+            v-model="activeTab"
+            content-class="mt-4"
+            nav-class="item-tabs-nav"
+            class="w-full"
+          >
             <!-- Backstage Tab -->
             <MediaTab
               v-if="medias.backstage === 1"
@@ -36,6 +22,8 @@
             <GalleryTab
               v-if="medias.image === 1"
               :data="data"
+              :light-images="lightImages"
+              :images-loading="imagesLoading"
               @load-images="$emit('load-images')"
             />
 
@@ -63,16 +51,12 @@
   </section>
 </template>
 <script>
-import CastsTab from '@/components/item/content/tabs/CastsTab'
-import CommentsTab from '@/components/item/content/tabs/CommentsTab'
 import GalleryTab from '@/components/item/content/tabs/GalleryTab'
 import MediaTab from '@/components/item/content/tabs/MediaTab'
 
 export default {
   name: 'MediaTabs',
   components: {
-    CastsTab,
-    CommentsTab,
     GalleryTab,
     MediaTab,
   },
@@ -86,6 +70,8 @@ export default {
     writers: { type: Array, default: () => [] },
     investors: { type: Array, default: () => [] },
     commNum: { type: Number, default: 0 },
+    lightImages: { type: Array, default: () => [] },
+    imagesLoading: { type: Boolean, default: false },
   },
   emits: ['get-file', 'load-images'],
   data() {
@@ -101,6 +87,14 @@ export default {
         this.producers?.length > 0
       )
     },
+    hasAnyMedia() {
+      return (
+        this.medias.backstage === 1 ||
+        this.medias.image === 1 ||
+        this.medias.musicvideo === 1 ||
+        this.medias.next === 1
+      )
+    },
   },
   methods: {
     GET_FILE(content) {
@@ -109,3 +103,12 @@ export default {
   },
 }
 </script>
+<style scoped>
+::v-deep .item-tabs-nav .nav-link.active,
+::v-deep .item-tabs-nav .nav-link:active {
+  color: #1b6be5 !important;
+  box-shadow: 0 8px 22px rgba(175, 0, 45, 0.22) !important;
+  border-radius: 10px !important;
+  transform: none !important;
+}
+</style>

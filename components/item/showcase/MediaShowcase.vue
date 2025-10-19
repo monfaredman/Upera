@@ -64,8 +64,8 @@
         />
 
         <!-- Back Navigation -->
-        <BackNavigation variant="mobile" />
-        <BackNavigation variant="desktop" />
+        <!-- <BackNavigation variant="mobile" />
+        <BackNavigation variant="desktop" /> -->
       </div>
     </div>
   </section>
@@ -75,7 +75,7 @@
 import OptimizedImage from '@/components/item/common/OptimizedImage'
 import ShowcaseContent from '@/components/item/showcase/ShowcaseContent'
 import PresaleCountdown from '@/components/item/showcase/PresaleCountdown'
-import BackNavigation from '@/components/item/common/BackNavigation'
+// import BackNavigation from '@/components/item/common/BackNavigation'
 
 export default {
   name: 'MediaShowcase',
@@ -83,7 +83,7 @@ export default {
     OptimizedImage,
     ShowcaseContent,
     PresaleCountdown,
-    BackNavigation,
+    // BackNavigation,
   },
   props: {
     data: {

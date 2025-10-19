@@ -3,14 +3,17 @@
     <div class="showcase-top">
       <!-- Main Title -->
       <template v-if="data && data.item && !data.item.logo">
-        <div v-if="type !== 'episode'" class="title text-invert mb-5 mb-md-3">
+        <div
+          v-if="type !== 'episode'"
+          class="title text-invert mb-5 mb-md-3 title-item"
+        >
           <nuxt-link :to="{ name: type + '-id', params: { id: data.item.id } }">
             {{ ChooseLang(data.item.name, data.item.name_fa) }}
           </nuxt-link>
         </div>
         <div
           v-else
-          class="title text-invert mb-5 mb-md-3"
+          class="title text-invert mb-5 mb-md-3 title-item"
           style="max-height: 3rem"
         >
           <nuxt-link :to="{ name: type + '-id', params: { id: data.item.id } }">
@@ -73,3 +76,18 @@ export default {
   },
 }
 </script>
+<style scoped>
+.title-item {
+  font-size: 44px !important;
+  font-weight: 700 !important;
+  text-wrap: nowrap;
+  line-height: 3rem;
+}
+
+@media (max-width: 576px) {
+  .title-item {
+    font-size: 1.125rem !important;
+    font-weight: 700 !important;
+  }
+}
+</style>

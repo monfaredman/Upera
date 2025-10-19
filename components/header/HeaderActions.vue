@@ -163,14 +163,14 @@
     <nuxt-link
       v-if="checkuser.show_app && isLoggedIn"
       to="/app"
-      class="btn btn-main show-mobile"
+      class="show-mobile btn-apps btn-main"
     >
       {{ $t('new.app') }}
     </nuxt-link>
     <b-button
       v-else
       variant="main"
-      class="show-mobile"
+      class="show-mobile login-btn"
       @click="$emit('show-modal')"
     >
       {{ $t('nav.login') }}
@@ -265,5 +265,19 @@ export default {
 
 .basket-popover-content {
   border-radius: 10px;
+}
+
+.btn-apps {
+  font-size: 1rem;
+  line-height: 1.5;
+  font-weight: 400;
+  border-radius: 4px;
+  padding: 0.3rem 0.5rem;
+}
+
+@media (min-width: 768px) {
+  .login-btn {
+    display: none !important;
+  }
 }
 </style>

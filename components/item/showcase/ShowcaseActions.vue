@@ -3,24 +3,28 @@
     <!-- Main Action Button -->
     <button
       v-if="actions && actions.mainButton.exist"
-      class="btn btn-main mr-1 ml-0"
+      class="btn btn-main mr-1 ml-0 btn-main-section"
       @click="handleMainAction"
     >
       <span class="smallsrm">
-        <i class="fa fa-play pr-2" />
         <span>
           {{ mainButtonDisplayLabel }}
           <span v-if="showEpisodeNumber">
             {{ $t('show.episode') }} {{ episode.episode_number }}
           </span>
         </span>
+        <i
+          v-if="actions.mainButton.action === 'play'"
+          class="fa fa-play pl-2"
+        />
+        <i v-else class="fa fa-shopping-cart pl-2" />
       </span>
     </button>
 
     <!-- Download Button -->
     <button
       v-if="actions && actions.downloadButton.exist"
-      class="btn btn-dark btn-download mr-1 ml-0"
+      class="btn btn-dark btn-download mr-1 ml-0 btn-main-section"
       @click="handleDownload"
     >
       <span class="smallsrm">
@@ -123,3 +127,32 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+.btn-main-section {
+  min-width: 180px;
+  height: 44;
+  opacity: 1;
+  border-radius: 8px;
+  padding-top: 10px;
+  padding-right: 24px;
+  padding-bottom: 10px;
+  padding-left: 24px;
+  gap: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-main-section .smallsrm {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.btn-main-section span {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+</style>
