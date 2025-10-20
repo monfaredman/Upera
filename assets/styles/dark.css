@@ -1,5 +1,5 @@
 .theme-dark body {
-  background: #121212;
+  background: black;
   color: #f6f6f6;
 }
 .theme-dark .btn.btn-primary {
@@ -1350,7 +1350,7 @@
 }
 
 .theme-dark body {
-  background-color: #121212;
+  background: black;
   color: #fff;
 }
 @media (max-width: 767.98px) {

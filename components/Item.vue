@@ -1,49 +1,43 @@
 <template>
   <div>
-    <ShowcaseMobileHeader
-      :has-main-button="hasMainButton"
-      :has-download-button="hasDownloadButton"
-      :main-button-label="mainButtonLabel"
-      :main-button-action="mainButtonAction"
-      :episode="derivedEpisode"
-      :download-button-label="downloadButtonLabel"
-      :clapinterval="clapinterval"
-      :user-claps="user_claps"
-      :is-watchlist="is_watchlist"
-      :data="data"
-      :type="type"
-      @play="handlePlay"
-      @buy="handleBuy"
-      @subscription="handleSubscription"
-      @download="handleDownloadClick"
-      @toggle-watchlist="ADD_WATCHLIST"
-      @clap-start="startclap"
-      @clap-stop="stopclap"
-      @share="modalsharing = true"
-    />
-    <MediaShowcase
-      :data="data"
-      :type="type"
-      :episode="derivedEpisode"
-      :has-download-button="hasDownloadButton"
-      :has-main-button="hasMainButton"
-      :main-button-label="mainButtonLabel"
-      :main-button-action="mainButtonAction"
-      :download-button-label="downloadButtonLabel"
-      :clapinterval="clapinterval"
-      :user-claps="user_claps"
-      :is-watchlist="is_watchlist"
-      :total-claps="total_claps"
-      :actions="actions"
-      @play="handlePlay"
-      @buy="handleBuy"
-      @subscription="handleSubscription"
-      @download="handleDownloadClick"
-      @toggle-watchlist="ADD_WATCHLIST"
-      @clap-start="startclap"
-      @clap-stop="stopclap"
-      @share="modalsharing = true"
-    />
+    <!-- Loading Spinner Overlay -->
+    <div v-if="isLoading" class="loading-overlay">
+      <div class="spinner-container">
+        <b-spinner variant="primary" label="Loading..."></b-spinner>
+        <p class="mt-3 text-white">در حال بارگذاری...</p>
+      </div>
+    </div>
+
+    <!-- Showcase Skeleton -->
+    <ShowcaseSkeleton v-if="isLoadingShowcase" />
+
+    <!-- Actual Content -->
+    <template v-else>
+      <MediaShowcase
+        :data="data"
+        :type="type"
+        :episode="derivedEpisode"
+        :has-download-button="hasDownloadButton"
+        :has-main-button="hasMainButton"
+        :main-button-label="mainButtonLabel"
+        :main-button-action="mainButtonAction"
+        :download-button-label="downloadButtonLabel"
+        :clapinterval="clapinterval"
+        :user-claps="user_claps"
+        :is-watchlist="is_watchlist"
+        :total-claps="total_claps"
+        :actions="actions"
+        :is-loading-stats="isLoadingStatistics"
+        @play="handlePlay"
+        @buy="handleBuy"
+        @subscription="handleSubscription"
+        @download="handleDownloadClick"
+        @toggle-watchlist="ADD_WATCHLIST"
+        @clap-start="startclap"
+        @clap-stop="stopclap"
+        @share="modalsharing = true"
+      />
+    </template>
     <div class="content-body">
       <!-- add nav-class so BootstrapVue generates a class we can target reliably -->
       <b-tabs card pills content-class="p-3" nav-class="item-tabs-nav">
@@ -53,8 +47,9 @@
           active
           title="قسمت‌ها"
         >
+          <SeasonEpisodesSkeleton v-if="isLoadingSeasons" />
           <SeasonEpisodes
-            v-if="season"
+            v-else-if="season"
             :season="season"
             :selectseriesid="selectseriesid"
             :seasontitle="seasontitle"
@@ -64,12 +59,15 @@
         </b-tab>
         <!-- فیلم : MovieContentTab -->
         <b-tab v-if="type === 'movie'" active title="فیلم">
-          <MovieContentTab :data="data" @play="handlePlay" />
+          <MovieContentTabSkeleton v-if="isLoadingMovie" />
+          <MovieContentTab v-else :data="data" @play="handlePlay" />
         </b-tab>
 
         <!-- محتوا : use ContentTab (reuses StoryContent) -->
         <b-tab title="محتوا">
+          <ContentDetailsSkeleton v-if="isLoadingContent" />
           <ContentDetails
+            v-else
             :data="data"
             :type="type"
             :medias="medias"
@@ -90,8 +88,9 @@
         </b-tab>
         <!-- بازیگران : CastsTab -->
         <b-tab title="بازیگران">
+          <CastsTabSkeleton v-if="isLoadingCasts" />
           <CastsTab
-            v-if="casts && casts.length"
+            v-else-if="casts && casts.length"
             :casts="casts"
             :directors="directors"
             :producers="producers"
@@ -102,14 +101,7 @@
 
         <!-- درباره سریال : ContentStatistics -->
         <b-tab :title="type === 'movie' ? 'درباره فیلم' : 'درباره سریال'">
-          <!-- Series Last Episode Showcase -->
-          <SeriesLastEpisode
-            v-if="['series', 'episode'].includes(type) && last_episode"
-            :data="data"
-            :last-episode="last_episode"
-            :is-watchlist="is_watchlist"
-            @toggle-watchlist="ADD_WATCHLIST"
-          />
+          <ContentStatisticsSkeleton v-if="isLoadingStatistics" />
           <ContentStatistics
             v-else
             :data="data"
@@ -123,7 +115,11 @@
 
         <!-- فیلم های مشابه : SimilarContent -->
         <b-tab title="فیلم های مشابه">
-          <SimilarContent v-if="similar && similar.length" :similar="similar" />
+          <SimilarContentSkeleton v-if="isLoadingSimilar" />
+          <SimilarContent
+            v-else-if="similar && similar.length"
+            :similar="similar"
+          />
         </b-tab>
 
         <!-- دیدگاه‌ها : CommentsTab -->
@@ -135,15 +131,20 @@
               class="mb-1 ml-1"
               small
             />
-            دیدگاه‌ها ({{ comm_num }})
+            دیدگاه‌ها
           </template>
-          <CommentsTab
-            :id="data.item.id"
-            :type="type"
-            :name="data.item.name"
-            :namefa="data.item.name_fa"
-            :comm-num="comm_num"
-          />
+          <div v-show="commentsloading">
+            <CommentsTabSkeleton />
+          </div>
+          <div v-show="!commentsloading">
+            <CommentsTab
+              :id="data.item.id"
+              :type="type"
+              :name="data.item.name"
+              :namefa="data.item.name_fa"
+              :comm-num="comm_num"
+            />
+          </div>
         </b-tab>
       </b-tabs>
     </div>
@@ -224,10 +225,8 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import ShowcaseMobileHeader from '@/components/item/showcase/ShowcaseMobileHeader'
 import MediaShowcase from '@/components/item/showcase/MediaShowcase'
 import ContentDetails from '@/components/item/showcase/ContentDetails'
-import SeriesLastEpisode from '@/components/item/SeriesLastEpisode'
 import SeasonEpisodes from '@/components/item/SeasonEpisodes'
 import SimilarContent from '@/components/item/SimilarContent'
 import MovieContentTab from '@/components/item/MovieContentTab'
@@ -235,6 +234,16 @@ import CastsTab from '@/components/item/content/tabs/CastsTab'
 import CommentsTab from '@/components/item/content/tabs/CommentsTab'
 import Download from '@/components/Download'
 import File from '@/components/item/File'
+
+// Skeleton Components
+import ShowcaseSkeleton from '@/components/item/skeletons/ShowcaseSkeleton'
+import SeasonEpisodesSkeleton from '@/components/item/skeletons/SeasonEpisodesSkeleton'
+import ContentDetailsSkeleton from '@/components/item/skeletons/ContentDetailsSkeleton'
+import SimilarContentSkeleton from '@/components/item/skeletons/SimilarContentSkeleton'
+import CastsTabSkeleton from '@/components/item/skeletons/CastsTabSkeleton'
+import CommentsTabSkeleton from '@/components/item/skeletons/CommentsTabSkeleton'
+import ContentStatisticsSkeleton from '@/components/item/skeletons/ContentStatisticsSkeleton'
+import MovieContentTabSkeleton from '@/components/item/skeletons/MovieContentTabSkeleton'
 
 // import StoryContent from '@/components/item/content/StoryContent'
 
@@ -244,10 +253,8 @@ import ContentStatistics from '@/components/item/content/ContentStatistics'
 export default {
   name: 'ContentShowcase',
   components: {
-    ShowcaseMobileHeader,
     MediaShowcase,
     ContentDetails,
-    SeriesLastEpisode,
     SeasonEpisodes,
     SimilarContent,
     MovieContentTab,
@@ -258,6 +265,15 @@ export default {
     Socialsharing,
     // StoryContent,
     ContentStatistics,
+    // Skeletons
+    ShowcaseSkeleton,
+    SeasonEpisodesSkeleton,
+    ContentDetailsSkeleton,
+    SimilarContentSkeleton,
+    CastsTabSkeleton,
+    CommentsTabSkeleton,
+    ContentStatisticsSkeleton,
+    MovieContentTabSkeleton,
   },
   props: {
     data: {
@@ -271,6 +287,16 @@ export default {
   },
   data() {
     return {
+      // Loading states
+      isLoading: false,
+      isLoadingShowcase: true,
+      isLoadingSeasons: true,
+      isLoadingMovie: true,
+      isLoadingContent: true,
+      isLoadingCasts: true,
+      isLoadingStatistics: true,
+      isLoadingSimilar: true,
+
       // Only keep essential state
       actions: null,
       medias: {},
@@ -399,6 +425,15 @@ export default {
     },
 
     async loadAdditionalData() {
+      // Set loading states
+      this.isLoadingShowcase = true
+      this.isLoadingSeasons = true
+      this.isLoadingMovie = true
+      this.isLoadingContent = true
+      this.isLoadingCasts = true
+      this.isLoadingStatistics = true
+      this.isLoadingSimilar = true
+
       try {
         const statisticsEndpoint = this.$auth.loggedIn
           ? '/get/statistics/'
@@ -446,19 +481,29 @@ export default {
           this.writers = castRes.data.data.writers || null
           this.investors = castRes.data.data.investors || null
           this.characters = castRes.data.data.characters || null
+          this.isLoadingCasts = false
+
           this.medias = mediaRes.data.data.medias || {}
+          this.isLoadingContent = false
+
           this.similar = similarRes.data.data.similar || []
           this.offer = similarRes.data.data.offer || null
+          this.isLoadingSimilar = false
+
           this.owned = accessibilityRes.data.data.owned || 0
           this.owned_period_end =
             accessibilityRes.data.data.owned_period_end || null
           this.actions = accessibilityRes.data.data.actions || null
+          this.isLoadingShowcase = false
+
           this.total_claps = statisticsRes.data.data.claps?.total || 0
           this.user_claps = statisticsRes.data.data.claps?.user || 0
           this.current_time = statisticsRes.data.data.current_time || 0
           this.duration_time = statisticsRes.data.data.duration_time || 0
           this.is_watchlist = statisticsRes.data.data.is_watchlist || 0
           this.comm_num = statisticsRes.data.data.comm_num || 0
+          this.isLoadingStatistics = false
+          this.isLoadingMovie = false
         } else {
           const seasonEndpoint = this.$auth.loggedIn
             ? '/get/season/'
@@ -495,19 +540,28 @@ export default {
           this.writers = castRes.data.data.writers || null
           this.investors = castRes.data.data.investors || null
           this.characters = castRes.data.data.characters || null
+          this.isLoadingCasts = false
+
           this.medias = mediaRes.data.data.medias || {}
+          this.isLoadingContent = false
+
           this.similar = similarRes.data.data.similar || []
           this.offer = similarRes.data.data.offer || null
+          this.isLoadingSimilar = false
+
           this.owned = accessibilityRes.data.data.owned || 0
           this.owned_period_end =
             accessibilityRes.data.data.owned_period_end || null
           this.actions = accessibilityRes.data.data.actions || null
+          this.isLoadingShowcase = false
+
           this.total_claps = statisticsRes.data.data.claps?.total || 0
           this.user_claps = statisticsRes.data.data.claps?.user || 0
           this.current_time = statisticsRes.data.data.current_time || 0
           this.duration_time = statisticsRes.data.data.duration_time || 0
           this.is_watchlist = statisticsRes.data.data.is_watchlist || 0
           this.comm_num = statisticsRes.data.data.comm_num || 0
+          this.isLoadingStatistics = false
 
           // اختصاص داده‌های مربوط به فصل
           if (seasonRes?.data?.data) {
@@ -517,6 +571,7 @@ export default {
             this.first_episode = seasonRes.data.data.first_episode || null
             this.last_episode = seasonRes.data.data.last_episode || null
           }
+          this.isLoadingSeasons = false
         }
 
         if (this.type == 'series' && this.season) {
@@ -558,6 +613,14 @@ export default {
         }
       } catch (error) {
         console.error('Error loading additional movie data:', error)
+        // Reset loading states on error
+        this.isLoadingShowcase = false
+        this.isLoadingSeasons = false
+        this.isLoadingMovie = false
+        this.isLoadingContent = false
+        this.isLoadingCasts = false
+        this.isLoadingStatistics = false
+        this.isLoadingSimilar = false
       }
     },
 
@@ -830,12 +893,35 @@ export default {
 </script>
 
 <style scoped>
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.spinner-container {
+  text-align: center;
+}
+
+.spinner-container p {
+  margin-top: 1rem;
+  color: #fff;
+  font-size: 1.1rem;
+}
+
 .content-body {
   margin-top: 0;
 }
 
 ::v-deep li.nav-item {
-  z-index: 1000000 !important;
+  z-index: 1 !important;
 }
 
 /* BootstrapVue / Buefy (nav-tabs/nav-link) */
@@ -906,14 +992,102 @@ export default {
   border-width: 1px;
   background: #00000099;
   backdrop-filter: blur(12px);
-  z-index: 1000000;
+  z-index: 1;
   position: relative;
   top: -6rem;
   right: 2rem;
 }
 
-::v-deep .card-body {
-  padding: 0 !important;
+/* Tablet responsive */
+@media (max-width: 991.98px) {
+  ::v-deep .card-header .nav {
+    height: 56px;
+    padding-top: 12px;
+    padding-right: 14px !important;
+    padding-bottom: 12px;
+    padding-left: 14px;
+    top: -4rem;
+    right: 1rem;
+  }
+}
+
+/* Mobile responsive */
+@media (max-width: 767.98px) {
+  ::v-deep .card-header .nav {
+    width: calc(100% - 2rem);
+    height: auto;
+    min-height: 48px;
+    border-radius: 24px;
+    padding-top: 10px;
+    padding-right: 12px !important;
+    padding-bottom: 10px;
+    padding-left: 12px;
+    top: -3rem;
+    right: 1rem;
+    left: 1rem;
+    margin: 0 auto;
+  }
+}
+
+/* Small mobile responsive */
+@media (max-width: 575.98px) {
+  ::v-deep .card-header .nav {
+    width: 100%;
+    height: 20px;
+    border-radius: 10px;
+    padding-top: 4px;
+    padding-right: 5px !important;
+    padding-bottom: 4px;
+    padding-left: 5px;
+    top: -1rem;
+    right: 0;
+    left: 0.5rem;
+    margin: 0 !important;
+  }
+
+  ::v-deep .item-tabs-nav .nav-link {
+    background: rgba(255, 255, 255, 0.04) !important;
+    color: #ffffff !important;
+    border: none !important;
+    border-radius: 8px !important;
+    padding: 0.1rem 0.35rem !important;
+    font-weight: 500 !important;
+    font-size: 0.75rem !important;
+    min-height: 38px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .content-body {
+    margin-top: 0;
+  }
+  .card-body {
+    margin-top: 50px;
+    padding: 0 !important;
+  }
+
+  .card-header {
+    padding: 0 !important;
+  }
+
+  /* hover */
+  ::v-deep .nav-tabs .nav-link:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: none;
+    color: #fff;
+  }
+
+  ::v-deep .v-tab:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: none;
+  }
+
+  ::v-deep .item-tabs-nav .nav-link:hover {
+    background: rgba(255, 255, 255, 0.08) !important;
+    transform: none;
+    color: #fff !important;
+  }
 }
 
 /* Vuetify tab support (v-tabs / v-tab) */
@@ -971,15 +1145,15 @@ export default {
 
 ::v-deep .item-tabs-nav .nav-link {
   background: rgba(255, 255, 255, 0.04) !important;
-  color: #ffffff !important;
-  border: none !important;
-  border-radius: 8px !important;
-  padding: 0.45rem 0.9rem !important;
-  font-weight: 600 !important;
-  font-size: 0.95rem !important;
-  min-height: 38px !important;
-  display: inline-flex !important;
-  align-items: center !important;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.45rem 0.9rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
   justify-content: center !important;
   transition: transform 0.15s ease, background 0.15s ease, box-shadow 0.15s ease !important;
 }

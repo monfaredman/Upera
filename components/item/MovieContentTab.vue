@@ -198,4 +198,8 @@ export default {
     font-size: 1.6rem;
   }
 }
+
+section.movie-content-section {
+  margin-top: -7rem !important;
+}
 </style>

@@ -1,6 +1,8 @@
 <template>
   <div>
-    <section v-if="sliders && sliders.length" id="slideshow">
+    <!-- Slider Section with Skeleton -->
+    <ShowcaseSkeleton v-if="isLoadingSlider" />
+    <section v-else-if="sliders && sliders.length" id="slideshow">
       <div class="swiper-container showcase main-slideshow">
         <!-- replaced inline VueSlickCarousel + slides with external component -->
         <ShowcaseCarousel
@@ -24,16 +26,23 @@
 
     <OfferSection :offer="offer" />
 
-    <FilterContents
-      :show="true"
-      :show-genres="true"
-      :savedata="false"
-      :no-top="!(sliders && sliders.length > 0)"
-      @execute_content_filtering="execute_content_filtering"
-    />
+    <!-- Filter Section with Skeleton -->
+    <FilterSkeleton v-show="isLoadingFilters" />
+    <div v-show="!isLoadingFilters">
+      <FilterContents
+        :show="true"
+        :show-genres="true"
+        :savedata="false"
+        :start-fetching="startFetchingFilters"
+        :no-top="!(sliders && sliders.length > 0)"
+        @execute_content_filtering="execute_content_filtering"
+        @filters-ready="isLoadingFilters = false"
+      />
+    </div>
 
-    <!-- <div v-if="checkuser.show_lives && lives && lives.data.length"> -->
-    <div v-if="lives && lives.data.length" class="mt-4">
+    <!-- Lives Section with Skeleton -->
+    <HorizontalListSkeleton v-if="isLoadingLives" variant="backdrop" />
+    <div v-else-if="lives && lives.data.length" class="mt-4">
       <HorizontalList
         :title-en="lives.list_en"
         :title-fa="lives.list_fa"
@@ -50,7 +59,9 @@
       />
     </div>
 
-    <div v-if="ugcs && ugcs.data.length" class="mt-4">
+    <!-- UGCs Section with Skeleton -->
+    <HorizontalListSkeleton v-if="isLoadingUgcs" variant="backdrop" />
+    <div v-else-if="ugcs && ugcs.data.length" class="mt-4">
       <div v-for="(sec, rootindex) in ugcs" :key="rootindex">
         <HorizontalList
           :title-en="sec.title_en"
@@ -88,8 +99,13 @@
       />
     </div> -->
 
+    <!-- Recently Watched Section with Skeleton -->
+    <HorizontalListSkeleton
+      v-if="isLoadingRecently && $auth.loggedIn"
+      variant="backdrop"
+    />
     <section
-      v-if="recently !== null"
+      v-else-if="recently !== null"
       id="watching"
       class="horizontal-list-container mt-lg-4 pt-4 pb-4"
     >
@@ -189,7 +205,14 @@
       </div>
     </section>
 
-    <div v-if="data.data">
+    <!-- Discover Content Sections with Skeletons -->
+    <template v-if="isLoadingDiscover">
+      <OccasionSectionSkeleton />
+      <HorizontalListSkeleton variant="poster" />
+      <HorizontalListSkeleton variant="poster" />
+      <HorizontalListSkeleton variant="poster" />
+    </template>
+    <div v-else-if="data.data">
       <div v-for="(list, rootindex) in data.data" :key="rootindex">
         <div v-if="list.style == 'occasion' && list.data.length > 0">
           <section id="special" class="mb-5">
@@ -360,10 +383,7 @@
       </div>
     </div>
 
-    <div v-else-if="!nocontent" class="d-flex align-items-center">
-      <b-spinner class="ml-auto" />
-    </div>
-    <div v-if="nocontent" class="container-fluid">
+    <div v-else-if="nocontent" class="container-fluid">
       <div class="text-center my-5">
         <h2>محتوایی جهت نمایش وجود ندارد</h2>
       </div>
@@ -452,33 +472,21 @@ export default {
     HorizontalList,
     ShowcaseCarousel,
     OfferSection,
-    // MediaCard,
+    ShowcaseSkeleton: () =>
+      import('@/components/item/skeletons/ShowcaseSkeleton.vue'),
+    HorizontalListSkeleton: () =>
+      import('@/components/home/HorizontalListSkeleton.vue'),
+    OccasionSectionSkeleton: () =>
+      import('@/components/home/OccasionSectionSkeleton.vue'),
+    FilterSkeleton: () => import('@/components/home/FilterSkeleton.vue'),
   },
-  async asyncData(context) {
-    try {
-      const filter = context.store.getters.filtercontents
-      const offerRes = await context.app.$axios.get('/get/offer' + filter)
-      return { data: {}, offer: offerRes.data }
-    } catch (error) {
-      console.error('Error fetching offer in asyncData:', error)
-      return { data: {}, offer: null }
-    }
+  asyncData() {
+    // Return empty data, all fetching will happen in mounted()
+    return { data: {}, offer: null }
   },
   data() {
     return {
       data: {},
-      // mediaItems: [
-      //   {
-      //     backdrop: 'iran.jpg',
-      //     name: 'Iran Showcase',
-      //     name_fa: 'نمایش ایران',
-      //     type: 'movie',
-      //     size: { w: 1120, h: 576 },
-      //     variant: 'backdrop',
-      //     cdnType: 2,
-      //     mobileSrc: 'iran2.png',
-      //   },
-      // ],
       recently: null,
       offer: null,
       lives: null,
@@ -494,6 +502,14 @@ export default {
       SWIPER_OPTION_OFFER,
       swiperOption3: SLICK_MAIN_OPTIONS,
       swiperOption2: SWIPER_OPTION_BACKDROP,
+      // Loading states
+      isLoadingSlider: true,
+      isLoadingRecently: true,
+      isLoadingLives: true,
+      isLoadingUgcs: true,
+      isLoadingDiscover: true,
+      isLoadingFilters: true,
+      startFetchingFilters: false,
     }
   },
   computed: {
@@ -511,36 +527,61 @@ export default {
     }
   },
   async mounted() {
+    // Fetch slider FIRST and wait for it to complete
+    this.isLoadingSlider = true
     await this.$store.dispatch('slider/fetchSlider', {
       filtercontents: this.filtercontents,
     })
+    this.isLoadingSlider = false
+
+    // After slider loads, trigger filters/genres to load
+    this.startFetchingFilters = true
+
+    // After slider is loaded, fetch other content in parallel
+    // Fetch offer
+    this.$axios
+      .get('/get/offer' + this.filtercontents)
+      .then((offerRes) => {
+        this.offer = offerRes.data
+      })
+      .catch((error) => {
+        console.error('Error fetching offer:', error)
+      })
+
+    // Fetch recently watched
     this.get_recently()
+
+    // Fetch discover content
     this.fetchDiscoverData()
 
-    // if (this.checkuser.show_lives === 1) {
-    try {
-      const livesRes = await this.$axios.get(
-        // '/get/lives?ref=' + this.checkuser.ref
-        '/get/lives?ref=' + '7202018'
-      )
+    // Fetch lives
+    this.isLoadingLives = true
+    this.$axios
+      .get('/get/lives?ref=' + '7202018')
+      .then((livesRes) => {
+        this.lives = livesRes.data
+      })
+      .catch((e) => {
+        console.error('fetch lives failed', e)
+      })
+      .finally(() => {
+        this.isLoadingLives = false
+      })
 
-      this.lives = livesRes.data
-    } catch (e) {
-      console.error('fetch lives failed', e)
-    }
-
-    // if (this.checkuser.show_ugcs === 1) {
-    try {
-      const ugcsRes = await this.$axios.get(
-        // '/get/ugcs?ref=' + this.checkuser.ref
-        '/get/ugcs?ref=' + '7202018'
-      )
-      this.ugcs = ugcsRes.data
-
-      this.ugcs = this.transformUgcsData(this.ugcs)
-    } catch (e) {
-      console.error('fetch ugcs failed', e)
-    }
+    // Fetch UGCs
+    this.isLoadingUgcs = true
+    this.$axios
+      .get('/get/ugcs?ref=' + '7202018')
+      .then((ugcsRes) => {
+        this.ugcs = ugcsRes.data
+        this.ugcs = this.transformUgcsData(this.ugcs)
+      })
+      .catch((e) => {
+        console.error('fetch ugcs failed', e)
+      })
+      .finally(() => {
+        this.isLoadingUgcs = false
+      })
   },
   methods: {
     ChooseLang(en, fa) {
@@ -582,6 +623,7 @@ export default {
       return { name: item.type + '-show-id', params: { id: item.id } }
     },
     async get_recently() {
+      this.isLoadingRecently = true
       try {
         if (!this.$auth.loggedIn) {
           this.recently = null
@@ -607,9 +649,12 @@ export default {
         }
       } catch (error) {
         console.error('get_recently failed:', error)
+      } finally {
+        this.isLoadingRecently = false
       }
     },
     async fetchDiscoverData() {
+      this.isLoadingDiscover = true
       try {
         const response = await this.$axios.get(
           this.ghostApi + this.filtercontents
@@ -620,6 +665,8 @@ export default {
         }
       } catch (error) {
         console.error('Error fetching discover:', error)
+      } finally {
+        this.isLoadingDiscover = false
       }
     },
     showNext() {
@@ -629,16 +676,23 @@ export default {
       this.$refs.carousel.prev()
     },
     async execute_content_filtering() {
-      this.$nuxt.$loading.start()
+      // Set all loading states
+      this.isLoadingSlider = true
+      this.isLoadingRecently = true
+      this.isLoadingDiscover = true
       this.$store.dispatch('filter/FILTER_LOADING')
 
       const requests = []
 
       requests.push(
-        this.$store.dispatch('slider/fetchSlider', {
-          filtercontents: this.filtercontents,
-          loadagain: 1,
-        })
+        this.$store
+          .dispatch('slider/fetchSlider', {
+            filtercontents: this.filtercontents,
+            loadagain: 1,
+          })
+          .finally(() => {
+            this.isLoadingSlider = false
+          })
       )
 
       requests.push(
@@ -667,7 +721,12 @@ export default {
                 })
               }
             })
+            .finally(() => {
+              this.isLoadingRecently = false
+            })
         )
+      } else {
+        this.isLoadingRecently = false
       }
 
       requests.push(
@@ -682,6 +741,9 @@ export default {
               this.swiperKey += 1
             }
           })
+          .finally(() => {
+            this.isLoadingDiscover = false
+          })
       )
 
       try {
@@ -690,7 +752,6 @@ export default {
         console.error('Error in requests:', error)
       } finally {
         this.$store.dispatch('filter/CLEAN_FILTER_LOADING')
-        this.$nuxt.$loading.finish()
       }
     },
     infiniteHandler($state) {

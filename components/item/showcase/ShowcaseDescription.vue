@@ -80,14 +80,21 @@ export default {
 .title-item {
   font-size: 44px !important;
   font-weight: 700 !important;
-  text-wrap: nowrap;
+  white-space: nowrap;
   line-height: 3rem;
 }
 
-@media (max-width: 576px) {
+/* Keep same size on mobile as per requirements */
+@media (max-width: 767.98px) {
   .title-item {
-    font-size: 1.125rem !important;
+    font-size: 44px !important;
     font-weight: 700 !important;
+    line-height: 3rem;
+    white-space: normal;
+  }
+
+  .showcase-theme-m-tn .showcase-bottom {
+    margin-top: 0 !important;
   }
 }
 </style>

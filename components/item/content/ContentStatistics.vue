@@ -5,7 +5,7 @@
       <div class="backdrop-container">
         <img
           v-if="data.item.backdrop"
-          :src="getBackdropUrl(data.item.poster)"
+          :src="getBackdropUrl()"
           :alt="data.item.name_fa || data.item.name"
         />
       </div>
@@ -24,7 +24,7 @@
             {{ genreFa }}
           </span>
           <span v-if="data.item.age" class="chip age-chip">
-            {{ data.item.age }}
+            رده سنی {{ data.item.age }}
           </span>
           <span v-if="showSubtitle" class="chip subtitle-chip"> زیرنویس </span>
         </div>
@@ -74,29 +74,46 @@ export default {
     },
   },
   methods: {
-    getBackdropUrl(backdrop) {
-      if (!backdrop) return ''
-      // Append .jpg extension to the backdrop filename
-      return `https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/${backdrop}`
+    getBackdropUrl() {
+      // Check if viewport is mobile (max-width: 767.98px)
+      const isMobile = window.innerWidth <= 767.98
+
+      if (isMobile) {
+        // Use backdrop for mobile
+        const backdrop = this.data.item.backdrop
+        if (!backdrop) return ''
+        return `https://thumb.upera.shop/thumb?w=375&h=300&q=100&a=c&zc=1&src=https://cdn.upera.shop/s3/backdrops/${backdrop}`
+      } else {
+        // Use poster for desktop
+        const poster = this.data.item.poster
+        if (!poster) return ''
+        return `https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/${poster}`
+      }
     },
   },
 }
 </script>
 
 <style scoped>
+.content-statistics-container {
+  width: 100%;
+  padding: 0 1rem;
+}
+
 .content-statistics {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: flex-start;
-  width: 1356px;
-  height: 232.2051239013672px;
+  max-width: 1356px;
+  width: 100%;
+  min-height: 232px;
   padding: 12px;
   gap: 12px;
   background: #525252;
   border-radius: 8px;
   opacity: 1;
-  margin-top: -6rem;
+  margin: -6rem auto 0;
 }
 
 .content-info {
@@ -181,16 +198,138 @@ export default {
 .backdrop-container {
   flex-shrink: 0;
   width: 140px;
-  height: 208.2051239013672px;
-  border-radius: 8.38px;
+  height: 208px;
+  border-radius: 8px;
   overflow: hidden;
   opacity: 1;
 }
 
-.backdrop-image {
+.backdrop-container img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 8.38px;
+  border-radius: 8px;
+}
+
+/* Tablet responsive */
+@media (max-width: 991.98px) {
+  .content-statistics-container {
+    padding: 0 0.75rem;
+  }
+
+  .content-statistics {
+    margin: -4rem auto 0;
+    min-height: auto;
+    padding: 10px;
+    gap: 10px;
+  }
+
+  .content-title {
+    font-size: 20px;
+  }
+
+  .backdrop-container {
+    width: 120px;
+    height: 180px;
+  }
+
+  .content-description {
+    font-size: 13px;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+  }
+}
+
+/* Mobile responsive */
+@media (max-width: 767.98px) {
+  .content-statistics-container {
+    padding: 0 0.5rem;
+  }
+
+  .content-statistics {
+    flex-direction: column;
+    margin: -3rem auto 0;
+    padding: 12px;
+    gap: 12px;
+    min-height: auto;
+  }
+
+  .backdrop-container {
+    width: 100%;
+    height: 200px;
+    order: -1;
+  }
+
+  .content-info {
+    width: 100%;
+    gap: 10px;
+  }
+
+  .content-title {
+    font-size: 18px;
+  }
+
+  .chips-container {
+    gap: 6px;
+  }
+
+  .chip {
+    padding: 4px 10px;
+    font-size: 12px;
+  }
+
+  .content-description {
+    font-size: 13px;
+    line-height: 1.5;
+    -webkit-line-clamp: 5;
+    line-clamp: 5;
+  }
+
+  .director-info {
+    font-size: 13px;
+  }
+}
+
+/* Small mobile responsive */
+@media (max-width: 575.98px) {
+  .content-statistics-container {
+    padding: 0 0.25rem;
+  }
+
+  .content-statistics {
+    margin: -2rem auto 0;
+    padding: 10px;
+    gap: 10px;
+    border-radius: 6px;
+  }
+
+  .backdrop-container {
+    height: 180px;
+    border-radius: 6px;
+  }
+
+  .content-title {
+    font-size: 16px;
+  }
+
+  .chip {
+    padding: 3px 8px;
+    font-size: 11px;
+    border-radius: 12px;
+  }
+
+  .content-description {
+    font-size: 12px;
+    -webkit-line-clamp: 4;
+    line-clamp: 4;
+  }
+
+  .director-info {
+    font-size: 12px;
+  }
+
+  .director-label {
+    margin-left: 6px;
+  }
 }
 </style>

@@ -20,3 +20,17 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+.comments-tab-container {
+  padding: 24px;
+  width: 100%;
+  margin-top: -5rem;
+}
+
+@media (max-width: 768px) {
+  .comments-tab-container {
+    padding: 16px;
+  }
+}
+</style>

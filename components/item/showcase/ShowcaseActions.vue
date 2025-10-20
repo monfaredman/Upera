@@ -129,9 +129,15 @@ export default {
 </script>
 
 <style scoped>
+.showcase-button-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .btn-main-section {
   min-width: 180px;
-  height: 44;
+  height: 44px;
   opacity: 1;
   border-radius: 8px;
   padding-top: 10px;
@@ -150,9 +156,38 @@ export default {
   justify-content: center;
   gap: 8px;
 }
+
 .btn-main-section span {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+/* Mobile responsive - full width buttons */
+@media (max-width: 767.98px) {
+  .showcase-button-wrapper {
+    gap: 12px;
+  }
+
+  .btn-main-section {
+    max-width: 220px !important;
+  }
+
+  .showcase-theme-m-tn
+    .showcase-thumbnail-wrapper-outter
+    .showcase-button-wrapper {
+    display: flex !important;
+    justify-content: start !important;
+    align-content: center !important;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .showcase-theme-m-tn
+    .showcase-thumbnail-wrapper-outter
+    .showcase-button-wrapper
+    .btn:last-of-type {
+    margin-top: 0 !important;
+  }
 }
 </style>

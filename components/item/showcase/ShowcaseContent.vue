@@ -8,7 +8,12 @@
         class="d-flex h-full align-items-end d-flex align-items-center justify-content-start"
       >
         <!-- Description and Actions -->
-        <div class="showcase-desc-wrapper h-full">
+        <div
+          class="showcase-desc-wrapper h-full"
+          :class="[
+            type === 'series' && data.item.logo ? 'mb-4' : 'mb-2 mb-md-0',
+          ]"
+        >
           <!-- Optional Logo like homepage slider -->
           <div
             v-if="data && data.item && data.item.logo"
@@ -32,7 +37,16 @@
 
           <!-- NEW: Stats Row (IMDB / Watch time / Like / Created) -->
           <div class="showcase-stats-wrapper d-flex align-items-center my-2">
-            <div class="showcase-stats" role="group" aria-label="episode-stats">
+            <!-- Loading spinner for stats -->
+            <div v-if="isLoadingStats" class="skeleton-stats-loading"></div>
+
+            <!-- Actual stats -->
+            <div
+              v-else
+              class="showcase-stats"
+              role="group"
+              aria-label="episode-stats"
+            >
               <div class="stat-item">
                 <div class="stat-icon" aria-hidden="true">
                   <img src="@/assets/images/imdb.png" class="img-imdb" />
@@ -130,6 +144,10 @@ export default {
       type: Object,
       default: () => ({}),
     },
+    isLoadingStats: {
+      type: Boolean,
+      default: false,
+    },
   },
   emits: [
     'play',
@@ -226,6 +244,29 @@ export default {
 </script>
 
 <style scoped>
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.skeleton-stats-loading {
+  width: 360px;
+  height: 52px;
+  border-radius: 8px;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.05) 25%,
+    rgba(255, 255, 255, 0.1) 50%,
+    rgba(255, 255, 255, 0.05) 75%
+  );
+  background-size: 2000px 100%;
+  animation: shimmer 2s infinite;
+}
+
 .showcase-logo {
   max-width: 220px;
   min-height: 60px;
@@ -236,22 +277,32 @@ export default {
   height: 100px;
   object-fit: contain;
 }
-@media (max-width: 576px) {
+@media (max-width: 767.98px) {
   .showcase-logo {
-    max-width: 150px !important;
-    max-height: 90px !important;
+    max-width: 220px !important;
+    max-height: 100px !important;
     min-height: 60px !important;
     margin-bottom: 0.5rem;
-  }
-  .showcase-thumbnail-wrapper {
-    padding: 0 1rem !important;
-    margin-top: 4rem !important;
   }
 
   .showcase-logo >>> img {
     width: 100%;
-    height: 90px;
+    height: 100px;
     object-fit: contain;
+  }
+
+  .showcase-thumbnail-wrapper {
+    padding: 0 1rem !important;
+    margin-top: -7rem !important;
+    width: 100%;
+  }
+
+  .showcase-desc-wrapper {
+    width: 100%;
+  }
+
+  .showcase-theme-m-tn .showcase-bottom {
+    margin-top: 0 !important;
   }
 }
 
@@ -277,6 +328,15 @@ export default {
   display: flex;
   align-items: center;
   margin-top: 0.5rem;
+}
+
+/* Mobile responsive - full width */
+@media (max-width: 767.98px) {
+  .showcase-stats-wrapper {
+    width: 100%;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+  }
 }
 
 /* Container as specified: width 336px, height 52px, rounded, padding and gap */
@@ -344,11 +404,36 @@ export default {
   height: 1rem;
 }
 
-/* responsive: shrink width on small screens */
-@media (max-width: 420px) {
+/* responsive: full width on mobile screens */
+@media (max-width: 767.98px) {
   .showcase-stats {
     width: 100%;
-    max-width: 336px;
+    max-width: 100%;
+    padding: 4px 8px;
+    gap: 65px;
+  }
+
+  .stat-value {
+    font-size: 12px;
+  }
+
+  .stat-icon {
+    width: 24px;
+    height: 24px;
+    font-size: 14px;
+  }
+
+  .stat-icon i {
+    font-size: 14px;
+  }
+
+  .img-imdb {
+    width: 24px;
+    height: 24px;
+  }
+
+  .showcase-theme-m-tn .showcase-bottom {
+    margin-top: 0 !important;
   }
 }
 

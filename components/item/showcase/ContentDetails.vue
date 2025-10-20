@@ -153,4 +153,14 @@ export default {
   opacity: 0.6;
   font-size: 1.1rem;
 }
+
+section#movie {
+  margin-top: -7rem !important;
+}
+
+@media (max-width: 768px) {
+  section#movie {
+    margin-top: -5rem !important;
+  }
+}
 </style>

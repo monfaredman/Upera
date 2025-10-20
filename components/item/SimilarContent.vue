@@ -69,6 +69,13 @@ export default {
 </script>
 
 <style scoped>
-/* Removed gap: 1rem - it conflicts with Swiper's slidesPerView calculation.
-   Use spaceBetween in swiperOption instead (currently set to 10px) */
+section {
+  margin-top: -7rem !important;
+}
+
+@media (max-width: 768px) {
+  section {
+    margin-top: -5rem !important;
+  }
+}
 </style>

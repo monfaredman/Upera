@@ -79,6 +79,10 @@ export default {
     showGenres: Boolean,
     noTop: Boolean,
     setting: Boolean,
+    startFetching: {
+      type: Boolean,
+      default: false,
+    },
     listGenre: {
       type: String,
       default: null,
@@ -118,29 +122,8 @@ export default {
         { text: '۱۳ تا ۱۵ سال', value: 'R' },
       ],
       genre: 0,
-      genres: [
-        { text: 'همه ژانرها', value: 0 },
-        { text: 'اکشن', value: 'action' },
-        { text: 'ماجراجویی', value: 'adventure' },
-        { text: 'انیمیشن', value: 'animation' },
-        { text: 'بیوگرافی', value: 'biography' },
-        { text: 'کمدی', value: 'comedy' },
-        { text: 'جنائی', value: 'crime' },
-        { text: 'مستند', value: 'documentary' },
-        { text: 'درام', value: 'drama' },
-        { text: 'خانوادگی', value: 'family' },
-        { text: 'ابرقهرمانی', value: 'superhero' },
-        { text: 'فانتزی', value: 'fantasy' },
-        { text: 'تاریخی', value: 'history' },
-        { text: 'ترسناک', value: 'horror' },
-        { text: 'موزیکال', value: 'music' },
-        { text: 'معمایی', value: 'mystery' },
-        { text: 'عاشقانه', value: 'romance' },
-        { text: 'علمی تخیلی', value: 'sci_fi' },
-        { text: 'ورزشی', value: 'sport' },
-        { text: 'هیجان انگیز', value: 'thriller' },
-        { text: 'جنگی', value: 'war' },
-      ],
+      genres: [{ text: 'همه ژانرها', value: 0 }],
+      genresFetched: false,
       localshowgenres: true,
       visible: true,
       disable_age: false,
@@ -153,8 +136,18 @@ export default {
     ...mapGetters({ filter_loading: 'filter/filter_loading' }),
   },
 
+  watch: {
+    startFetching(newVal) {
+      if (newVal && !this.genresFetched) {
+        this.fetchGenres()
+      }
+    },
+  },
+
   mounted() {
-    this.fetchGenres()
+    if (this.startFetching) {
+      this.fetchGenres()
+    }
     if (window.innerWidth <= 576) this.visible = false
 
     this.windowWidth = window.innerWidth
@@ -214,9 +207,15 @@ export default {
               }
             }
           }
+          // Mark genres as fetched and emit ready event
+          this.genresFetched = true
+          this.$emit('filters-ready')
         })
         .catch((error) => {
           console.error('Error fetching genres:', error)
+          // Mark as fetched and emit ready even on error to prevent infinite loading
+          this.genresFetched = true
+          this.$emit('filters-ready')
         })
     },
     Resize(e) {

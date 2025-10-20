@@ -48,6 +48,7 @@
           :is-watchlist="isWatchlist"
           :total-claps="totalClaps"
           :actions="actions"
+          :is-loading-stats="isLoadingStats"
           @play="$emit('play')"
           @buy="$emit('buy')"
           @subscription="$emit('subscription')"
@@ -113,6 +114,10 @@ export default {
     actions: {
       type: Object,
       default: () => ({}),
+    },
+    isLoadingStats: {
+      type: Boolean,
+      default: false,
     },
   },
   emits: [
