@@ -40,6 +40,33 @@
       />
     </div>
 
+    <!-- New Types Section with Skeleton -->
+    <HorizontalListSkeleton v-if="isLoadingLives" variant="backdrop" />
+    <div v-else-if="data" class="mt-4">
+      <HorizontalList
+        :title-en="lives.list_en"
+        :title-fa="lives.list_fa"
+        :show-all-route="{ name: 'lists-list', params: { list: lives.list } }"
+        :items="[simpleData]"
+        instance-name="livesSwip"
+        :options="SWIPER_OPTION_BACKDROP"
+        card-variant="backdrop"
+        :size="{ w: 364, h: 190 }"
+        :link-builder="buildIdRoute"
+        :show-badges="false"
+        :add-series-class="false"
+        :hoverable="true"
+        :type="'slider'"
+        :single-item-type="'detailed'"
+        :actions-buttons="actionsButtons"
+        :show-icon-actions="true"
+        @toggle-watchlist="handleToggleWatchlist"
+        @share="handleShare"
+        @clap-start="handleClapStart"
+        @clap-stop="handleClapStop"
+        @openDownloadModal="handleOpenDownloadModal"
+      />
+    </div>
     <!-- Lives Section with Skeleton -->
     <HorizontalListSkeleton v-if="isLoadingLives" variant="backdrop" />
     <div v-else-if="lives && lives.data.length" class="mt-4">
@@ -56,6 +83,7 @@
         :show-badges="false"
         :add-series-class="false"
         :hoverable="true"
+        :type="'live'"
       />
     </div>
 
@@ -76,6 +104,7 @@
           :show-badges="false"
           :add-series-class="false"
           :hoverable="true"
+          :type="'ugc'"
         />
       </div>
     </div>
@@ -378,6 +407,7 @@
             :size="{ w: 142, h: 212 }"
             :link-builder="buildIdRoute"
             :show-badges="true"
+            :type="'discover'"
           />
         </div>
       </div>
@@ -398,6 +428,22 @@
         <span slot="no-results" />
       </infinite-loading>
     </client-only>
+
+    <!-- Sharing Modal -->
+    <client-only>
+      <b-modal
+        id="modal-sharing"
+        v-model="modalsharing"
+        centered
+        hide-footer
+        :title="'اشتراک گذاری'"
+      >
+        <Socialsharing
+          :mtitle="simpleData.name_fa"
+          :description="simpleData.overview_fa"
+        />
+      </b-modal>
+    </client-only>
   </div>
 </template>
 
@@ -407,6 +453,7 @@ import FilterContents from '@/components/FilterContents'
 import HorizontalList from '@/components/HorizontalList'
 import ShowcaseCarousel from '@/components/ShowcaseCarousel'
 import OfferSection from '@/components/OfferSection'
+import Socialsharing from '@/components/Socialsharing'
 
 const SWIPER_OPTION_OFFER = {
   slidesPerView: 5.5,
@@ -472,6 +519,7 @@ export default {
     HorizontalList,
     ShowcaseCarousel,
     OfferSection,
+    Socialsharing,
     ShowcaseSkeleton: () =>
       import('@/components/item/skeletons/ShowcaseSkeleton.vue'),
     HorizontalListSkeleton: () =>
@@ -494,6 +542,72 @@ export default {
       page: 1,
       infiniteId: +new Date(),
       swiperKey: +new Date(),
+      simpleData: {
+        type: 'episode',
+        id: '75b3d0f0-ad80-11f0-9b5c-9beab698e683',
+        name: 'Episode 3 One Punch Man 3',
+        name_fa: 'قسمت 3 مرد یک مشتی 3',
+        created_at: '2025-10-20 06:46:09',
+        updated_at: '2025-10-20 07:21:06',
+        poster: 'T9VirIhT1MuQ0rIOr9wT.jpg',
+        overview:
+          'On his way to hunt heroes, Garou dines and dashes at a restaurant, but is chased by Saitama.',
+        overview_fa:
+          'گارو در راه شکار قهرمانان، شام می‌خورد و به سرعت به رستورانی می‌رود، اما سایتاما او را تعقیب می‌کند.',
+        year: 2015,
+        genre: 'Animation,Comedy,Action,Adventure',
+        rate: 8.7,
+        backdrop: 'tZxu5lATl1K915pTAveQ.jpg',
+        age: 'PG-13',
+        runtime: 24,
+        free: 0,
+        traffic: 1,
+        traffic_oo: 0,
+        internal_studio: 1,
+        current_time: 0,
+        duration_time: 0,
+        player: 'default',
+        upera: '3057510',
+        cloud: 'aws',
+        ir: 0,
+        owner: 8971787,
+        imdb: 'tt4508902',
+        persian: 0,
+        series_id: '0449b6c0-ad0f-11ef-9aac-c5e79a75a52b',
+        series_name: 'One Punch Man',
+        series_name_fa: 'مرد یک مشتی',
+        season_number: '3',
+        episode_number: '3',
+        old_name_fa: 'ویژگی‌های هیولا',
+        old_name: 'Monster Traits',
+        isWatchlist: 0,
+        userClaps: 0,
+      },
+      actionsButtons: [
+        {
+          mainButton: {
+            exist: true,
+            action: 'play',
+            label: {
+              en: 'Play',
+              fa: 'نمایش',
+            },
+            type: {
+              en: 'Play',
+              fa: 'نمایش',
+            },
+          },
+
+          downloadButton: {
+            exist: true,
+            action: 'openDownloadModal',
+            label: {
+              en: 'Free Download',
+              fa: 'دانلود رایگان',
+            },
+          },
+        },
+      ],
       distance: -Infinity,
       nocontent: false,
       ghostApi: '/getV2/discover',
@@ -510,6 +624,11 @@ export default {
       isLoadingDiscover: true,
       isLoadingFilters: true,
       startFetchingFilters: false,
+      // Clap and watchlist state
+      clapinterval: false,
+      user_claps_counter: 0,
+      clapCheckTimer: false,
+      modalsharing: false,
     }
   },
   computed: {
@@ -524,6 +643,16 @@ export default {
       if (k) {
         window.removeEventListener('resize', this.specialsize)
       }
+    }
+    // Clear clap interval if exists
+    if (this.clapinterval) {
+      clearInterval(this.clapinterval)
+      this.clapinterval = false
+    }
+    // Clear clap timer if exists
+    if (this.clapCheckTimer) {
+      clearTimeout(this.clapCheckTimer)
+      this.clapCheckTimer = false
     }
   },
   async mounted() {
@@ -661,6 +790,7 @@ export default {
         )
         if (response.status === 200) {
           this.data = response.data.data
+          console.log(this.data)
           if (!this.data.data.length) this.nocontent = true
         }
       } catch (error) {
@@ -789,6 +919,108 @@ export default {
         })
 
       this.page = nextPage
+    },
+    // Icon Actions handlers
+    handleToggleWatchlist(item) {
+      if (!this.$auth.loggedIn) {
+        this.$store.dispatch('login/SHOW_MODAL', {
+          premessage: null,
+          premobile: null,
+          preredirect: null,
+          prerefresh: false,
+        })
+        return
+      }
+
+      // Toggle watchlist status for the item
+      if (item.isWatchlist !== undefined) {
+        item.isWatchlist = item.isWatchlist === 0 ? 1 : 0
+      }
+
+      this.$axios.post('/create/watchlist', {
+        id: item.id,
+        type: item.type,
+      })
+    },
+    handleShare() {
+      this.modalsharing = true
+    },
+    handleClapStart(item) {
+      if (!this.$auth.loggedIn) {
+        this.$store.dispatch('login/SHOW_MODAL', {
+          premessage: null,
+          premobile: null,
+          preredirect: null,
+          prerefresh: false,
+        })
+        return
+      }
+      if (!this.clapinterval) {
+        this.clapinterval = setInterval(() => {
+          this.incrementClapLocal(item)
+        }, 30)
+      }
+    },
+    handleClapStop(item) {
+      if (this.clapinterval) {
+        clearInterval(this.clapinterval)
+        this.clapinterval = false
+        this.flushClaps(item, false)
+      }
+    },
+    incrementClapLocal(item) {
+      this.user_claps_counter += 1
+      if (item.userClaps !== undefined) {
+        item.userClaps = parseInt(item.userClaps || 0) + 1
+      }
+    },
+    flushClaps(item, immediate = false) {
+      if (this.clapCheckTimer) {
+        clearTimeout(this.clapCheckTimer)
+        this.clapCheckTimer = false
+      }
+      if (this.user_claps_counter < 1) return
+
+      const pending = this.user_claps_counter
+      const revert = () => {
+        if (item.userClaps !== undefined) {
+          item.userClaps = parseInt(item.userClaps || 0) - pending
+        }
+      }
+
+      const send = () => {
+        this.$axios
+          .post('/add/clap', {
+            id: item.id,
+            type: item.type,
+            claps: pending,
+          })
+          .then(
+            (res) => {
+              if (res.status !== 200) revert()
+            },
+            () => {
+              revert()
+            }
+          )
+        this.user_claps_counter = 0
+      }
+
+      if (immediate) {
+        send()
+      } else {
+        this.clapCheckTimer = setTimeout(() => {
+          send()
+        }, 2000)
+      }
+    },
+    handleOpenDownloadModal(item) {
+      // Navigate to the item page which has download functionality
+      this.$router.push({
+        name: item.type + '-show-id',
+        params: { id: item.id },
+        query: { force_download: 1 },
+      })
     },
   },
 }

@@ -2,6 +2,7 @@
   <div class="icon-actions" :class="{ 'row h-full': isMobile }">
     <a
       :class="watchlistClasses"
+      :style="customStyle"
       @click.prevent="$emit('toggle-watchlist')"
       class="icon-btn-style"
     >
@@ -15,6 +16,7 @@
 
     <a
       :class="shareClasses"
+      :style="customStyle"
       @click.prevent="$emit('share')"
       class="icon-btn-style"
     >
@@ -22,6 +24,7 @@
     </a>
     <a
       :class="clapClasses"
+      :style="customStyle"
       @mousedown="$emit('clap-start')"
       @mouseleave="$emit('clap-stop')"
       @mouseup="$emit('clap-stop')"
@@ -59,6 +62,10 @@ export default {
     clapActive: {
       type: Boolean,
       default: false,
+    },
+    customStyle: {
+      type: Object,
+      default: () => ({}),
     },
   },
   computed: {

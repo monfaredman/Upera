@@ -7,17 +7,17 @@
       @click="handleMainAction"
     >
       <span class="smallsrm">
+        <i
+          v-if="actions.mainButton.action === 'play'"
+          class="fa fa-play pr-2"
+        />
+        <i v-else class="fa fa-shopping-cart pr-2" />
         <span>
           {{ mainButtonDisplayLabel }}
           <span v-if="showEpisodeNumber">
             {{ $t('show.episode') }} {{ episode.episode_number }}
           </span>
         </span>
-        <i
-          v-if="actions.mainButton.action === 'play'"
-          class="fa fa-play pl-2"
-        />
-        <i v-else class="fa fa-shopping-cart pl-2" />
       </span>
     </button>
 

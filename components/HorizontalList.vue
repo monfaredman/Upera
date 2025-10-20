@@ -1,6 +1,58 @@
+<!--
+  HorizontalList Component
+
+  This component supports 3 different display types:
+
+  TYPE 1: Normal Swiper List (Multiple Items)
+  - Default behavior for multiple items
+  - Supports: normal, lives, ugcs, and offer layouts
+  - Uses swiper for horizontal scrolling
+  - Example usage:
+    <HorizontalList
+      :items="movies"
+      :options="swiperOptions"
+      :linkBuilder="buildLink"
+      titleFa="فیلم‌ها"
+      titleEn="Movies"
+    />
+
+  TYPE 2: Single Item Simple Card
+  - Displays when items.length === 1 and singleItemType="simple"
+  - Shows full-width image with max-height: 324px and border-radius: 16px
+  - Example usage:
+    <HorizontalList
+      :items="[featuredItem]"
+      :linkBuilder="buildLink"
+      singleItemType="simple"
+      titleFa="ویژه"
+    />
+
+  TYPE 3: Single Item Detailed Card
+  - Displays when items.length === 1 and singleItemType="detailed"
+  - Shows full-width card with poster on right and details on left
+  - Includes: title, description, action buttons, and optional icon actions
+  - Example usage:
+    <HorizontalList
+      :items="[featuredItem]"
+      :linkBuilder="buildLink"
+      singleItemType="detailed"
+      :actionsButtons="[{
+        mainButton: { exist: true, action: 'play', label: { en: 'Play', fa: 'نمایش' } },
+        downloadButton: { exist: true, action: 'openDownloadModal', label: { en: 'Free Download', fa: 'دانلود رایگان' } }
+      }]"
+      :showIconActions="true"
+      @toggle-watchlist="handleWatchlist"
+      @share="handleShare"
+      @clap-start="handleClapStart"
+      @clap-stop="handleClapStop"
+      titleFa="پیشنهاد ویژه"
+    />
+-->
 <template>
   <section class="horizontal-list-container reach-begin">
+    <!-- Title and Show All - Only for Type 1 (Normal Swiper) -->
     <div
+      v-if="!isSingleItem"
       class="d-flex justify-content-between align-items-center mb-2 container-fluid"
     >
       <div class="d-flex align-items-center justify-content-start">
@@ -33,7 +85,9 @@
       </nuxt-link>
     </div>
 
+    <!-- Type 1: Normal swiper layout (default + lives + ugcs + offer) -->
     <div
+      v-if="!isSingleItem"
       ref="swiperContainer"
       v-swiper:[instanceName]="mergedOptions"
       class="swiper-container newset-slider2"
@@ -60,15 +114,148 @@
         </div>
       </div>
     </div>
+
+    <!-- Type 2: Single item - Full width simple card -->
+    <div
+      v-else-if="isSingleItem && singleItemType === 'simple'"
+      class="single-item-simple-card container-fluid"
+    >
+      <nuxt-link :to="resolvedSingleItemLink" class="single-simple-link">
+        <b-img
+          :src="singleItemImageSrc"
+          :alt="singleItem.name || singleItem.title"
+          fluid
+          rounded
+          class="single-simple-image"
+        />
+      </nuxt-link>
+    </div>
+
+    <!-- Type 3: Single item - Full width card with poster + details -->
+    <div
+      v-else-if="isSingleItem && singleItemType === 'detailed'"
+      class="single-item-detailed-card container-fluid"
+    >
+      <div
+        class="single-detailed-content"
+        :style="{
+          backgroundImage: `linear-gradient(to right, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.7) 50%, rgba(0, 0, 0, 0.5) 100%), url('${singleItemImageSrc}')`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+        }"
+      >
+        <!-- Details on the left -->
+        <div class="single-detailed-info">
+          <h3 class="item-title">{{ singleItem.name || singleItem.title }}</h3>
+          <p
+            v-if="singleItem.overview_fa || singleItem.description"
+            class="item-description"
+          >
+            {{
+              truncateDescription(
+                singleItem.overview_fa || singleItem.description
+              )
+            }}
+          </p>
+
+          <!-- All Actions in One Row -->
+          <div class="item-all-actions">
+            <!-- Action Buttons -->
+            <template v-if="actionsButtons && actionsButtons.length > 0">
+              <template v-for="(buttonGroup, index) in actionsButtons">
+                <!-- Main Button -->
+                <button
+                  v-if="buttonGroup.mainButton && buttonGroup.mainButton.exist"
+                  :key="`main-${index}`"
+                  class="btn btn-main"
+                  @click.prevent="handleAction(buttonGroup.mainButton.action)"
+                >
+                  <span>
+                    {{ getButtonLabel(buttonGroup.mainButton.label) }}
+                    <i
+                      v-if="buttonGroup.mainButton.action === 'play'"
+                      class="fa fa-play pl-2"
+                    />
+                    <i
+                      v-else-if="buttonGroup.mainButton.action === 'buy'"
+                      class="fa fa-shopping-cart pl-2"
+                    />
+                  </span>
+                </button>
+
+                <!-- Download Button -->
+                <button
+                  v-if="
+                    buttonGroup.downloadButton &&
+                    buttonGroup.downloadButton.exist
+                  "
+                  :key="`download-${index}`"
+                  class="btn btn-download"
+                  @click.prevent="
+                    handleAction(buttonGroup.downloadButton.action)
+                  "
+                >
+                  <span>
+                    {{ getButtonLabel(buttonGroup.downloadButton.label) }}
+                    <i class="fa fa-download pl-2" />
+                  </span>
+                </button>
+              </template>
+            </template>
+
+            <!-- Icon Actions -->
+            <IconActions
+              v-if="showIconActions"
+              :variant="'desktop'"
+              :is-watchlist="singleItem.isWatchlist || 0"
+              :user-claps="singleItem.userClaps || 0"
+              :clap-active="clapActive"
+              :custom-style="{
+                width: '32px',
+                height: '32px',
+                borderRadius: '4px',
+                backgroundColor: '#00000073',
+                color: '#ffffff',
+                display: 'flex',
+                alignItems: 'center',
+                fontSize: '20px !important',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                transition: 'background-color 0.3s ease',
+              }"
+              @toggle-watchlist="$emit('toggle-watchlist', singleItem)"
+              @share="$emit('share', singleItem)"
+              @clap-start="$emit('clap-start', singleItem)"
+              @clap-stop="$emit('clap-stop', singleItem)"
+            />
+          </div>
+        </div>
+
+        <!-- Poster on the right -->
+        <div class="single-detailed-poster">
+          <nuxt-link :to="resolvedSingleItemLink">
+            <b-img
+              :src="singleItemPosterSrc"
+              :alt="singleItem.name || singleItem.title"
+              fluid
+              rounded
+              class="poster-image"
+            />
+          </nuxt-link>
+        </div>
+      </div>
+    </div>
   </section>
 </template>
 
 <script>
 import MediaCard from '@/components/MediaCard'
+import IconActions from '@/components/item/showcase/IconActions'
 
 export default {
   name: 'HorizontalList',
-  components: { MediaCard },
+  components: { MediaCard, IconActions },
   props: {
     // Titles
     titleEn: { type: String, default: '' },
@@ -99,6 +286,28 @@ export default {
     showBadges: { type: Boolean, default: true },
     showTitle: { type: Boolean, default: true },
     addSeriesClass: { type: Boolean, default: true },
+
+    // Single item type: 'simple' | 'detailed' | null (auto-detect)
+    singleItemType: { type: String, default: null },
+
+    // Action buttons for single item detailed view
+    actionsButtons: {
+      type: Array,
+      default: () => [],
+    },
+
+    // Show icon actions (watchlist, share, clap) for Type 3
+    showIconActions: {
+      type: Boolean,
+      default: false,
+    },
+
+    type: { type: String, default: 'discover' },
+  },
+  data() {
+    return {
+      clapActive: false,
+    }
   },
   computed: {
     localizedTitle() {
@@ -135,6 +344,43 @@ export default {
         watchOverflow: true,
       }
       return { ...defaults, ...(this.options || {}) }
+    },
+
+    // Check if we have exactly one item
+    isSingleItem() {
+      return this.items && this.items.length === 1 && this.type === 'slider'
+    },
+
+    // Get the single item
+    singleItem() {
+      return this.isSingleItem ? this.items[0] : null
+    },
+
+    // Build link for single item
+    resolvedSingleItemLink() {
+      if (!this.singleItem) return '#'
+
+      if (typeof this.linkBuilder === 'function') {
+        return this.linkBuilder(this.singleItem)
+      }
+      if (typeof this.linkBuilder === 'string') {
+        return this.linkBuilder
+      }
+      return this.linkBuilder || '#'
+    },
+
+    // Get image source for simple single item (backdrop)
+    singleItemImageSrc() {
+      if (!this.singleItem) return ''
+      const backdrop = this.singleItem.backdrop || this.singleItem.poster || ''
+      return this.backdropSrc(backdrop)
+    },
+
+    // Get poster source for detailed single item
+    singleItemPosterSrc() {
+      if (!this.singleItem) return ''
+      const poster = this.singleItem.poster || ''
+      return this.posterSrc(poster)
     },
   },
   watch: {
@@ -177,6 +423,59 @@ export default {
         container.swiper.update()
       }
     },
+
+    // Poster image helper
+    posterSrc(poster) {
+      if (!poster) return ''
+      const prefix =
+        'https://thumb.upera.shop/thumb?w=400&q=90&fmt=webp&src=https://thumb.upera.shop/s3/posters/'
+      return poster.startsWith(prefix) ? poster : prefix + poster
+    },
+
+    // Backdrop image helper
+    backdropSrc(backdrop) {
+      if (!backdrop) return ''
+      const prefix =
+        'https://thumb.upera.shop/thumb?w=364&h=190&q=100&a=t&src=https://cdn.upera.shop/s3/backdrops/'
+      return backdrop.startsWith('https://') ? backdrop : prefix + backdrop
+    },
+
+    // Truncate description to a reasonable length
+    truncateDescription(desc, maxLength = 200) {
+      if (!desc) return ''
+      if (desc.length <= maxLength) return desc
+      return desc.substring(0, maxLength) + '...'
+    },
+
+    // Get localized button label
+    getButtonLabel(label) {
+      if (!label) return ''
+      if (typeof label === 'string') return label
+
+      const isFa = this.$i18n && this.$i18n.locale === 'fa'
+      return isFa ? label.fa || label.en : label.en || label.fa
+    },
+
+    // Handle action button clicks
+    handleAction(action) {
+      if (!action || !this.singleItem) return
+
+      if (action === 'play') {
+        // Navigate to the item's page or emit play event
+        this.$router.push(this.resolvedSingleItemLink)
+      } else if (action === 'buy') {
+        // Emit buy event or navigate
+        this.$emit('buy', this.singleItem)
+      } else if (action === 'subscription') {
+        this.$emit('subscription', this.singleItem)
+      } else if (action === 'openDownloadModal') {
+        // Emit download modal event
+        this.$emit('openDownloadModal', this.singleItem)
+      } else {
+        // Generic action emit
+        this.$emit(action, this.singleItem)
+      }
+    },
   },
 }
 </script>
@@ -187,6 +486,179 @@ export default {
   color: #d4d4d4;
 }
 
+/* ==================== TYPE 2: Single Item Simple Card ==================== */
+.single-item-simple-card {
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.single-simple-link {
+  display: block;
+  width: 100%;
+  max-height: 324px;
+  overflow: hidden;
+  border-radius: 16px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.single-simple-image {
+  width: 100%;
+  height: auto;
+  max-height: 324px;
+  object-fit: cover;
+  border-radius: 16px;
+  display: block;
+}
+
+/* ==================== TYPE 3: Single Item Detailed Card ==================== */
+.single-item-detailed-card {
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.single-detailed-content {
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: stretch;
+  gap: 1rem;
+  border-radius: 16px;
+  padding: 1.5rem;
+  position: relative;
+  overflow: hidden;
+  justify-content: start;
+}
+
+.single-detailed-poster {
+  flex-shrink: 0;
+  width: 159px;
+}
+
+.single-detailed-poster .poster-image {
+  width: 159px;
+  height: 236px;
+  border-radius: 8px;
+  object-fit: cover;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.single-detailed-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1rem;
+  color: #fff;
+  max-width: 30%;
+}
+
+.single-detailed-info .item-title {
+  font-weight: 700;
+  font-size: 25px;
+  text-align: right;
+  color: #ffffff;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.single-detailed-info .item-description {
+  font-weight: 600;
+  font-size: 16px;
+  text-align: right;
+  color: #d4d4d4;
+  margin: 0;
+  margin-bottom: 1rem;
+  max-height: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* All Actions in One Row */
+.single-detailed-info .item-all-actions {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.single-detailed-info .btn-main,
+.single-detailed-info .btn-download {
+  width: 126px;
+  height: 32px;
+  border-radius: 7px;
+  border: none;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.5rem;
+}
+
+.single-detailed-info .btn-main {
+  background-color: #ff6633;
+  color: #ffffff;
+}
+
+.single-detailed-info .btn-main:hover {
+  background-color: #e55529;
+  transform: translateY(-2px);
+}
+
+.single-detailed-info .btn-download {
+  background-color: #f6f6f6;
+  color: #373737;
+}
+
+.single-detailed-info .btn-download:hover {
+  background-color: #e0e0e0;
+  transform: translateY(-2px);
+}
+
+.single-detailed-info .btn-main:active,
+.single-detailed-info .btn-download:active {
+  transform: translateY(0);
+}
+
+/* Icon Actions in Type 3 - inline with buttons */
+.single-detailed-info .item-all-actions .icon-actions {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+/* Responsive for single item layouts */
+@media (max-width: 768px) {
+  .single-detailed-content {
+    flex-direction: column;
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  .single-detailed-poster {
+    width: 100%;
+    max-width: 200px;
+    margin: 0 auto;
+  }
+
+  .single-detailed-info .item-title {
+    font-size: 22px;
+  }
+
+  .single-detailed-info .item-description {
+    font-size: 13px;
+    max-height: 80px;
+  }
+
+  .single-simple-image {
+    max-height: 200px;
+  }
+}
+
+/* ==================== TYPE 1: Original Styles (Offer Slider) ==================== */
 /* Base (xs <640): single row, no spanning */
 .offer-slider .swiper-wrapper {
   display: grid;
