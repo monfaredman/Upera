@@ -293,7 +293,7 @@ export default {
 
   .showcase-thumbnail-wrapper {
     padding: 0 1rem !important;
-    margin-top: -7rem !important;
+    margin-top: -2rem !important;
     width: 100%;
   }
 

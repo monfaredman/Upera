@@ -91,6 +91,7 @@ export default {
 @media (max-width: 767px) {
   .casts-tab-container {
     padding: 12px 0;
+    margin-top: -3rem !important;
   }
 
   .section-title {

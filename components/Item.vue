@@ -40,7 +40,7 @@
     </template>
     <div class="content-body">
       <!-- add nav-class so BootstrapVue generates a class we can target reliably -->
-      <b-tabs card pills content-class="p-3" nav-class="item-tabs-nav">
+      <b-tabs card content-class="p-3">
         <!-- قسمت‌ها : SeasonEpisodes -->
         <b-tab
           v-if="type === 'series' || type === 'episode'"
@@ -936,6 +936,8 @@ export default {
 
 ::v-deep .nav-tabs .nav-item {
   margin-bottom: 0;
+  position: sticky;
+  z-index: 2;
 }
 
 ::v-deep .nav-tabs .nav-link {
@@ -951,6 +953,9 @@ export default {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  position: sticky;
+  z-index: 1;
+  will-change: transform;
 }
 
 /* hover */
@@ -958,22 +963,21 @@ export default {
   background: rgba(255, 255, 255, 0.08);
   transform: translateY(-2px);
   color: #fff;
-}
-
-/* active tab */
-::v-deep .nav-tabs .nav-link.active,
-::v-deep .nav-tabs .nav-link:active {
-  background: linear-gradient(90deg, #ff7a18 0%, #af002d 100%);
-  color: #fff !important;
-  box-shadow: 0 8px 22px rgba(175, 0, 45, 0.22);
-  border-radius: 10px;
-  transform: none;
+  z-index: 2;
 }
 
 /* disabled state */
 ::v-deep .nav-tabs .nav-link.disabled {
   opacity: 0.6;
   pointer-events: none;
+}
+
+::v-deep .card-header {
+  padding: 0 !important;
+  position: sticky !important;
+  top: 1rem !important;
+  z-index: 1000 !important;
+  will-change: transform;
 }
 
 /* Ensure the card header doesn't show default border under the tabs */
@@ -993,9 +997,10 @@ export default {
   background: #00000099;
   backdrop-filter: blur(12px);
   z-index: 1;
-  position: relative;
-  top: -6rem;
-  right: 2rem;
+  position: sticky;
+  top: 1rem;
+  right: 3rem;
+  margin-top: -5rem !important;
 }
 
 /* Tablet responsive */
@@ -1006,7 +1011,7 @@ export default {
     padding-right: 14px !important;
     padding-bottom: 12px;
     padding-left: 14px;
-    top: -4rem;
+    top: 0;
     right: 1rem;
   }
 }
@@ -1022,7 +1027,7 @@ export default {
     padding-right: 12px !important;
     padding-bottom: 10px;
     padding-left: 12px;
-    top: -3rem;
+    top: 0;
     right: 1rem;
     left: 1rem;
     margin: 0 auto;
@@ -1032,20 +1037,21 @@ export default {
 /* Small mobile responsive */
 @media (max-width: 575.98px) {
   ::v-deep .card-header .nav {
-    width: 100%;
+    width: 93%;
     height: 20px;
     border-radius: 10px;
     padding-top: 4px;
     padding-right: 5px !important;
     padding-bottom: 4px;
     padding-left: 5px;
-    top: -1rem;
+    top: 0;
     right: 0;
     left: 0.5rem;
-    margin: 0 !important;
+    margin: 0 auto !important;
+    gap: 5px;
   }
 
-  ::v-deep .item-tabs-nav .nav-link {
+  ::v-deep .nav-tabs .nav-link {
     background: rgba(255, 255, 255, 0.04) !important;
     color: #ffffff !important;
     border: none !important;
@@ -1063,7 +1069,7 @@ export default {
     margin-top: 0;
   }
   .card-body {
-    margin-top: 50px;
+    margin-top: 2rem;
     padding: 0 !important;
   }
 
@@ -1164,11 +1170,14 @@ export default {
   color: #fff !important;
 }
 
-::v-deep .item-tabs-nav .nav-link.active,
-::v-deep .item-tabs-nav .nav-link:active {
+/* active tab */
+::v-deep .nav-tabs .nav-link.active,
+::v-deep .nav-tabs .nav-link:active {
+  background: transparent !important;
   color: #1b6be5 !important;
-  box-shadow: 0 8px 22px rgba(175, 0, 45, 0.22) !important;
-  border-radius: 10px !important;
-  transform: none !important;
+  box-shadow: 0 8px 22px rgba(175, 0, 45, 0.22);
+  border-radius: 10px;
+  transform: none;
+  z-index: 3;
 }
 </style>

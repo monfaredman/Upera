@@ -197,7 +197,7 @@ export default {
 </script>
 <style scoped>
 section#watching {
-  margin-top: -7rem !important;
+  margin-top: -2rem !important;
 }
 
 .season-dropdown {
@@ -442,7 +442,7 @@ section#watching {
 
 @media (max-width: 575.98px) {
   section#watching {
-    margin-top: -6rem !important;
+    margin-top: -3rem !important;
   }
 
   .episode-title {

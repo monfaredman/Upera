@@ -70,12 +70,12 @@ export default {
 
 <style scoped>
 section {
-  margin-top: -7rem !important;
+  margin-top: -2rem !important;
 }
 
 @media (max-width: 768px) {
   section {
-    margin-top: -5rem !important;
+    margin-top: -1rem !important;
   }
 }
 </style>

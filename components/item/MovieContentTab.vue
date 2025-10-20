@@ -200,6 +200,6 @@ export default {
 }
 
 section.movie-content-section {
-  margin-top: -7rem !important;
+  margin-top: -2rem !important;
 }
 </style>
