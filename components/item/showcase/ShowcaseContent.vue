@@ -182,10 +182,18 @@ export default {
     watchTime() {
       // using 'hour' from provided object as watch time fallback
       const src =
+        this.episode && this.episode.runtime !== undefined
+          ? this.episode.runtime
+          : (this.data && this.data.item && this.data.item.runtime) || ''
+      const hour =
         this.episode && this.episode.hour !== undefined
           ? this.episode.hour
           : (this.data && this.data.item && this.data.item.hour) || ''
-      return src ? `${src} min` : '-'
+      return src && this.type == 'movie'
+        ? `${src} دقیقه`
+        : hour && this.type !== 'movie'
+        ? `ساعت ${hour}`
+        : '-'
     },
     likes() {
       // prefer totalClaps prop, fallback to traffic or 0
@@ -282,7 +290,7 @@ export default {
     max-width: 220px !important;
     max-height: 100px !important;
     min-height: 60px !important;
-    margin-bottom: 0.5rem;
+    margin-bottom: 4rem !important;
   }
 
   .showcase-logo >>> img {
@@ -308,13 +316,13 @@ export default {
 
 @media (max-width: 992px) {
   .showcase-thumbnail-wrapper {
-    margin-top: 10rem !important;
+    margin-top: 10rem;
   }
 }
 
 @media (max-width: 1300px) {
   .showcase-thumbnail-wrapper {
-    margin-top: 10rem !important;
+    margin-top: 10rem;
   }
 }
 @media (min-width: 1300px) {

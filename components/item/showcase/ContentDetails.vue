@@ -155,7 +155,7 @@ export default {
 }
 
 section#movie {
-  margin-top: -2rem !important;
+  margin-top: -1rem !important;
 }
 
 @media (max-width: 768px) {

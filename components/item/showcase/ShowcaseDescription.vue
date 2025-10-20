@@ -11,11 +11,7 @@
             {{ ChooseLang(data.item.name, data.item.name_fa) }}
           </nuxt-link>
         </div>
-        <div
-          v-else
-          class="title text-invert mb-5 mb-md-3 title-item"
-          style="max-height: 3rem"
-        >
+        <div v-else class="title text-invert mb-5 mb-md-3 title-item">
           <nuxt-link :to="{ name: type + '-id', params: { id: data.item.id } }">
             {{ ChooseLang(data.item.series_name, data.item.series_name_fa) }}
           </nuxt-link>
@@ -38,7 +34,7 @@
       />
 
       <!-- Genres -->
-      <div class="text-invert mb-1 mb-md-3">
+      <div v-if="type !== 'episode'" class="text-invert mb-1 mb-md-3">
         <GenreTags :genres="data.item.new_genres" />
       </div>
 
@@ -81,15 +77,15 @@ export default {
   font-size: 44px !important;
   font-weight: 700 !important;
   white-space: nowrap;
-  line-height: 3rem;
+  line-height: 4rem;
 }
 
 /* Keep same size on mobile as per requirements */
 @media (max-width: 767.98px) {
   .title-item {
-    font-size: 44px !important;
+    font-size: 30px !important;
     font-weight: 700 !important;
-    line-height: 3rem;
+    line-height: 4rem;
     white-space: normal;
   }
 

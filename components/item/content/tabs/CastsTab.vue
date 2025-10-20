@@ -54,11 +54,15 @@ export default {
 </script>
 
 <style scoped>
+.container-fluid {
+  padding-right: 0rem !important;
+}
+
 .casts-tab-container {
   padding: 20px 0;
   background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.02));
   border-radius: 8px;
-  margin-top: -6rem !important;
+  margin-top: -1rem !important;
 }
 
 .cast-section {

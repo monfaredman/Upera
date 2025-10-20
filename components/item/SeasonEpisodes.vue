@@ -197,7 +197,14 @@ export default {
 </script>
 <style scoped>
 section#watching {
-  margin-top: -2rem !important;
+  margin-top: -1rem !important;
+}
+
+.container-fluid {
+  padding-right: 1.5rem !important;
+}
+.col-lg-3.col-md-6.col-6.mb-3 {
+  padding-right: 0 !important;
 }
 
 .season-dropdown {

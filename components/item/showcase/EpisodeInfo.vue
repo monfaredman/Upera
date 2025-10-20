@@ -21,11 +21,12 @@ export default {
   },
   computed: {
     episodeInfoClasses() {
-      const baseClasses = 'text-invert mb-1 mb-md-3 font-weight-normal'
+      const baseClasses =
+        'text-invert mb-1 mb-md-3 font-weight-normal title-item-episode'
 
       return this.variant === 'mobile'
         ? `${baseClasses} p-fs-small title title2 d-lg-none`
-        : `${baseClasses} p-fs-small d-none d-lg-block`
+        : `${baseClasses} p-fs-small d-none d-lg-block `
     },
     isValidEpisode() {
       return (
@@ -37,3 +38,10 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+.title-item-episode {
+  font-size: 18px !important;
+  font-weight: 600 !important;
+}
+</style>

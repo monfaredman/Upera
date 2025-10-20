@@ -2782,7 +2782,6 @@ a.thumbnail-wrapper {
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  max-height: 2.75rem;
 }
 .showcase .text-invert > [class^='icon-'],
 .showcase .text-invert > [class*=' icon-'] {

@@ -976,7 +976,7 @@ export default {
   padding: 0 !important;
   position: sticky !important;
   top: 1rem !important;
-  z-index: 1000 !important;
+  z-index: 10 !important;
   will-change: transform;
 }
 
@@ -999,7 +999,7 @@ export default {
   z-index: 1;
   position: sticky;
   top: 1rem;
-  right: 3rem;
+  right: 2.5rem;
   margin-top: -5rem !important;
 }
 

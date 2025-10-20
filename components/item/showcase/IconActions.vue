@@ -91,7 +91,6 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
 }
 
 /* Desktop styles */
@@ -121,6 +120,10 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
+  }
+
+  .icon-actions {
+    gap: 8px !important;
   }
 }
 

@@ -69,8 +69,11 @@ export default {
 </script>
 
 <style scoped>
+.container-fluid {
+  padding-right: 0 !important;
+}
 section {
-  margin-top: -2rem !important;
+  margin-top: 0 !important;
 }
 
 @media (max-width: 768px) {

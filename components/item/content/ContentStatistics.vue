@@ -97,7 +97,7 @@ export default {
 <style scoped>
 .content-statistics-container {
   width: 100%;
-  padding: 0 1rem;
+  padding: 0;
 }
 
 .content-statistics {
@@ -113,7 +113,7 @@ export default {
   background: #525252;
   border-radius: 8px;
   opacity: 1;
-  margin: -6rem auto 0;
+  margin: 0 auto 0;
 }
 
 .content-info {
@@ -129,7 +129,7 @@ export default {
   font-size: 24px;
   font-weight: bold;
   color: #ffffff;
-  line-height: 1.2;
+  line-height: 2.2;
 }
 
 .chips-container {
