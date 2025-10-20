@@ -66,7 +66,24 @@
         @clap-stop="handleClapStop"
         @openDownloadModal="handleOpenDownloadModal"
       />
+      <HorizontalList
+        :title-en="lives.list_en"
+        :title-fa="lives.list_fa"
+        :show-all-route="{ name: 'lists-list', params: { list: lives.list } }"
+        :items="[simpleData]"
+        instance-name="livesSwip"
+        :options="SWIPER_OPTION_BACKDROP"
+        card-variant="backdrop"
+        :size="{ w: 364, h: 190 }"
+        :link-builder="buildIdRoute"
+        :show-badges="false"
+        :add-series-class="false"
+        :hoverable="true"
+        :type="'slider'"
+        :single-item-type="'simple'"
+      />
     </div>
+
     <!-- Lives Section with Skeleton -->
     <HorizontalListSkeleton v-if="isLoadingLives" variant="backdrop" />
     <div v-else-if="lives && lives.data.length" class="mt-4">
@@ -544,44 +561,40 @@ export default {
       swiperKey: +new Date(),
       simpleData: {
         type: 'episode',
-        id: '75b3d0f0-ad80-11f0-9b5c-9beab698e683',
-        name: 'Episode 3 One Punch Man 3',
-        name_fa: 'قسمت 3 مرد یک مشتی 3',
-        created_at: '2025-10-20 06:46:09',
-        updated_at: '2025-10-20 07:21:06',
-        poster: 'T9VirIhT1MuQ0rIOr9wT.jpg',
-        overview:
-          'On his way to hunt heroes, Garou dines and dashes at a restaurant, but is chased by Saitama.',
-        overview_fa:
-          'گارو در راه شکار قهرمانان، شام می‌خورد و به سرعت به رستورانی می‌رود، اما سایتاما او را تعقیب می‌کند.',
-        year: 2015,
-        genre: 'Animation,Comedy,Action,Adventure',
-        rate: 8.7,
-        backdrop: 'tZxu5lATl1K915pTAveQ.jpg',
+        id: '9f761f10-ad1c-11f0-a2bb-d96f4ae09bb8',
+        name: 'Episode 11 Midnight with Amirhossein Qeyasi S05',
+        name_fa: 'قسمت 11 نیمه شب با امیرحسین قیاسی ۵',
+        created_at: '2025-10-19 18:51:29',
+        updated_at: '2025-10-19 19:12:04',
+        poster: 'eZhlFjdY73xCtKo6ZhkK.jpg',
+        overview: 'توسعه اونا تند و ناپایدار؛ توسعه ما کند و پایدار!',
+        overview_fa: 'توسعه اونا تند و ناپایدار؛ توسعه ما کند و پایدار!',
+        year: 2025,
+        genre: 'Comedy',
+        rate: 6,
+        backdrop: 'RpCWoHg6swpNyucUxzsQ.jpg',
         age: 'PG-13',
-        runtime: 24,
+        runtime: 28,
         free: 0,
-        traffic: 1,
+        traffic: 0,
         traffic_oo: 0,
-        internal_studio: 1,
+        internal_studio: 0,
         current_time: 0,
         duration_time: 0,
         player: 'default',
-        upera: '3057510',
+        upera: '3057504',
         cloud: 'aws',
-        ir: 0,
-        owner: 8971787,
-        imdb: 'tt4508902',
-        persian: 0,
-        series_id: '0449b6c0-ad0f-11ef-9aac-c5e79a75a52b',
-        series_name: 'One Punch Man',
-        series_name_fa: 'مرد یک مشتی',
-        season_number: '3',
-        episode_number: '3',
-        old_name_fa: 'ویژگی‌های هیولا',
-        old_name: 'Monster Traits',
-        isWatchlist: 0,
-        userClaps: 0,
+        ir: 1,
+        owner: 3439731,
+        imdb: null,
+        persian: 1,
+        series_id: 'ab9fb8b0-76e5-11f0-ab63-bf0bb12031a6',
+        series_name: 'Midnight with Amirhossein Qeyasi S05',
+        series_name_fa: 'نیمه شب با امیرحسین قیاسی ۵',
+        season_number: '1',
+        episode_number: '11',
+        old_name_fa: 'قسمت یازدهم نیمه شب با امیرحسین قیاسی',
+        old_name: 'Midnight with Amirhossein Ghiasi S05 E11',
       },
       actionsButtons: [
         {

@@ -1,53 +1,3 @@
-<!--
-  HorizontalList Component
-
-  This component supports 3 different display types:
-
-  TYPE 1: Normal Swiper List (Multiple Items)
-  - Default behavior for multiple items
-  - Supports: normal, lives, ugcs, and offer layouts
-  - Uses swiper for horizontal scrolling
-  - Example usage:
-    <HorizontalList
-      :items="movies"
-      :options="swiperOptions"
-      :linkBuilder="buildLink"
-      titleFa="فیلم‌ها"
-      titleEn="Movies"
-    />
-
-  TYPE 2: Single Item Simple Card
-  - Displays when items.length === 1 and singleItemType="simple"
-  - Shows full-width image with max-height: 324px and border-radius: 16px
-  - Example usage:
-    <HorizontalList
-      :items="[featuredItem]"
-      :linkBuilder="buildLink"
-      singleItemType="simple"
-      titleFa="ویژه"
-    />
-
-  TYPE 3: Single Item Detailed Card
-  - Displays when items.length === 1 and singleItemType="detailed"
-  - Shows full-width card with poster on right and details on left
-  - Includes: title, description, action buttons, and optional icon actions
-  - Example usage:
-    <HorizontalList
-      :items="[featuredItem]"
-      :linkBuilder="buildLink"
-      singleItemType="detailed"
-      :actionsButtons="[{
-        mainButton: { exist: true, action: 'play', label: { en: 'Play', fa: 'نمایش' } },
-        downloadButton: { exist: true, action: 'openDownloadModal', label: { en: 'Free Download', fa: 'دانلود رایگان' } }
-      }]"
-      :showIconActions="true"
-      @toggle-watchlist="handleWatchlist"
-      @share="handleShare"
-      @clap-start="handleClapStart"
-      @clap-stop="handleClapStop"
-      titleFa="پیشنهاد ویژه"
-    />
--->
 <template>
   <section class="horizontal-list-container reach-begin">
     <!-- Title and Show All - Only for Type 1 (Normal Swiper) -->
@@ -139,7 +89,7 @@
       <div
         class="single-detailed-content"
         :style="{
-          backgroundImage: `linear-gradient(to right, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.7) 50%, rgba(0, 0, 0, 0.5) 100%), url('${singleItemImageSrc}')`,
+          backgroundImage: `linear-gradient(90deg, rgba(0, 0, 0, 0) 24.75%, #000000 100%), url('${singleItemImageSrc}')`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
@@ -147,7 +97,9 @@
       >
         <!-- Details on the left -->
         <div class="single-detailed-info">
-          <h3 class="item-title">{{ singleItem.name || singleItem.title }}</h3>
+          <h3 class="item-title">
+            {{ singleItem.name_fa || singleItem.name }}
+          </h3>
           <p
             v-if="singleItem.overview_fa || singleItem.description"
             class="item-description"
@@ -436,7 +388,7 @@ export default {
     backdropSrc(backdrop) {
       if (!backdrop) return ''
       const prefix =
-        'https://thumb.upera.shop/thumb?w=364&h=190&q=100&a=t&src=https://cdn.upera.shop/s3/backdrops/'
+        'https://thumb.upera.shop/thumb?w=700&h=300&q=100&a=t&src=https://cdn.upera.shop/s3/backdrops/'
       return backdrop.startsWith('https://') ? backdrop : prefix + backdrop
     },
 
@@ -520,25 +472,29 @@ export default {
   display: flex;
   flex-direction: row-reverse;
   align-items: stretch;
-  gap: 1rem;
+  gap: 1.5rem;
   border-radius: 16px;
-  padding: 1.5rem;
+  padding: 2rem;
   position: relative;
   overflow: hidden;
   justify-content: start;
+  min-height: 280px;
+  box-shadow: 0px 6px 12px 0px #0000004d;
 }
 
 .single-detailed-poster {
   flex-shrink: 0;
   width: 159px;
+  height: 236px;
 }
 
 .single-detailed-poster .poster-image {
-  width: 159px;
-  height: 236px;
+  width: 100%;
+  height: 100%;
   border-radius: 8px;
   object-fit: cover;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease;
 }
 
 .single-detailed-info {
@@ -548,16 +504,19 @@ export default {
   justify-content: space-between;
   gap: 1rem;
   color: #fff;
-  max-width: 30%;
+  max-width: 35% !important;
+  min-width: 0;
 }
 
 .single-detailed-info .item-title {
   font-weight: 700;
-  font-size: 25px;
+  font-size: 28px;
   text-align: right;
   color: #ffffff;
   margin: 0;
   line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .single-detailed-info .item-description {
@@ -627,25 +586,126 @@ export default {
 .single-detailed-info .item-all-actions .icon-actions {
   display: flex;
   align-items: center;
-  gap: 0;
+  gap: 0.5rem;
 }
 
-/* Responsive for single item layouts */
-@media (max-width: 768px) {
+/* ==================== RESPONSIVE BREAKPOINTS ==================== */
+
+/* Extra Large Desktops (≥1600px) */
+@media (min-width: 1600px) {
   .single-detailed-content {
-    flex-direction: column;
-    padding: 1rem;
-    gap: 1rem;
+    padding: 2.5rem;
+    gap: 2rem;
+    min-height: 300px;
   }
 
   .single-detailed-poster {
-    width: 100%;
-    max-width: 200px;
-    margin: 0 auto;
+    width: 180px;
+    height: 267px;
+  }
+
+  .single-detailed-info {
+    max-width: 45% !important;
   }
 
   .single-detailed-info .item-title {
-    font-size: 22px;
+    font-size: 32px;
+  }
+
+  .single-detailed-info .item-description {
+    font-size: 18px;
+    max-height: 120px;
+  }
+
+  .single-detailed-info .btn-main,
+  .single-detailed-info .btn-download {
+    width: 140px;
+    height: 36px;
+    font-size: 14px;
+  }
+}
+
+/* Large Desktops (1200px - 1599px) */
+@media (min-width: 1200px) and (max-width: 1599px) {
+  .single-detailed-content {
+    padding: 2rem;
+    gap: 1.5rem;
+  }
+
+  .single-detailed-info {
+    max-width: 50% !important;
+  }
+
+  .single-detailed-info .item-title {
+    font-size: 26px;
+  }
+
+  .single-detailed-info .item-description {
+    font-size: 15px;
+  }
+}
+
+/* Medium Desktops (992px - 1199px) */
+@media (min-width: 992px) and (max-width: 1199px) {
+  .single-detailed-content {
+    padding: 1.5rem;
+    gap: 1.25rem;
+    min-height: 260px;
+  }
+
+  .single-detailed-poster {
+    width: 140px;
+    height: 208px;
+  }
+
+  .single-detailed-info {
+    max-width: 55% !important;
+  }
+
+  .single-detailed-info .item-title {
+    font-size: 24px;
+  }
+
+  .single-detailed-info .item-description {
+    font-size: 14px;
+    max-height: 90px;
+  }
+
+  .single-detailed-info .btn-main,
+  .single-detailed-info .btn-download {
+    width: 120px;
+    height: 30px;
+    font-size: 11px;
+  }
+}
+
+/* Tablets (768px - 991px) */
+@media (min-width: 768px) and (max-width: 991px) {
+  .single-simple-link {
+    max-height: 250px;
+  }
+
+  .single-simple-image {
+    max-height: 250px;
+  }
+
+  .single-detailed-content {
+    padding: 1.25rem;
+    gap: 1rem;
+    min-height: 240px;
+  }
+
+  .single-detailed-poster {
+    width: 120px;
+    height: 178px;
+  }
+
+  .single-detailed-info {
+    max-width: 60% !important;
+  }
+
+  .single-detailed-info .item-title {
+    font-size: 20px;
   }
 
   .single-detailed-info .item-description {
@@ -653,8 +713,167 @@ export default {
     max-height: 80px;
   }
 
+  .single-detailed-info .btn-main,
+  .single-detailed-info .btn-download {
+    width: 110px;
+    height: 28px;
+    font-size: 11px;
+  }
+}
+
+/* Mobile Landscape & Small Tablets (576px - 767px) */
+@media (min-width: 576px) and (max-width: 767px) {
+  .single-simple-link {
+    max-height: 200px;
+    border-radius: 12px;
+  }
+
   .single-simple-image {
     max-height: 200px;
+    border-radius: 12px;
+  }
+
+  .single-detailed-content {
+    flex-direction: column;
+    align-items: center;
+    padding: 1.5rem;
+    gap: 1rem;
+    min-height: auto;
+  }
+
+  .single-detailed-poster {
+    width: 140px;
+    height: 208px;
+  }
+
+  .single-detailed-info {
+    max-width: 100% !important;
+    width: 100% !important;
+    text-align: center;
+  }
+
+  .single-detailed-info .item-title {
+    font-size: 20px;
+    text-align: center;
+  }
+
+  .single-detailed-info .item-description {
+    font-size: 13px;
+    max-height: 70px;
+    text-align: center;
+  }
+
+  .single-detailed-info .item-all-actions {
+    justify-content: center;
+    gap: 0.75rem;
+  }
+
+  .single-detailed-info .btn-main,
+  .single-detailed-info .btn-download {
+    width: 115px;
+    height: 32px;
+    font-size: 11px;
+  }
+}
+
+/* Mobile Portrait (320px - 575px) */
+@media (max-width: 575px) {
+  .single-simple-link {
+    max-height: 180px;
+    border-radius: 10px;
+  }
+
+  .single-simple-image {
+    max-height: 180px;
+    border-radius: 10px;
+  }
+
+  .single-detailed-content {
+    flex-direction: column;
+    align-items: center;
+    flex-direction: column-reverse;
+    padding: 1rem;
+    gap: 1rem;
+    min-height: auto;
+    border-radius: 12px;
+  }
+
+  .single-detailed-poster {
+    width: 120px;
+    height: 178px;
+  }
+
+  .single-detailed-info {
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+
+  .single-detailed-info .item-title {
+    font-size: 18px;
+    text-align: center;
+  }
+
+  .single-detailed-info .item-description {
+    font-size: 12px;
+    max-height: 60px;
+    text-align: center;
+    line-height: 1.5;
+  }
+
+  .single-detailed-info .item-all-actions {
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+  }
+
+  .single-detailed-info .btn-main,
+  .single-detailed-info .btn-download {
+    width: 100%;
+    max-width: 200px;
+    height: 36px;
+    font-size: 12px;
+  }
+
+  .single-detailed-info .item-all-actions .icon-actions {
+    width: 100%;
+    justify-content: center;
+    gap: 0.75rem;
+  }
+}
+
+/* Extra Small Mobile (< 375px) */
+@media (max-width: 374px) {
+  .single-simple-link {
+    max-height: 150px;
+  }
+
+  .single-simple-image {
+    max-height: 150px;
+  }
+
+  .single-detailed-content {
+    padding: 0.75rem;
+    gap: 0.75rem;
+  }
+
+  .single-detailed-poster {
+    width: 100px;
+    height: 148px;
+  }
+
+  .single-detailed-info .item-title {
+    font-size: 16px;
+  }
+
+  .single-detailed-info .item-description {
+    font-size: 11px;
+    max-height: 50px;
+  }
+
+  .single-detailed-info .btn-main,
+  .single-detailed-info .btn-download {
+    height: 34px;
+    font-size: 11px;
   }
 }
 
