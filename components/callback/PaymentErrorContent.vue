@@ -65,7 +65,7 @@
     <!-- Order Details -->
     <div v-if="refNum || message" class="order-details">
       <div v-if="refNum" class="order-item">
-        <span class="order-label">شماره سفارش:</span>
+        <span class="order-label">شماره پیگیری :</span> :
         <span class="order-value">{{ refNum }}</span>
       </div>
       <div v-if="message" class="order-item">
@@ -138,7 +138,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 8px;
+  margin-top: -2rem;
 }
 
 .error-icon {
@@ -174,7 +174,8 @@ export default {
   display: flex;
   align-items: center;
   gap: 12px;
-  width: 100%;
+  width: fit-content;
+  justify-self: center;
 }
 
 .alert-icon {
@@ -245,7 +246,7 @@ export default {
   flex-direction: column;
   gap: 12px;
   width: 100%;
-  padding: 16px;
+  padding: 0 16px;
   color: #f2f2f7 !important;
   border-radius: 12px;
   margin-top: 8px;
@@ -260,8 +261,11 @@ export default {
 }
 
 .order-label {
-  font-weight: 600;
-  color: #f2f2f7;
+  color: var(--Gray-N500, #737373);
+  font-weight: 400;
+  font-size: 13px;
+  text-align: right;
+  margin-left: 2px;
 }
 
 .order-value {

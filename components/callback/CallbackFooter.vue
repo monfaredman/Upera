@@ -1,41 +1,55 @@
 <template>
   <div class="download-links-footer" :class="footerClass">
-    <!-- Multiple Files Footer -->
-    <div v-if="files && files.length > 1" class="download-links-item">
+    <!-- Success State Footer -->
+    <div v-if="success" class="download-links-item">
       <div class="row">
-        <div class="col-12">
-          <nuxt-link to="/" class="btn btn-danger btn-block">
-            بازگشت به صفحه اصلی
-            <i class="fa fa-back pr-2" />
-          </nuxt-link>
+        <!-- Main Button -->
+        <div v-if="mainButton" :class="buttonColClass">
+          <button class="btn btn-main btn-block" @click="handleMainAction">
+            <i class="fa pl-2" :class="mainButton.iconClass" />
+            {{ mainButton.text }}
+          </button>
+        </div>
+
+        <!-- Secondary Button -->
+        <div v-if="secondaryButton" :class="buttonColClass">
+          <button
+            class="btn btn-light btn-block"
+            @click="handleSecondaryAction"
+          >
+            <i class="fa pl-2" :class="secondaryButton.iconClass" />
+            {{ secondaryButton.text }}
+          </button>
+        </div>
+
+        <!-- React Native Back to App Button (Same Row for specific purchase types) -->
+        <div
+          v-if="isReactNative && shouldShowReactNativeInSameRow"
+          class="col-6"
+        >
+          <a
+            :href="`uperaapp://callback?${queryString}`"
+            class="btn btn-light btn-block"
+          >
+            <i class="fa pl-2 fa-mobile-alt" />
+            بازگشت به اپلیکیشن
+          </a>
         </div>
       </div>
-    </div>
 
-    <!-- Single File Footer -->
-    <div v-else-if="files && files.length === 1" class="download-links-item">
-      <div v-for="(item, index) in files" :key="index" class="row">
-        <div class="col-6">
+      <!-- React Native Back to App Button (Separate Row for other cases) -->
+      <div
+        v-if="isReactNative && !shouldShowReactNativeInSameRow"
+        class="row mt-2"
+      >
+        <div class="col-12">
           <a
-            v-if="!item.screening.ekran"
-            :href="item.link1"
-            class="btn btn-main btn-block"
+            :href="`uperaapp://callback?${queryString}`"
+            class="btn btn-light btn-block"
           >
-            {{ $t('show.download') }}
-            <i class="icon-download" />
+            <i class="fa pl-2 fa-mobile-alt" />
+            بازگشت به اپلیکیشن
           </a>
-          <a v-else :href="item.link1" class="btn btn-main btn-block">
-            مشاهده
-            <i class="icon-play" />
-          </a>
-        </div>
-        <div class="col-6">
-          <button
-            class="btn btn-copy btn-light btn-block"
-            @click="$emit('copy', item.link1)"
-          >
-            کپی لینک
-          </button>
         </div>
       </div>
     </div>
@@ -44,28 +58,48 @@
     <div v-else-if="!success" class="download-links-item">
       <!-- Check Again State -->
       <div v-if="checkagain" class="row">
-        <div class="col-12">
+        <div :class="isReactNative ? 'col-6' : 'col-12'">
           <a
             href=""
             class="btn btn-main btn-block"
             @click.prevent="$emit('retry-payment')"
           >
+            <i class="fa fa-money-bill pl-2" />
             پرداخت مجدد
-            <i class="fa fa-money-bill pr-2" />
+          </a>
+        </div>
+        <!-- React Native Back to App Button for Check Again State -->
+        <div v-if="isReactNative" class="col-6">
+          <a
+            :href="`uperaapp://callback?${queryString}`"
+            class="btn btn-light btn-block"
+          >
+            <i class="fa pl-2 fa-mobile-alt" />
+            بازگشت به اپلیکیشن
           </a>
         </div>
       </div>
 
       <!-- Show Login State -->
       <div v-else-if="showLogin" class="row">
-        <div class="col-12">
+        <div :class="isReactNative ? 'col-6' : 'col-12'">
           <a
             href=""
             class="btn btn-main btn-block"
             @click.prevent="$emit('login')"
           >
+            <i class="fa fa-sign-in-alt pl-2" />
             ورود به سایت
-            <i class="fa fa-sign-in-alt pr-2" />
+          </a>
+        </div>
+        <!-- React Native Back to App Button for Show Login State -->
+        <div v-if="isReactNative" class="col-6">
+          <a
+            :href="`uperaapp://callback?${queryString}`"
+            class="btn btn-light btn-block"
+          >
+            <i class="fa pl-2 fa-mobile-alt" />
+            بازگشت به اپلیکیشن
           </a>
         </div>
       </div>
@@ -78,8 +112,8 @@
             class="btn btn-main btn-block"
             @click.prevent="$emit('check-payment')"
           >
+            <i class="fa fa-check-double pl-2" />
             بررسی پرداخت
-            <i class="fa fa-check-double pr-2" />
           </a>
         </div>
         <div class="col-6">
@@ -88,9 +122,22 @@
             class="btn btn-light btn-block"
             @click.prevent="$emit('retry-payment')"
           >
+            <i class="fa fa-money-bill pl-2" />
             پرداخت مجدد
-            <i class="fa fa-money-bill pr-2" />
           </a>
+        </div>
+      </div>
+
+      <!-- React Native Back to App Button for Default Error State (Separate Row) -->
+      <div v-if="isReactNative && !checkagain && !showLogin" class="row mt-2">
+        <div class="col-12">
+          <button
+            class="btn btn-light btn-block"
+            @click="handleReactNativeAction"
+          >
+            <i class="fa pl-2 fa-mobile-alt" />
+            بازگشت به اپلیکیشن
+          </button>
         </div>
       </div>
     </div>
@@ -103,8 +150,8 @@
             href="uperaapp://upera?type=download&success=false"
             class="btn btn-main btn-block"
           >
+            <i class="fa fa-back pl-2" />
             نمایش فیلم
-            <i class="fa fa-back pr-2" />
           </a>
         </div>
       </div>
@@ -120,8 +167,8 @@
             class="btn btn-second btn-block"
             @click.prevent="$emit('return-to-content', title)"
           >
-            بازگشت به صفحه فیلم
             <i class="fa fa-arrow-alt-circle-left" />
+            بازگشت به صفحه فیلم
           </a>
           <a
             v-else-if="title.type === 'series'"
@@ -129,8 +176,8 @@
             href=""
             @click.prevent="$emit('return-to-content', title)"
           >
-            بازگشت به صفحه سریال
             <i class="fa fa-arrow-alt-circle-left" />
+            بازگشت به صفحه سریال
           </a>
           <a
             v-else
@@ -138,8 +185,8 @@
             class="btn btn-second btn-block"
             @click.prevent="$emit('return-to-content', title)"
           >
-            بازگشت به صفحه این قسمت سریال
             <i class="fa fa-arrow-alt-circle-left" />
+            بازگشت به صفحه این قسمت سریال
           </a>
         </div>
       </div>
@@ -179,13 +226,190 @@ export default {
       type: Number,
       default: 0,
     },
+    purchaseType: {
+      type: String,
+      default: 'download',
+    },
+    isLoggedIn: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
+    queryString() {
+      const params = new URLSearchParams()
+      Object.entries(this.$route.query).forEach(([key, value]) => {
+        if (value) params.append(key, value)
+      })
+      return params.toString()
+    },
+    isReactNative() {
+      return this.$route?.query?.reactnative === '1'
+    },
+    isSingleFile() {
+      return this.files && this.files.length === 1
+    },
+    isMultipleFiles() {
+      return this.files && this.files.length > 1
+    },
+    hasEkranScreening() {
+      if (!this.files || this.files.length === 0) return false
+      return this.files.some((file) => file.screening?.ekran)
+    },
+    hasPresale() {
+      if (!this.files || this.files.length === 0) return false
+      return this.files.some((file) => file.presale)
+    },
     footerClass() {
       return {
         'footer-0': this.divcount === 0,
         'footer-1': this.divcount === 1,
       }
+    },
+    shouldShowReactNativeInSameRow() {
+      // Show React Native button in the same row for subscription, wallet, and directdebit
+      return (
+        this.purchaseType === 'subscription' ||
+        this.purchaseType === 'wallet' ||
+        this.purchaseType === 'directdebit'
+      )
+    },
+    mainButton() {
+      if (!this.success) return null
+
+      if (this.purchaseType === 'download') {
+        if (this.isSingleFile) {
+          if (this.hasPresale || this.hasEkranScreening) {
+            return {
+              text: 'مشاهده محتوا',
+              iconClass: 'fa-play',
+              action: 'watch',
+            }
+          }
+          return { text: 'تماشا', iconClass: 'fa-play', action: 'watch' }
+        }
+        if (this.isMultipleFiles) {
+          return {
+            text: 'بازگشت به صفحه اصلی',
+            iconClass: 'fa-home',
+            action: 'goHome',
+          }
+        }
+      }
+
+      if (this.purchaseType === 'subscription') {
+        return { text: 'آپرا پلاس', iconClass: 'fa-star', action: 'operaPlus' }
+      }
+
+      if (this.purchaseType === 'wallet') {
+        return {
+          text: 'بازگشت به آپرا',
+          iconClass: 'fa-home',
+          action: 'backToOpera',
+        }
+      }
+
+      if (this.purchaseType === 'directdebit') {
+        return {
+          text: 'تنظیمات پرداخت خودکار',
+          iconClass: 'fa-cog',
+          action: 'directDebitSettings',
+        }
+      }
+
+      return null
+    },
+    secondaryButton() {
+      if (!this.success) return null
+
+      if (this.purchaseType === 'download') {
+        return {
+          text: 'بررسی پرداخت',
+          iconClass: 'fa-check-double',
+          action: 'checkPayment',
+        }
+      }
+
+      if (this.purchaseType === 'subscription') {
+        // No secondary button for subscription (back to app handled separately)
+        return null
+      }
+
+      if (this.purchaseType === 'wallet') {
+        if (this.isReactNative) {
+          return null // Back to app handled separately
+        }
+        return null
+      }
+
+      if (this.purchaseType === 'directdebit') {
+        if (this.isReactNative) {
+          return null // Back to app handled separately
+        }
+        return {
+          text: 'بازگشت به آپرا',
+          iconClass: 'fa-home',
+          action: 'backToOpera',
+        }
+      }
+
+      return null
+    },
+    buttonColClass() {
+      // If React Native and should be in same row, main button gets col-6
+      if (this.isReactNative && this.shouldShowReactNativeInSameRow) {
+        return 'col-6'
+      }
+      // If there are two buttons (main and secondary), they share the row
+      const hasTwoButtons = this.mainButton && this.secondaryButton
+      return hasTwoButtons ? 'col-6' : 'col-12'
+    },
+  },
+  methods: {
+    handleMainAction() {
+      const action = this.mainButton?.action
+      switch (action) {
+        case 'watch':
+          if (this.files && this.files.length > 0) {
+            this.$emit('watch', this.files[0].id)
+          }
+          break
+        case 'goHome':
+          this.$router.push('/')
+          break
+        case 'backToApp':
+          window.location.href = 'upera://callback/success'
+          break
+        case 'operaPlus':
+          this.$router.push('/plan')
+          break
+        case 'backToOpera':
+          this.$router.push('/')
+          break
+        case 'directDebitSettings':
+          this.$emit('show-direct-debit')
+          break
+      }
+    },
+    handleSecondaryAction() {
+      const action = this.secondaryButton?.action
+      switch (action) {
+        case 'checkPayment':
+          this.$emit('check-payment')
+          break
+        case 'operaPlus':
+          this.$router.push('/plan')
+          break
+        case 'backToApp':
+          window.location.href = 'upera://callback/success'
+          break
+        case 'backToOpera':
+          this.$router.push('/')
+          break
+      }
+    },
+    handleReactNativeAction() {
+      window.location.href = 'upera://callback/success'
     },
   },
 }
@@ -265,6 +489,7 @@ export default {
 
 .download-links-item {
   margin-bottom: 12px;
+  padding: 12px 0 0 0 !important;
 }
 
 .download-links-item:last-child {
@@ -290,6 +515,42 @@ export default {
     font-size: 13px;
     padding: 8px 12px;
   }
+
+  /* Hide icons in buttons on mobile */
+  .btn i,
+  .btn .fa,
+  .btn .icon-download,
+  .btn .icon-play {
+    display: none !important;
+  }
+
+  /* Reduce padding and margin for download-links-item */
+  .download-links-item {
+    margin-bottom: 6px;
+    padding: 6px 0 0 0 !important;
+  }
+
+  /* Reduce footer padding */
+  .download-links-footer {
+    padding: 0 8px 12px 8px !important;
+  }
+
+  /* Reduce top padding for footer state classes */
+  .footer-0 {
+    padding-top: 12px;
+  }
+  .footer-1 {
+    padding-top: 8px;
+  }
+}
+
+/* Footer wrapper */
+.download-links-footer {
+  display: flex;
+  flex-direction: column;
+  padding: 0 24px 24px 24px !important;
+  background: #fff;
+  flex-shrink: 0;
 }
 
 /* Footer state classes */
