@@ -40,11 +40,12 @@
     </template>
     <div class="content-body">
       <!-- add nav-class so BootstrapVue generates a class we can target reliably -->
-      <b-tabs card content-class="p-3">
+      <b-tabs @input="updateHash" v-model="activeTab" card content-class="p-3">
         <!-- قسمت‌ها : SeasonEpisodes -->
         <b-tab
           v-if="type === 'series' || type === 'episode'"
           active
+          href="#episodes"
           title="قسمت‌ها"
         >
           <SeasonEpisodesSkeleton v-if="isLoadingSeasons" />
@@ -58,13 +59,13 @@
           />
         </b-tab>
         <!-- فیلم : MovieContentTab -->
-        <b-tab v-if="type === 'movie'" active title="فیلم">
+        <b-tab v-if="type === 'movie'" active href="#episodes" title="فیلم">
           <MovieContentTabSkeleton v-if="isLoadingMovie" />
           <MovieContentTab v-else :data="data" @play="handlePlay" />
         </b-tab>
 
         <!-- محتوا : use ContentTab (reuses StoryContent) -->
-        <b-tab title="محتوا">
+        <b-tab href="#content" title="محتوا">
           <ContentDetailsSkeleton v-if="isLoadingContent" />
           <ContentDetails
             v-else
@@ -87,7 +88,7 @@
           />
         </b-tab>
         <!-- بازیگران : CastsTab -->
-        <b-tab title="بازیگران">
+        <b-tab href="#casts" title="بازیگران">
           <CastsTabSkeleton v-if="isLoadingCasts" />
           <CastsTab
             v-else-if="casts && casts.length"
@@ -100,7 +101,10 @@
         </b-tab>
 
         <!-- درباره سریال : ContentStatistics -->
-        <b-tab :title="type === 'movie' ? 'درباره فیلم' : 'درباره سریال'">
+        <b-tab
+          href="#about"
+          :title="type === 'movie' ? 'درباره فیلم' : 'درباره سریال'"
+        >
           <ContentStatisticsSkeleton v-if="isLoadingStatistics" />
           <ContentStatistics
             v-else
@@ -114,7 +118,7 @@
         </b-tab>
 
         <!-- فیلم های مشابه : SimilarContent -->
-        <b-tab title="فیلم های مشابه">
+        <b-tab href="#similar" title="فیلم های مشابه">
           <SimilarContentSkeleton v-if="isLoadingSimilar" />
           <SimilarContent
             v-else-if="similar && similar.length"
@@ -123,7 +127,7 @@
         </b-tab>
 
         <!-- دیدگاه‌ها : CommentsTab -->
-        <b-tab>
+        <b-tab href="#comments">
           <template #title>
             <b-spinner
               v-if="commentsloading"
@@ -293,6 +297,16 @@ export default {
       isLoadingSeasons: true,
       isLoadingMovie: true,
       isLoadingContent: true,
+      activeTab: 0,
+      tabMap: [
+        '#episodes',
+        '#content',
+        '#casts',
+        '#about',
+        '#similar',
+        '#comments',
+      ],
+
       isLoadingCasts: true,
       isLoadingStatistics: true,
       isLoadingSimilar: true,
@@ -402,9 +416,16 @@ export default {
     if (this.clapinterval) clearInterval(this.clapinterval)
 
     this.flushClaps(true)
+    window.removeEventListener('hashchange', this.handleHashChange)
   },
 
   mounted() {
+    // ✅ Set initial tab based on URL hash
+    this.setActiveTabFromHash()
+
+    // ✅ Listen for hash changes (like browser back/forward)
+    window.addEventListener('hashchange', this.setActiveTabFromHash)
+
     this.INIT(1)
     this.loadAdditionalData()
   },
@@ -886,6 +907,24 @@ export default {
               return error
             }
           )
+      }
+    },
+
+    setActiveTabFromHash() {
+      const hash = window.location.hash
+      const idx = this.tabMap.indexOf(hash)
+
+      if (idx !== -1) {
+        // BootstrapVue sometimes needs nextTick to render tab change correctly
+        this.$nextTick(() => {
+          this.activeTab = idx
+        })
+      }
+    },
+    updateHash() {
+      const newHash = this.tabMap[this.activeTab]
+      if (newHash && window.location.hash !== newHash) {
+        history.replaceState(null, '', newHash)
       }
     },
   },
