@@ -5586,7 +5586,7 @@ nav a:hover {
   overflow-y: hidden;
   overflow-x: hidden;
   /* max-height: calc(90vh - 120px); */
-  padding: 1rem 1.5rem;
+  padding: 1.5rem 1.5rem;
 }
 
 .modal-footer {

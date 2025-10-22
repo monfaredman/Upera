@@ -10,27 +10,23 @@
     :static="staticmodal ? true : false"
     no-enforce-focus
   >
-    <button
-      v-show="!staticmodal"
-      type="button"
-      class="close"
-      @click="hideModal"
-    >
-      <span aria-hidden="true">&times;</span>
-    </button>
+    <div class="image-header-top">
+      <img src="@/assets/images/upera-logo-text.png" alt="upera-logo" />
+    </div>
+    <h5 class="mt-4 mb-4 login-title">ورود | ثبت نام</h5>
+    <div class="divider" />
+
     <div v-if="!sms_sent && !premobile">
-      <h5 class="mt-2 mb-4 font-weight-bold text-center h6">
-        {{ $t('new.login_register') }}
-      </h5>
       <b-form @submit.prevent="sendcode">
         <fieldset>
           <div class="position-relative">
-            <label for="mobile">{{ $t('new.enter_mobile') }}</label>
+            <label for="mobile">{{ $t('new.phone_number') }}</label>
             <b-form-input
               id="mobile"
               v-model.trim="mobile"
               dir="ltr"
               class="form-control large text-right mobile-input"
+              :class="{ 'is-invalid': showPhoneError }"
               maxlength="13"
               :placeholder="$t('new.enter_mobile')"
               :title="$t('new.your_mobile')"
@@ -40,6 +36,7 @@
               @paste="change_mobile"
               @keyup="change_mobile"
               @change="change_mobile"
+              @blur="validatePhoneOnBlur"
             />
             <div v-if="typeof errors === 'string'" class="text-danger">
               {{ errors }}
@@ -47,18 +44,12 @@
             <div v-else-if="errors && errors.mobile" class="text-danger">
               {{ errors.mobile[0] }}
             </div>
-            <div v-else class="invalid-feedback">
+            <div v-else-if="showPhoneError" class="invalid-error-phone">
               {{ $t('new.enter_correctly') }}
             </div>
           </div>
-          <button
-            id="submit-mobile"
-            class="btn btn-main btn-block mt-5 mb-2"
-            :disabled="isMobileDisabled"
-          >
-            {{ $t('nav.login') }}
-          </button>
-          <div v-if="$i18n.locale == 'fa'" class="text-center">
+
+          <div v-if="$i18n.locale == 'fa'" class="text-right mt-2">
             <small>
               <span>با ثبت نام در {{ $config.name_fa }}، </span>
               <nuxt-link to="/profile/terms"
@@ -67,91 +58,118 @@
               <span>را میپذیرم</span>
             </small>
           </div>
+          <button
+            id="submit-mobile"
+            class="btn btn-main btn-block mt-5 custom-login-btn"
+            :disabled="isMobileDisabled || loading.sendCode"
+            :style="buttonStyle"
+          >
+            <span
+              v-if="loading.sendCode"
+              class="d-flex align-items-center justify-content-center"
+            >
+              <b-spinner small class="mr-2"></b-spinner>
+              در حال ارسال...
+            </span>
+            <span v-else>دریافت کد</span>
+          </button>
+          <button
+            class="custom-home-btn"
+            :style="buttonStyle"
+            :disabled="loading.sendCode"
+            @click.prevent="goToHome"
+          >
+            بازگشت به خانه
+          </button>
         </fieldset>
       </b-form>
     </div>
     <div v-else>
-      <h5 class="mt-2 mb-4 font-weight-bold text-center h6">
-        {{ $t('new.mobile_verify') }}
-      </h5>
       <b-form @submit.prevent="login">
         <fieldset>
-          <h6 v-if="premessage" class="text-danger text-center">
-            {{ premessage }}
-          </h6>
           <div class="position-relative">
-            <label for="sms">{{ $t('new.enter_sent_code') }}</label>
-            <b-form-input
-              id="password"
-              v-model.trim="password"
-              type="text"
-              pattern="[0-9]*"
-              data-formcore-type="numeric"
-              inputmode="numeric"
-              maxlength="4"
-              data-numeric-input
-              class="form-control large is-invalid text-left"
-              data-validate="minlength"
-              :data-message="$t('new.code_is_incorrect')"
-              :placeholder="$t('new.digit_code') + ' ' + mobile"
-              required
-              on-key-press="if(this.value.length==4) return false;"
-              autofocus
-            />
+            <label class="w-100">
+              <div class="w-100 d-flex justify-content-between mt-2">
+                <a class="edit-phone" @click.prevent="showLoginAgain()"
+                  >{{ $t('new.edit_mobile') }} <i class="fa fa-edit ml-2"
+                /></a>
+
+                <p class="phone-mobile">{{ mobile }}</p>
+              </div>
+            </label>
+            <div class="d-flex justify-content-between mb-3">
+              <div class="otp-container d-flex justify-content-between">
+                <input
+                  v-for="index in 4"
+                  :key="index"
+                  :ref="`otp-${index - 1}`"
+                  v-model="otp[index - 1]"
+                  type="text"
+                  inputmode="numeric"
+                  placeholder="-"
+                  maxlength="1"
+                  class="otp-input text-center"
+                  :disabled="loading.login"
+                  @input="handleOtpInput(index - 1, $event)"
+                  @keydown="handleOtpKeydown(index - 1, $event)"
+                  @paste="handleOtpPaste"
+                />
+              </div>
+              <div
+                class="d-flex flex-column justify-content-center align-items-start"
+              >
+                <span class="time-countdown" v-if="!countdown_finished">
+                  ثانیه {{ countdown }}
+                </span>
+                <a
+                  v-else
+                  class="retry-code"
+                  @click.prevent="handleResendCode"
+                  >{{ $t('new.resend_again_code') }}</a
+                >
+              </div>
+            </div>
             <div
               v-if="
                 typeof errors === 'string' || errors.password || errors.mobile
               "
-              class="invalid-feedback"
+              class="text-danger position-absolute w-100 text-right d-flex justify-content-end align-content-center"
             >
               <span v-if="typeof errors === 'string'">{{ errors }}</span>
               <span v-else-if="errors.password">{{ errors.password[0] }}</span>
               <span v-else>{{ errors.mobile[0] }}</span>
-              <a
-                v-show="countdown_finished"
-                class="cup"
-                @click.prevent="
-                  sendcode()
-                  countdown = 90
-                  countDownTimer()
-                  countdown_finished = false
-                "
-                >{{ $t('new.resend_again') }}</a
-              >
             </div>
           </div>
 
-          <button id="submit-code" class="btn btn-main btn-block mt-5">
-            ورود
+          <button
+            id="submit-code"
+            class="btn btn-main btn-block mt-5 custom-login-btn"
+            :style="buttonStyle"
+            :disabled="loading.login || otp.join('').length !== 4"
+          >
+            <span
+              v-if="loading.login"
+              class="d-flex align-items-center justify-content-center"
+            >
+              <b-spinner small class="mr-2"></b-spinner>
+              در حال ورود...
+            </span>
+            <span v-else>ورود</span>
           </button>
-          <div class="d-flex justify-content-center mt-2">
-            <small>
-              <span v-if="!countdown_finished"
-                >{{ $t('new.resend_code') }} {{ countdown }}
-                {{ $t('new.another_seconds') }}</span
-              >
-              <a
-                v-else
-                href=""
-                @click.prevent="
-                  sendcode()
-                  countdown = 90
-                  countDownTimer()
-                  countdown_finished = false
-                "
-                >{{ $t('new.resend_again_code') }}</a
-              >
-              <span> | </span>
-              <a href="" @click.prevent="showLoginAgain()">{{
-                $t('new.edit_mobile')
-              }}</a>
-            </small>
-          </div>
+          <button
+            class="custom-home-btn"
+            :style="buttonStyle"
+            :disabled="loading.login"
+            @click.prevent="goToHome"
+          >
+            بازگشت به خانه
+          </button>
         </fieldset>
       </b-form>
     </div>
   </b-modal>
 </template>
+
 <script>
 import { mapGetters } from 'vuex'
 
@@ -175,6 +193,14 @@ export default {
       isMobileDisabled: true,
       app_mobile: this.$t('auth.mobile'),
       app_password: this.$t('player.pass'),
+      otp: ['', '', '', ''],
+      showPhoneError: false,
+      phoneTouched: false,
+      loading: {
+        sendCode: false,
+        login: false,
+        resendCode: false,
+      },
     }
   },
 
@@ -185,6 +211,23 @@ export default {
     ...mapGetters({ premobile: 'login/premobile' }),
     ...mapGetters({ preredirect: 'login/preredirect' }),
     ...mapGetters({ prerefresh: 'login/prerefresh' }),
+    buttonStyle() {
+      return {
+        height: '48px',
+        'border-radius': '24px',
+        'padding-top': '12px',
+        'padding-right': '28px',
+        'padding-bottom': '12px',
+        'padding-left': '28px',
+        background: '#FF6633',
+        color: '#FFFFFF',
+        'font-weight': '600',
+        'font-size': '16px',
+        border: 'none',
+        cursor: this.isMobileDisabled ? 'not-allowed' : 'pointer',
+        opacity: this.isMobileDisabled ? '0.6' : '1',
+      }
+    },
   },
   watch: {
     show(val) {
@@ -207,14 +250,35 @@ export default {
     },
     messageSent(val) {
       if (val) {
+        console.log(val)
         this.sms_sent = true
         this.countDownTimer()
+        this.countdown = 90
+        this.countdown_finished = false
+        this.otp = ['', '', '', '']
+        // Focus on first OTP input when SMS is sent
+        this.$nextTick(() => {
+          if (this.$refs['otp-0'] && this.$refs['otp-0'][0]) {
+            this.$refs['otp-0'][0].focus()
+          }
+        })
       }
     },
-    password(val) {
-      if (val.length > 3) {
-        this.password = this.formatToNum(val)
-        this.login()
+    otp: {
+      handler(newVal) {
+        const otpString = newVal.join('')
+        this.password = otpString
+
+        // Auto submit when OTP is complete
+        if (otpString.length === 4 && !this.loading.login) {
+          this.login()
+        }
+      },
+      deep: true,
+    },
+    mobile(newVal) {
+      if (newVal && this.phoneTouched) {
+        this.validatePhoneNumber(newVal)
       }
     },
   },
@@ -249,21 +313,79 @@ export default {
       }
     },
     sendcode() {
+      // Validate phone before sending code
+      if (!this.validatePhoneNumber(this.mobile)) {
+        this.showPhoneError = true
+        return
+      }
+
       this.$store.dispatch('login/SET_MESSAGE_SENT_FALSE')
       this.$store.dispatch('validation/clearErrors')
+      this.showPhoneError = false
 
       this.countdown = 90
       this.countdown_finished = false
+      this.loading.resendCode = true
+      this.loading.sendCode = true
 
-      this.$store.dispatch('login/SEND_LOGIN_CODE', {
-        mobile: this.mobile.replace(/\s/g, ''),
-      })
+      try {
+        this.$store.dispatch('login/SEND_LOGIN_CODE', {
+          mobile: this.mobile.replace(/\s/g, ''),
+        })
+      } finally {
+        this.loading.sendCode = false
+        this.loading.resendCode = false
+      }
+    },
+    validatePhoneNumber(phone) {
+      const v = this.formatToNum(phone)
+      const input = v.replace(/\D/g, '').substring(0, 11)
+      const k = input.length
+
+      const isValid =
+        /(\+98|0|98|0098)?([ ]|-|[()]){0,2}9[0-9]([ ]|-|[()]){0,2}(?:[0-9]([ ]|-|[()]){0,2}){8}/.test(
+          v
+        ) && k == 11
+
+      return isValid
+    },
+    validatePhoneOnBlur() {
+      this.phoneTouched = true
+      if (this.mobile) {
+        this.showPhoneError = !this.validatePhoneNumber(this.mobile)
+      }
+    },
+    change_mobile() {
+      this.phoneTouched = true
+      const v = this.formatToNum(this.mobile)
+      const input = v.replace(/\D/g, '').substring(0, 11)
+      const k = input.length
+
+      const isValid = this.validatePhoneNumber(this.mobile)
+
+      if (isValid && k == 11) {
+        document.getElementById('mobile').classList.remove('is-invalid')
+        this.isMobileDisabled = false
+        this.showPhoneError = false
+      } else if (k < 11) {
+        this.isMobileDisabled = true
+        this.showPhoneError = false
+      } else {
+        document.getElementById('mobile').classList.add('is-invalid')
+        this.isMobileDisabled = true
+        this.showPhoneError = true
+      }
     },
     async login() {
+      if (this.loading.login) return
+
       const submitcode = document.getElementById('submit-code')
       if (submitcode) {
         submitcode.setAttribute('disabled', true)
       }
+
+      this.loading.login = true
+
       try {
         let response = await this.$auth.loginWith('local', {
           data: {
@@ -307,6 +429,9 @@ export default {
         this.sms_sent = false
         this.mobile = ''
         this.password = ''
+        this.otp = ['', '', '', '']
+        this.showPhoneError = false
+        this.phoneTouched = false
 
         this.$store.dispatch('login/SET_MESSAGE_SENT_FALSE')
         this.$store.dispatch('validation/clearErrors')
@@ -318,8 +443,9 @@ export default {
         if (submitcode) {
           submitcode.setAttribute('disabled', false)
         }
-
         return err
+      } finally {
+        this.loading.login = false
       }
     },
     showModal() {
@@ -341,11 +467,17 @@ export default {
       this.LoginJquery()
     },
     showLoginAgain() {
+      if (this.loading.sendCode || this.loading.login) return
+
       this.$store.dispatch('login/SET_MESSAGE_SENT_FALSE')
       this.sms_sent = false
       this.$store.dispatch('login/REMOVE_PREMOBILE')
       this.$store.dispatch('validation/clearErrors')
-      this.mobile = ''
+      this.otp = ['', '', '', '']
+      this.showPhoneError = false
+      this.phoneTouched = false
+      this.loading.sendCode = false
+      this.loading.login = false
       this.LoginJquery()
     },
     hideModal() {
@@ -363,6 +495,11 @@ export default {
       if (document.getElementsByClassName('default').length)
         document.getElementsByClassName('default')[0].classList.remove('blure')
     },
+    goToHome() {
+      if (this.loading.sendCode || this.loading.login) return
+      this.hideModal()
+      this.$router.push('/')
+    },
     LoginJquery() {
       var self = this
       this.$refs['loginModal'].$on('shown', function () {
@@ -371,10 +508,6 @@ export default {
           .removeAttribute('tabindex')
 
         if (!self.sms_sent) {
-          const inputElement2 = document.getElementById('password')
-          if (inputElement2) {
-            inputElement2.addEventListener('keyup', self.formatToNumevent)
-          }
           const inputElement = document.getElementById('mobile')
           if (inputElement) {
             inputElement.addEventListener('keydown', self.enforceFormat)
@@ -383,23 +516,9 @@ export default {
         }
       })
     },
-    change_mobile() {
-      const v = this.formatToNum(this.mobile)
-      const input = v.replace(/\D/g, '').substring(0, 11)
-      const k = input.length
-      if (
-        /(\+98|0|98|0098)?([ ]|-|[()]){0,2}9[0-9]([ ]|-|[()]){0,2}(?:[0-9]([ ]|-|[()]){0,2}){8}/.test(
-          v
-        ) &&
-        k == 11
-      ) {
-        document.getElementById('mobile').classList.remove('is-invalid')
-        this.isMobileDisabled = false
-      } else if (k < 11) {
-        this.isMobileDisabled = true
-      } else {
-        document.getElementById('mobile').classList.add('is-invalid')
-      }
+    handleResendCode() {
+      if (this.loading.sendCode || this.loading.resendCode) return
+      this.sendcode()
     },
     formatToNum(num) {
       if (num) {
@@ -416,20 +535,11 @@ export default {
       }
       return num
     },
-    formatToNumevent(event) {
-      if (this.isModifierKey(event)) {
-        return
-      }
-
-      if (event.target.value)
-        event.target.value = this.formatToNum(event.target.value)
-    },
     enforceFormat(event) {
       if (!this.isNumericInput(event) && !this.isModifierKey(event)) {
         event.preventDefault()
       }
     },
-
     formatToPhone(event) {
       if (this.isModifierKey(event)) {
         return
@@ -449,11 +559,75 @@ export default {
         target.value = `${zip}`
       }
     },
+    // OTP Input Methods
+    handleOtpInput(index, event) {
+      if (this.loading.login) return
+
+      const value = event.target.value
+
+      // Only allow numbers
+      if (!/^\d*$/.test(value)) {
+        this.otp[index] = ''
+        return
+      }
+
+      // If a number is entered, move to next input
+      if (value && index < 3) {
+        this.$nextTick(() => {
+          if (
+            this.$refs[`otp-${index + 1}`] &&
+            this.$refs[`otp-${index + 1}`][0]
+          ) {
+            this.$refs[`otp-${index + 1}`][0].focus()
+          }
+        })
+      }
+    },
+    handleOtpKeydown(index, event) {
+      if (this.loading.login) return
+
+      // Handle backspace
+      if (event.key === 'Backspace') {
+        if (!this.otp[index] && index > 0) {
+          // Move to previous input if current is empty
+          this.$nextTick(() => {
+            if (
+              this.$refs[`otp-${index - 1}`] &&
+              this.$refs[`otp-${index - 1}`][0]
+            ) {
+              this.$refs[`otp-${index - 1}`][0].focus()
+            }
+          })
+        }
+        this.otp[index] = ''
+      }
+    },
+    handleOtpPaste(event) {
+      if (this.loading.login) return
+
+      event.preventDefault()
+      const pasteData = event.clipboardData.getData('text').slice(0, 4)
+      const numbers = pasteData.replace(/\D/g, '')
+
+      for (let i = 0; i < Math.min(numbers.length, 4); i++) {
+        this.otp[i] = numbers[i]
+      }
+
+      // Focus on the last input
+      this.$nextTick(() => {
+        const lastIndex = Math.min(numbers.length - 1, 3)
+        if (
+          this.$refs[`otp-${lastIndex}`] &&
+          this.$refs[`otp-${lastIndex}`][0]
+        ) {
+          this.$refs[`otp-${lastIndex}`][0].focus()
+        }
+      })
+    },
     isNumericInput(event) {
       const key = event.keyCode
       return (key >= 48 && key <= 57) || (key >= 96 && key <= 105)
     },
-
     SHOW_MODAL_DIRECTDEBIT() {
       this.$store.dispatch('directdebit/SHOW_MODAL', {
         premobile: null,
@@ -493,3 +667,205 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+/* Your existing styles remain the same */
+.custom-login-btn {
+  height: 48px;
+  border-radius: 24px;
+  padding: 12px 28px;
+  background: #ff6633;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 16px;
+  border: none;
+  width: 100%;
+  transition: opacity 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.custom-login-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.custom-home-btn {
+  height: 42px !important;
+  border-radius: 24px !important;
+  padding: 12px 28px !important;
+  background: white !important;
+  color: #ff6633 !important;
+  font-weight: 600 !important;
+  font-size: 16px !important;
+  border: 1px solid #ff6633 !important;
+  width: 100% !important;
+  opacity: 1 !important;
+  cursor: pointer !important;
+  transition: opacity 0.3s ease;
+  margin-top: 0.5rem;
+}
+
+.custom-home-btn:disabled {
+  opacity: 0.6 !important;
+  cursor: not-allowed !important;
+}
+
+.custom-resend-btn {
+  color: #ff6633;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.custom-resend-btn:hover {
+  text-decoration: underline;
+}
+
+.retry-code.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.otp-container {
+  gap: 20px;
+}
+
+.otp-input {
+  width: 60px;
+  height: 60px;
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  font-size: 20px;
+  font-weight: 600;
+  background: #fff;
+  transition: all 0.3s ease;
+}
+
+.otp-input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.otp-input:focus {
+  border-color: #ff6633;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(255, 102, 51, 0.2);
+}
+
+.otp-input.filled {
+  border-color: #ff6633;
+  background-color: rgba(255, 102, 51, 0.05);
+}
+
+@media (max-width: 768px) {
+  .otp-input {
+    width: 50px;
+    height: 50px;
+    font-size: 18px;
+  }
+
+  .otp-container {
+    gap: 8px;
+  }
+}
+
+.divider {
+  width: 100%;
+  height: 1px;
+  margin: 0 0 1rem 0 !important;
+  background-color: #e2e8f0 !important;
+}
+
+.image-header-top {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  text-align: center;
+  width: 100%;
+}
+.image-header-top img {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  text-align: center;
+  width: 193px;
+  height: 109px;
+}
+
+.position-relative label {
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 24px;
+  text-align: right;
+  color: #475569;
+}
+.form-control {
+  height: 48px;
+  border-radius: 8px;
+  border-width: 1px;
+  padding-right: 12px;
+  padding-left: 12px;
+  border: 1px solid #cbd5e1;
+}
+
+.login-title {
+  text-align: center;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 24px;
+  color: #475569;
+}
+
+.invalid-error-phone {
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 16px;
+  color: #ea2a33;
+  margin-top: 4px;
+  padding: 0;
+  margin-top: 1rem;
+}
+
+.phone-mobile {
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 28px;
+  text-align: right;
+  color: #475569;
+}
+
+.edit-phone {
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 16px;
+  text-align: left;
+  color: #0047f1;
+  cursor: pointer;
+}
+
+.edit-phone:hover {
+  text-decoration: underline;
+}
+
+.time-countdown {
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 28px;
+  text-align: right;
+  color: #475569;
+}
+.retry-code {
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 16px;
+  letter-spacing: 0%;
+  color: #1b6be5;
+  cursor: pointer;
+}
+
+.retry-code:hover {
+  text-decoration: underline;
+}
+</style>
