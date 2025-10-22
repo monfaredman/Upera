@@ -124,6 +124,7 @@
                 <a
                   v-else
                   class="retry-code"
+                  :class="{ disabled: loading.sendCode || loading.resendCode }"
                   @click.prevent="handleResendCode"
                   >{{ $t('new.resend_again_code') }}</a
                 >
@@ -201,6 +202,7 @@ export default {
         login: false,
         resendCode: false,
       },
+      countdownTimer: null,
     }
   },
 
@@ -250,11 +252,9 @@ export default {
     },
     messageSent(val) {
       if (val) {
-        console.log(val)
+        console.log('Message sent:', val)
         this.sms_sent = true
-        this.countDownTimer()
-        this.countdown = 90
-        this.countdown_finished = false
+        this.startCountdown()
         this.otp = ['', '', '', '']
         // Focus on first OTP input when SMS is sent
         this.$nextTick(() => {
@@ -263,6 +263,7 @@ export default {
           }
         })
       }
+      // Loading states are handled in the sendcode method with finally block
     },
     otp: {
       handler(newVal) {
@@ -293,48 +294,67 @@ export default {
       })
     }
     this.$refs['loginModal'].$on('hide', () => {
+      this.clearCountdown()
       if (document.getElementsByClassName('default').length)
         document.getElementsByClassName('default')[0].classList.remove('blure')
       else window.history.length > 2 ? this.$router.go(-1) : this.$router.go()
       this.$emit('hide-modal', null)
     })
   },
+
+  beforeDestroy() {
+    this.clearCountdown()
+  },
+
   methods: {
-    countDownTimer() {
-      if (this.countdown > 0) {
-        setTimeout(() => {
+    startCountdown() {
+      this.clearCountdown()
+      this.countdown = 90
+      this.countdown_finished = false
+
+      const tick = () => {
+        if (this.countdown > 0) {
           this.countdown -= 1
-          if (this.countdown <= 0) {
-            this.countdown_finished = true
-          } else {
-            this.countDownTimer()
-          }
-        }, 1000)
+          this.countdownTimer = setTimeout(tick, 1000)
+        } else {
+          this.countdown_finished = true
+          this.countdownTimer = null
+        }
+      }
+
+      this.countdownTimer = setTimeout(tick, 1000)
+    },
+
+    clearCountdown() {
+      if (this.countdownTimer) {
+        clearTimeout(this.countdownTimer)
+        this.countdownTimer = null
       }
     },
-    sendcode() {
-      // Validate phone before sending code
+
+    async sendcode() {
+      console.log('sendcode() called')
+
       if (!this.validatePhoneNumber(this.mobile)) {
+        console.log('invalid phone')
         this.showPhoneError = true
         return
       }
 
-      this.$store.dispatch('login/SET_MESSAGE_SENT_FALSE')
-      this.$store.dispatch('validation/clearErrors')
-      this.showPhoneError = false
-
-      this.countdown = 90
-      this.countdown_finished = false
-      this.loading.resendCode = true
       this.loading.sendCode = true
+      console.log('loading.sendCode = true')
 
       try {
-        this.$store.dispatch('login/SEND_LOGIN_CODE', {
+        await this.$store.dispatch('login/SEND_LOGIN_CODE', {
           mobile: this.mobile.replace(/\s/g, ''),
         })
+        console.log('SEND_LOGIN_CODE done')
+      } catch (error) {
+        console.error('Error sending code:', error)
       } finally {
         this.loading.sendCode = false
         this.loading.resendCode = false
+        console.log('loading.sendCode = false (finally)')
       }
     },
     validatePhoneNumber(phone) {
@@ -349,12 +369,14 @@ export default {
 
       return isValid
     },
+
     validatePhoneOnBlur() {
       this.phoneTouched = true
       if (this.mobile) {
         this.showPhoneError = !this.validatePhoneNumber(this.mobile)
       }
     },
+
     change_mobile() {
       this.phoneTouched = true
       const v = this.formatToNum(this.mobile)
@@ -376,6 +398,7 @@ export default {
         this.showPhoneError = true
       }
     },
+
     async login() {
       if (this.loading.login) return
 
@@ -424,8 +447,7 @@ export default {
           this.$nuxt.refresh()
         }
 
-        this.countdown = 90
-        this.countdown_finished = false
+        this.clearCountdown()
         this.sms_sent = false
         this.mobile = ''
         this.password = ''
@@ -440,6 +462,7 @@ export default {
 
         return response
       } catch (err) {
+        console.error('Login error:', err)
         if (submitcode) {
           submitcode.setAttribute('disabled', false)
         }
@@ -448,6 +471,7 @@ export default {
         this.loading.login = false
       }
     },
+
     showModal() {
       this.$refs['loginModal'].show()
       if (
@@ -466,6 +490,7 @@ export default {
 
       this.LoginJquery()
     },
+
     showLoginAgain() {
       if (this.loading.sendCode || this.loading.login) return
 
@@ -478,8 +503,10 @@ export default {
       this.phoneTouched = false
       this.loading.sendCode = false
       this.loading.login = false
+      this.clearCountdown()
       this.LoginJquery()
     },
+
     hideModal() {
       this.$refs['loginModal'].hide()
       this.$emit('hide-modal', null)
@@ -495,11 +522,13 @@ export default {
       if (document.getElementsByClassName('default').length)
         document.getElementsByClassName('default')[0].classList.remove('blure')
     },
+
     goToHome() {
       if (this.loading.sendCode || this.loading.login) return
       this.hideModal()
       this.$router.push('/')
     },
+
     LoginJquery() {
       var self = this
       this.$refs['loginModal'].$on('shown', function () {
@@ -516,10 +545,25 @@ export default {
         }
       })
     },
-    handleResendCode() {
+
+    async handleResendCode() {
       if (this.loading.sendCode || this.loading.resendCode) return
-      this.sendcode()
+
+      this.loading.resendCode = true
+
+      try {
+        await this.sendcode()
+        this.otp = ['', '', '', '']
+        this.$nextTick(() => {
+          if (this.$refs['otp-0'] && this.$refs['otp-0'][0]) {
+            this.$refs['otp-0'][0].focus()
+          }
+        })
+      } finally {
+        this.loading.resendCode = false
+      }
     },
+
     formatToNum(num) {
       if (num) {
         num = num.replace(/۱/g, '1')
@@ -535,11 +579,13 @@ export default {
       }
       return num
     },
+
     enforceFormat(event) {
       if (!this.isNumericInput(event) && !this.isModifierKey(event)) {
         event.preventDefault()
       }
     },
+
     formatToPhone(event) {
       if (this.isModifierKey(event)) {
         return
@@ -559,6 +605,7 @@ export default {
         target.value = `${zip}`
       }
     },
+
     // OTP Input Methods
     handleOtpInput(index, event) {
       if (this.loading.login) return
@@ -583,6 +630,7 @@ export default {
         })
       }
     },
+
     handleOtpKeydown(index, event) {
       if (this.loading.login) return
 
@@ -602,6 +650,7 @@ export default {
         this.otp[index] = ''
       }
     },
+
     handleOtpPaste(event) {
       if (this.loading.login) return
 
@@ -624,10 +673,12 @@ export default {
         }
       })
     },
+
     isNumericInput(event) {
       const key = event.keyCode
       return (key >= 48 && key <= 57) || (key >= 96 && key <= 105)
     },
+
     SHOW_MODAL_DIRECTDEBIT() {
       this.$store.dispatch('directdebit/SHOW_MODAL', {
         premobile: null,
@@ -637,18 +688,22 @@ export default {
         paymentid: 0,
       })
     },
+
     HIDE_MODAL_DIRECTDEBIT() {
       this.$store.dispatch('directdebit/HIDE_MODAL')
     },
+
     SHOW_MODAL_SUBSCRIPTION() {
       this.$store.dispatch('subscription/SHOW_MODAL', {
         content_type: '',
         content_id: '',
       })
     },
+
     HIDE_MODAL_SUBSCRIPTION() {
       this.$store.dispatch('subscription/HIDE_MODAL')
     },
+
     isModifierKey(event) {
       const key = event.keyCode
       return (
