@@ -222,11 +222,18 @@ export default {
             context.store.getters.filtercontents
         )
       } else {
-        res = await context.app.$axios.get(
-          '/get/profile/get_list/' +
-            context.params.list +
-            context.store.getters.filtercontents
-        )
+        try {
+          res = await context.app.$axios.get(
+            '/get/profile/get_list/' +
+              context.params.list +
+              context.store.getters.filtercontents
+          )
+        } catch (error) {
+          if (error.response && error.response.status === 401) {
+            return context.redirect('/login')
+          }
+          throw error
+        }
       }
       res.data.data.titles_en = res.data.data[context.params.list].list
       res.data.data.titles = res.data.data[context.params.list].list_fa
