@@ -402,19 +402,19 @@ section#watching {
 
 .progress {
   position: absolute;
-  bottom: 8px;
-  left: 8px;
-  right: 8px;
-  height: 4px;
-  background-color: rgba(255, 255, 255, 0.2);
-  border-radius: 2px;
-  overflow: hidden;
+  bottom: 8px !important;
+  left: 8px !important;
+  right: 8px !important;
+  height: 4px !important;
+  background-color: rgba(255, 255, 255, 0.2) !important;
+  border-radius: 2px !important;
+  overflow: hidden !important;
 }
 
 .progress-bar {
-  background-color: #ff6633;
-  transition: width 0.3s ease;
-  height: 100%;
+  background-color: #ff6633 !important;
+  transition: width 0.3s ease !important;
+  height: 100% !important;
 }
 
 .btn {

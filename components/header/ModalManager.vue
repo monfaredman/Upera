@@ -62,3 +62,8 @@ export default {
   },
 }
 </script>
+<style coped>
+.modal-body {
+  direction: rtl !important;
+}
+</style>

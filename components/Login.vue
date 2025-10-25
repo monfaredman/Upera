@@ -11,7 +11,12 @@
     no-enforce-focus
   >
     <div class="image-header-top">
-      <img src="@/assets/images/upera-logo-text.png" alt="upera-logo" />
+      <img
+        src="@/assets/images/upera-logo-text.png"
+        alt="upera-logo"
+        blank
+        blank-color="#bbb"
+      />
     </div>
     <h5 class="mt-4 mb-4 login-title">ورود | ثبت نام</h5>
     <div class="divider" />
@@ -49,7 +54,7 @@
             </div>
           </div>
 
-          <div v-if="$i18n.locale == 'fa'" class="text-right mt-2">
+          <div v-if="$i18n.locale == 'fa'" class="terms-section mt-2">
             <small>
               <span>با ثبت نام در {{ $config.name_fa }}، </span>
               <nuxt-link to="/profile/terms"
@@ -89,15 +94,28 @@
         <fieldset>
           <div class="position-relative">
             <label class="w-100">
-              <div class="w-100 d-flex justify-content-between mt-2">
+              <div class="w-100 top-detail-section mt-2 mb-3">
+                <p class="phone-mobile">{{ mobile }}</p>
                 <a class="edit-phone" @click.prevent="showLoginAgain()"
                   >{{ $t('new.edit_mobile') }} <i class="fa fa-edit ml-2"
                 /></a>
-
-                <p class="phone-mobile">{{ mobile }}</p>
               </div>
             </label>
             <div class="d-flex justify-content-between mb-3">
+              <div
+                class="d-flex flex-column justify-content-center align-items-start"
+              >
+                <span class="time-countdown" v-if="!countdown_finished">
+                  ثانیه {{ countdown }}
+                </span>
+                <a
+                  v-else
+                  class="retry-code"
+                  :class="{ disabled: loading.sendCode || loading.resendCode }"
+                  @click.prevent="handleResendCode"
+                  >{{ $t('new.resend_again_code') }}</a
+                >
+              </div>
               <div class="otp-container d-flex justify-content-between">
                 <input
                   v-for="index in 4"
@@ -115,26 +133,12 @@
                   @paste="handleOtpPaste"
                 />
               </div>
-              <div
-                class="d-flex flex-column justify-content-center align-items-start"
-              >
-                <span class="time-countdown" v-if="!countdown_finished">
-                  ثانیه {{ countdown }}
-                </span>
-                <a
-                  v-else
-                  class="retry-code"
-                  :class="{ disabled: loading.sendCode || loading.resendCode }"
-                  @click.prevent="handleResendCode"
-                  >{{ $t('new.resend_again_code') }}</a
-                >
-              </div>
             </div>
             <div
               v-if="
                 typeof errors === 'string' || errors.password || errors.mobile
               "
-              class="text-danger position-absolute w-100 text-right d-flex justify-content-end align-content-center"
+              class="text-danger position-absolute w-100 text-right d-flex justify-content-start align-content-center"
             >
               <span v-if="typeof errors === 'string'">{{ errors }}</span>
               <span v-else-if="errors.password">{{ errors.password[0] }}</span>
@@ -342,7 +346,7 @@ export default {
       }
 
       this.loading.sendCode = true
-      console.log('loading.sendCode = true')
+      console.log('loading.sendCode = true', this.loading.sendCode)
 
       try {
         await this.$store.dispatch('login/SEND_LOGIN_CODE', {
@@ -354,7 +358,7 @@ export default {
       } finally {
         this.loading.sendCode = false
         this.loading.resendCode = false
-        console.log('loading.sendCode = false (finally)')
+        console.log('loading.sendCode = false (finally)', this.loading.sendCode)
       }
     },
     validatePhoneNumber(phone) {
@@ -785,6 +789,7 @@ export default {
 
 .otp-container {
   gap: 20px;
+  direction: ltr !important;
 }
 
 .otp-input {
@@ -854,7 +859,6 @@ export default {
   font-size: 14px;
   line-height: 24px;
   text-align: right;
-  color: #475569;
 }
 .form-control {
   height: 48px;
@@ -870,7 +874,6 @@ export default {
   font-weight: 600;
   font-size: 16px;
   line-height: 24px;
-  color: #475569;
 }
 
 .invalid-error-phone {
@@ -888,7 +891,8 @@ export default {
   font-size: 16px;
   line-height: 28px;
   text-align: right;
-  color: #475569;
+  margin-bottom: 0 !important;
+  direction: ltr !important;
 }
 
 .edit-phone {
@@ -909,7 +913,6 @@ export default {
   font-size: 13px;
   line-height: 28px;
   text-align: right;
-  color: #475569;
 }
 .retry-code {
   font-weight: 600;
@@ -922,5 +925,18 @@ export default {
 
 .retry-code:hover {
   text-decoration: underline;
+}
+
+.terms-section {
+  text-align: right;
+}
+
+.top-detail-section {
+  display: flex;
+  justify-content: space-between;
+}
+
+.modal-body {
+  direction: rtl !important;
 }
 </style>

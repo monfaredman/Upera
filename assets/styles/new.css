@@ -11525,3 +11525,7 @@ background-color: #f6f6f6 !important;
   div#directdebitModal___BV_modal_body_ {
   height: 80vh !important;
 }
+
+.popover {
+  font-family: 'dana VF', serif !important;
+}
