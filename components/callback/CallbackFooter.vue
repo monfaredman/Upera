@@ -58,7 +58,7 @@
     <div v-else-if="!success" class="download-links-item">
       <!-- Check Again State -->
       <div v-if="checkagain" class="row">
-        <div :class="isReactNative ? 'col-6' : 'col-12'">
+        <div :class="'col-6'">
           <a
             href=""
             class="btn btn-main btn-block"
@@ -68,8 +68,18 @@
             پرداخت مجدد
           </a>
         </div>
+        <div :class="'col-6'">
+          <a
+            href=""
+            class="btn btn-light btn-block"
+            @click.prevent="$emit('check-payment')"
+          >
+            <i class="fa fa-check-double pl-2" />
+            بررسی پرداخت
+          </a>
+        </div>
         <!-- React Native Back to App Button for Check Again State -->
-        <div v-if="isReactNative" class="col-6">
+        <div v-if="isReactNative" class="col-12 mt-2">
           <a
             :href="`uperaapp://callback?${queryString}`"
             class="btn btn-light btn-block"
@@ -92,6 +102,7 @@
             ورود به سایت
           </a>
         </div>
+
         <!-- React Native Back to App Button for Show Login State -->
         <div v-if="isReactNative" class="col-6">
           <a
@@ -321,12 +332,11 @@ export default {
     },
     secondaryButton() {
       if (!this.success) return null
-
       if (this.purchaseType === 'download') {
         return {
-          text: 'بررسی پرداخت',
-          iconClass: 'fa-check-double',
-          action: 'checkPayment',
+          text: 'بازگشت به صفحه اصلی',
+          iconClass: 'fa-home',
+          action: 'backToOpera',
         }
       }
 

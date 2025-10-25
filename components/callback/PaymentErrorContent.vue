@@ -95,6 +95,10 @@ export default {
       type: String,
       default: null,
     },
+    showRefundMessages: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
     isFailureState() {
@@ -116,7 +120,7 @@ export default {
       return null
     },
     showRefundMessage() {
-      return this.errorType === 'checkagain'
+      return this.errorType === 'checkagain' && this.showRefundMessages
     },
     showRetryMessage() {
       return this.errorType === 'default'

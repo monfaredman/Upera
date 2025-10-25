@@ -196,6 +196,7 @@
                         error-type="checkagain"
                         :ref-num="ref_num"
                         :message="message"
+                        :show-refund-messages="showRefundMessage"
                       />
                       <payment-error-content
                         v-else-if="show_login == 1"
@@ -275,6 +276,7 @@ export default {
       success: false,
       files: null,
       ref_num: 0,
+      showRefundMessage: false,
       show_login: 0,
       title: null,
       wallet_amount: null,
@@ -436,18 +438,6 @@ export default {
               screening: {
                 ekran: true,
                 ekran_hour: 72,
-              },
-            },
-            {
-              id: 2,
-              title: 'فیلم اکران آنلاین - نسخه دوم',
-              download_url: 'https://example.com/ekran-movie-2.mp4',
-              quality: '720p',
-              size: '1.5 GB',
-              presale: false,
-              screening: {
-                ekran: true,
-                ekran_hour: 48,
               },
             },
           ],
@@ -690,6 +680,7 @@ export default {
             }
           }
         )
+      this.showRefundMessage = true
       if (check) this.checkagain = true
     },
     BUY() {

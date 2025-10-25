@@ -459,16 +459,11 @@ export default {
   height: 36px;
   border: none;
   border-radius: 6px;
-  background: #ff6633;
+  background: none !important;
   color: white;
   cursor: pointer;
   transition: all 0.2s;
   text-decoration: none;
-}
-
-.icon-btn:hover {
-  background: #e55a2b;
-  transform: translateY(-2px);
 }
 
 .copy-btn {
