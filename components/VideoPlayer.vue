@@ -19,6 +19,12 @@
       style="width: 100%; height: 100%; border-radius: 0.375rem"
       :poster="posterUrl"
     />
+
+    <!-- Add runtime display here -->
+    <div v-if="stream" class="runtime-display">
+      {{ formattedCurrentTime }} / {{ formattedDuration }}
+    </div>
+
     <div v-if="title && stream" class="video-title-overlay">
       {{ adActive ? 'نمایش تبلیغات' : title }}
     </div>
@@ -97,6 +103,8 @@ export default {
       adActive: false,
       viewsIncremented: false,
       player: null,
+      currentTime: 0,
+      duration: 0,
     }
   },
 
@@ -104,6 +112,13 @@ export default {
     ...mapGetters({
       autoPlay: 'autoplay',
     }),
+    formattedCurrentTime() {
+      return this.formatTime(this.currentTime)
+    },
+
+    formattedDuration() {
+      return this.formatTime(this.duration)
+    },
   },
 
   watch: {
@@ -477,15 +492,25 @@ export default {
       })
 
       this.player.on('timeupdate', () => {
-        const currentTime = this.player.currentTime()
-        const duration = this.player.duration()
-        this.$emit('timeupdate', { currentTime, duration, player: this.player })
+        this.currentTime = this.player.currentTime()
+        this.duration = this.player.duration()
+
+        this.$emit('timeupdate', {
+          currentTime: this.currentTime,
+          duration: this.duration,
+          player: this.player,
+        })
       })
 
       this.player.on('ended', () => {
         if (this.autoPlay) {
           this.$emit('ended')
         }
+      })
+
+      // Also update duration when metadata is loaded
+      this.player.on('loadedmetadata', () => {
+        this.duration = this.player.duration()
       })
     },
 
@@ -574,6 +599,23 @@ export default {
           event.preventDefault()
           this.player.paused() ? this.player.play() : this.player.pause()
           break
+      }
+    },
+    formatTime(seconds) {
+      if (!seconds || isNaN(seconds)) return '00:00'
+
+      const hours = Math.floor(seconds / 3600)
+      const minutes = Math.floor((seconds % 3600) / 60)
+      const secs = Math.floor(seconds % 60)
+
+      if (hours > 0) {
+        return `${hours.toString().padStart(2, '0')}:${minutes
+          .toString()
+          .padStart(2, '0')}:${secs.toString().padStart(2, '0')}`
+      } else {
+        return `${minutes.toString().padStart(2, '0')}:${secs
+          .toString()
+          .padStart(2, '0')}`
       }
     },
   },
@@ -727,5 +769,27 @@ export default {
 ::v-deep button.vjs-control.vjs-button.vjs-next10-button {
   margin-left: -7px !important;
   margin-right: 10px !important;
+}
+
+.runtime-display {
+  position: absolute;
+  bottom: 60px; /* Position above control bar */
+  right: 15px;
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+  background: rgba(0, 0, 0, 0.6);
+  padding: 4px 8px;
+  border-radius: 4px;
+  z-index: 10;
+  font-family: Arial, sans-serif;
+}
+
+/* Alternative: Show runtime in control bar area */
+.vjs-control-bar .runtime-display {
+  position: static;
+  margin: 0 10px;
+  align-self: center;
 }
 </style>
