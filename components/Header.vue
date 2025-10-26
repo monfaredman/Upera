@@ -112,7 +112,6 @@ export default {
       MenuOpen: false,
       showpayments: true,
       categories: [
-        '/genres',
         '/lives',
         '/casts/iranian-actors',
         '/casts/foreign-actors',
