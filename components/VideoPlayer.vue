@@ -1,6 +1,10 @@
 <template>
-  <div style="position: relative;">
-    <div v-if="!stream && posterUrl" class="video-placeholder" :style="{ backgroundImage: `url(${poster})` }">
+  <div style="position: relative">
+    <div
+      v-if="!stream && posterUrl"
+      class="video-placeholder"
+      :style="{ backgroundImage: `url(${poster})` }"
+    >
       <div v-if="title" class="video-title-overlay">
         {{ adActive ? 'نمایش تبلیغات' : title }}
       </div>
@@ -12,16 +16,14 @@
       class="video-js vjs-default-skin vjs-theme-fantasy vjs-big-play-centered vjs-16-9"
       controls
       preload="auto"
-      style="width: 100%; height: 100%; border-radius: 0.375rem;"
+      style="width: 100%; height: 100%; border-radius: 0.375rem"
       :poster="posterUrl"
     />
     <div v-if="title && stream" class="video-title-overlay">
       {{ adActive ? 'نمایش تبلیغات' : title }}
     </div>
 
-    <button id="vast-cta-btn">
-      اطلاعات بیشتر
-    </button>
+    <button id="vast-cta-btn">اطلاعات بیشتر</button>
   </div>
 </template>
 
@@ -65,10 +67,10 @@ export default {
       type: Array,
       default: () => [],
     },
-  hasPlaylist: {
-    type: Boolean,
-    default: false,
-  },
+    hasPlaylist: {
+      type: Boolean,
+      default: false,
+    },
 
     // prop اختیاری برای افزایش شمارش بازدیدها
     shouldIncrementViews: {
@@ -85,10 +87,10 @@ export default {
       type: String,
       default: '',
     },
-    
-    muteOnOtherPlay: { type: Boolean, default: false }
+
+    muteOnOtherPlay: { type: Boolean, default: false },
   },
-      data() {
+  data() {
     return {
       adActive: false, // آیا الآن اد در حال پخشه؟
     }
@@ -109,14 +111,13 @@ export default {
       if (this.player) {
         this.updateIcon() // به‌روزرسانی تنظیمات پلیر با مقدار جدید
       }
-    }
+    },
   },
   mounted() {
     if (this.stream) {
       this.initPlayer()
     }
-      window.addEventListener('keydown', this.handleKeydown)
-
+    window.addEventListener('keydown', this.handleKeydown)
   },
   beforeDestroy() {
     if (this.player) {
@@ -125,14 +126,9 @@ export default {
     window.removeEventListener('keydown', this.handleKeydown)
   },
 
-
-
   methods: {
     ...mapActions(['SET_AUTOPLAY']),
     initPlayer() {
-
-
-
       this.player = videojs(this.playerid, {
         autoplay: this.playerAutoPlay,
         controls: true,
@@ -142,51 +138,51 @@ export default {
       })
 
       if (this.vastUrl) {
+        const vastVjsOptions = {
+          // vastUrl:
+          vastUrl: this.vastUrl,
+          playAdAlways: true, // اگر می‌خواهید حتماً قبل از محتوا اجرا شود
+          withCredentials: false, // برحسب نیاز
+          mediaFileRegex: /.*/,
+          addCtaClickZone: false,
+          timeout: 5, // ثانیه
+          skipButtonOptions: {
+            // متنی که نمایش داده می‌شود
+            text: 'رد کردن >>',
+          },
+        }
 
+        // Initialize the VAST plugin
+        this.player.vast(vastVjsOptions)
 
-const vastVjsOptions = {
-  // vastUrl: 
-    vastUrl: this.vastUrl,
-  playAdAlways: true,      // اگر می‌خواهید حتماً قبل از محتوا اجرا شود
-  withCredentials: false,  // برحسب نیاز
-  mediaFileRegex: /.*/,
-  addCtaClickZone: false,
-  timeout: 5,              // ثانیه
-    skipButtonOptions: {
-    // متنی که نمایش داده می‌شود
-    text: 'رد کردن >>',
-  }
-}
+        const ctaBtn = document.getElementById('vast-cta-btn')
 
-// Initialize the VAST plugin
-this.player.vast(vastVjsOptions)
+        // وقتی پلاگین URL کلیک رو داره، دکمه رو نشون بده و رفتارش رو ست کن:
+        this.player.on(
+          'vast.play',
+          (e, { ctaUrl, adClickCallback, adTitle }) => {
+            ctaBtn.innerText = adTitle
+            if (ctaUrl) {
+              ctaBtn.style.display = 'block'
+              ctaBtn.onclick = () => {
+                // call the plugin’s click-tracking callback
+                adClickCallback()
+                // then navigate
+                window.open(ctaUrl, '_blank')
+              }
+            }
+          }
+        )
 
-const ctaBtn = document.getElementById('vast-cta-btn')
-
-// وقتی پلاگین URL کلیک رو داره، دکمه رو نشون بده و رفتارش رو ست کن:
-this.player.on('vast.play', (e, { ctaUrl, adClickCallback, adTitle }) => {
-      ctaBtn.innerText = adTitle 
-  if (ctaUrl) {
-    ctaBtn.style.display = 'block'
-    ctaBtn.onclick = () => {
-      // call the plugin’s click-tracking callback
-      adClickCallback()
-      // then navigate
-      window.open(ctaUrl, '_blank')
-    }
-  }
-})
-
-// وقتی آگهی تموم شد یا Error خورد، دکمه رو مخفی کن:
-const hideCta = () => { ctaBtn.style.display = 'none' }
-this.player.on('vast.complete', hideCta)
-this.player.on('vast.error', hideCta)
-
-
+        // وقتی آگهی تموم شد یا Error خورد، دکمه رو مخفی کن:
+        const hideCta = () => {
+          ctaBtn.style.display = 'none'
+        }
+        this.player.on('vast.complete', hideCta)
+        this.player.on('vast.error', hideCta)
       }
 
       this.player.ready(() => {
-
         this.player.on('vast.play', () => {
           this.adActive = true
         })
@@ -198,45 +194,49 @@ this.player.on('vast.error', hideCta)
           this.adActive = false
         })
 
-  if (this.tracks && this.tracks.length) {
-    this.tracks.forEach(track => {
-      this.player.addRemoteTextTrack({
-        kind: track.kind,       // مثلاً 'captions'
-        src: track.src,         // آدرس فایل زیرنویس
-        label: track.label,     // برچسب نمایش داده شده برای زیرنویس
-        default: track.default, // تعیین می‌کند که زیرنویس پیش‌فرض باشد یا خیر
-        language: track.language || '', // (اختیاری) زبان زیرنویس
-      }, false) // false یعنی به صورت خودکار نمایش داده نشود (تنظیم false یا true بستگی به نیاز شما دارد)
-    })
-  }
+        if (this.tracks && this.tracks.length) {
+          this.tracks.forEach((track) => {
+            this.player.addRemoteTextTrack(
+              {
+                kind: track.kind, // مثلاً 'captions'
+                src: track.src, // آدرس فایل زیرنویس
+                label: track.label, // برچسب نمایش داده شده برای زیرنویس
+                default: track.default, // تعیین می‌کند که زیرنویس پیش‌فرض باشد یا خیر
+                language: track.language || '', // (اختیاری) زبان زیرنویس
+              },
+              false
+            ) // false یعنی به صورت خودکار نمایش داده نشود (تنظیم false یا true بستگی به نیاز شما دارد)
+          })
+        }
 
+        if (this.hasPlaylist) {
+          const Button = videojs.getComponent('Button')
 
-    if (this.hasPlaylist) {
-    const Button = videojs.getComponent('Button')
+          class PlaylistButton extends Button {
+            constructor(player, options) {
+              super(player, options)
+              this.addClass('vjs-playlist-button')
+              this.controlText('انتخاب فصل و قسمت')
+              const icon = document.createElement('span')
+              icon.className = 'vjs-icon-playlist'
+              this.el().appendChild(icon)
+            }
+            handleClick() {
+              this.player().trigger('playlistButtonClick')
+            }
+          }
 
-    class PlaylistButton extends Button {
-      constructor(player, options) {
-        super(player, options)
-        this.addClass('vjs-playlist-button')
-        this.controlText('انتخاب فصل و قسمت')
-        const icon = document.createElement('span')
-        icon.className = 'vjs-icon-playlist'
-        this.el().appendChild(icon)
-      }
-      handleClick() {
-        this.player().trigger('playlistButtonClick')
-      }
-    }
+          videojs.registerComponent('PlaylistButton', PlaylistButton)
+          this.player.controlBar.addChild(
+            'PlaylistButton',
+            {},
+            this.player.controlBar.children().length - 1
+          )
 
-    videojs.registerComponent('PlaylistButton', PlaylistButton)
-    this.player.controlBar.addChild('PlaylistButton', {}, this.player.controlBar.children().length - 1)
-
-    this.player.on('playlistButtonClick', () => {
-      this.$emit('playlistButtonClick')
-    })
-  }
-
-
+          this.player.on('playlistButtonClick', () => {
+            this.$emit('playlistButtonClick')
+          })
+        }
 
         // Add autoplay toggle button if enabled
         if (this.showAutoPlayToggle) {
@@ -271,11 +271,14 @@ this.player.on('vast.error', hideCta)
           videojs.registerComponent('AutoPlayButton', AutoPlayButton)
           const controlBar = this.player.controlBar
           if (controlBar) {
-            controlBar.addChild('AutoPlayButton', {}, controlBar.children().length - 1)
+            controlBar.addChild(
+              'AutoPlayButton',
+              {},
+              controlBar.children().length - 1
+            )
           }
 
-
-                    class NextButton extends Button {
+          class NextButton extends Button {
             constructor(player, options) {
               super(player, options)
               this.addClass('vjs-next-button')
@@ -289,227 +292,242 @@ this.player.on('vast.error', hideCta)
               this.player().trigger('ended')
             }
           }
-    videojs.registerComponent('NextButton', NextButton)
+          videojs.registerComponent('NextButton', NextButton)
 
-    // پیدا کردن اندیس دکمه playToggle در controlBar
-    const playToggle = this.player.controlBar.getChild('PlayToggle')
-    let insertIndex = this.player.controlBar.children().indexOf(playToggle)
-    // اگر پیدا نشد (مثلاً -1) می‌توانید به انتهای نوار کنترل اضافه کنید
-    if (insertIndex === -1) {
-      insertIndex = this.player.controlBar.children().length
-    } else {
-      // اضافه کردن بعد از playToggle
-      insertIndex += 1
-    }
-    // اضافه کردن دکمه Next در اندیس مشخص‌شده
-    this.player.controlBar.addChild('NextButton', {}, insertIndex)
-
-
-
+          // پیدا کردن اندیس دکمه playToggle در controlBar
+          const playToggle = this.player.controlBar.getChild('PlayToggle')
+          let insertIndex = this.player.controlBar
+            .children()
+            .indexOf(playToggle)
+          // اگر پیدا نشد (مثلاً -1) می‌توانید به انتهای نوار کنترل اضافه کنید
+          if (insertIndex === -1) {
+            insertIndex = this.player.controlBar.children().length
+          } else {
+            // اضافه کردن بعد از playToggle
+            insertIndex += 1
+          }
+          // اضافه کردن دکمه Next در اندیس مشخص‌شده
+          this.player.controlBar.addChild('NextButton', {}, insertIndex)
         }
 
+        const Button = videojs.getComponent('Button')
+        if (!Button) {
+          console.error('Button component is not available in Video.js')
+          return
+        }
 
-  const Button = videojs.getComponent('Button')
-  if (!Button) {
-    console.error('Button component is not available in Video.js')
-    return
-  }
+        // تشخیص پشتیبانی از AirPlay:
+        // اگر WebKitPlaybackTargetAvailabilityEvent تعریف شده باشد، فرض می‌کنیم AirPlay پشتیبانی می‌شود.
+        const airplayAvailable =
+          typeof window.WebKitPlaybackTargetAvailabilityEvent !== 'undefined'
 
-  // تشخیص پشتیبانی از AirPlay:
-  // اگر WebKitPlaybackTargetAvailabilityEvent تعریف شده باشد، فرض می‌کنیم AirPlay پشتیبانی می‌شود.
-  const airplayAvailable = typeof window.WebKitPlaybackTargetAvailabilityEvent !== 'undefined'
+        // تشخیص پشتیبانی از Chromecast:
+        // اگر window.chrome.cast وجود داشته باشد، Chromecast را پشتیبانی می‌کنیم.
+        const chromecastAvailable = !!(window.chrome && window.chrome.cast)
 
-  // تشخیص پشتیبانی از Chromecast:
-  // اگر window.chrome.cast وجود داشته باشد، Chromecast را پشتیبانی می‌کنیم.
-  const chromecastAvailable = !!(window.chrome && window.chrome.cast)
+        // تعیین نوع دکمه‌ای که باید اضافه شود:
+        let buttonType = null
+        if (airplayAvailable && !chromecastAvailable) {
+          buttonType = 'AirPlayButton'
+        } else if (chromecastAvailable && !airplayAvailable) {
+          buttonType = 'ChromecastButton'
+        } else if (airplayAvailable && chromecastAvailable) {
+          // اگر هر دو موجود باشند، می‌توانید یکی را به عنوان اولویت انتخاب کنید؛ در اینجا اولویت را به AirPlay می‌دهیم.
+          buttonType = 'AirPlayButton'
+        }
 
+        if (buttonType === 'AirPlayButton') {
+          class AirPlayButton extends Button {
+            constructor(player, options) {
+              super(player, options)
+              this.addClass('vjs-airplay-button')
+              this.controlText('AirPlay')
+            }
+            handleClick() {
+              // در اینجا رویداد airPlayRequested trigger می‌شود؛
+              // شما باید در جای دیگری این رویداد را مدیریت کنید.
+              this.player().trigger('airPlayRequested')
+            }
+          }
+          videojs.registerComponent('AirPlayButton', AirPlayButton)
+          this.player.controlBar.addChild(
+            'AirPlayButton',
+            {},
+            this.player.controlBar.children().length - 2
+          )
+        } else if (buttonType === 'ChromecastButton') {
+          class ChromecastButton extends Button {
+            constructor(player, options) {
+              super(player, options)
+              this.addClass('vjs-chromecast-button')
+              this.controlText('Chromecast')
+            }
+            handleClick() {
+              // در اینجا رویداد chromecastRequested trigger می‌شود؛
+              // شما باید در جای دیگری این رویداد را مدیریت کنید.
+              this.player().trigger('chromecastRequested')
+            }
+          }
+          videojs.registerComponent('ChromecastButton', ChromecastButton)
+          this.player.controlBar.addChild(
+            'ChromecastButton',
+            {},
+            this.player.controlBar.children().length - 2
+          )
+        } else {
+          console.info('Neither AirPlay nor Chromecast is available.')
+        }
 
-  // تعیین نوع دکمه‌ای که باید اضافه شود:
-  let buttonType = null
-  if (airplayAvailable && !chromecastAvailable) {
-    buttonType = 'AirPlayButton'
-  } else if (chromecastAvailable && !airplayAvailable) {
-    buttonType = 'ChromecastButton'
-  } else if (airplayAvailable && chromecastAvailable) {
-    // اگر هر دو موجود باشند، می‌توانید یکی را به عنوان اولویت انتخاب کنید؛ در اینجا اولویت را به AirPlay می‌دهیم.
-    buttonType = 'AirPlayButton'
-  }
+        this.viewsIncremented = false
 
-
-  if (buttonType === 'AirPlayButton') {
-    class AirPlayButton extends Button {
-      constructor(player, options) {
-        super(player, options)
-        this.addClass('vjs-airplay-button')
-        this.controlText('AirPlay')
-      }
-      handleClick() {
-        // در اینجا رویداد airPlayRequested trigger می‌شود؛
-        // شما باید در جای دیگری این رویداد را مدیریت کنید.
-        this.player().trigger('airPlayRequested')
-      }
-    }
-    videojs.registerComponent('AirPlayButton', AirPlayButton)
-    this.player.controlBar.addChild('AirPlayButton', {}, this.player.controlBar.children().length - 2)
-  } else if (buttonType === 'ChromecastButton') {
-    class ChromecastButton extends Button {
-      constructor(player, options) {
-        super(player, options)
-        this.addClass('vjs-chromecast-button')
-        this.controlText('Chromecast')
-      }
-      handleClick() {
-        // در اینجا رویداد chromecastRequested trigger می‌شود؛
-        // شما باید در جای دیگری این رویداد را مدیریت کنید.
-        this.player().trigger('chromecastRequested')
-      }
-    }
-    videojs.registerComponent('ChromecastButton', ChromecastButton)
-    this.player.controlBar.addChild('ChromecastButton', {}, this.player.controlBar.children().length - 2)
-  } else {
-    console.info('Neither AirPlay nor Chromecast is available.')
-  }
-
-      this.viewsIncremented = false
-
-    // افزودن listener به رویداد play؛ axios فراخوانی غیرهمزمان است و پلی بدون تأخیر ادامه می‌یابد.
-    this.player.on('play', () => {
-      if (!this.viewsIncremented && this.shouldIncrementViews && this.videoid) {
-        this.$axios
-          .$post(`/nocache/videos/${this.videoid}/increment-views`, { videotype: this.videotype })
-          .then((response) => {
-            console.log('Views incremented, new view count:', response.views_count)
-            // علامت‌گذاری که درخواست یک بار ارسال شده است
-            this.viewsIncremented = true
-          })
-          .catch((error) => {
-            console.error('Error incrementing views:', error)
-          })
-      }
-      if (this.muteOnOtherPlay) {
-        this.$emit('video-played', this.playerid)
-      }
-    })
-    
-  
+        // افزودن listener به رویداد play؛ axios فراخوانی غیرهمزمان است و پلی بدون تأخیر ادامه می‌یابد.
+        this.player.on('play', () => {
+          if (
+            !this.viewsIncremented &&
+            this.shouldIncrementViews &&
+            this.videoid
+          ) {
+            this.$axios
+              .$post(`/nocache/videos/${this.videoid}/increment-views`, {
+                videotype: this.videotype,
+              })
+              .then((response) => {
+                console.log(
+                  'Views incremented, new view count:',
+                  response.views_count
+                )
+                // علامت‌گذاری که درخواست یک بار ارسال شده است
+                this.viewsIncremented = true
+              })
+              .catch((error) => {
+                console.error('Error incrementing views:', error)
+              })
+          }
+          if (this.muteOnOtherPlay) {
+            this.$emit('video-played', this.playerid)
+          }
+        })
       })
 
-this.player.on('userinactive', function() {
-  // پیدا کردن المنت با آی‌دی flowplayer-back-button
-  var backButton = document.getElementById('flowplayer-back-button')
-  // پیدا کردن المنت با کلاس video-title-overlay
-  // var videoTitleOverlay = document.querySelector('.video-title-overlay')
+      this.player.on('userinactive', function () {
+        // پیدا کردن المنت با آی‌دی flowplayer-back-button
+        var backButton = document.getElementById('flowplayer-back-button')
+        // پیدا کردن المنت با کلاس video-title-overlay
+        // var videoTitleOverlay = document.querySelector('.video-title-overlay')
 
-  if (backButton) {
-    backButton.style.display = 'none'
-  }
-  // if (videoTitleOverlay) {
-  //   videoTitleOverlay.style.display = 'none'
-  // }
-})
+        if (backButton) {
+          backButton.style.display = 'none'
+        }
+        // if (videoTitleOverlay) {
+        //   videoTitleOverlay.style.display = 'none'
+        // }
+      })
 
-this.player.on('useractive', function() {
-  var backButton = document.getElementById('flowplayer-back-button')
-  // var videoTitleOverlay = document.querySelector('.video-title-overlay')
+      this.player.on('useractive', function () {
+        var backButton = document.getElementById('flowplayer-back-button')
+        // var videoTitleOverlay = document.querySelector('.video-title-overlay')
 
-  if (backButton) {
-    backButton.style.display = 'block' // یا هر حالت نمایش مورد نظرتون (مثلاً inline-block)
-  }
-  // if (videoTitleOverlay) {
-  //   videoTitleOverlay.style.display = 'block'
-  // }
-})
+        if (backButton) {
+          backButton.style.display = 'block' // یا هر حالت نمایش مورد نظرتون (مثلاً inline-block)
+        }
+        // if (videoTitleOverlay) {
+        //   videoTitleOverlay.style.display = 'block'
+        // }
+      })
 
-this.player.on('timeupdate', () => {
-  const currentTime = this.player.currentTime()
-  const duration = this.player.duration()
-  // ارسال رویداد به کامپوننت پدر
-  this.$emit('timeupdate', { currentTime, duration, player: this.player })
-})
+      this.player.on('timeupdate', () => {
+        const currentTime = this.player.currentTime()
+        const duration = this.player.duration()
+        // ارسال رویداد به کامپوننت پدر
+        this.$emit('timeupdate', { currentTime, duration, player: this.player })
+      })
 
-this.player.on('ready', () => {
-  this.$emit('ready', this.player )
-})
+      this.player.on('ready', () => {
+        this.$emit('ready', this.player)
+      })
 
-this.player.hlsQualitySelector({
-    displayCurrentQuality: true,
-})
+      this.player.hlsQualitySelector({
+        displayCurrentQuality: true,
+      })
       this.player.on('ended', () => {
         if (this.autoPlay) {
           this.$emit('ended')
         }
       })
     },
-  play() {
-    if (this.player) {
-      this.player.play()
-    }
-  },
-  pause() {
-    if (this.player) {
-      this.player.pause()
-    }
-  },
-  updateIcon() {
-    const button = this.player.controlBar.getChild('AutoPlayButton')
-    if (button) {
-      button.updateIcon()
-    }
-  },  
-  handleKeydown(event) {
-    if (!this.player) return
-    const seekTime = 10 // مدت زمان جابجایی به ثانیه (مثلاً 10 ثانیه)
-    const volumeStep = 0.1 // میزان تغییر صدا (بین 0 تا 1)
+    play() {
+      if (this.player) {
+        this.player.play()
+      }
+    },
+    pause() {
+      if (this.player) {
+        this.player.pause()
+      }
+    },
+    updateIcon() {
+      const button = this.player.controlBar.getChild('AutoPlayButton')
+      if (button) {
+        button.updateIcon()
+      }
+    },
+    handleKeydown(event) {
+      if (!this.player) return
+      const seekTime = 10 // مدت زمان جابجایی به ثانیه (مثلاً 10 ثانیه)
+      const volumeStep = 0.1 // میزان تغییر صدا (بین 0 تا 1)
 
-    switch (event.key) {
-      case 'ArrowLeft': {
-        // عقب بردن ویدیو
-        const newTime = Math.max(this.player.currentTime() - seekTime, 0)
-        this.player.currentTime(newTime)
-        break
-      }
-      case 'ArrowRight': {
-        // جلو بردن ویدیو
-        const duration = this.player.duration()
-        const newTime = Math.min(this.player.currentTime() + seekTime, duration)
-        this.player.currentTime(newTime)
-        break
-      }
-      case 'ArrowUp': {
-        // افزایش حجم صدا
-        const newVolume = Math.min(this.player.volume() + volumeStep, 1)
-        this.player.volume(newVolume)
-        break
-      }
-      case 'ArrowDown': {
-        // کاهش حجم صدا
-        const newVolume = Math.max(this.player.volume() - volumeStep, 0)
-        this.player.volume(newVolume)
-        break
-      }
-      case ' ': {
-        // پلی/پاز با Space
-        event.preventDefault() // جلوگیری از اسکرول صفحه هنگام فشردن Space
-        if (this.player.paused()) {
-          this.player.play()
-        } else {
-          this.player.pause()
+      switch (event.key) {
+        case 'ArrowLeft': {
+          // عقب بردن ویدیو
+          const newTime = Math.max(this.player.currentTime() - seekTime, 0)
+          this.player.currentTime(newTime)
+          break
         }
-        break
+        case 'ArrowRight': {
+          // جلو بردن ویدیو
+          const duration = this.player.duration()
+          const newTime = Math.min(
+            this.player.currentTime() + seekTime,
+            duration
+          )
+          this.player.currentTime(newTime)
+          break
+        }
+        case 'ArrowUp': {
+          // افزایش حجم صدا
+          const newVolume = Math.min(this.player.volume() + volumeStep, 1)
+          this.player.volume(newVolume)
+          break
+        }
+        case 'ArrowDown': {
+          // کاهش حجم صدا
+          const newVolume = Math.max(this.player.volume() - volumeStep, 0)
+          this.player.volume(newVolume)
+          break
+        }
+        case ' ': {
+          // پلی/پاز با Space
+          event.preventDefault() // جلوگیری از اسکرول صفحه هنگام فشردن Space
+          if (this.player.paused()) {
+            this.player.play()
+          } else {
+            this.player.pause()
+          }
+          break
+        }
       }
-    }
+    },
   },
-
-  },
-
 }
 </script>
 <style scoped>
 /* کلیک‌کننده‌ی روی تبلیغ (transparent overlay) */
 .vjs-vast-click-container {
   position: absolute;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   cursor: pointer;
   z-index: 25;
 }
@@ -521,10 +539,9 @@ this.player.hlsQualitySelector({
   right: 20px;
   color: #fff;
   font-size: 16px;
-  text-shadow: 0 0 4px rgba(0,0,0,0.7);
+  text-shadow: 0 0 4px rgba(0, 0, 0, 0.7);
   z-index: 30;
 }
-
 
 /* Title overlay with better shadow and positioning */
 .video-title-overlay {
@@ -595,7 +612,6 @@ this.player.hlsQualitySelector({
   transform: scale(1.1);
 }
 
-
 /* Hover effects for the control bar */
 .vjs-control-bar {
   background: rgba(0, 0, 0, 0.7) !important;
@@ -628,4 +644,3 @@ this.player.hlsQualitySelector({
   margin: 0 5px;
 }
 </style>
-
