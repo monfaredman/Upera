@@ -998,7 +998,7 @@ section#content {
   backdrop-filter: blur(12px);
   border: 1px solid #e5e5e5;
   border-radius: 36px;
-  padding: 16px 18px !important;
+  padding: 7px 11px !important;
   width: fit-content;
   margin: 0 41px 0 0;
   display: flex;
