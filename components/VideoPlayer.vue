@@ -20,11 +20,6 @@
       :poster="posterUrl"
     />
 
-    <!-- Add runtime display here -->
-    <div v-if="stream" class="runtime-display">
-      {{ formattedCurrentTime }} / {{ formattedDuration }}
-    </div>
-
     <div v-if="title && stream" class="video-title-overlay">
       {{ adActive ? 'نمایش تبلیغات' : title }}
     </div>
@@ -112,13 +107,6 @@ export default {
     ...mapGetters({
       autoPlay: 'autoplay',
     }),
-    formattedCurrentTime() {
-      return this.formatTime(this.currentTime)
-    },
-
-    formattedDuration() {
-      return this.formatTime(this.duration)
-    },
   },
 
   watch: {
@@ -260,6 +248,8 @@ export default {
     },
 
     setupCustomButtons() {
+      this.createRuntimeDisplay()
+
       if (this.hasPlaylist) {
         this.createPlaylistButton()
       }
@@ -618,6 +608,80 @@ export default {
           .padStart(2, '0')}`
       }
     },
+
+    createRuntimeDisplay() {
+      const Component = videojs.getComponent('Component')
+
+      class RuntimeDisplay extends Component {
+        constructor(player, options) {
+          super(player, options)
+          this.addClass('vjs-runtime-display')
+          this.updateText()
+
+          // Update on time changes
+          player.on('timeupdate', () => {
+            this.updateText()
+          })
+
+          player.on('loadedmetadata', () => {
+            this.updateText()
+          })
+        }
+
+        updateText() {
+          const currentTime = this.player().currentTime()
+          const duration = this.player().duration()
+
+          const formatTime = (seconds) => {
+            if (!seconds || isNaN(seconds)) return '00:00'
+            const hours = Math.floor(seconds / 3600)
+            const minutes = Math.floor((seconds % 3600) / 60)
+            const secs = Math.floor(seconds % 60)
+
+            if (hours > 0) {
+              return `${hours.toString().padStart(2, '0')}:${minutes
+                .toString()
+                .padStart(2, '0')}:${secs.toString().padStart(2, '0')}`
+            } else {
+              return `${minutes.toString().padStart(2, '0')}:${secs
+                .toString()
+                .padStart(2, '0')}`
+            }
+          }
+
+          const currentTimeFormatted = formatTime(currentTime)
+          const durationFormatted = formatTime(duration)
+
+          this.el().innerHTML = `${currentTimeFormatted} / ${durationFormatted}`
+        }
+
+        createEl() {
+          return videojs.dom.createEl('div', {
+            className: 'vjs-runtime-display vjs-control',
+            innerHTML: '00:00 / 00:00',
+          })
+        }
+      }
+
+      videojs.registerComponent('RuntimeDisplay', RuntimeDisplay)
+
+      // Add to control bar - adjust position as needed
+      const controlBar = this.player.controlBar
+      const fullscreenToggle = controlBar.getChild('fullscreenToggle')
+      const volumePanel = controlBar.getChild('volumePanel')
+
+      // Add after volume panel or before fullscreen button
+      let insertIndex
+      if (volumePanel) {
+        insertIndex = controlBar.children().indexOf(volumePanel) + 1
+      } else if (fullscreenToggle) {
+        insertIndex = controlBar.children().indexOf(fullscreenToggle)
+      } else {
+        insertIndex = controlBar.children().length - 2
+      }
+
+      controlBar.addChild('RuntimeDisplay', {}, insertIndex)
+    },
   },
 }
 </script>
@@ -771,7 +835,7 @@ export default {
   margin-right: 10px !important;
 }
 
-.runtime-display {
+::v-deep .runtime-display {
   position: absolute;
   bottom: 60px; /* Position above control bar */
   right: 15px;
@@ -787,9 +851,44 @@ export default {
 }
 
 /* Alternative: Show runtime in control bar area */
-.vjs-control-bar .runtime-display {
+::v-deep .vjs-control-bar .runtime-display {
   position: static;
   margin: 0 10px;
   align-self: center;
+}
+
+/* Runtime Display inside control bar */
+::v-deep .vjs-runtime-display {
+  color: white;
+  font-size: 13px;
+  font-weight: bold;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+  padding: 0 10px;
+  display: flex;
+  align-items: center;
+  font-family: Arial, sans-serif;
+  margin: 0 5px;
+  min-width: 118px;
+  text-align: center;
+  justify-content: center;
+}
+
+/* For RTL languages */
+::v-deep .vjs-rtl .vjs-runtime-display {
+  direction: ltr; /* Keep time format LTR even in RTL mode */
+}
+
+/* Responsive design - hide on very small screens */
+@media (max-width: 480px) {
+  ::v-deep .vjs-runtime-display {
+    font-size: 11px;
+    min-width: 80px;
+    padding: 0 5px;
+  }
+}
+
+/* Remove the external runtime display styles */
+::v-deep .runtime-display {
+  display: none;
 }
 </style>
