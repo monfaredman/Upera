@@ -98,8 +98,6 @@ export default {
       adActive: false,
       viewsIncremented: false,
       player: null,
-      currentTime: 0,
-      duration: 0,
     }
   },
 
@@ -213,9 +211,7 @@ export default {
         this.setupAdEvents()
         this.setupTextTracks()
         this.setupCustomButtons()
-        this.setupCastButtons()
         this.setupPlaybackEvents()
-        this.setupUIEvents()
         this.setupQualitySelector()
       })
     },
@@ -327,37 +323,7 @@ export default {
     },
 
     createSkipButtons() {
-      this.createNextButton()
       this.createSkip10Buttons()
-    },
-
-    createNextButton() {
-      const Button = videojs.getComponent('Button')
-
-      class NextButton extends Button {
-        constructor(player, options) {
-          super(player, options)
-          this.addClass('vjs-next-button')
-          this.controlText('Next')
-          const icon = document.createElement('span')
-          icon.className = 'vjs-icon-next'
-          this.el().appendChild(icon)
-        }
-        handleClick() {
-          this.player().trigger('ended')
-        }
-      }
-
-      videojs.registerComponent('NextButton', NextButton)
-
-      const playToggle = this.player.controlBar.getChild('PlayToggle')
-      let insertIndex = this.player.controlBar.children().indexOf(playToggle)
-      insertIndex =
-        insertIndex === -1
-          ? this.player.controlBar.children().length
-          : insertIndex + 1
-
-      this.player.controlBar.addChild('NextButton', {}, insertIndex)
     },
 
     createSkip10Buttons() {
@@ -368,14 +334,11 @@ export default {
           super(player, options)
           this.addClass('vjs-prev10-button')
           this.controlText('10 ثانیه قبل')
-
-          // Create icon element properly
           const icon = document.createElement('img')
           icon.src = prev10Icon
           icon.style.width = '20px'
           icon.style.height = '20px'
           icon.alt = '10 seconds back'
-
           this.el().appendChild(icon)
         }
         handleClick() {
@@ -389,14 +352,11 @@ export default {
           super(player, options)
           this.addClass('vjs-next10-button')
           this.controlText('10 ثانیه بعد')
-
-          // Create icon element properly
           const icon = document.createElement('img')
           icon.src = next10Icon
           icon.style.width = '20px'
           icon.style.height = '20px'
           icon.alt = '10 seconds forward'
-
           this.el().appendChild(icon)
         }
         handleClick() {
@@ -418,76 +378,15 @@ export default {
       this.player.controlBar.addChild('Next10Button', {}, playToggleIndex + 2)
     },
 
-    setupCastButtons() {
-      const airplayAvailable =
-        typeof window.WebKitPlaybackTargetAvailabilityEvent !== 'undefined'
-      const chromecastAvailable = !!(window.chrome && window.chrome.cast)
-
-      if (airplayAvailable) {
-        this.createAirPlayButton()
-      } else if (chromecastAvailable) {
-        this.createChromecastButton()
-      } else {
-        console.info('Neither AirPlay nor Chromecast is available.')
-      }
-    },
-
-    createAirPlayButton() {
-      const Button = videojs.getComponent('Button')
-
-      class AirPlayButton extends Button {
-        constructor(player, options) {
-          super(player, options)
-          this.addClass('vjs-airplay-button')
-          this.controlText('AirPlay')
-        }
-        handleClick() {
-          this.player().trigger('airPlayRequested')
-        }
-      }
-
-      videojs.registerComponent('AirPlayButton', AirPlayButton)
-      this.player.controlBar.addChild(
-        'AirPlayButton',
-        {},
-        this.player.controlBar.children().length - 2
-      )
-    },
-
-    createChromecastButton() {
-      const Button = videojs.getComponent('Button')
-
-      class ChromecastButton extends Button {
-        constructor(player, options) {
-          super(player, options)
-          this.addClass('vjs-chromecast-button')
-          this.controlText('Chromecast')
-        }
-        handleClick() {
-          this.player().trigger('chromecastRequested')
-        }
-      }
-
-      videojs.registerComponent('ChromecastButton', ChromecastButton)
-      this.player.controlBar.addChild(
-        'ChromecastButton',
-        {},
-        this.player.controlBar.children().length - 2
-      )
-    },
-
     setupPlaybackEvents() {
       this.player.on('play', () => {
         this.handlePlayEvent()
       })
 
       this.player.on('timeupdate', () => {
-        this.currentTime = this.player.currentTime()
-        this.duration = this.player.duration()
-
         this.$emit('timeupdate', {
-          currentTime: this.currentTime,
-          duration: this.duration,
+          currentTime: this.player.currentTime(),
+          duration: this.player.duration(),
           player: this.player,
         })
       })
@@ -496,11 +395,6 @@ export default {
         if (this.autoPlay) {
           this.$emit('ended')
         }
-      })
-
-      // Also update duration when metadata is loaded
-      this.player.on('loadedmetadata', () => {
-        this.duration = this.player.duration()
       })
     },
 
@@ -525,19 +419,6 @@ export default {
       if (this.muteOnOtherPlay) {
         this.$emit('video-played', this.playerid)
       }
-    },
-
-    setupUIEvents() {
-      this.player.on(['userinactive', 'useractive'], () => {
-        const backButton = document.getElementById('flowplayer-back-button')
-        if (backButton) {
-          backButton.style.display = this.player.userActive() ? 'block' : 'none'
-        }
-      })
-
-      this.player.on('ready', () => {
-        this.$emit('ready', this.player)
-      })
     },
 
     setupQualitySelector() {
@@ -591,23 +472,6 @@ export default {
           break
       }
     },
-    formatTime(seconds) {
-      if (!seconds || isNaN(seconds)) return '00:00'
-
-      const hours = Math.floor(seconds / 3600)
-      const minutes = Math.floor((seconds % 3600) / 60)
-      const secs = Math.floor(seconds % 60)
-
-      if (hours > 0) {
-        return `${hours.toString().padStart(2, '0')}:${minutes
-          .toString()
-          .padStart(2, '0')}:${secs.toString().padStart(2, '0')}`
-      } else {
-        return `${minutes.toString().padStart(2, '0')}:${secs
-          .toString()
-          .padStart(2, '0')}`
-      }
-    },
 
     createRuntimeDisplay() {
       const Component = videojs.getComponent('Component')
@@ -618,7 +482,6 @@ export default {
           this.addClass('vjs-runtime-display')
           this.updateText()
 
-          // Update on time changes
           player.on('timeupdate', () => {
             this.updateText()
           })
@@ -665,12 +528,10 @@ export default {
 
       videojs.registerComponent('RuntimeDisplay', RuntimeDisplay)
 
-      // Add to control bar - adjust position as needed
       const controlBar = this.player.controlBar
-      const fullscreenToggle = controlBar.getChild('fullscreenToggle')
       const volumePanel = controlBar.getChild('volumePanel')
+      const fullscreenToggle = controlBar.getChild('fullscreenToggle')
 
-      // Add after volume panel or before fullscreen button
       let insertIndex
       if (volumePanel) {
         insertIndex = controlBar.children().indexOf(volumePanel) + 1
@@ -773,20 +634,6 @@ export default {
   background: rgba(0, 0, 0, 0.9) !important;
 }
 
-.vjs-tooltip {
-  background: rgba(0, 0, 0, 0.8);
-  color: white;
-  font-size: 14px;
-  padding: 5px 10px;
-  border-radius: 4px;
-  text-align: center;
-  white-space: nowrap;
-}
-
-.vjs-tooltip:after {
-  content: none;
-}
-
 .vjs-control {
   margin: 0 5px;
 }
@@ -819,13 +666,6 @@ export default {
   color: #00a8ff;
 }
 
-.vjs-prev10-button .vjs-icon-replay-10,
-.vjs-next10-button .vjs-icon-forward-10 {
-  font-family: VideoJS;
-  font-size: 1.5em;
-  line-height: 1.67;
-}
-
 .vjs-next10-button {
   margin-right: 5px !important;
 }
@@ -835,29 +675,6 @@ export default {
   margin-right: 10px !important;
 }
 
-::v-deep .runtime-display {
-  position: absolute;
-  bottom: 60px; /* Position above control bar */
-  right: 15px;
-  color: white;
-  font-size: 14px;
-  font-weight: bold;
-  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
-  background: rgba(0, 0, 0, 0.6);
-  padding: 4px 8px;
-  border-radius: 4px;
-  z-index: 10;
-  font-family: Arial, sans-serif;
-}
-
-/* Alternative: Show runtime in control bar area */
-::v-deep .vjs-control-bar .runtime-display {
-  position: static;
-  margin: 0 10px;
-  align-self: center;
-}
-
-/* Runtime Display inside control bar */
 ::v-deep .vjs-runtime-display {
   color: white;
   font-size: 13px;
@@ -873,22 +690,15 @@ export default {
   justify-content: center;
 }
 
-/* For RTL languages */
 ::v-deep .vjs-rtl .vjs-runtime-display {
-  direction: ltr; /* Keep time format LTR even in RTL mode */
+  direction: ltr;
 }
 
-/* Responsive design - hide on very small screens */
 @media (max-width: 480px) {
   ::v-deep .vjs-runtime-display {
     font-size: 11px;
     min-width: 80px;
     padding: 0 5px;
   }
-}
-
-/* Remove the external runtime display styles */
-::v-deep .runtime-display {
-  display: none;
 }
 </style>
