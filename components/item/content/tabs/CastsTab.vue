@@ -56,6 +56,7 @@ export default {
 <style scoped>
 .container-fluid {
   padding-right: 0rem !important;
+  margin: 0 41px;
 }
 
 .casts-tab-container {
@@ -92,7 +93,19 @@ export default {
   color: #f2f2f2;
 }
 
+@media (max-width: 1090) {
+  .container-fluid {
+    padding-right: 0rem !important;
+    margin: 0 15px;
+  }
+}
+
 @media (max-width: 767px) {
+  .container-fluid {
+    padding-right: 0rem !important;
+    margin: 0 15px;
+  }
+
   .casts-tab-container {
     padding: 12px 0;
     margin-top: -3rem !important;

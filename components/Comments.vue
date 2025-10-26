@@ -487,7 +487,7 @@ export default {
 .comments-container {
   width: 100%;
   max-width: 1292px;
-  margin: 0 auto;
+  margin: 0 41px;
 }
 
 /* Comment count header */

@@ -68,7 +68,7 @@
                 {{ localFormData.subscribe_fee }} تومان
               </div>
             </div>
-            <div
+            <!-- <div
               class="subscription-plan"
               :class="{ active: selectedPlan === 'quarterly' }"
               @click="selectPlan('quarterly')"
@@ -83,7 +83,7 @@
             >
               <div class="plan-title">۶ ماهه</div>
               <div class="plan-price">۱۲۰,۰۰۰ تومان</div>
-            </div>
+            </div> -->
           </div>
           <!-- <small class="text-muted d-block mt-3">{{
             subscriptionDescription
@@ -273,7 +273,7 @@ export default {
 }
 
 .subscription-plan {
-  flex: 1;
+  flex: 0.33;
   padding: 1rem;
   text-align: center;
   cursor: pointer;

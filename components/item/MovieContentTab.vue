@@ -1,7 +1,7 @@
 <template>
   <section class="movie-content-section">
     <div class="container-fluid">
-      <div class="row align-items-center">
+      <div class="row align-items-center flex-row-reverse">
         <!-- Right side: Movie Backdrop Image (6/12) -->
         <div class="col-md-6 order-md-2 mb-4 mb-md-0">
           <div class="movie-backdrop-wrapper">

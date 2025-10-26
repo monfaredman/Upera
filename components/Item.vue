@@ -38,16 +38,89 @@
         @share="modalsharing = true"
       />
     </template>
-    <div class="content-body">
-      <!-- add nav-class so BootstrapVue generates a class we can target reliably -->
-      <b-tabs @input="updateHash" v-model="activeTab" card content-class="p-3">
+
+    <!-- Navigation Header -->
+    <div class="content-nav-header">
+      <nav class="nav nav-pills">
         <!-- قسمت‌ها : SeasonEpisodes -->
-        <b-tab
+        <a
           v-if="type === 'series' || type === 'episode'"
-          active
           href="#episodes"
-          title="قسمت‌ها"
+          class="nav-link"
+          @click.prevent="scrollToSection('episodes')"
         >
+          قسمت‌ها
+        </a>
+
+        <!-- فیلم : MovieContentTab -->
+        <a
+          v-if="type === 'movie'"
+          href="#episodes"
+          class="nav-link"
+          @click.prevent="scrollToSection('episodes')"
+        >
+          فیلم
+        </a>
+
+        <!-- محتوا : ContentDetails -->
+        <a
+          href="#content"
+          class="nav-link"
+          @click.prevent="scrollToSection('content')"
+        >
+          محتوا
+        </a>
+
+        <!-- بازیگران : CastsTab -->
+        <a
+          href="#casts"
+          class="nav-link"
+          @click.prevent="scrollToSection('casts')"
+        >
+          بازیگران
+        </a>
+
+        <!-- درباره سریال/فیلم : ContentStatistics -->
+        <a
+          href="#about"
+          class="nav-link"
+          @click.prevent="scrollToSection('about')"
+        >
+          {{ type === 'movie' ? 'درباره فیلم' : 'درباره سریال' }}
+        </a>
+
+        <!-- فیلم های مشابه : SimilarContent -->
+        <a
+          href="#similar"
+          class="nav-link"
+          @click.prevent="scrollToSection('similar')"
+        >
+          فیلم های مشابه
+        </a>
+
+        <!-- دیدگاه‌ها : CommentsTab -->
+        <a
+          href="#comments"
+          class="nav-link"
+          @click.prevent="scrollToSection('comments')"
+        >
+          <b-spinner
+            v-if="commentsloading"
+            type="border"
+            class="mb-1 ml-1"
+            small
+          />
+          دیدگاه‌ها
+        </a>
+      </nav>
+    </div>
+
+    <div class="content-body">
+      <!-- All content sections displayed in order -->
+
+      <!-- قسمت‌ها : SeasonEpisodes -->
+      <section id="episodes" class="content-section">
+        <div v-if="type === 'series' || type === 'episode'">
           <SeasonEpisodesSkeleton v-if="isLoadingSeasons" />
           <SeasonEpisodes
             v-else-if="season"
@@ -57,126 +130,91 @@
             :type="type"
             @select-season="selectseries"
           />
-        </b-tab>
+        </div>
+
         <!-- فیلم : MovieContentTab -->
-        <b-tab v-if="type === 'movie'" active href="#episodes" title="فیلم">
+        <div v-if="type === 'movie'">
           <MovieContentTabSkeleton v-if="isLoadingMovie" />
           <MovieContentTab v-else :data="data" @play="handlePlay" />
-        </b-tab>
+        </div>
+      </section>
 
-        <!-- محتوا : use ContentTab (reuses StoryContent) -->
-        <b-tab href="#content" title="محتوا">
-          <ContentDetailsSkeleton v-if="isLoadingContent" />
-          <ContentDetails
-            v-else
-            :data="data"
+      <!-- محتوا : ContentDetails -->
+      <section id="content" class="content-section">
+        <ContentDetailsSkeleton v-if="isLoadingContent" />
+        <ContentDetails
+          v-else
+          :data="data"
+          :type="type"
+          :medias="medias"
+          :total-claps="total_claps"
+          :episode-num="episode_num"
+          :season-num="season_num"
+          :casts="casts"
+          :directors="directors"
+          :producers="producers"
+          :writers="writers"
+          :investors="investors"
+          :comm-num="comm_num"
+          :light-images="lightimages"
+          :images-loading="imagesloading"
+          @get-file="GET_FILE"
+          @load-images="LoadImages"
+        />
+      </section>
+
+      <!-- بازیگران : CastsTab -->
+      <section id="casts" class="content-section">
+        <CastsTabSkeleton v-if="isLoadingCasts" />
+        <CastsTab
+          v-else-if="casts && casts.length"
+          :casts="casts"
+          :directors="directors"
+          :producers="producers"
+          :writers="writers"
+          :investors="investors"
+        />
+      </section>
+
+      <!-- درباره سریال/فیلم : ContentStatistics -->
+      <section id="about" class="content-section">
+        <ContentStatisticsSkeleton v-if="isLoadingStatistics" />
+        <ContentStatistics
+          v-else
+          :data="data"
+          :type="type"
+          :total-claps="total_claps"
+          :episode-num="episode_num"
+          :season-num="season_num"
+          :directors="directors"
+        />
+      </section>
+
+      <!-- فیلم های مشابه : SimilarContent -->
+      <section id="similar" class="content-section">
+        <SimilarContentSkeleton v-if="isLoadingSimilar" />
+        <SimilarContent
+          v-else-if="similar && similar.length"
+          :similar="similar"
+        />
+      </section>
+
+      <!-- دیدگاه‌ها : CommentsTab -->
+      <section id="comments" class="content-section">
+        <div v-show="commentsloading">
+          <CommentsTabSkeleton />
+        </div>
+        <div v-show="!commentsloading">
+          <CommentsTab
+            :id="data.item.id"
             :type="type"
-            :medias="medias"
-            :total-claps="total_claps"
-            :episode-num="episode_num"
-            :season-num="season_num"
-            :casts="casts"
-            :directors="directors"
-            :producers="producers"
-            :writers="writers"
-            :investors="investors"
+            :name="data.item.name"
+            :namefa="data.item.name_fa"
             :comm-num="comm_num"
-            :light-images="lightimages"
-            :images-loading="imagesloading"
-            @get-file="GET_FILE"
-            @load-images="LoadImages"
           />
-        </b-tab>
-        <!-- بازیگران : CastsTab -->
-        <b-tab href="#casts" title="بازیگران">
-          <CastsTabSkeleton v-if="isLoadingCasts" />
-          <CastsTab
-            v-else-if="casts && casts.length"
-            :casts="casts"
-            :directors="directors"
-            :producers="producers"
-            :writers="writers"
-            :investors="investors"
-          />
-        </b-tab>
-
-        <!-- درباره سریال : ContentStatistics -->
-        <b-tab
-          href="#about"
-          :title="type === 'movie' ? 'درباره فیلم' : 'درباره سریال'"
-        >
-          <ContentStatisticsSkeleton v-if="isLoadingStatistics" />
-          <ContentStatistics
-            v-else
-            :data="data"
-            :type="type"
-            :total-claps="total_claps"
-            :episode-num="episode_num"
-            :season-num="season_num"
-            :directors="directors"
-          />
-        </b-tab>
-
-        <!-- فیلم های مشابه : SimilarContent -->
-        <b-tab href="#similar" title="فیلم های مشابه">
-          <SimilarContentSkeleton v-if="isLoadingSimilar" />
-          <SimilarContent
-            v-else-if="similar && similar.length"
-            :similar="similar"
-          />
-        </b-tab>
-
-        <!-- دیدگاه‌ها : CommentsTab -->
-        <b-tab href="#comments">
-          <template #title>
-            <b-spinner
-              v-if="commentsloading"
-              type="border"
-              class="mb-1 ml-1"
-              small
-            />
-            دیدگاه‌ها
-          </template>
-          <div v-show="commentsloading">
-            <CommentsTabSkeleton />
-          </div>
-          <div v-show="!commentsloading">
-            <CommentsTab
-              :id="data.item.id"
-              :type="type"
-              :name="data.item.name"
-              :namefa="data.item.name_fa"
-              :comm-num="comm_num"
-            />
-          </div>
-        </b-tab>
-      </b-tabs>
+        </div>
+      </section>
     </div>
-
-    <!-- Statistics -->
-    <!-- <ContentStatistics
-        :data="data"
-        :type="type"
-        :total-claps="total_claps"
-        :episode-num="episode_num"
-        :season-num="season_num"
-      /> -->
-
-    <!-- Story Content -->
-    <!-- <StoryContent :data="data" :type="type" /> -->
-
-    <!-- Season Episodes Section -->
-    <!-- <SeasonEpisodes
-        v-if="type !== 'movie' && season"
-        :season="season"
-        :selectseriesid="selectseriesid"
-        :seasontitle="seasontitle"
-        :type="type"
-        @select-season="selectseries"
-      /> -->
-
-    <!-- Similar Content Section -->
-    <!-- <SimilarContent v-if="similar && similar.length" :similar="similar" /> -->
 
     <!-- Modal Components -->
     <Download
@@ -249,8 +287,6 @@ import CommentsTabSkeleton from '@/components/item/skeletons/CommentsTabSkeleton
 import ContentStatisticsSkeleton from '@/components/item/skeletons/ContentStatisticsSkeleton'
 import MovieContentTabSkeleton from '@/components/item/skeletons/MovieContentTabSkeleton'
 
-// import StoryContent from '@/components/item/content/StoryContent'
-
 import Socialsharing from '@/components/Socialsharing'
 import ContentStatistics from '@/components/item/content/ContentStatistics'
 
@@ -267,7 +303,6 @@ export default {
     Download,
     File,
     Socialsharing,
-    // StoryContent,
     ContentStatistics,
     // Skeletons
     ShowcaseSkeleton,
@@ -297,16 +332,6 @@ export default {
       isLoadingSeasons: true,
       isLoadingMovie: true,
       isLoadingContent: true,
-      activeTab: 0,
-      tabMap: [
-        '#episodes',
-        '#content',
-        '#casts',
-        '#about',
-        '#similar',
-        '#comments',
-      ],
-
       isLoadingCasts: true,
       isLoadingStatistics: true,
       isLoadingSimilar: true,
@@ -416,21 +441,31 @@ export default {
     if (this.clapinterval) clearInterval(this.clapinterval)
 
     this.flushClaps(true)
-    window.removeEventListener('hashchange', this.handleHashChange)
   },
 
   mounted() {
-    // ✅ Set initial tab based on URL hash
-    this.setActiveTabFromHash()
-
-    // ✅ Listen for hash changes (like browser back/forward)
-    window.addEventListener('hashchange', this.setActiveTabFromHash)
-
     this.INIT(1)
     this.loadAdditionalData()
   },
 
   methods: {
+    scrollToSection(sectionId) {
+      const element = document.getElementById(sectionId)
+      if (element) {
+        const offset = 100 // Adjust this value based on your header height
+        const elementPosition = element.getBoundingClientRect().top
+        const offsetPosition = elementPosition + window.pageYOffset - offset
+
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: 'smooth',
+        })
+
+        // Update URL hash without scrolling
+        history.replaceState(null, null, `#${sectionId}`)
+      }
+    },
+
     handlePlay() {
       this.PLAY('play')
     },
@@ -909,24 +944,6 @@ export default {
           )
       }
     },
-
-    setActiveTabFromHash() {
-      const hash = window.location.hash
-      const idx = this.tabMap.indexOf(hash)
-
-      if (idx !== -1) {
-        // BootstrapVue sometimes needs nextTick to render tab change correctly
-        this.$nextTick(() => {
-          this.activeTab = idx
-        })
-      }
-    },
-    updateHash() {
-      const newHash = this.tabMap[this.activeTab]
-      if (newHash && window.location.hash !== newHash) {
-        history.replaceState(null, '', newHash)
-      }
-    },
   },
 }
 </script>
@@ -956,30 +973,41 @@ export default {
 }
 
 .content-body {
-  margin-top: 0;
+  margin-top: 2rem;
 }
 
-::v-deep li.nav-item {
-  z-index: 1 !important;
+.content-section {
+  margin-bottom: 3rem;
+  padding-top: 2rem;
 }
 
-/* BootstrapVue / Buefy (nav-tabs/nav-link) */
-::v-deep .nav-tabs {
+section#content {
+  margin: 0 !important;
+  width: 100% !important;
+}
+
+.content-nav-header {
+  position: sticky;
+  top: 3.5rem;
+  z-index: 10;
+  margin-top: -5rem;
+}
+
+.content-nav-header .nav {
+  background: #00000099;
+  backdrop-filter: blur(12px);
+  border: 1px solid #e5e5e5;
+  border-radius: 36px;
+  padding: 16px 18px !important;
+  width: fit-content;
+  margin: 0 41px 0 0;
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
-  padding: 0.5rem;
-  background: transparent;
-  border-bottom: none;
+  justify-content: center;
 }
 
-::v-deep .nav-tabs .nav-item {
-  margin-bottom: 0;
-  position: sticky;
-  z-index: 2;
-}
-
-::v-deep .nav-tabs .nav-link {
+.content-nav-header .nav-link {
   background: rgba(255, 255, 255, 0.04);
   color: #ffffff;
   border: none;
@@ -987,188 +1015,22 @@ export default {
   padding: 0.45rem 0.9rem;
   font-weight: 600;
   font-size: 0.95rem;
-  transition: transform 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
   min-height: 38px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  position: sticky;
-  z-index: 1;
-  will-change: transform;
+  transition: transform 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+  text-decoration: none;
 }
 
-/* hover */
-::v-deep .nav-tabs .nav-link:hover {
+.content-nav-header .nav-link:hover {
   background: rgba(255, 255, 255, 0.08);
   transform: translateY(-2px);
   color: #fff;
-  z-index: 2;
+  text-decoration: none;
 }
 
-/* disabled state */
-::v-deep .nav-tabs .nav-link.disabled {
-  opacity: 0.6;
-  pointer-events: none;
-}
-
-::v-deep .card-header {
-  padding: 0 !important;
-  position: sticky !important;
-  top: 1rem !important;
-  z-index: 10 !important;
-  will-change: transform;
-}
-
-/* Ensure the card header doesn't show default border under the tabs */
-::v-deep .card-header .nav {
-  background: transparent;
-  border-bottom: none;
-  border: 1px solid #e5e5e5;
-  width: fit-content;
-  height: 68px;
-  opacity: 1;
-  border-radius: 36px;
-  padding-top: 16px;
-  padding-right: 18px !important;
-  padding-bottom: 16px;
-  padding-left: 18px;
-  border-width: 1px;
-  background: #00000099;
-  backdrop-filter: blur(12px);
-  z-index: 1;
-  position: sticky;
-  top: 1rem;
-  right: 2.5rem;
-  margin-top: -5rem !important;
-}
-
-/* Tablet responsive */
-@media (max-width: 991.98px) {
-  ::v-deep .card-header .nav {
-    height: 56px;
-    padding-top: 12px;
-    padding-right: 14px !important;
-    padding-bottom: 12px;
-    padding-left: 14px;
-    top: 0;
-    right: 1rem;
-  }
-}
-
-/* Mobile responsive */
-@media (max-width: 767.98px) {
-  ::v-deep .card-header .nav {
-    width: calc(100% - 2rem);
-    height: auto;
-    min-height: 48px;
-    border-radius: 24px;
-    padding-top: 10px;
-    padding-right: 12px !important;
-    padding-bottom: 10px;
-    padding-left: 12px;
-    top: 0;
-    right: 1rem;
-    left: 1rem;
-    margin: 0 auto;
-  }
-}
-
-/* Small mobile responsive */
-@media (max-width: 575.98px) {
-  ::v-deep .card-header .nav {
-    width: 93%;
-    height: 20px;
-    border-radius: 10px;
-    padding-top: 4px;
-    padding-right: 5px !important;
-    padding-bottom: 4px;
-    padding-left: 5px;
-    top: 0;
-    right: 0;
-    left: 0.5rem;
-    margin: 0 auto !important;
-    gap: 5px;
-  }
-
-  ::v-deep .nav-tabs .nav-link {
-    background: rgba(255, 255, 255, 0.04) !important;
-    color: #ffffff !important;
-    border: none !important;
-    border-radius: 8px !important;
-    padding: 0.1rem 0.35rem !important;
-    font-weight: 500 !important;
-    font-size: 0.75rem !important;
-    min-height: 38px !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-  }
-
-  .content-body {
-    margin-top: 0;
-  }
-  .card-body {
-    margin-top: 2rem;
-    padding: 0 !important;
-  }
-
-  .card-header {
-    padding: 0 !important;
-  }
-
-  /* hover */
-  ::v-deep .nav-tabs .nav-link:hover {
-    background: rgba(255, 255, 255, 0.08);
-    transform: none;
-    color: #fff;
-  }
-
-  ::v-deep .v-tab:hover {
-    background: rgba(255, 255, 255, 0.08);
-    transform: none;
-  }
-
-  ::v-deep .item-tabs-nav .nav-link:hover {
-    background: rgba(255, 255, 255, 0.08) !important;
-    transform: none;
-    color: #fff !important;
-  }
-}
-
-/* Vuetify tab support (v-tabs / v-tab) */
-::v-deep .v-tabs {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  padding: 0.5rem 0.25rem;
-  background: transparent;
-  border-bottom: none;
-}
-
-/* v-tab buttons are usually rendered as .v-tab */
-::v-deep .v-tabs .v-tab,
-::v-deep .v-tab {
-  background: rgba(255, 255, 255, 0.04);
-  color: #ffffff;
-  border-radius: 8px;
-  padding: 0.45rem 0.9rem;
-  font-weight: 600;
-  font-size: 0.95rem;
-  min-height: 38px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  transition: transform 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
-}
-
-::v-deep .v-tab:hover {
-  background: rgba(255, 255, 255, 0.08);
-  transform: translateY(-2px);
-}
-
-/* Vuetify active tab class can be .v-tab--active */
-::v-deep .v-tab.v-tab--active,
-::v-deep .v-tab.v-item--active {
+.content-nav-header .nav-link.active {
   background: linear-gradient(90deg, #ff7a18 0%, #af002d 100%);
   color: #fff !important;
   box-shadow: 0 8px 22px rgba(175, 0, 45, 0.22);
@@ -1176,47 +1038,80 @@ export default {
   transform: none;
 }
 
-/* Disabled */
-::v-deep .v-tab[aria-disabled='true'],
-::v-deep .v-tab.v-tab--disabled {
-  opacity: 0.6;
-  pointer-events: none;
+/* Responsive styles */
+@media (max-width: 1300px) {
+  .content-nav-header {
+    margin-top: -2rem;
+  }
+
+  .content-nav-header .nav {
+    height: 56px;
+    padding: 12px 14px;
+    top: 0;
+    margin-right: 15px;
+  }
+}
+@media (max-width: 991.98px) {
+  .content-nav-header .nav {
+    height: 56px;
+    padding: 12px 14px;
+    top: 0;
+    margin-right: 15px;
+  }
 }
 
-/* Stronger specificity for this component's b-tabs nav generated by BootstrapVue */
-::v-deep .item-tabs-nav .nav-item {
-  margin-bottom: 0;
+@media (max-width: 767.98px) {
+  .content-nav-header {
+    margin-top: 0rem;
+  }
+
+  .content-nav-header .nav {
+    width: calc(100% - 2rem);
+    height: auto;
+    min-height: 48px;
+    border-radius: 24px;
+    padding: 10px 0 !important;
+    top: 0;
+    right: 1rem;
+    left: 1rem;
+    margin: 0 auto;
+  }
+
+  nav.nav.nav-pills {
+    gap: 0 !important;
+  }
 }
 
-::v-deep .item-tabs-nav .nav-link {
-  background: rgba(255, 255, 255, 0.04) !important;
-  color: #ffffff;
-  border: none;
-  border-radius: 8px;
-  padding: 0.45rem 0.9rem;
-  font-weight: 600;
-  font-size: 0.95rem;
-  min-height: 38px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center !important;
-  transition: transform 0.15s ease, background 0.15s ease, box-shadow 0.15s ease !important;
+@media (max-width: 575.98px) {
+  .content-nav-header {
+    margin-top: 1rem;
+  }
+
+  .content-nav-header .nav {
+    width: 93%;
+    height: auto;
+    border-radius: 10px;
+    padding: 4px 5px;
+    top: 0;
+    right: 0;
+    left: 0.5rem;
+    margin: 0 auto !important;
+    gap: 5px;
+  }
+
+  .content-nav-header .nav-link {
+    padding: 0.1rem 0.35rem !important;
+    font-weight: 500 !important;
+    font-size: 0.75rem !important;
+    min-height: 32px !important;
+  }
+
+  .content-nav-header .nav-link:hover {
+    transform: none;
+  }
 }
 
-::v-deep .item-tabs-nav .nav-link:hover {
-  background: rgba(255, 255, 255, 0.08) !important;
-  transform: translateY(-2px) !important;
-  color: #fff !important;
-}
-
-/* active tab */
-::v-deep .nav-tabs .nav-link.active,
-::v-deep .nav-tabs .nav-link:active {
-  background: transparent !important;
-  color: #1b6be5 !important;
-  box-shadow: 0 8px 22px rgba(175, 0, 45, 0.22);
-  border-radius: 10px;
-  transform: none;
-  z-index: 3;
+a.nav-link {
+  margin-right: 0 !important;
 }
 </style>

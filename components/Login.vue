@@ -220,7 +220,7 @@ export default {
     buttonStyle() {
       return {
         height: '48px',
-        'border-radius': '24px',
+        'border-radius': '8px',
         'padding-top': '12px',
         'padding-right': '28px',
         'padding-bottom': '12px',
@@ -731,7 +731,7 @@ export default {
 /* Your existing styles remain the same */
 .custom-login-btn {
   height: 48px;
-  border-radius: 24px;
+  border-radius: 8px;
   padding: 12px 28px;
   background: #ff6633;
   color: #ffffff;
@@ -752,7 +752,7 @@ export default {
 
 .custom-home-btn {
   height: 42px !important;
-  border-radius: 24px !important;
+  border-radius: 8px !important;
   padding: 12px 28px !important;
   background: white !important;
   color: #ff6633 !important;

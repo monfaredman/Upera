@@ -113,7 +113,7 @@ export default {
   background: #525252;
   border-radius: 8px;
   opacity: 1;
-  margin: 0 auto 0;
+  margin: 0 41px;
 }
 
 .content-info {

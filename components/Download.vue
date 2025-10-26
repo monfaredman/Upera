@@ -885,7 +885,7 @@ export default {
   background: white;
   border-radius: 0 0 8px 8px;
   overflow: auto;
-  max-height: 212px !important;
+  max-height: 240px !important;
   direction: rtl;
 }
 
@@ -929,7 +929,6 @@ export default {
 
 .card-image img {
   width: 100%;
-  height: 100%;
   object-fit: cover;
   border-radius: 8px;
 }
@@ -1081,7 +1080,6 @@ export default {
 .added-items-list {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
 }
 
 .added-item-card {
