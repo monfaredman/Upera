@@ -31,10 +31,7 @@
         >
           <nuxt-link
             :to="{
-              path:
-                item.type === 'genre'
-                  ? `/lists/${item && item.en && item.en.toLowerCase()}`
-                  : `${item && item.en && item.en.toLowerCase()}`,
+              path: item.href,
             }"
             class="category-box"
           >
