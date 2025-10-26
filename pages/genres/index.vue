@@ -3,7 +3,25 @@
     <div class="container-fluid">
       <h1 class="page-title mb-2">دسته بندی</h1>
 
+      <!-- Loading Skeleton -->
       <div
+        v-if="loading"
+        class="row genre-link align-items-center mt-lg-3 mt-md-3 pt-lg-3 pt-md-3"
+      >
+        <div v-for="n in 12" :key="n" class="col-6 col-md-4 col-lg-3">
+          <div class="category-box skeleton">
+            <div class="skeleton-image"></div>
+            <div class="skeleton-content">
+              <div class="skeleton-title"></div>
+              <div class="skeleton-icon"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Actual Content -->
+      <div
+        v-else
         class="row genre-link align-items-center mt-lg-3 mt-md-3 pt-lg-3 pt-md-3"
       >
         <div
@@ -65,6 +83,7 @@ export default {
     return {
       data: {},
       id: '',
+      loading: true,
       categories: [
         {
           fa: 'بازیگر ایرانی',
@@ -122,9 +141,10 @@ export default {
   },
   computed: {
     filtercontents() {
+      console.log([...this.categories, ...this.data])
       return [
         ...this.categories,
-        ...this.data?.map((genre) => ({
+        ...this.data.map((genre) => ({
           fa: genre.fa,
           en: genre.en,
           cover: genre.cover || 'top_250_movies_series',
@@ -132,6 +152,12 @@ export default {
         })),
       ]
     },
+  },
+  mounted() {
+    // Simulate loading completion
+    setTimeout(() => {
+      this.loading = false
+    }, 1000)
   },
   methods: {
     toLowerCase(str) {
@@ -248,6 +274,77 @@ export default {
   padding: 10px;
 }
 
+/* Skeleton Styles */
+.skeleton {
+  position: relative;
+  overflow: hidden;
+}
+
+.skeleton::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+  animation: skeleton-loading 1.5s infinite;
+  z-index: 10;
+}
+
+.skeleton-image {
+  width: 100%;
+  height: 100%;
+  background: #2a2a2a;
+  border-radius: 12px;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.skeleton-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 15px 17px 10px 15px;
+  background: linear-gradient(180deg, transparent -1.85%, #1a1a1a 70.15%);
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.skeleton-title {
+  height: 16px;
+  background: #404040;
+  border-radius: 4px;
+  flex: 1;
+  margin-right: 10px;
+}
+
+.skeleton-icon {
+  width: 16px;
+  height: 16px;
+  background: #404040;
+  border-radius: 50%;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
 @media (max-width: 2000px) {
   .category-box {
     height: 390px;
@@ -311,6 +408,15 @@ export default {
 
   .category-img {
     padding: 5px;
+  }
+
+  .skeleton-title {
+    height: 14px;
+  }
+
+  .skeleton-icon {
+    width: 14px;
+    height: 14px;
   }
 }
 </style>
