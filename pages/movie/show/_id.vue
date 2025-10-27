@@ -37,6 +37,12 @@
         :tracks="tracks"
         :player-auto-play="true"
         class="full-screen-player vjs-fluid"
+        :credits-data="{
+          first_credits: 33, // First credits start at 2 minutes
+          after_credits: 120, // After credits scene at 1 hour
+          final_credits: 5032, // Final credits at 1 hour 3 minutes
+        }"
+        @credits-skipped="handleEnded"
         @ready="handlePlayerReady"
         @timeupdate="handleTimeUpdate"
         @ended="handleEnded"

@@ -20,6 +20,16 @@
       :poster="posterUrl"
     />
 
+    <!-- Skip Credits Button -->
+    <button
+      v-if="showSkipCredits && stream"
+      class="skip-credits-btn"
+      @click="skipCredits"
+    >
+      {{ skipButtonText }}
+      <span class="skip-icon"><i class="fa fa-forward" /></span>
+    </button>
+
     <div v-if="title && stream" class="video-title-overlay">
       {{ adActive ? 'نمایش تبلیغات' : title }}
     </div>
@@ -91,6 +101,14 @@ export default {
       type: Boolean,
       default: false,
     },
+    creditsData: {
+      type: Object,
+      default: () => ({
+        first_credits: 0, // Start time of first credits (in seconds)
+        after_credits: 0, // Start time of mid credits scene
+        final_credits: 0, // Start time of final credits
+      }),
+    },
   },
 
   data() {
@@ -98,6 +116,10 @@ export default {
       adActive: false,
       viewsIncremented: false,
       player: null,
+      showSkipCredits: false,
+      skipButtonText: 'رد کردن تیتراژ',
+      currentCreditType: null,
+      creditCheckInterval: null,
     }
   },
 
@@ -136,6 +158,9 @@ export default {
   beforeDestroy() {
     if (this.player) {
       this.player.dispose()
+    }
+    if (this.creditCheckInterval) {
+      clearInterval(this.creditCheckInterval)
     }
     window.removeEventListener('keydown', this.handleKeydown)
   },
@@ -206,16 +231,6 @@ export default {
       this.player.on('vast.error', hideCta)
     },
 
-    setupPlayerEvents() {
-      this.player.ready(() => {
-        this.setupAdEvents()
-        this.setupTextTracks()
-        this.setupCustomButtons()
-        this.setupPlaybackEvents()
-        this.setupQualitySelector()
-      })
-    },
-
     setupAdEvents() {
       this.player.on('vast.play', () => {
         this.adActive = true
@@ -254,6 +269,35 @@ export default {
         this.createAutoPlayButton()
         this.createSkipButtons()
       }
+    },
+
+    createNextButton() {
+      const Button = videojs.getComponent('Button')
+
+      class NextButton extends Button {
+        constructor(player, options) {
+          super(player, options)
+          this.addClass('vjs-next-button')
+          this.controlText('Next')
+          const icon = document.createElement('span')
+          icon.className = 'vjs-icon-next'
+          this.el().appendChild(icon)
+        }
+        handleClick() {
+          this.player().trigger('ended')
+        }
+      }
+
+      videojs.registerComponent('NextButton', NextButton)
+
+      const playToggle = this.player.controlBar.getChild('PlayToggle')
+      let insertIndex = this.player.controlBar.children().indexOf(playToggle)
+      insertIndex =
+        insertIndex === -1
+          ? this.player.controlBar.children().length
+          : insertIndex + 1
+
+      this.player.controlBar.addChild('NextButton', {}, insertIndex)
     },
 
     createPlaylistButton() {
@@ -323,6 +367,7 @@ export default {
     },
 
     createSkipButtons() {
+      this.createNextButton()
       this.createSkip10Buttons()
     },
 
@@ -543,6 +588,105 @@ export default {
 
       controlBar.addChild('RuntimeDisplay', {}, insertIndex)
     },
+
+    setupCreditsSkip() {
+      // Clear any existing interval
+      if (this.creditCheckInterval) {
+        clearInterval(this.creditCheckInterval)
+      }
+
+      // Check for credit sections every second
+      this.creditCheckInterval = setInterval(() => {
+        if (!this.player || this.player.paused()) return
+
+        const currentTime = this.player.currentTime()
+        const duration = this.player.duration()
+
+        // Check if we're in any credit section
+        console.log(this.isInFirstCredits(currentTime))
+        if (this.isInFirstCredits(currentTime)) {
+          this.showSkipCredits = true
+          this.currentCreditType = 'first_credits'
+          this.skipButtonText = 'رد کردن تیتراژ'
+        } else if (this.isInFinalCredits(currentTime, duration)) {
+          this.showSkipCredits = true
+          this.currentCreditType = 'final_credits'
+          this.skipButtonText = 'قسمت بعد'
+        } else {
+          this.showSkipCredits = false
+          this.currentCreditType = null
+        }
+      }, 1000)
+
+      // Clean up interval when player is disposed
+      this.player.on('dispose', () => {
+        if (this.creditCheckInterval) {
+          clearInterval(this.creditCheckInterval)
+        }
+      })
+    },
+
+    isInFirstCredits(currentTime) {
+      const firstCreditsStart = this.creditsData.first_credits
+      const firstCreditsEnd = this.creditsData.after_credits
+      return (
+        firstCreditsStart > 0 &&
+        currentTime >= firstCreditsStart &&
+        currentTime <= firstCreditsEnd
+      )
+    },
+
+    isInFinalCredits(currentTime, duration) {
+      const finalCreditsStart = this.creditsData.final_credits
+      // If final credits start is provided, use it, otherwise assume last 10% of video
+      const creditsStart =
+        finalCreditsStart > 0 ? finalCreditsStart : duration * 0.9
+      return currentTime >= creditsStart && duration > 0
+    },
+
+    skipCredits() {
+      if (!this.player) return
+
+      const duration = this.player.duration()
+
+      switch (this.currentCreditType) {
+        case 'first_credits':
+          // Skip to after first credits (usually the main content)
+          this.player.currentTime(this.creditsData.first_credits + 60)
+          break
+
+        case 'after_credits':
+          // Skip to after the mid-credits scene
+          this.player.currentTime(this.creditsData.after_credits + 30)
+          break
+
+        case 'final_credits':
+          // Skip to end or trigger next episode
+          this.player.currentTime(duration - 1)
+          this.$emit('credits-skipped', 'final_credits')
+          break
+
+        default:
+          // Default skip behavior
+          this.player.currentTime(this.player.currentTime() + 60)
+      }
+
+      // Hide the button after clicking
+      this.showSkipCredits = false
+      this.currentCreditType = null
+    },
+
+    // Call this in setupPlayerEvents
+    setupPlayerEvents() {
+      this.player.ready(() => {
+        this.setupAdEvents()
+        this.setupTextTracks()
+        this.setupCustomButtons()
+        this.setupPlaybackEvents()
+        this.setupQualitySelector()
+        this.setupCreditsSkip() // Add this line
+      })
+    },
   },
 }
 </script>
@@ -691,7 +835,7 @@ export default {
 }
 
 ::v-deep .vjs-rtl .vjs-runtime-display {
-  direction: ltr;
+  direction: rtl !important;
 }
 
 @media (max-width: 480px) {
@@ -699,6 +843,76 @@ export default {
     font-size: 11px;
     min-width: 80px;
     padding: 0 5px;
+  }
+}
+
+.skip-credits-btn {
+  position: absolute;
+  bottom: 80px;
+  left: 20px;
+  background: rgba(0, 0, 0, 0.8) !important;
+  color: white;
+  border: 2px solid black;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  animation: fadeInUp 0.5s ease;
+}
+
+.skip-credits-btn:hover {
+  background: rgba(0, 0, 0, 0.9);
+  border-color: rgba(255, 255, 255, 0.6);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.skip-icon {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  font-size: 16px;
+}
+
+/* Animation for button appearance */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .skip-credits-btn {
+    bottom: 70px;
+    left: 15px;
+    padding: 8px 16px;
+    font-size: 12px;
+  }
+
+  .skip-icon {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .skip-credits-btn {
+    bottom: 60px;
+    left: 10px;
+    padding: 6px 12px;
+    font-size: 11px;
   }
 }
 </style>
