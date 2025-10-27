@@ -629,10 +629,11 @@ export default {
     isInFirstCredits(currentTime) {
       const firstCreditsStart = this.creditsData.first_credits
       const firstCreditsEnd = this.creditsData.after_credits
+      console.log(firstCreditsStart, firstCreditsEnd)
       return (
         firstCreditsStart > 0 &&
-        currentTime >= firstCreditsStart &&
-        currentTime <= firstCreditsEnd
+        currentTime > firstCreditsStart &&
+        currentTime < firstCreditsEnd
       )
     },
 
@@ -652,12 +653,7 @@ export default {
       switch (this.currentCreditType) {
         case 'first_credits':
           // Skip to after first credits (usually the main content)
-          this.player.currentTime(this.creditsData.first_credits + 60)
-          break
-
-        case 'after_credits':
-          // Skip to after the mid-credits scene
-          this.player.currentTime(this.creditsData.after_credits + 30)
+          this.player.currentTime(this.creditsData.after_credits + 60)
           break
 
         case 'final_credits':
