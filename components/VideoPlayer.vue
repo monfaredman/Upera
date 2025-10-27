@@ -684,7 +684,36 @@ export default {
         this.setupCustomButtons()
         this.setupPlaybackEvents()
         this.setupQualitySelector()
-        this.setupCreditsSkip() // Add this line
+        this.setupCreditsSkip()
+
+        // ✅ Fix RTL volume bar direction
+        const isRtl = this.$i18n.locale === 'fa'
+        if (isRtl) {
+          console.log('isRtl', isRtl)
+          const volumeBar =
+            this.player.controlBar?.getChild('volumePanel')?.volumeControl
+              ?.volumeBar
+
+          if (volumeBar) {
+            console.log('volumeBar', volumeBar)
+            const originalHandleMouseMove = volumeBar.handleMouseMove
+            volumeBar.handleMouseMove = function (event) {
+              // reverse the x position
+              if (event) {
+                const rect = this.el_.getBoundingClientRect()
+                const x = event.clientX - rect.left
+                const reversedX = rect.width - x
+                const fakeEvent = new MouseEvent(event.type, {
+                  clientX: rect.left + reversedX,
+                  clientY: event.clientY,
+                  bubbles: true,
+                })
+                return originalHandleMouseMove.call(this, fakeEvent)
+              }
+              return originalHandleMouseMove.call(this, event)
+            }
+          }
+        }
       })
     },
   },
@@ -914,5 +943,13 @@ export default {
     padding: 6px 12px;
     font-size: 11px;
   }
+}
+
+/* Hide the volume tooltip */
+::v-deep(.vjs-volume-tooltip) {
+  display: none !important;
+}
+::v-deep(.vjs-mouse-display) {
+  display: none !important;
 }
 </style>
