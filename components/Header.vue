@@ -32,11 +32,7 @@
                 @menu-leave="categoriesleave"
               />
 
-              <SearchInput
-                :value="query"
-                @input="query = $event"
-                @search="handleSearch"
-              />
+              <SearchInput :value="query" @input="query = $event" />
 
               <KidsSection v-if="$config.envname === 'upera'" />
 
@@ -257,15 +253,6 @@ export default {
     categoriesleave() {
       this.categoriesNav = false
       this.profileNav = false
-    },
-
-    handleSearch(query) {
-      if (query && query.length > 1) {
-        this.$router.push({
-          name: 'search-search',
-          params: { search: query },
-        })
-      }
     },
 
     handleScroll(e) {

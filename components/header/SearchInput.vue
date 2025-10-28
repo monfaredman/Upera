@@ -35,8 +35,17 @@ export default {
   methods: {
     handleSearch() {
       if (this.searchQuery && this.searchQuery.length > 1) {
-        this.$emit('search', this.searchQuery)
+        // Update URL with hash and query
+        const newHash = `#search?query=${encodeURIComponent(this.searchQuery)}`
+        window.location.hash = newHash
+      } else {
+        this.openSearchModal()
       }
+    },
+
+    openSearchModal() {
+      // Just add #search to URL to open empty modal
+      window.location.hash = '#search'
     },
   },
 }
