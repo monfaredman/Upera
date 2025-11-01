@@ -104,9 +104,9 @@ export default {
     creditsData: {
       type: Object,
       default: () => ({
-        first_credits: 0, // Start time of first credits (in seconds)
-        after_credits: 0, // Start time of mid credits scene
-        final_credits: 0, // Start time of final credits
+        first_credits: 1, // Start time of first credits (in seconds)
+        after_credits: 60, // Start time of mid credits scene
+        final_credits: 5550, // Start time of final credits
       }),
     },
   },
@@ -600,19 +600,20 @@ export default {
         if (!this.player || this.player.paused()) return
 
         const currentTime = this.player.currentTime()
-        const duration = this.player.duration()
+        // const duration = this.player.duration()
 
         // Check if we're in any credit section
-        console.log(this.isInFirstCredits(currentTime))
         if (this.isInFirstCredits(currentTime)) {
           this.showSkipCredits = true
           this.currentCreditType = 'first_credits'
           this.skipButtonText = 'رد کردن تیتراژ'
-        } else if (this.isInFinalCredits(currentTime, duration)) {
-          this.showSkipCredits = true
-          this.currentCreditType = 'final_credits'
-          this.skipButtonText = 'قسمت بعد'
-        } else {
+        }
+        //  else if (this.isInFinalCredits(currentTime, duration)) {
+        //   this.showSkipCredits = true
+        //   this.currentCreditType = 'final_credits'
+        //   this.skipButtonText = 'قسمت بعد'
+        // }
+        else {
           this.showSkipCredits = false
           this.currentCreditType = null
         }
@@ -627,9 +628,8 @@ export default {
     },
 
     isInFirstCredits(currentTime) {
-      const firstCreditsStart = this.creditsData.first_credits
-      const firstCreditsEnd = this.creditsData.after_credits
-      console.log(firstCreditsStart, firstCreditsEnd)
+      const firstCreditsStart = this.creditsData.first_credits || 1
+      const firstCreditsEnd = this.creditsData.after_credits || 60
       return (
         firstCreditsStart > 0 &&
         currentTime > firstCreditsStart &&
@@ -638,7 +638,7 @@ export default {
     },
 
     isInFinalCredits(currentTime, duration) {
-      const finalCreditsStart = this.creditsData.final_credits
+      const finalCreditsStart = this.creditsData.final_credits || duration - 70
       // If final credits start is provided, use it, otherwise assume last 10% of video
       const creditsStart =
         finalCreditsStart > 0 ? finalCreditsStart : duration * 0.9
@@ -653,7 +653,7 @@ export default {
       switch (this.currentCreditType) {
         case 'first_credits':
           // Skip to after first credits (usually the main content)
-          this.player.currentTime(this.creditsData.after_credits + 60)
+          this.player.currentTime(this.creditsData.after_credits || 60)
           break
 
         case 'final_credits':
@@ -664,7 +664,7 @@ export default {
 
         default:
           // Default skip behavior
-          this.player.currentTime(this.player.currentTime() + 60)
+          this.player.currentTime(this.player.currentTime())
       }
 
       // Hide the button after clicking
@@ -849,7 +849,7 @@ export default {
   font-size: 13px;
   font-weight: bold;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
-  padding: 0 10px;
+  padding: 0;
   display: flex;
   align-items: center;
   font-family: Arial, sans-serif;
@@ -947,5 +947,9 @@ export default {
 }
 ::v-deep(.vjs-mouse-display) {
   display: none !important;
+}
+
+video#episode-player_html5_api {
+  outline: none !important;
 }
 </style>

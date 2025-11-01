@@ -8,7 +8,7 @@
       <div class="d-flex align-items-center justify-content-start">
         <img
           v-if="items[0].type === 'video'"
-          src="@/assets/images/ugcs.png"
+          src="@/assets/images/ugcs.svg"
           alt="UGC"
           height="30"
           class="ml-2"

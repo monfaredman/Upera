@@ -37,11 +37,7 @@
         :tracks="tracks"
         :player-auto-play="true"
         class="full-screen-player vjs-fluid"
-        :credits-data="{
-          first_credits: 33, // First credits start at 2 minutes
-          after_credits: 120, // After credits scene at 1 hour
-          final_credits: 5032, // Final credits at 1 hour 3 minutes
-        }"
+        :credits-data="creditsData"
         @credits-skipped="handleEnded"
         @ready="handlePlayerReady"
         @timeupdate="handleTimeUpdate"
@@ -231,7 +227,11 @@ export default {
             : data.video[0].video + '?nosub=1'
           // ذخیره زمان شروع (در صورت وجود)
           this.startTime = data.video[0].current_time || 0
-
+          this.creditsData = {
+            first_credits: data.first_credits || null,
+            after_credits: data.after_credits || null,
+            final_credits: data.final_credits || null,
+          }
           const streamResponse = await fetch(streamUrl, { method: 'HEAD' })
 
           if (streamResponse.ok) {

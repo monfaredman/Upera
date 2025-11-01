@@ -158,7 +158,7 @@
                   class="none-hover-overlay-live"
                 >
                   <img
-                    :src="require('~/assets/images/live-stream.png')"
+                    :src="require('~/assets/images/live-icon.gif')"
                     class="image-live"
                   />
                   <p class="none-media-title">نمایش همزمان</p>
@@ -652,10 +652,11 @@ export default {
   color: white !important;
 }
 .none-hover-overlay-live .image-live {
-  width: 24px;
-  height: 24px;
-  margin-left: 4px;
-  object-fit: none;
+  width: 10px;
+  height: 10px;
+  margin-left: 32px;
+  border-radius: 1rem;
+  scale: 6.5;
 }
 
 .none-media-title {
@@ -667,6 +668,14 @@ export default {
 }
 
 @media (max-width: 576px) {
+  .none-hover-overlay-live .image-live {
+    width: 10px;
+    height: 10px;
+    margin-left: 32px;
+    border-radius: 1rem;
+    scale: 3.5;
+  }
+
   .live-stats span {
     font-size: 10px !important;
   }
