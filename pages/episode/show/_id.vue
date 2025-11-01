@@ -2,7 +2,7 @@
   <div class="video-container">
     <div class="hamshahri">
       <!-- دکمه بازگشت -->
-      <a class="srmjs " @click="goBack">
+      <a class="srmjs" @click="goBack">
         <div id="flowplayer-back-button">
           <div class="icon-back" />
         </div>
@@ -12,18 +12,22 @@
       <div v-if="loading" class="video-loading-spinner" />
 
       <!-- پیام "به زودی" -->
-      <p v-if="soon" class="soon">
-        به زودی...
-      </p>
+      <p v-if="soon" class="soon">به زودی...</p>
 
       <!-- دکمه رفرش -->
-      <button v-if="soon" class="btn btn-primary btn-lg fw-bold refresh-btn" @click="reloadPage">
+      <button
+        v-if="soon"
+        class="btn btn-primary btn-lg fw-bold refresh-btn"
+        @click="reloadPage"
+      >
         بارگذاری مجدد
       </button>
     </div>
 
     <!-- پلیر -->
+
     <div class="player-wrapper">
+      himl
       <VideoPlayer
         v-if="videoUrl && !loading"
         ref="episodePlayer"
@@ -34,8 +38,12 @@
         :vast-url="vastUrl || ''"
         :tracks="tracks"
         :player-auto-play="true"
-        :has-playlist="!!((seasonList && seasonList.length) || (currentEpisodeList && currentEpisodeList.length))"
-
+        :has-playlist="
+          !!(
+            (seasonList && seasonList.length) ||
+            (currentEpisodeList && currentEpisodeList.length)
+          )
+        "
         class="full-screen-player vjs-fluid"
         @ready="handlePlayerReady"
         @timeupdate="handleTimeUpdate"
@@ -73,9 +81,7 @@
         <!-- هدر منو -->
         <div class="playlist-modal-header">
           <span class="modal-title">انتخاب فصل و قسمت</span>
-          <button class="close-btn" @click="togglePlaylistMenu">
-            ×
-          </button>
+          <button class="close-btn" @click="togglePlaylistMenu">×</button>
         </div>
 
         <!-- انتخاب فصل -->
@@ -105,10 +111,14 @@
     </div>
 
     <!-- نمایش قسمت بعدی (Suggestion) -->
-    <div v-if="showNextEpisode && suggestion" class="next-episode-overlay" @click="playNextEpisode">
+    <div
+      v-if="showNextEpisode && suggestion"
+      class="next-episode-overlay"
+      @click="playNextEpisode"
+    >
       <div class="next-episode-content">
         <p>{{ $t('player.play_next_episode') }}: {{ suggestion.name_fa }}</p>
-        <img :src="suggestionBackdrop" alt="Next Episode Backdrop">
+        <img :src="suggestionBackdrop" alt="Next Episode Backdrop" />
       </div>
     </div>
   </div>
@@ -140,7 +150,7 @@ export default {
         { value: 1, label: 'report.labeling_problem' },
         { value: 2, label: 'report.video_problem' },
         { value: 3, label: 'report.sound_problem' },
-        { value: 4, label: 'report.caption_problem' }
+        { value: 4, label: 'report.caption_problem' },
       ],
       // پیشنهاد و تغییر قسمت
       suggestion: null,
@@ -149,21 +159,21 @@ export default {
       recentlyTime: 200,
       showPlaylistMenu: false,
       // مدیریت لیست پخش
-      season: null,      // داده‌های فصل‌ها (object به شکل: { seasonNumber: [episode, ...] })
-      seasonList: [],    // آرایه‌ای از شماره فصل‌ها
+      season: null, // داده‌های فصل‌ها (object به شکل: { seasonNumber: [episode, ...] })
+      seasonList: [], // آرایه‌ای از شماره فصل‌ها
       seasonOpened: null,
       // زمان شروع پخش در صورت وجود
-      startTime: 0
+      startTime: 0,
     }
   },
-computed: {
-  currentEpisodeList() {
-    // اگر داده‌های فصل وجود دارد و فصل باز شده معتبر است، لیست قسمت‌های آن را برگردانیم؛ در غیر این صورت آرایه خالی برگردانیم.
-    return this.season && this.season[this.seasonOpened]
-      ? this.season[this.seasonOpened]
-      : []
-  }
-},
+  computed: {
+    currentEpisodeList() {
+      // اگر داده‌های فصل وجود دارد و فصل باز شده معتبر است، لیست قسمت‌های آن را برگردانیم؛ در غیر این صورت آرایه خالی برگردانیم.
+      return this.season && this.season[this.seasonOpened]
+        ? this.season[this.seasonOpened]
+        : []
+    },
+  },
   mounted() {
     // document.body.classList.remove('loaded')
     if (this.$auth && this.$auth.loggedIn) {
@@ -172,82 +182,102 @@ computed: {
     this.loadEpisode()
   },
   methods: {
-
     showErrorAlert(data) {
-    let dlsmtitle = this.$i18n.locale === 'fa' ? data.message_fa : data.message
-// let backtohome=false
+      let dlsmtitle =
+        this.$i18n.locale === 'fa' ? data.message_fa : data.message
+      // let backtohome=false
 
-    if(!dlsmtitle){
-      dlsmtitle=this.$t('player.error1')
-      // backtohome=true
-    }
-    let dlsmbuttons = {
-      back: {
-        text: this.$t('player.back'),
-        value: "back",
-        closeModal: true,
-        className: 'swal-back'
+      if (!dlsmtitle) {
+        dlsmtitle = this.$t('player.error1')
+        // backtohome=true
       }
-    }
-    if (data.show_download === 1) {
-      dlsmbuttons.download = {
-        text: this.$t('player.download'),
-        value: "download",
-        closeModal: true
+      let dlsmbuttons = {
+        back: {
+          text: this.$t('player.back'),
+          value: 'back',
+          closeModal: true,
+          className: 'swal-back',
+        },
       }
-    }
-    if (data.show_ekran === 1) {
-      dlsmbuttons.download = {
-        text: this.$t('show.buy_ticket'),
-        value: "download",
-        closeModal: true
+      if (data.show_download === 1) {
+        dlsmbuttons.download = {
+          text: this.$t('player.download'),
+          value: 'download',
+          closeModal: true,
+        }
       }
-    }
-    if (data.show_subscription === 1) {
-      dlsmbuttons.subscribe = {
-        text: this.$t('player.subscribe'),
-        value: "subscribe",
-        closeModal: true
+      if (data.show_ekran === 1) {
+        dlsmbuttons.download = {
+          text: this.$t('show.buy_ticket'),
+          value: 'download',
+          closeModal: true,
+        }
       }
-    }
-    if(!this.$auth.loggedIn && data.show_login === 1){
-      Object.assign(dlsmbuttons, {login: {
+      if (data.show_subscription === 1) {
+        dlsmbuttons.subscribe = {
+          text: this.$t('player.subscribe'),
+          value: 'subscribe',
+          closeModal: true,
+        }
+      }
+      if (!this.$auth.loggedIn && data.show_login === 1) {
+        Object.assign(dlsmbuttons, {
+          login: {
             text: this.$t('nav.login'),
-            value: "login",
-            closeModal: true
-      }})
-    }
-    this.$swal({
-      title: dlsmtitle,
-      icon: 'error',
-      dangerMode: true,
-      buttons: dlsmbuttons,
-    }).then((value) => {
-      switch (value) {
-        case "back":
-          (window.history.length > 2)
-            ? this.$router.go(-1)
-            : this.$router.push({ name: 'episode-id', params: { id: this.$route.params.id } })
-          break
-        case "subscribe":
-          this.$store.dispatch('subscription/SHOW_MODAL', { content_type: 'episode', content_id: this.$route.params.id })
-          break
-        case "download":
-          this.$router.push({ name: 'episode-download-id', params: { id: this.$route.params.id }, query: { force_to_buy: 1 } })
-          break
-
-                            case "login":
-                                  this.$store.dispatch('login/SHOW_MODAL',{premessage: null,premobile: null,preredirect: null,prerefresh: false})
-                                
-                              break
-        default:
-          (window.history.length > 2)
-            ? this.$router.go(-1)
-            : this.$router.push({ name: 'episode-id', params: { id: this.$route.params.id } })
-          break
+            value: 'login',
+            closeModal: true,
+          },
+        })
       }
-    })
-  },
+      this.$swal({
+        title: dlsmtitle,
+        icon: 'error',
+        dangerMode: true,
+        buttons: dlsmbuttons,
+      }).then((value) => {
+        switch (value) {
+          case 'back':
+            window.history.length > 2
+              ? this.$router.go(-1)
+              : this.$router.push({
+                  name: 'episode-id',
+                  params: { id: this.$route.params.id },
+                })
+            break
+          case 'subscribe':
+            this.$store.dispatch('subscription/SHOW_MODAL', {
+              content_type: 'episode',
+              content_id: this.$route.params.id,
+            })
+            break
+          case 'download':
+            this.$router.push({
+              name: 'episode-download-id',
+              params: { id: this.$route.params.id },
+              query: { force_to_buy: 1 },
+            })
+            break
+
+          case 'login':
+            this.$store.dispatch('login/SHOW_MODAL', {
+              premessage: null,
+              premobile: null,
+              preredirect: null,
+              prerefresh: false,
+            })
+
+            break
+          default:
+            window.history.length > 2
+              ? this.$router.go(-1)
+              : this.$router.push({
+                  name: 'episode-id',
+                  params: { id: this.$route.params.id },
+                })
+            break
+        }
+      })
+    },
     async loadEpisode() {
       try {
         const episode_id = this.$route.params.id
@@ -264,13 +294,14 @@ computed: {
           type: 'sp',
           series_id: '',
           hls: 1,
-          ref: ref
+          ref: ref,
         })
         if (response.data.status === 'success') {
           const data = response.data.data
           // تنظیم اطلاعات اصلی قسمت
           const ep = data.episode[0]
-          this.episodeTitle = (this.$i18n.locale === 'fa' && ep.name_fa) ? ep.name_fa : ep.name
+          this.episodeTitle =
+            this.$i18n.locale === 'fa' && ep.name_fa ? ep.name_fa : ep.name
           this.posterUrl = data.cdn.lg_backdrop + ep.backdrop
           // فرض بر این است که لینک ویدیو دارای پارامتر nosub است
           this.videoUrl = ep.video.includes('?')
@@ -287,14 +318,15 @@ computed: {
               label: track.language,
               src: track.url,
               default: index === 0,
-              language: track.language
+              language: track.language,
             }))
           }
 
           // تنظیم پیشنهاد (قسمت بعدی یا فصل بعدی)
           if (data.suggestion) {
             this.suggestion = data.suggestion
-            this.suggestionBackdrop = data.cdn.md_backdrop + data.suggestion.backdrop
+            this.suggestionBackdrop =
+              data.cdn.md_backdrop + data.suggestion.backdrop
           }
 
           // تنظیم لیست فصل‌ها و قسمت‌های هر فصل
@@ -308,19 +340,19 @@ computed: {
           // (در صورت نیاز می‌توانید وضعیت "soon" را هم مدیریت کنید)
           this.soon = false
         } else {
-            this.showErrorAlert(response.data.data)
+          this.showErrorAlert(response.data.data)
         }
       } catch (error) {
-              this.showErrorAlert(error.response.data)
+        this.showErrorAlert(error.response.data)
       } finally {
         this.loading = false
         // document.body.classList.add('loaded', 'playerback')
       }
     },
     togglePlaylistMenu() {
-    // منطق باز و بسته کردن منوی انتخاب فصل و قسمت
-    this.showPlaylistMenu = !this.showPlaylistMenu
-  },
+      // منطق باز و بسته کردن منوی انتخاب فصل و قسمت
+      this.showPlaylistMenu = !this.showPlaylistMenu
+    },
     handlePlayerReady(playerInstance) {
       if (this.startTime && playerInstance.currentTime) {
         playerInstance.currentTime(this.startTime)
@@ -361,7 +393,10 @@ computed: {
       }
     },
     playNextEpisode() {
-      this.$router.push({ name: 'episode-show-id', params: { id: this.suggestion.id } })
+      this.$router.push({
+        name: 'episode-show-id',
+        params: { id: this.suggestion.id },
+      })
     },
     playEpisode(episodeId) {
       this.$router.push({ name: 'episode-show-id', params: { id: episodeId } })
@@ -379,7 +414,10 @@ computed: {
       if (window.history.length > 2) {
         this.$router.go(-1)
       } else {
-        this.$router.push({ name: 'episode-id', params: { id: this.$route.params.id } })
+        this.$router.push({
+          name: 'episode-id',
+          params: { id: this.$route.params.id },
+        })
       }
     },
     reloadPage() {
@@ -402,21 +440,21 @@ computed: {
         const payload = {
           type: this.report_problem_type,
           details: this.report_details,
-          id: this.$route.params.id
+          id: this.$route.params.id,
         }
         const res = await this.$axios.post('/create/report/episode', payload)
         if (res.data.status === 'success') {
           this.report_button = false
           this.closeReport()
-          this.$alertify.logPosition("top right")
+          this.$alertify.logPosition('top right')
           this.$alertify.success('Successful Send, our team will check it soon')
         }
       } catch (error) {
         this.report_button = false
         console.error('Report Error:', error)
       }
-    }
-  }
+    },
+  },
 }
 </script>
 
@@ -435,7 +473,7 @@ computed: {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0,0,0,0.7);
+  background: rgba(0, 0, 0, 0.7);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -483,7 +521,7 @@ computed: {
   bottom: 0;
   left: 0;
   right: 0;
-  background: rgba(0,0,0,0.8);
+  background: rgba(0, 0, 0, 0.8);
   padding: 10px;
   color: #fff;
 }
@@ -519,7 +557,7 @@ computed: {
   position: absolute;
   bottom: 80px;
   right: 20px;
-  background: rgba(0,0,0,0.7);
+  background: rgba(0, 0, 0, 0.7);
   padding: 10px;
   border-radius: 8px;
   cursor: pointer;
@@ -648,5 +686,4 @@ computed: {
   left: 50%;
   transform: translate(-50%, -50%);
 }
-
 </style>

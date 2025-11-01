@@ -15,7 +15,8 @@
         <span>
           {{ mainButtonDisplayLabel }}
           <span v-if="showEpisodeNumber">
-            {{ $t('show.episode') }} {{ episode.episode_number }}
+            <span class="ml-1">{{ $t('show.episode') }}</span>
+            {{ episode.episode_number }}
           </span>
         </span>
       </span>
