@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- Slider Section with Skeleton -->
-    <ShowcaseSkeleton v-if="isLoadingSlider" />
+    <ShowcaseSkeleton v-if="isLoadingSlider" :page="'home'" />
     <section v-else-if="sliders && sliders.length" id="slideshow">
       <div class="swiper-container showcase main-slideshow">
         <!-- replaced inline VueSlickCarousel + slides with external component -->
@@ -421,7 +421,7 @@
             :instance-name="String(rootindex)"
             :options="SWIPER_OPTION_POSTER"
             card-variant="poster"
-            :size="{ w: 142, h: 212 }"
+            :size="{ w: 183, h: 273 }"
             :link-builder="buildIdRoute"
             :show-badges="true"
             :type="'discover'"

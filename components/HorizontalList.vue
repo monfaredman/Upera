@@ -72,6 +72,9 @@
     >
       <nuxt-link :to="resolvedSingleItemLink" class="single-simple-link">
         <b-img
+          blank
+          blank-color="#bbb"
+          show
           :src="singleItemImageSrc"
           :alt="singleItem.name || singleItem.title"
           fluid
@@ -188,6 +191,9 @@
         <div class="single-detailed-poster">
           <nuxt-link :to="resolvedSingleItemLink">
             <b-img
+              blank
+              blank-color="#bbb"
+              show
               :src="singleItemPosterSrc"
               :alt="singleItem.name || singleItem.title"
               fluid

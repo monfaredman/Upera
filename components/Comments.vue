@@ -642,6 +642,12 @@ export default {
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
+  .comments-container {
+    width: 100%;
+    max-width: 1292px;
+    margin: 0;
+  }
+
   .input-box-wrapper {
     max-width: 100%;
     height: auto;

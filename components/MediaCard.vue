@@ -65,7 +65,7 @@
                   blank
                   blank-color="#bbb"
                   :width="size.w"
-                  :height="223"
+                  :height="size.h"
                   show
                   class="d-none d-lg-block d-xl-none d-xxl-none"
                   :src="
@@ -83,9 +83,9 @@
                   blank
                   blank-color="#bbb"
                   :width="size.w"
-                  :height="219"
+                  :height="size.h"
                   show
-                  class="d-none d-lg-none d-xl-block d-xxl-none"
+                  class="d-none d-lg-none d-xl-block d-xxl-none non-hover-media-image-xxl"
                   :src="
                     variant === 'poster'
                       ? posterSrc(item.poster)
@@ -741,6 +741,13 @@ export default {
 
   .teaser-play-icon-circle i {
     font-size: 18px;
+  }
+}
+
+@media (max-width: 1500px) {
+  .non-hover-media-image-xxl {
+    height: auto !important;
+    width: 100% !important;
   }
 }
 </style>

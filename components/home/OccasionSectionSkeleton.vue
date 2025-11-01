@@ -4,9 +4,6 @@
       <div
         class="special d-flex flex-column justify-content-start align-items-start align-items-lg-center flex-lg-row"
       >
-        <!-- Title skeleton -->
-        <div class="skeleton-title mr-lg-5 mb-4 mb-lg-0"></div>
-
         <div class="position-relative w-full">
           <div class="special-content-wrapper">
             <div class="d-flex justify-content-start w-full special">
@@ -56,7 +53,6 @@ export default {
   }
 }
 
-.skeleton-title,
 .skeleton-poster,
 .skeleton-content-title,
 .skeleton-genres,
@@ -73,11 +69,6 @@ export default {
   background-size: 2000px 100%;
   animation: shimmer 2s infinite;
   border-radius: 8px;
-}
-
-.skeleton-title {
-  width: 150px;
-  height: 28px;
 }
 
 .skeleton-poster {

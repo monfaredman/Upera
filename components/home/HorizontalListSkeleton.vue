@@ -27,7 +27,7 @@ export default {
     },
     itemCount: {
       type: Number,
-      default: 7,
+      default: 8,
     },
   },
   computed: {
@@ -74,8 +74,8 @@ export default {
 }
 
 .skeleton-item-poster {
-  width: 142px;
-  height: 212px;
+  width: 12%;
+  height: 250px;
 }
 
 .skeleton-item-backdrop {

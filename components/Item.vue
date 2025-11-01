@@ -9,7 +9,7 @@
     </div>
 
     <!-- Showcase Skeleton -->
-    <ShowcaseSkeleton v-if="isLoadingShowcase" />
+    <ShowcaseSkeleton v-if="isLoadingShowcase" :page="'item'" />
 
     <!-- Actual Content -->
     <template v-else>
@@ -984,6 +984,7 @@ export default {
 section#content {
   margin: 0 !important;
   width: 100% !important;
+  max-width: 100% !important;
 }
 
 .content-nav-header {

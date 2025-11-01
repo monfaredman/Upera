@@ -32,7 +32,6 @@
             />
           </div>
         </div>
-
         <!-- Showcase Content -->
         <ShowcaseContent
           :data="data"

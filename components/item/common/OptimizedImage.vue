@@ -1,6 +1,11 @@
 <template>
   <div>
     <b-img
+      blank
+      blank-color="#bbb"
+      show
+      :width="width"
+      :height="height === 'full' ? '600px' : height"
       v-bind="computedProps"
       :src="computedSrc"
       :alt="alt"

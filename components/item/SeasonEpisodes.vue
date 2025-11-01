@@ -77,7 +77,7 @@
                   class="episode-image"
                   :width="364"
                   :height="170"
-                  :thumb-options="{ w: 364, h: 170, q: 100, a: 'c' }"
+                  :thumb-options="{ w: 364, h: 170, q: 100, a: 't' }"
                   type="backdrops"
                   fluid-grow
                 />

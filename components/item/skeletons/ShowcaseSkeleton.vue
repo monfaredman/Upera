@@ -29,7 +29,7 @@
                 <div class="skeleton-subtitle mb-3"></div>
 
                 <!-- Stats row skeleton -->
-                <div class="skeleton-stats mb-3">
+                <div v-if="page !== 'home'" class="skeleton-stats mb-3">
                   <div class="skeleton-stat-item"></div>
                   <div class="skeleton-stat-item"></div>
                   <div class="skeleton-stat-item"></div>
@@ -56,6 +56,12 @@
 <script>
 export default {
   name: 'ShowcaseSkeleton',
+  props: {
+    page: {
+      type: String,
+      default: 'home',
+    },
+  },
 }
 </script>
 
@@ -223,6 +229,7 @@ export default {
 @media (min-width: 1300px) {
   .showcase-thumbnail-wrapper {
     margin-top: 18rem;
+    margin-bottom: 3rem;
   }
 }
 </style>
