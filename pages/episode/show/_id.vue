@@ -25,9 +25,7 @@
     </div>
 
     <!-- پلیر -->
-
     <div class="player-wrapper">
-      himl
       <VideoPlayer
         v-if="videoUrl && !loading"
         ref="episodePlayer"
@@ -76,36 +74,74 @@
       </div>
     </div> -->
 
-    <div v-if="showPlaylistMenu" class="playlist-modal">
+    <div
+      v-if="showPlaylistMenu"
+      class="playlist-modal"
+      @click.self="closePlaylistMenu"
+    >
       <div class="playlist-modal-content">
         <!-- هدر منو -->
         <div class="playlist-modal-header">
+          <button class="close-btn" @click="togglePlaylistMenu">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M18 6L6 18M6 6L18 18"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </button>
           <span class="modal-title">انتخاب فصل و قسمت</span>
-          <button class="close-btn" @click="togglePlaylistMenu">×</button>
         </div>
+
+        <div class="divider"></div>
 
         <!-- انتخاب فصل -->
         <div class="season-selector">
-          <button
-            v-for="seasonNum in seasonList"
-            :key="seasonNum"
-            :class="['season-btn', { active: seasonOpened === seasonNum }]"
-            @click="setSeason(seasonNum)"
+          <select
+            v-model="seasonOpened"
+            class="season-dropdown"
+            @change="onSeasonChange"
           >
-            فصل {{ seasonNum }}
-          </button>
+            <option
+              v-for="seasonNum in seasonList"
+              :key="seasonNum"
+              :value="seasonNum"
+            >
+              فصل {{ seasonNum }}
+            </option>
+          </select>
         </div>
 
-        <!-- انتخاب قسمت -->
-        <div class="episode-selector">
-          <button
+        <!-- لیست قسمت‌ها -->
+        <div class="episode-list">
+          <div
             v-for="ep in currentEpisodeList"
             :key="ep.id"
-            class="episode-btn"
+            class="episode-card"
             @click="selectEpisode(ep.id)"
           >
-            قسمت {{ ep.episode_number }}
-          </button>
+            <img
+              :src="ep.still_path || posterUrl"
+              :alt="`قسمت ${ep.episode_number}`"
+              class="episode-image"
+            />
+            <div class="episode-info">
+              <div class="episode-title">
+                <span>فصل {{ ep.season_number }}</span>
+                <span class="separator">•</span>
+                <span>قسمت {{ ep.episode_number }}</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -174,6 +210,12 @@ export default {
         : []
     },
   },
+  watch: {
+    showPlaylistMenu(val) {
+      document.body.style.overflow = val ? 'hidden' : ''
+    },
+  },
+
   mounted() {
     // document.body.classList.remove('loaded')
     if (this.$auth && this.$auth.loggedIn) {
@@ -404,6 +446,9 @@ export default {
     setSeason(seasonNum) {
       this.seasonOpened = seasonNum
     },
+    onSeasonChange() {
+      // اختیاری: می‌توانید اینجا منطق اضافی برای تغییر فصل اضافه کنید
+    },
     selectEpisode(episodeId) {
       // بسته شدن منو
       this.togglePlaylistMenu()
@@ -453,6 +498,9 @@ export default {
         this.report_button = false
         console.error('Report Error:', error)
       }
+    },
+    closePlaylistMenu() {
+      this.showPlaylistMenu = false
     },
   },
 }
@@ -609,10 +657,14 @@ export default {
 
 /* محتوای مدال */
 .playlist-modal-content {
-  background: #fff;
-  width: 90%;
-  max-width: 400px;
-  border-radius: 8px;
+  background: #f5f5f5;
+  width: 556px;
+  height: 370px;
+  border-radius: 16px;
+  opacity: 1;
+  padding: 12px 12px 12px 12px;
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
 }
 
@@ -621,13 +673,13 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 16px;
-  background: #f5f5f5;
-  border-bottom: 1px solid #ddd;
+  padding: 0 4px 12px 4px;
 }
 .modal-title {
   font-size: 18px;
-  font-weight: bold;
+  font-weight: 700;
+  color: #000000;
+  text-align: right;
 }
 .close-btn {
   background: none;
@@ -635,51 +687,195 @@ export default {
   font-size: 24px;
   line-height: 1;
   cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #000000;
+}
+.close-btn svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* جداکننده */
+.divider {
+  width: 100%;
+  height: 1px;
+  background: black;
+  margin-bottom: 16px;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
 }
 
 /* انتخاب فصل */
 .season-selector {
-  display: flex;
-  justify-content: center;
-  padding: 12px;
-  background: #fafafa;
+  padding: 0 4px;
+  margin-bottom: 16px;
 }
-.season-btn {
-  margin: 0 5px;
-  padding: 8px 12px;
-  border: 1px solid #007bff;
-  background: #fff;
-  color: #007bff;
-  border-radius: 4px;
+.season-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #000000;
+  margin-bottom: 8px;
+  text-align: right;
+}
+.season-dropdown {
+  width: 100%;
+  height: 44px;
+  border: 1px solid #d4d4d4;
+  border-radius: 12px;
+  background: #ffffff;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #000000;
   cursor: pointer;
-  transition: background 0.3s, color 0.3s;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23000000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: left 16px center;
+  text-align: right;
+  direction: rtl;
 }
-.season-btn.active,
-.season-btn:hover {
-  background: #007bff;
-  color: #fff;
+.season-dropdown:focus {
+  border-color: #000000;
 }
 
-/* انتخاب قسمت */
-.episode-selector {
+/* لیست قسمت‌ها */
+.episode-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 4px;
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  padding: 16px;
+  flex-direction: column;
+  gap: 8px;
 }
-.episode-btn {
-  margin: 5px;
-  padding: 8px 12px;
-  border: none;
-  background: #28a745;
-  color: #fff;
-  border-radius: 4px;
+
+/* کارت قسمت */
+.episode-card {
+  width: 100%;
+  height: 75px;
+  border-radius: 12px;
+  opacity: 1;
+  gap: 8px;
+  padding: 12px;
+  background: #ffffff;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-direction: row-reverse;
   cursor: pointer;
-  transition: background 0.3s;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
-.episode-btn:hover {
-  background: #1e7e34;
+.episode-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
+
+/* تصویر قسمت */
+.episode-image {
+  width: 89px;
+  height: 51px;
+  border-radius: 4px;
+  opacity: 1;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+/* اطلاعات قسمت */
+.episode-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 4px;
+  overflow: hidden;
+}
+
+/* عنوان قسمت */
+.episode-title {
+  font-weight: 500;
+  font-style: normal;
+  font-size: 14px;
+  line-height: 24px;
+  letter-spacing: 0%;
+  text-align: right;
+  vertical-align: middle;
+  color: #000000;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* متادیتای قسمت */
+.episode-meta {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 400;
+  color: #666666;
+  text-align: right;
+}
+.episode-meta .separator {
+  margin: 0 4px;
+}
+
+/* اسکرول‌بار سفارشی */
+.episode-list::-webkit-scrollbar {
+  width: 6px;
+}
+.episode-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+.episode-list::-webkit-scrollbar-thumb {
+  background: #d4d4d4;
+  border-radius: 3px;
+}
+.episode-list::-webkit-scrollbar-thumb:hover {
+  background: #b0b0b0;
+}
+
+/* ریسپانسیو */
+@media (max-width: 768px) {
+  .playlist-modal-content {
+    width: 90%;
+    max-width: 400px;
+    height: auto;
+    max-height: 80vh;
+  }
+
+  .episode-card {
+    width: 100%;
+  }
+
+  .episode-image {
+    width: 70px;
+    height: 40px;
+  }
+}
+
+@media (max-width: 480px) {
+  .modal-title {
+    font-size: 16px;
+  }
+
+  .episode-title {
+    font-size: 12px;
+    line-height: 20px;
+  }
+
+  .episode-meta {
+    font-size: 10px;
+  }
+}
+
 .video-loading-spinner {
   position: absolute;
   top: 50%;
