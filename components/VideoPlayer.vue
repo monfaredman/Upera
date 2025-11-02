@@ -207,9 +207,7 @@ export default {
             'playToggle',
             'volumePanel',
             'fullscreenToggle',
-            'nextButton',
             // 'autoPlayButton',
-            'pipButton',
           ],
         },
         fluid: true,
@@ -1508,5 +1506,9 @@ video#episode-player_html5_api {
 ::v-deep .video-js .vjs-control-bar {
   bottom: 32px !important;
   padding: 0 16px;
+}
+
+::v-deep .vjs-volume-control.vjs-control.vjs-volume-horizontal {
+  height: 5.5em !important;
 }
 </style>
