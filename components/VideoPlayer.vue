@@ -1,14 +1,17 @@
 <template>
   <div style="position: relative">
+    <!-- Video Placeholder -->
     <div
       v-if="!stream && posterUrl"
       class="video-placeholder"
       :style="{ backgroundImage: `url(${posterUrl})` }"
     >
       <div v-if="title" class="video-title-overlay">
-        {{ adActive ? 'نمایش تبلیغات' : title }}
+        {{ displayTitle }}
       </div>
     </div>
+
+    <!-- Video Player -->
     <video
       v-else
       :id="playerid"
@@ -23,8 +26,6 @@
       :poster="posterUrl"
     />
 
-    />
-
     <!-- Skip Credits Button -->
     <button
       v-if="showSkipCredits && stream"
@@ -37,7 +38,7 @@
 
     <!-- Title Display (Bottom Left) -->
     <div v-if="title && stream" class="video-title-bottom">
-      {{ adActive ? 'نمایش تبلیغات' : title }}
+      {{ displayTitle }}
     </div>
 
     <!-- Timer Display (Bottom Right) -->
@@ -45,6 +46,7 @@
       {{ currentTimeFormatted }} / {{ durationFormatted }}
     </div>
 
+    <!-- VAST CTA Button -->
     <button id="vast-cta-btn">اطلاعات بیشتر</button>
   </div>
 </template>
@@ -55,8 +57,40 @@ import videojs from 'video.js'
 import '@arte/videojs-vast'
 import 'videojs-hls-quality-selector'
 import fa from 'video.js/dist/lang/fa.json'
+
 const prev10Icon = require('@/assets/images/player/prev-10-icon.png')
 const next10Icon = require('@/assets/images/player/next-10-icon.png')
+
+// Constants
+const MOBILE_BREAKPOINT = 768
+const SEEK_TIME = 10
+const VOLUME_STEP = 0.1
+const PLAYBACK_RATES = [
+  { value: 0.5, label: '۰.۵x' },
+  { value: 0.75, label: '۰.۷۵x' },
+  { value: 1, label: '۱x (عادی)' },
+  { value: 1.25, label: '۱.۲۵x' },
+  { value: 1.5, label: '۱.۵x' },
+  { value: 1.75, label: '۱.۷۵x' },
+  { value: 2, label: '۲x' },
+]
+const LANGUAGE_MAP = {
+  fa: 'فارسی',
+  en: 'English',
+  ar: 'العربية',
+  fr: 'Français',
+  de: 'Deutsch',
+  es: 'Español',
+}
+const QUALITY_MAP = {
+  '1080p': '۱۰۸۰p - Full HD',
+  '720p': '۷۲۰p - HD',
+  '480p': '۴۸۰p - SD',
+  '360p': '۳۶۰p',
+  '240p': '۲۴۰p',
+  auto: 'خودکار',
+  Auto: 'خودکار',
+}
 
 export default {
   props: {
@@ -115,9 +149,9 @@ export default {
     creditsData: {
       type: Object,
       default: () => ({
-        first_credits: 1, // Start time of first credits (in seconds)
-        after_credits: 60, // Start time of mid credits scene
-        final_credits: 5550, // Start time of final credits
+        first_credits: 1,
+        after_credits: 60,
+        final_credits: 5550,
       }),
     },
   },
@@ -141,6 +175,14 @@ export default {
     ...mapGetters({
       autoPlay: 'autoplay',
     }),
+
+    displayTitle() {
+      return this.adActive ? 'نمایش تبلیغات' : this.title
+    },
+
+    isRtl() {
+      return this.$i18n.locale === 'fa'
+    },
   },
 
   watch: {
@@ -186,20 +228,23 @@ export default {
   methods: {
     ...mapActions(['SET_AUTOPLAY']),
 
+    // ============================================
+    // Lifecycle & Setup Methods
+    // ============================================
+
     handleResize() {
-      this.isMobile = window.innerWidth <= 768
+      this.isMobile = window.innerWidth <= MOBILE_BREAKPOINT
     },
 
     initPlayer() {
       const currentLang = this.$i18n.locale
-      const isRtl = currentLang === 'fa'
 
       if (currentLang === 'fa') {
         videojs.addLanguage('fa', fa)
       }
 
       this.player = videojs(this.playerid, {
-        autoplay: false, // Disabled autoplay as requested
+        autoplay: false,
         controls: true,
         controlBar: {
           children: [
@@ -207,7 +252,6 @@ export default {
             'playToggle',
             'volumePanel',
             'fullscreenToggle',
-            // 'autoPlayButton',
           ],
         },
         fluid: true,
@@ -215,17 +259,24 @@ export default {
         language: currentLang,
         sources: [{ src: this.stream, type: 'application/x-mpegURL' }],
       })
+
       this.player.addClass('vjs-split-controls')
-
-      const videoEl = this.$refs[this.playerid]
-      if (videoEl) {
-        videoEl.classList.toggle('vjs-rtl', isRtl)
-        videoEl.style.direction = isRtl ? 'rtl' : 'ltr'
-      }
-
+      this.applyRtlSettings()
       this.setupVastPlugin()
       this.setupPlayerEvents()
     },
+
+    applyRtlSettings() {
+      const videoEl = this.$refs[this.playerid]
+      if (videoEl) {
+        videoEl.classList.toggle('vjs-rtl', this.isRtl)
+        videoEl.style.direction = this.isRtl ? 'rtl' : 'ltr'
+      }
+    },
+
+    // ============================================
+    // VAST Ad Plugin Setup
+    // ============================================
 
     setupVastPlugin() {
       if (!this.vastUrl) return
@@ -243,7 +294,12 @@ export default {
       }
 
       this.player.vast(vastVjsOptions)
+      this.setupVastCtaButton()
+    },
+
+    setupVastCtaButton() {
       const ctaBtn = document.getElementById('vast-cta-btn')
+      if (!ctaBtn) return
 
       this.player.on('vast.play', (e, { ctaUrl, adClickCallback, adTitle }) => {
         ctaBtn.innerText = adTitle
@@ -259,6 +315,7 @@ export default {
       const hideCta = () => {
         ctaBtn.style.display = 'none'
       }
+
       this.player.on('vast.complete', hideCta)
       this.player.on('vast.error', hideCta)
     },
@@ -273,22 +330,30 @@ export default {
       })
     },
 
+    // ============================================
+    // Text Tracks & Subtitles
+    // ============================================
+
     setupTextTracks() {
-      if (this.tracks?.length) {
-        this.tracks.forEach((track) => {
-          this.player.addRemoteTextTrack(
-            {
-              kind: track.kind,
-              src: track.src,
-              label: track.label,
-              default: track.default,
-              language: track.language || '',
-            },
-            false
-          )
-        })
-      }
+      if (!this.tracks?.length) return
+
+      this.tracks.forEach((track) => {
+        this.player.addRemoteTextTrack(
+          {
+            kind: track.kind,
+            src: track.src,
+            label: track.label,
+            default: track.default,
+            language: track.language || '',
+          },
+          false
+        )
+      })
     },
+
+    // ============================================
+    // Custom Buttons Setup
+    // ============================================
 
     setupCustomButtons() {
       this.createRuntimeDisplay()
@@ -297,30 +362,37 @@ export default {
         this.createPlaylistButton()
       }
 
-      // Add next button
       this.createNextButton()
-
-      // Add picture-in-picture button
       this.createPipButton()
-
-      // Add playback rate button
       this.createPlaybackRateButton()
 
-      // Add subtitle settings button only if subtitles are available
-      if (this.tracks && this.tracks.length > 0) {
+      if (this.tracks?.length > 0) {
         this.createSubtitleSettingsButton()
       }
 
-      // Create custom RTL volume control for Persian
-      if (this.$i18n.locale === 'fa') {
+      if (this.isRtl) {
         this.createCustomRTLVolumeControl()
       }
 
       if (this.showAutoPlayToggle) {
-        // this.createAutoPlayButton()
         this.createSkipButtons()
       }
     },
+
+    getFullscreenInsertIndex() {
+      const fullscreenToggle =
+        this.player.controlBar.getChild('fullscreenToggle')
+      const fullscreenIndex = this.player.controlBar
+        .children()
+        .indexOf(fullscreenToggle)
+      return fullscreenIndex === -1
+        ? this.player.controlBar.children().length - 1
+        : fullscreenIndex
+    },
+
+    // ============================================
+    // Button Creation Methods
+    // ============================================
 
     createNextButton() {
       const Button = videojs.getComponent('Button')
@@ -335,25 +407,18 @@ export default {
           icon.innerHTML = '<i class="fa fa-step-forward"></i>'
           this.el().appendChild(icon)
         }
+
         handleClick() {
           this.player().trigger('ended')
         }
       }
 
       videojs.registerComponent('NextButton', NextButton)
-
-      // Insert before fullscreen toggle
-      const fullscreenToggle =
-        this.player.controlBar.getChild('fullscreenToggle')
-      let insertIndex = this.player.controlBar
-        .children()
-        .indexOf(fullscreenToggle)
-      insertIndex =
-        insertIndex === -1
-          ? this.player.controlBar.children().length - 1
-          : insertIndex
-
-      this.player.controlBar.addChild('NextButton', {}, insertIndex)
+      this.player.controlBar.addChild(
+        'NextButton',
+        {},
+        this.getFullscreenInsertIndex()
+      )
     },
 
     createPipButton() {
@@ -369,39 +434,32 @@ export default {
           icon.innerHTML = '<i class="fa fa-clone"></i>'
           this.el().appendChild(icon)
         }
+
         handleClick() {
           const videoElement = this.player().el().querySelector('video')
-          if (videoElement) {
-            if (document.pictureInPictureElement) {
-              document.exitPictureInPicture()
-            } else if (videoElement.requestPictureInPicture) {
-              videoElement.requestPictureInPicture().catch((error) => {
-                console.error('Picture-in-Picture error:', error)
-              })
-            }
+          if (!videoElement) return
+
+          if (document.pictureInPictureElement) {
+            document.exitPictureInPicture()
+          } else if (videoElement.requestPictureInPicture) {
+            videoElement.requestPictureInPicture().catch((error) => {
+              console.error('Picture-in-Picture error:', error)
+            })
           }
         }
       }
 
       videojs.registerComponent('PipButton', PipButton)
-
-      // Insert before fullscreen toggle
-      const fullscreenToggle =
-        this.player.controlBar.getChild('fullscreenToggle')
-      let insertIndex = this.player.controlBar
-        .children()
-        .indexOf(fullscreenToggle)
-      insertIndex =
-        insertIndex === -1
-          ? this.player.controlBar.children().length - 1
-          : insertIndex
-
-      this.player.controlBar.addChild('PipButton', {}, insertIndex)
+      this.player.controlBar.addChild(
+        'PipButton',
+        {},
+        this.getFullscreenInsertIndex()
+      )
     },
 
     createPlaybackRateButton() {
       const Button = videojs.getComponent('Button')
-      const _this = this
+      const self = this
 
       class PlaybackRateButton extends Button {
         constructor(player, options) {
@@ -413,86 +471,23 @@ export default {
           icon.innerHTML = '<i class="fa fa-clock"></i>'
           this.el().appendChild(icon)
         }
+
         handleClick() {
-          _this.togglePlaybackRateMenu()
+          self.togglePlaybackRateMenu()
         }
       }
 
       videojs.registerComponent('PlaybackRateButton', PlaybackRateButton)
-
-      // Insert before fullscreen toggle
-      const fullscreenToggle =
-        this.player.controlBar.getChild('fullscreenToggle')
-      let insertIndex = this.player.controlBar
-        .children()
-        .indexOf(fullscreenToggle)
-      insertIndex =
-        insertIndex === -1
-          ? this.player.controlBar.children().length - 1
-          : insertIndex
-
-      this.player.controlBar.addChild('PlaybackRateButton', {}, insertIndex)
-    },
-
-    togglePlaybackRateMenu() {
-      const playbackRates = [
-        { value: 0.5, label: '۰.۵x' },
-        { value: 0.75, label: '۰.۷۵x' },
-        { value: 1, label: '۱x (عادی)' },
-        { value: 1.25, label: '۱.۲۵x' },
-        { value: 1.5, label: '۱.۵x' },
-        { value: 1.75, label: '۱.۷۵x' },
-        { value: 2, label: '۲x' },
-      ]
-
-      // Check if menu exists and remove it
-      let menu = document.querySelector('.vjs-playback-rate-menu-overlay')
-      if (menu) {
-        menu.remove()
-        return
-      }
-
-      menu = document.createElement('div')
-      menu.className = 'vjs-playback-rate-menu-overlay'
-
-      const menuContent = document.createElement('div')
-      menuContent.className = 'vjs-playback-rate-menu-content'
-
-      const title = document.createElement('div')
-      title.className = 'vjs-playback-rate-menu-title'
-      title.textContent = 'سرعت پخش'
-      menuContent.appendChild(title)
-
-      const currentRate = this.player.playbackRate()
-
-      playbackRates.forEach((rate) => {
-        const option = document.createElement('div')
-        option.className = 'vjs-playback-rate-menu-item'
-        if (Math.abs(currentRate - rate.value) < 0.01) {
-          option.classList.add('active')
-        }
-        option.textContent = rate.label
-        option.onclick = () => {
-          this.player.playbackRate(rate.value)
-          menu.remove()
-        }
-        menuContent.appendChild(option)
-      })
-
-      menu.appendChild(menuContent)
-      this.player.el().appendChild(menu)
-
-      // Close menu when clicking outside
-      menu.onclick = (e) => {
-        if (e.target === menu) {
-          menu.remove()
-        }
-      }
+      this.player.controlBar.addChild(
+        'PlaybackRateButton',
+        {},
+        this.getFullscreenInsertIndex()
+      )
     },
 
     createSubtitleSettingsButton() {
       const Button = videojs.getComponent('Button')
-      const _this = this
+      const self = this
 
       class SubtitleSettingsButton extends Button {
         constructor(player, options) {
@@ -504,8 +499,9 @@ export default {
           icon.innerHTML = '<i class="fa fa-closed-captioning"></i>'
           this.el().appendChild(icon)
         }
+
         handleClick() {
-          _this.toggleSubtitleMenu()
+          self.toggleSubtitleMenu()
         }
       }
 
@@ -513,41 +509,145 @@ export default {
         'SubtitleSettingsButton',
         SubtitleSettingsButton
       )
+      this.player.controlBar.addChild(
+        'SubtitleSettingsButton',
+        {},
+        this.getFullscreenInsertIndex()
+      )
+    },
 
-      // Insert before fullscreen toggle
-      const fullscreenToggle =
-        this.player.controlBar.getChild('fullscreenToggle')
-      let insertIndex = this.player.controlBar
-        .children()
-        .indexOf(fullscreenToggle)
-      insertIndex =
-        insertIndex === -1
-          ? this.player.controlBar.children().length - 1
-          : insertIndex
+    // ============================================
+    // Menu Helper Methods
+    // ============================================
 
-      this.player.controlBar.addChild('SubtitleSettingsButton', {}, insertIndex)
+    createMenuOverlay(className) {
+      const overlay = document.createElement('div')
+      overlay.className = className
+      return overlay
+    },
+
+    createMenuContent(className, titleText) {
+      const content = document.createElement('div')
+      content.className = className
+
+      const title = document.createElement('div')
+      title.className = className.replace('-content', '-title')
+      title.textContent = titleText
+      content.appendChild(title)
+
+      return content
+    },
+
+    createMenuItem(text, isActive = false) {
+      const item = document.createElement('div')
+      item.className = 'vjs-playback-rate-menu-item'
+      if (isActive) {
+        item.classList.add('active')
+      }
+      item.textContent = text
+      return item
+    },
+
+    attachMenuCloseHandler(menu) {
+      menu.onclick = (e) => {
+        if (e.target === menu) {
+          menu.remove()
+        }
+      }
+    },
+
+    // ============================================
+    // Menu Toggle Methods
+    // ============================================
+
+    togglePlaybackRateMenu() {
+      const existingMenu = document.querySelector(
+        '.vjs-playback-rate-menu-overlay'
+      )
+      if (existingMenu) {
+        existingMenu.remove()
+        return
+      }
+
+      const menu = this.createMenuOverlay('vjs-playback-rate-menu-overlay')
+      const menuContent = this.createMenuContent(
+        'vjs-playback-rate-menu-content',
+        'سرعت پخش'
+      )
+      const currentRate = this.player.playbackRate()
+
+      PLAYBACK_RATES.forEach((rate) => {
+        const option = this.createMenuItem(
+          rate.label,
+          Math.abs(currentRate - rate.value) < 0.01
+        )
+        option.onclick = () => {
+          this.player.playbackRate(rate.value)
+          menu.remove()
+        }
+        menuContent.appendChild(option)
+      })
+
+      menu.appendChild(menuContent)
+      this.player.el().appendChild(menu)
+      this.attachMenuCloseHandler(menu)
     },
 
     toggleSubtitleMenu() {
-      // Get all text tracks
-      const textTracks = this.player.textTracks()
-      const trackList = []
+      const existingMenu = document.querySelector('.vjs-subtitle-menu-overlay')
+      if (existingMenu) {
+        existingMenu.remove()
+        return
+      }
 
+      const textTracks = this.player.textTracks()
+      const trackList = this.getSubtitleTrackList(textTracks)
+
+      const menu = this.createMenuOverlay('vjs-subtitle-menu-overlay')
+      const menuContent = this.createMenuContent(
+        'vjs-subtitle-menu-content',
+        'انتخاب زیرنویس'
+      )
+
+      // Add "Off" option
+      const isAllDisabled = this.areAllTracksDisabled(textTracks)
+      const offOption = this.createSubtitleMenuItem('خاموش', isAllDisabled)
+      offOption.onclick = () => {
+        this.disableAllTracks(textTracks)
+        menu.remove()
+      }
+      menuContent.appendChild(offOption)
+
+      // Add track options
+      trackList.forEach((track) => {
+        const option = this.createSubtitleMenuItem(
+          track.label,
+          track.mode === 'showing'
+        )
+        option.onclick = () => {
+          this.setActiveTrack(textTracks, track.index)
+          menu.remove()
+        }
+        menuContent.appendChild(option)
+      })
+
+      // Add advanced settings option
+      if (trackList.length > 0) {
+        this.addSubtitleSettingsOption(menuContent, menu)
+      }
+
+      menu.appendChild(menuContent)
+      this.player.el().appendChild(menu)
+      this.attachMenuCloseHandler(menu)
+    },
+
+    getSubtitleTrackList(textTracks) {
+      const trackList = []
       for (let i = 0; i < textTracks.length; i++) {
         const track = textTracks[i]
         if (track.kind === 'subtitles' || track.kind === 'captions') {
-          // Map language codes to Persian names
-          const languageMap = {
-            fa: 'فارسی',
-            en: 'English',
-            ar: 'العربية',
-            fr: 'Français',
-            de: 'Deutsch',
-            es: 'Español',
-          }
           const displayLabel =
-            languageMap[track.language] || track.label || `زبان ${i + 1}`
-
+            LANGUAGE_MAP[track.language] || track.label || `زبان ${i + 1}`
           trackList.push({
             label: displayLabel,
             language: track.language,
@@ -556,141 +656,134 @@ export default {
           })
         }
       }
+      return trackList
+    },
 
-      // Create subtitle menu overlay
-      let menu = document.querySelector('.vjs-subtitle-menu-overlay')
-      if (menu) {
-        menu.remove()
-        return
+    createSubtitleMenuItem(text, isActive = false) {
+      const item = document.createElement('div')
+      item.className = 'vjs-subtitle-menu-item'
+      if (isActive) {
+        item.classList.add('active')
       }
+      item.textContent = text
+      return item
+    },
 
-      menu = document.createElement('div')
-      menu.className = 'vjs-subtitle-menu-overlay'
-
-      const menuContent = document.createElement('div')
-      menuContent.className = 'vjs-subtitle-menu-content'
-
-      const title = document.createElement('div')
-      title.className = 'vjs-subtitle-menu-title'
-      title.textContent = 'انتخاب زیرنویس'
-      menuContent.appendChild(title)
-
-      // Add "Off" option
-      const offOption = document.createElement('div')
-      offOption.className = 'vjs-subtitle-menu-item'
-      offOption.textContent = 'خاموش'
-      let isAllDisabled = true
+    areAllTracksDisabled(textTracks) {
       for (let i = 0; i < textTracks.length; i++) {
         if (textTracks[i].mode === 'showing') {
-          isAllDisabled = false
-          break
+          return false
         }
       }
-      if (isAllDisabled) {
-        offOption.classList.add('active')
-      }
-      offOption.onclick = () => {
-        for (let i = 0; i < textTracks.length; i++) {
-          textTracks[i].mode = 'disabled'
-        }
-        menu.remove()
-      }
-      menuContent.appendChild(offOption)
+      return true
+    },
 
-      // Add track options
-      trackList.forEach((track) => {
-        const option = document.createElement('div')
-        option.className = 'vjs-subtitle-menu-item'
-        if (track.mode === 'showing') {
-          option.classList.add('active')
-        }
-        option.textContent = track.label
-        option.onclick = () => {
-          for (let i = 0; i < textTracks.length; i++) {
-            textTracks[i].mode = i === track.index ? 'showing' : 'disabled'
-          }
-          menu.remove()
-        }
-        menuContent.appendChild(option)
-      })
-
-      // Add subtitle settings option
-      if (trackList.length > 0) {
-        const settingsDivider = document.createElement('div')
-        settingsDivider.className = 'vjs-subtitle-menu-divider'
-        menuContent.appendChild(settingsDivider)
-
-        const settingsOption = document.createElement('div')
-        settingsOption.className = 'vjs-subtitle-menu-item settings'
-        settingsOption.innerHTML = '<i class="fa fa-cog"></i> تنظیمات پیشرفته'
-        settingsOption.onclick = () => {
-          menu.remove()
-          this.showSubtitleSettings()
-        }
-        menuContent.appendChild(settingsOption)
-      }
-
-      menu.appendChild(menuContent)
-      this.player.el().appendChild(menu)
-
-      // Close menu when clicking outside
-      menu.onclick = (e) => {
-        if (e.target === menu) {
-          menu.remove()
-        }
+    disableAllTracks(textTracks) {
+      for (let i = 0; i < textTracks.length; i++) {
+        textTracks[i].mode = 'disabled'
       }
     },
 
+    setActiveTrack(textTracks, activeIndex) {
+      for (let i = 0; i < textTracks.length; i++) {
+        textTracks[i].mode = i === activeIndex ? 'showing' : 'disabled'
+      }
+    },
+
+    addSubtitleSettingsOption(menuContent, menu) {
+      const settingsDivider = document.createElement('div')
+      settingsDivider.className = 'vjs-subtitle-menu-divider'
+      menuContent.appendChild(settingsDivider)
+
+      const settingsOption = document.createElement('div')
+      settingsOption.className = 'vjs-subtitle-menu-item settings'
+      settingsOption.innerHTML = '<i class="fa fa-cog"></i> تنظیمات پیشرفته'
+      settingsOption.onclick = () => {
+        menu.remove()
+        this.showSubtitleSettings()
+      }
+      menuContent.appendChild(settingsOption)
+    },
+
     showSubtitleSettings() {
-      let settingsMenu = document.querySelector(
+      const existingSettings = document.querySelector(
         '.vjs-subtitle-settings-overlay'
       )
-      if (settingsMenu) {
-        settingsMenu.remove()
+      if (existingSettings) {
+        existingSettings.remove()
         return
       }
 
-      settingsMenu = document.createElement('div')
-      settingsMenu.className = 'vjs-subtitle-settings-overlay'
-
-      const menuContent = document.createElement('div')
-      menuContent.className = 'vjs-subtitle-settings-content'
-
-      const title = document.createElement('div')
-      title.className = 'vjs-subtitle-settings-title'
-      title.textContent = 'تنظیمات زیرنویس'
-      menuContent.appendChild(title)
+      const settingsMenu = this.createMenuOverlay(
+        'vjs-subtitle-settings-overlay'
+      )
+      const menuContent = this.createMenuContent(
+        'vjs-subtitle-settings-content',
+        'تنظیمات زیرنویس'
+      )
 
       // Font size setting
-      const fontSizeGroup = document.createElement('div')
-      fontSizeGroup.className = 'vjs-subtitle-setting-group'
-      fontSizeGroup.innerHTML = `
-        <label>اندازه فونت:</label>
-        <select class="vjs-subtitle-font-size">
-          <option value="50%">کوچک</option>
-          <option value="75%">متوسط</option>
-          <option value="100%" selected>عادی</option>
-          <option value="125%">بزرگ</option>
-          <option value="150%">خیلی بزرگ</option>
-        </select>
-      `
+      const fontSizeGroup = this.createSettingsGroup(
+        'اندازه فونت:',
+        'font-size',
+        [
+          { value: '50%', label: 'کوچک' },
+          { value: '75%', label: 'متوسط' },
+          { value: '100%', label: 'عادی', selected: true },
+          { value: '125%', label: 'بزرگ' },
+          { value: '150%', label: 'خیلی بزرگ' },
+        ]
+      )
       menuContent.appendChild(fontSizeGroup)
 
       // Background opacity setting
-      const bgOpacityGroup = document.createElement('div')
-      bgOpacityGroup.className = 'vjs-subtitle-setting-group'
-      bgOpacityGroup.innerHTML = `
-        <label>شفافیت پس‌زمینه:</label>
-        <select class="vjs-subtitle-bg-opacity">
-          <option value="0">بدون پس‌زمینه</option>
-          <option value="0.5">نیمه شفاف</option>
-          <option value="0.75" selected>کم شفاف</option>
-          <option value="1">کاملاً مات</option>
-        </select>
-      `
+      const bgOpacityGroup = this.createSettingsGroup(
+        'شفافیت پس‌زمینه:',
+        'bg-opacity',
+        [
+          { value: '0', label: 'بدون پس‌زمینه' },
+          { value: '0.5', label: 'نیمه شفاف' },
+          { value: '0.75', label: 'کم شفاف', selected: true },
+          { value: '1', label: 'کاملاً مات' },
+        ]
+      )
       menuContent.appendChild(bgOpacityGroup)
 
       // Apply button
+      const applyBtn = this.createApplyButton(menuContent, settingsMenu)
+      menuContent.appendChild(applyBtn)
+
+      settingsMenu.appendChild(menuContent)
+      this.player.el().appendChild(settingsMenu)
+      this.attachMenuCloseHandler(settingsMenu)
+    },
+
+    createSettingsGroup(labelText, settingType, options) {
+      const group = document.createElement('div')
+      group.className = 'vjs-subtitle-setting-group'
+
+      const label = document.createElement('label')
+      label.textContent = labelText
+      group.appendChild(label)
+
+      const select = document.createElement('select')
+      select.className = `vjs-subtitle-${settingType}`
+
+      options.forEach((opt) => {
+        const option = document.createElement('option')
+        option.value = opt.value
+        option.textContent = opt.label
+        if (opt.selected) {
+          option.selected = true
+        }
+        select.appendChild(option)
+      })
+
+      group.appendChild(select)
+      return group
+    },
+
+    createApplyButton(menuContent, settingsMenu) {
       const applyBtn = document.createElement('button')
       applyBtn.className = 'vjs-subtitle-settings-apply'
       applyBtn.textContent = 'اعمال تغییرات'
@@ -701,32 +794,23 @@ export default {
         const bgOpacity = menuContent.querySelector(
           '.vjs-subtitle-bg-opacity'
         ).value
-
-        // Apply settings to text tracks
-        const textTrackDisplay = this.player
-          .el()
-          .querySelector('.vjs-text-track-display')
-        if (textTrackDisplay) {
-          textTrackDisplay.style.fontSize = fontSize
-          const cues = textTrackDisplay.querySelectorAll('.vjs-text-track-cue')
-          cues.forEach((cue) => {
-            cue.style.backgroundColor = `rgba(0, 0, 0, ${bgOpacity})`
-          })
-        }
-
+        this.applySubtitleSettings(fontSize, bgOpacity)
         settingsMenu.remove()
       }
-      menuContent.appendChild(applyBtn)
+      return applyBtn
+    },
 
-      settingsMenu.appendChild(menuContent)
-      this.player.el().appendChild(settingsMenu)
+    applySubtitleSettings(fontSize, bgOpacity) {
+      const textTrackDisplay = this.player
+        .el()
+        .querySelector('.vjs-text-track-display')
+      if (!textTrackDisplay) return
 
-      // Close menu when clicking outside
-      settingsMenu.onclick = (e) => {
-        if (e.target === settingsMenu) {
-          settingsMenu.remove()
-        }
-      }
+      textTrackDisplay.style.fontSize = fontSize
+      const cues = textTrackDisplay.querySelectorAll('.vjs-text-track-cue')
+      cues.forEach((cue) => {
+        cue.style.backgroundColor = `rgba(0, 0, 0, ${bgOpacity})`
+      })
     },
 
     createCustomRTLVolumeControl() {
@@ -1100,26 +1184,14 @@ export default {
         .querySelector('.vjs-quality-selector')
       if (!qualityButton) return
 
-      // Override the menu rendering
       const observer = new MutationObserver(() => {
         const menuItems = this.player
           .el()
           .querySelectorAll('.vjs-quality-selector .vjs-menu-item')
-
         menuItems.forEach((item) => {
           const text = item.textContent.trim()
-          const qualityMap = {
-            '1080p': '۱۰۸۰p - Full HD',
-            '720p': '۷۲۰p - HD',
-            '480p': '۴۸۰p - SD',
-            '360p': '۳۶۰p',
-            '240p': '۲۴۰p',
-            auto: 'خودکار',
-            Auto: 'خودکار',
-          }
-
-          if (qualityMap[text]) {
-            item.textContent = qualityMap[text]
+          if (QUALITY_MAP[text]) {
+            item.textContent = QUALITY_MAP[text]
           }
         })
       })
@@ -1129,6 +1201,10 @@ export default {
         subtree: true,
       })
     },
+
+    // ============================================
+    // Player Control Methods
+    // ============================================
 
     play() {
       this.player?.play()
@@ -1143,37 +1219,53 @@ export default {
       button?.updateIcon()
     },
 
+    // ============================================
+    // Keyboard Event Handler
+    // ============================================
+
     handleKeydown(event) {
       if (!this.player) return
 
-      const seekTime = 10
-      const volumeStep = 0.1
-
-      switch (event.key) {
-        case 'ArrowLeft':
-          this.player.currentTime(
-            Math.max(this.player.currentTime() - seekTime, 0)
-          )
-          break
-        case 'ArrowRight':
-          this.player.currentTime(
-            Math.min(
-              this.player.currentTime() + seekTime,
-              this.player.duration()
-            )
-          )
-          break
-        case 'ArrowUp':
-          this.player.volume(Math.min(this.player.volume() + volumeStep, 1))
-          break
-        case 'ArrowDown':
-          this.player.volume(Math.max(this.player.volume() - volumeStep, 0))
-          break
-        case ' ':
-          event.preventDefault()
-          this.player.paused() ? this.player.play() : this.player.pause()
-          break
+      const keyActions = {
+        ArrowLeft: () => this.seekBackward(),
+        ArrowRight: () => this.seekForward(),
+        ArrowUp: () => this.volumeUp(),
+        ArrowDown: () => this.volumeDown(),
+        ' ': () => this.togglePlayPause(event),
       }
+
+      const action = keyActions[event.key]
+      if (action) {
+        action()
+      }
+    },
+
+    seekBackward() {
+      const newTime = Math.max(this.player.currentTime() - SEEK_TIME, 0)
+      this.player.currentTime(newTime)
+    },
+
+    seekForward() {
+      const newTime = Math.min(
+        this.player.currentTime() + SEEK_TIME,
+        this.player.duration()
+      )
+      this.player.currentTime(newTime)
+    },
+
+    volumeUp() {
+      const newVolume = Math.min(this.player.volume() + VOLUME_STEP, 1)
+      this.player.volume(newVolume)
+    },
+
+    volumeDown() {
+      const newVolume = Math.max(this.player.volume() - VOLUME_STEP, 0)
+      this.player.volume(newVolume)
+    },
+
+    togglePlayPause(event) {
+      event.preventDefault()
+      this.player.paused() ? this.player.play() : this.player.pause()
     },
 
     createRuntimeDisplay() {
@@ -1247,37 +1339,19 @@ export default {
       controlBar.addChild('RuntimeDisplay', {}, insertIndex)
     },
 
+    // ============================================
+    // Credits Skip Functionality
+    // ============================================
+
     setupCreditsSkip() {
-      // Clear any existing interval
       if (this.creditCheckInterval) {
         clearInterval(this.creditCheckInterval)
       }
 
-      // Check for credit sections every second
       this.creditCheckInterval = setInterval(() => {
-        if (!this.player || this.player.paused()) return
-
-        const currentTime = this.player.currentTime()
-        // const duration = this.player.duration()
-
-        // Check if we're in any credit section
-        if (this.isInFirstCredits(currentTime)) {
-          this.showSkipCredits = true
-          this.currentCreditType = 'first_credits'
-          this.skipButtonText = 'رد کردن تیتراژ'
-        }
-        //  else if (this.isInFinalCredits(currentTime, duration)) {
-        //   this.showSkipCredits = true
-        //   this.currentCreditType = 'final_credits'
-        //   this.skipButtonText = 'قسمت بعد'
-        // }
-        else {
-          this.showSkipCredits = false
-          this.currentCreditType = null
-        }
+        this.checkCreditsPosition()
       }, 1000)
 
-      // Clean up interval when player is disposed
       this.player.on('dispose', () => {
         if (this.creditCheckInterval) {
           clearInterval(this.creditCheckInterval)
@@ -1285,47 +1359,55 @@ export default {
       })
     },
 
+    checkCreditsPosition() {
+      if (!this.player || this.player.paused()) return
+
+      const currentTime = this.player.currentTime()
+
+      if (this.isInFirstCredits(currentTime)) {
+        this.showSkipCredits = true
+        this.currentCreditType = 'first_credits'
+        this.skipButtonText = 'رد کردن تیتراژ'
+      } else {
+        this.showSkipCredits = false
+        this.currentCreditType = null
+      }
+    },
+
     isInFirstCredits(currentTime) {
-      const firstCreditsStart = this.creditsData.first_credits || 1
-      const firstCreditsEnd = this.creditsData.after_credits || 60
+      const { first_credits = 1, after_credits = 60 } = this.creditsData
       return (
-        firstCreditsStart > 0 &&
-        currentTime > firstCreditsStart &&
-        currentTime < firstCreditsEnd
+        first_credits > 0 &&
+        currentTime > first_credits &&
+        currentTime < after_credits
       )
     },
 
     isInFinalCredits(currentTime, duration) {
-      const finalCreditsStart = this.creditsData.final_credits || duration - 70
-      // If final credits start is provided, use it, otherwise assume last 10% of video
-      const creditsStart =
-        finalCreditsStart > 0 ? finalCreditsStart : duration * 0.9
+      const { final_credits } = this.creditsData
+      const creditsStart = final_credits > 0 ? final_credits : duration * 0.9
       return currentTime >= creditsStart && duration > 0
     },
 
     skipCredits() {
       if (!this.player) return
 
-      const duration = this.player.duration()
-
-      switch (this.currentCreditType) {
-        case 'first_credits':
-          // Skip to after first credits (usually the main content)
+      const creditActions = {
+        first_credits: () => {
           this.player.currentTime(this.creditsData.after_credits || 60)
-          break
-
-        case 'final_credits':
-          // Skip to end or trigger next episode
+        },
+        final_credits: () => {
+          const duration = this.player.duration()
           this.player.currentTime(duration - 1)
           this.$emit('credits-skipped', 'final_credits')
-          break
-
-        default:
-          // Default skip behavior
-          this.player.currentTime(this.player.currentTime())
+        },
       }
 
-      // Hide the button after clicking
+      const action = creditActions[this.currentCreditType]
+      if (action) {
+        action()
+      }
+
       this.showSkipCredits = false
       this.currentCreditType = null
     },
