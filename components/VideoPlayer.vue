@@ -303,6 +303,9 @@ export default {
       // Add picture-in-picture button
       this.createPipButton()
 
+      // Add playback rate button
+      this.createPlaybackRateButton()
+
       // Add subtitle settings button only if subtitles are available
       if (this.tracks && this.tracks.length > 0) {
         this.createSubtitleSettingsButton()
@@ -396,6 +399,97 @@ export default {
       this.player.controlBar.addChild('PipButton', {}, insertIndex)
     },
 
+    createPlaybackRateButton() {
+      const Button = videojs.getComponent('Button')
+      const _this = this
+
+      class PlaybackRateButton extends Button {
+        constructor(player, options) {
+          super(player, options)
+          this.addClass('vjs-playback-rate-button')
+          this.controlText('سرعت پخش')
+          const icon = document.createElement('span')
+          icon.className = 'vjs-icon-playback-rate'
+          icon.innerHTML = '<i class="fa fa-clock"></i>'
+          this.el().appendChild(icon)
+        }
+        handleClick() {
+          _this.togglePlaybackRateMenu()
+        }
+      }
+
+      videojs.registerComponent('PlaybackRateButton', PlaybackRateButton)
+
+      // Insert before fullscreen toggle
+      const fullscreenToggle =
+        this.player.controlBar.getChild('fullscreenToggle')
+      let insertIndex = this.player.controlBar
+        .children()
+        .indexOf(fullscreenToggle)
+      insertIndex =
+        insertIndex === -1
+          ? this.player.controlBar.children().length - 1
+          : insertIndex
+
+      this.player.controlBar.addChild('PlaybackRateButton', {}, insertIndex)
+    },
+
+    togglePlaybackRateMenu() {
+      const playbackRates = [
+        { value: 0.5, label: '۰.۵x' },
+        { value: 0.75, label: '۰.۷۵x' },
+        { value: 1, label: '۱x (عادی)' },
+        { value: 1.25, label: '۱.۲۵x' },
+        { value: 1.5, label: '۱.۵x' },
+        { value: 1.75, label: '۱.۷۵x' },
+        { value: 2, label: '۲x' },
+      ]
+
+      // Check if menu exists and remove it
+      let menu = document.querySelector('.vjs-playback-rate-menu-overlay')
+      if (menu) {
+        menu.remove()
+        return
+      }
+
+      menu = document.createElement('div')
+      menu.className = 'vjs-playback-rate-menu-overlay'
+
+      const menuContent = document.createElement('div')
+      menuContent.className = 'vjs-playback-rate-menu-content'
+
+      const title = document.createElement('div')
+      title.className = 'vjs-playback-rate-menu-title'
+      title.textContent = 'سرعت پخش'
+      menuContent.appendChild(title)
+
+      const currentRate = this.player.playbackRate()
+
+      playbackRates.forEach((rate) => {
+        const option = document.createElement('div')
+        option.className = 'vjs-playback-rate-menu-item'
+        if (Math.abs(currentRate - rate.value) < 0.01) {
+          option.classList.add('active')
+        }
+        option.textContent = rate.label
+        option.onclick = () => {
+          this.player.playbackRate(rate.value)
+          menu.remove()
+        }
+        menuContent.appendChild(option)
+      })
+
+      menu.appendChild(menuContent)
+      this.player.el().appendChild(menu)
+
+      // Close menu when clicking outside
+      menu.onclick = (e) => {
+        if (e.target === menu) {
+          menu.remove()
+        }
+      }
+    },
+
     createSubtitleSettingsButton() {
       const Button = videojs.getComponent('Button')
       const _this = this
@@ -442,8 +536,20 @@ export default {
       for (let i = 0; i < textTracks.length; i++) {
         const track = textTracks[i]
         if (track.kind === 'subtitles' || track.kind === 'captions') {
+          // Map language codes to Persian names
+          const languageMap = {
+            fa: 'فارسی',
+            en: 'English',
+            ar: 'العربية',
+            fr: 'Français',
+            de: 'Deutsch',
+            es: 'Español',
+          }
+          const displayLabel =
+            languageMap[track.language] || track.label || `زبان ${i + 1}`
+
           trackList.push({
-            label: track.label || `Track ${i + 1}`,
+            label: displayLabel,
             language: track.language,
             mode: track.mode,
             index: i,
@@ -473,6 +579,16 @@ export default {
       const offOption = document.createElement('div')
       offOption.className = 'vjs-subtitle-menu-item'
       offOption.textContent = 'خاموش'
+      let isAllDisabled = true
+      for (let i = 0; i < textTracks.length; i++) {
+        if (textTracks[i].mode === 'showing') {
+          isAllDisabled = false
+          break
+        }
+      }
+      if (isAllDisabled) {
+        offOption.classList.add('active')
+      }
       offOption.onclick = () => {
         for (let i = 0; i < textTracks.length; i++) {
           textTracks[i].mode = 'disabled'
@@ -498,6 +614,22 @@ export default {
         menuContent.appendChild(option)
       })
 
+      // Add subtitle settings option
+      if (trackList.length > 0) {
+        const settingsDivider = document.createElement('div')
+        settingsDivider.className = 'vjs-subtitle-menu-divider'
+        menuContent.appendChild(settingsDivider)
+
+        const settingsOption = document.createElement('div')
+        settingsOption.className = 'vjs-subtitle-menu-item settings'
+        settingsOption.innerHTML = '<i class="fa fa-cog"></i> تنظیمات پیشرفته'
+        settingsOption.onclick = () => {
+          menu.remove()
+          this.showSubtitleSettings()
+        }
+        menuContent.appendChild(settingsOption)
+      }
+
       menu.appendChild(menuContent)
       this.player.el().appendChild(menu)
 
@@ -505,6 +637,94 @@ export default {
       menu.onclick = (e) => {
         if (e.target === menu) {
           menu.remove()
+        }
+      }
+    },
+
+    showSubtitleSettings() {
+      let settingsMenu = document.querySelector(
+        '.vjs-subtitle-settings-overlay'
+      )
+      if (settingsMenu) {
+        settingsMenu.remove()
+        return
+      }
+
+      settingsMenu = document.createElement('div')
+      settingsMenu.className = 'vjs-subtitle-settings-overlay'
+
+      const menuContent = document.createElement('div')
+      menuContent.className = 'vjs-subtitle-settings-content'
+
+      const title = document.createElement('div')
+      title.className = 'vjs-subtitle-settings-title'
+      title.textContent = 'تنظیمات زیرنویس'
+      menuContent.appendChild(title)
+
+      // Font size setting
+      const fontSizeGroup = document.createElement('div')
+      fontSizeGroup.className = 'vjs-subtitle-setting-group'
+      fontSizeGroup.innerHTML = `
+        <label>اندازه فونت:</label>
+        <select class="vjs-subtitle-font-size">
+          <option value="50%">کوچک</option>
+          <option value="75%">متوسط</option>
+          <option value="100%" selected>عادی</option>
+          <option value="125%">بزرگ</option>
+          <option value="150%">خیلی بزرگ</option>
+        </select>
+      `
+      menuContent.appendChild(fontSizeGroup)
+
+      // Background opacity setting
+      const bgOpacityGroup = document.createElement('div')
+      bgOpacityGroup.className = 'vjs-subtitle-setting-group'
+      bgOpacityGroup.innerHTML = `
+        <label>شفافیت پس‌زمینه:</label>
+        <select class="vjs-subtitle-bg-opacity">
+          <option value="0">بدون پس‌زمینه</option>
+          <option value="0.5">نیمه شفاف</option>
+          <option value="0.75" selected>کم شفاف</option>
+          <option value="1">کاملاً مات</option>
+        </select>
+      `
+      menuContent.appendChild(bgOpacityGroup)
+
+      // Apply button
+      const applyBtn = document.createElement('button')
+      applyBtn.className = 'vjs-subtitle-settings-apply'
+      applyBtn.textContent = 'اعمال تغییرات'
+      applyBtn.onclick = () => {
+        const fontSize = menuContent.querySelector(
+          '.vjs-subtitle-font-size'
+        ).value
+        const bgOpacity = menuContent.querySelector(
+          '.vjs-subtitle-bg-opacity'
+        ).value
+
+        // Apply settings to text tracks
+        const textTrackDisplay = this.player
+          .el()
+          .querySelector('.vjs-text-track-display')
+        if (textTrackDisplay) {
+          textTrackDisplay.style.fontSize = fontSize
+          const cues = textTrackDisplay.querySelectorAll('.vjs-text-track-cue')
+          cues.forEach((cue) => {
+            cue.style.backgroundColor = `rgba(0, 0, 0, ${bgOpacity})`
+          })
+        }
+
+        settingsMenu.remove()
+      }
+      menuContent.appendChild(applyBtn)
+
+      settingsMenu.appendChild(menuContent)
+      this.player.el().appendChild(settingsMenu)
+
+      // Close menu when clicking outside
+      settingsMenu.onclick = (e) => {
+        if (e.target === settingsMenu) {
+          settingsMenu.remove()
         }
       }
     },
@@ -866,6 +1086,47 @@ export default {
     setupQualitySelector() {
       this.player.hlsQualitySelector({
         displayCurrentQuality: true,
+      })
+
+      // Customize quality labels to Persian after a short delay
+      setTimeout(() => {
+        this.customizeQualityLabels()
+      }, 500)
+    },
+
+    customizeQualityLabels() {
+      const qualityButton = this.player
+        .el()
+        .querySelector('.vjs-quality-selector')
+      if (!qualityButton) return
+
+      // Override the menu rendering
+      const observer = new MutationObserver(() => {
+        const menuItems = this.player
+          .el()
+          .querySelectorAll('.vjs-quality-selector .vjs-menu-item')
+
+        menuItems.forEach((item) => {
+          const text = item.textContent.trim()
+          const qualityMap = {
+            '1080p': '۱۰۸۰p - Full HD',
+            '720p': '۷۲۰p - HD',
+            '480p': '۴۸۰p - SD',
+            '360p': '۳۶۰p',
+            '240p': '۲۴۰p',
+            auto: 'خودکار',
+            Auto: 'خودکار',
+          }
+
+          if (qualityMap[text]) {
+            item.textContent = qualityMap[text]
+          }
+        })
+      })
+
+      observer.observe(this.player.el(), {
+        childList: true,
+        subtree: true,
       })
     },
 
@@ -1378,12 +1639,13 @@ video#episode-player_html5_api {
   font-size: 14px;
   font-weight: 600;
   text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
-  z-index: 15;
+  z-index: 1;
   padding: 8px 12px;
   background: rgba(0, 0, 0, 0.7);
   border-radius: 6px;
   font-family: Arial, sans-serif;
   direction: ltr;
+  pointer-events: none;
 }
 
 /* Hide skip buttons on mobile */
@@ -1564,32 +1826,263 @@ video#episode-player_html5_api {
   font-weight: bold;
 }
 
+::v-deep .vjs-subtitle-menu-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.2);
+  margin: 10px 0;
+}
+
+::v-deep .vjs-subtitle-menu-item.settings {
+  background-color: rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+::v-deep .vjs-subtitle-menu-item.settings:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Subtitle Settings Overlay */
+::v-deep .vjs-subtitle-settings-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.85);
+  z-index: 1001;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+::v-deep .vjs-subtitle-settings-content {
+  background: rgba(30, 30, 30, 0.98);
+  border-radius: 12px;
+  padding: 25px;
+  min-width: 300px;
+  max-width: 450px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.7);
+}
+
+::v-deep .vjs-subtitle-settings-title {
+  color: white;
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  text-align: center;
+  border-bottom: 2px solid rgba(0, 168, 255, 0.5);
+  padding-bottom: 12px;
+}
+
+::v-deep .vjs-subtitle-setting-group {
+  margin-bottom: 20px;
+}
+
+::v-deep .vjs-subtitle-setting-group label {
+  color: white;
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+::v-deep .vjs-subtitle-setting-group select {
+  width: 100%;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+::v-deep .vjs-subtitle-setting-group select:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(0, 168, 255, 0.5);
+}
+
+::v-deep .vjs-subtitle-setting-group select:focus {
+  outline: none;
+  border-color: rgba(0, 168, 255, 0.8);
+  box-shadow: 0 0 0 2px rgba(0, 168, 255, 0.2);
+}
+
+::v-deep .vjs-subtitle-settings-apply {
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(135deg, #00a8ff 0%, #0080ff 100%);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 10px;
+}
+
+::v-deep .vjs-subtitle-settings-apply:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 168, 255, 0.4);
+}
+
+::v-deep .vjs-subtitle-settings-apply:active {
+  transform: translateY(0);
+}
+
+/* Playback Rate Button */
+::v-deep .vjs-playback-rate-button {
+  cursor: pointer;
+  color: white;
+  background-color: transparent;
+  border: none;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+::v-deep .vjs-playback-rate-button:hover {
+  color: #00a8ff;
+  transform: scale(1.1);
+}
+
+::v-deep .vjs-icon-playback-rate {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+
+/* Playback Rate Menu Overlay */
+::v-deep .vjs-playback-rate-menu-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+::v-deep .vjs-playback-rate-menu-content {
+  background: rgba(30, 30, 30, 0.95);
+  border-radius: 8px;
+  padding: 20px;
+  min-width: 220px;
+  max-width: 350px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+::v-deep .vjs-playback-rate-menu-title {
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 15px;
+  text-align: center;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+  padding-bottom: 10px;
+}
+
+::v-deep .vjs-playback-rate-menu-item {
+  color: white;
+  padding: 12px 15px;
+  cursor: pointer;
+  border-radius: 4px;
+  margin-bottom: 5px;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  text-align: center;
+  font-family: Arial, sans-serif;
+}
+
+::v-deep .vjs-playback-rate-menu-item:hover {
+  background-color: rgba(0, 168, 255, 0.3);
+  transform: translateX(-2px);
+}
+
+::v-deep .vjs-playback-rate-menu-item.active {
+  background-color: rgba(0, 168, 255, 0.5);
+  font-weight: bold;
+}
+
+/* Enhanced Quality Selector Styles */
+::v-deep .vjs-quality-selector .vjs-menu {
+  background: rgba(30, 30, 30, 0.95);
+  border-radius: 8px;
+  padding: 8px 0;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+::v-deep .vjs-quality-selector .vjs-menu-item {
+  color: white;
+  padding: 10px 20px;
+  font-size: 14px;
+  transition: background-color 0.2s ease;
+}
+
+::v-deep .vjs-quality-selector .vjs-menu-item:hover {
+  background-color: rgba(0, 168, 255, 0.3);
+}
+
+::v-deep .vjs-quality-selector .vjs-menu-item.vjs-selected {
+  background-color: rgba(0, 168, 255, 0.5);
+  font-weight: bold;
+}
+
+::v-deep .vjs-quality-selector .vjs-menu-item.vjs-selected::before {
+  content: '✓ ';
+  margin-right: 8px;
+}
+
 /* Mobile adjustments for new buttons */
 @media (max-width: 768px) {
   ::v-deep .vjs-next-button,
   ::v-deep .vjs-pip-button,
-  ::v-deep .vjs-subtitle-settings-button {
+  ::v-deep .vjs-subtitle-settings-button,
+  ::v-deep .vjs-playback-rate-button {
     padding: 0 8px;
   }
 
   ::v-deep .vjs-icon-next,
   ::v-deep .vjs-icon-pip,
-  ::v-deep .vjs-icon-subtitles {
+  ::v-deep .vjs-icon-subtitles,
+  ::v-deep .vjs-icon-playback-rate {
     font-size: 14px;
   }
 
-  ::v-deep .vjs-subtitle-menu-content {
+  ::v-deep .vjs-subtitle-menu-content,
+  ::v-deep .vjs-playback-rate-menu-content {
     min-width: 200px;
     padding: 15px;
   }
 
-  ::v-deep .vjs-subtitle-menu-title {
+  ::v-deep .vjs-subtitle-menu-title,
+  ::v-deep .vjs-playback-rate-menu-title {
     font-size: 16px;
   }
 
-  ::v-deep .vjs-subtitle-menu-item {
+  ::v-deep .vjs-subtitle-menu-item,
+  ::v-deep .vjs-playback-rate-menu-item {
     padding: 10px 12px;
     font-size: 14px;
+  }
+
+  ::v-deep .vjs-subtitle-settings-content {
+    min-width: 250px;
+    padding: 20px;
+  }
+
+  ::v-deep .vjs-subtitle-settings-title {
+    font-size: 18px;
   }
 }
 
@@ -1638,6 +2131,10 @@ video#episode-player_html5_api {
 
 ::v-deep .vjs-split-controls .vjs-pip-button {
   order: 25;
+}
+
+::v-deep .vjs-split-controls .vjs-playback-rate-button {
+  order: 21;
 }
 
 ::v-deep .vjs-split-controls .vjs-subtitle-settings-button {
