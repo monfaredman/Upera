@@ -308,6 +308,11 @@ export default {
         this.createSubtitleSettingsButton()
       }
 
+      // Create custom RTL volume control for Persian
+      if (this.$i18n.locale === 'fa') {
+        this.createCustomRTLVolumeControl()
+      }
+
       if (this.showAutoPlayToggle) {
         // this.createAutoPlayButton()
         this.createSkipButtons()
@@ -502,6 +507,170 @@ export default {
           menu.remove()
         }
       }
+    },
+
+    createCustomRTLVolumeControl() {
+      // Remove default volume panel
+      const volumePanel = this.player.controlBar.getChild('volumePanel')
+      if (volumePanel) {
+        this.player.controlBar.removeChild(volumePanel)
+      }
+
+      const Component = videojs.getComponent('Component')
+
+      class CustomRTLVolumeControl extends Component {
+        constructor(player, options) {
+          super(player, options)
+          this.addClass('vjs-custom-rtl-volume')
+          this.volumeLevel = player.volume()
+          this.isDragging = false
+          this.createVolumeElements()
+          this.attachEventHandlers()
+          this.updateVolumeDisplay()
+
+          // Listen to player volume changes
+          player.on('volumechange', () => {
+            this.volumeLevel = player.volume()
+            this.updateVolumeDisplay()
+            this.updateMuteIcon()
+          })
+        }
+
+        createVolumeElements() {
+          this.el().innerHTML = `
+            <button class="vjs-rtl-volume-button vjs-control vjs-button" type="button">
+              <i class="fa fa-volume-up"></i>
+            </button>
+            <div class="vjs-rtl-volume-control vjs-control">
+              <div class="vjs-rtl-volume-bar">
+                <div class="vjs-rtl-volume-level">
+                  <span class="vjs-rtl-volume-handle"></span>
+                </div>
+              </div>
+            </div>
+          `
+        }
+
+        attachEventHandlers() {
+          const button = this.el().querySelector('.vjs-rtl-volume-button')
+          const volumeControl = this.el().querySelector(
+            '.vjs-rtl-volume-control'
+          )
+
+          const volumeBar = this.el().querySelector('.vjs-rtl-volume-bar')
+
+          // Mute/unmute on button click
+          button.addEventListener('click', (e) => {
+            e.stopPropagation()
+            if (this.player().volume() > 0) {
+              this.lastVolume = this.player().volume()
+              this.player().volume(0)
+            } else {
+              this.player().volume(this.lastVolume || 0.5)
+            }
+          })
+
+          // Show/hide volume bar on hover
+          this.el().addEventListener('mouseenter', () => {
+            volumeControl.classList.add('vjs-slider-active')
+          })
+
+          this.el().addEventListener('mouseleave', () => {
+            if (!this.isDragging) {
+              volumeControl.classList.remove('vjs-slider-active')
+            }
+          })
+
+          // Volume bar interactions
+          volumeBar.addEventListener('mousedown', (e) => {
+            this.isDragging = true
+            this.updateVolumeFromEvent(e)
+
+            const onMouseMove = (e) => {
+              if (this.isDragging) {
+                this.updateVolumeFromEvent(e)
+              }
+            }
+
+            const onMouseUp = () => {
+              this.isDragging = false
+              volumeControl.classList.remove('vjs-slider-active')
+              document.removeEventListener('mousemove', onMouseMove)
+              document.removeEventListener('mouseup', onMouseUp)
+            }
+
+            document.addEventListener('mousemove', onMouseMove)
+            document.addEventListener('mouseup', onMouseUp)
+          })
+
+          // Click on volume bar
+          volumeBar.addEventListener('click', (e) => {
+            this.updateVolumeFromEvent(e)
+          })
+        }
+
+        updateVolumeFromEvent(e) {
+          const volumeBar = this.el().querySelector('.vjs-rtl-volume-bar')
+          const rect = volumeBar.getBoundingClientRect()
+
+          // Calculate from left to right (0% to 100%)
+          let position = (e.clientX - rect.left) / rect.width
+          position = Math.max(0, Math.min(1, position))
+
+          this.volumeLevel = position
+          this.player().volume(position)
+        }
+
+        updateVolumeDisplay() {
+          const volumeLevel = this.el().querySelector('.vjs-rtl-volume-level')
+          if (volumeLevel) {
+            const percentage = this.volumeLevel * 100
+            volumeLevel.style.width = `${percentage}%`
+          }
+        }
+
+        updateMuteIcon() {
+          const icon = this.el().querySelector('.vjs-rtl-volume-button i')
+          if (icon) {
+            const volume = this.player().volume()
+            if (volume === 0) {
+              icon.className = 'fa fa-volume-off'
+            } else if (volume < 0.5) {
+              icon.className = 'fa fa-volume-down'
+            } else {
+              icon.className = 'fa fa-volume-up'
+            }
+          }
+        }
+
+        createEl() {
+          return videojs.dom.createEl('div', {
+            className:
+              'vjs-custom-rtl-volume vjs-volume-panel vjs-control vjs-volume-panel-horizontal',
+          })
+        }
+      }
+
+      videojs.registerComponent(
+        'CustomRTLVolumeControl',
+        CustomRTLVolumeControl
+      )
+
+      // Add to control bar after next10 button (or after play button if no next10)
+      const next10Button = this.player.controlBar.getChild('Next10Button')
+      const playToggle = this.player.controlBar.getChild('playToggle')
+      let insertIndex
+
+      if (next10Button) {
+        insertIndex =
+          this.player.controlBar.children().indexOf(next10Button) + 1
+      } else if (playToggle) {
+        insertIndex = this.player.controlBar.children().indexOf(playToggle) + 1
+      } else {
+        insertIndex = 1
+      }
+
+      this.player.controlBar.addChild('CustomRTLVolumeControl', {}, insertIndex)
     },
 
     createPlaylistButton() {
@@ -1459,11 +1628,11 @@ video#episode-player_html5_api {
 
 /* RIGHT SIDE: Other controls */
 ::v-deep .vjs-split-controls .vjs-volume-panel {
-  order: 22;
+  order: 13;
 }
 
 ::v-deep .vjs-split-controls .vjs-next-button {
-  order: 21;
+  order: 22;
   margin-left: auto;
 }
 
@@ -1488,7 +1657,10 @@ video#episode-player_html5_api {
 }
 
 /* Keep all controls aligned properly */
-::v-deep .vjs-split-controls .vjs-control-bar > *:not(.vjs-progress-control) {
+::v-deep
+  .vjs-split-controls
+  .vjs-control-bar
+  > *:not(.vjs-progress-control, .vjs-custom-rtl-volume) {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1510,5 +1682,127 @@ video#episode-player_html5_api {
 
 ::v-deep .vjs-volume-control.vjs-control.vjs-volume-horizontal {
   height: 5.5em !important;
+}
+
+/* Custom RTL Volume Control */
+::v-deep .vjs-custom-rtl-volume {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
+}
+
+::v-deep .vjs-rtl-volume-button {
+  background: transparent;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 1.5em;
+  padding: 0;
+  width: 2em;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.3s;
+}
+
+::v-deep .vjs-rtl-volume-button:hover {
+  color: #00a8ff;
+}
+
+::v-deep .vjs-rtl-volume-control {
+  width: 0;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  opacity: 0;
+  transition: width 0.3s ease, opacity 0.3s ease;
+}
+
+::v-deep .vjs-custom-rtl-volume:hover .vjs-rtl-volume-control,
+::v-deep .vjs-rtl-volume-control.vjs-slider-active {
+  width: 9em;
+  opacity: 1;
+}
+
+::v-deep .vjs-rtl-volume-bar {
+  width: 100%;
+  height: 0.3em;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 0.15em;
+  position: relative;
+  cursor: pointer;
+  margin: 0 0.5em;
+}
+
+::v-deep .vjs-rtl-volume-level {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, #00a8ff 0%, #00d4ff 100%);
+  border-radius: 0.15em;
+  position: absolute;
+  left: 0;
+  top: 0;
+  transition: width 0.1s ease;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+::v-deep .vjs-rtl-volume-handle {
+  width: 0.9em;
+  height: 0.9em;
+  background: white;
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  position: relative;
+  right: -0.45em;
+  cursor: grab;
+  transition: transform 0.1s ease;
+}
+
+::v-deep .vjs-rtl-volume-handle:active {
+  cursor: grabbing;
+  transform: scale(1.2);
+}
+::v-deep
+  .vjs-custom-rtl-volume.vjs-volume-panel.vjs-control.vjs-volume-panel-horizontal:active {
+  width: 4em !important;
+}
+
+::v-deep .vjs-rtl-volume-bar:hover .vjs-rtl-volume-handle {
+  transform: scale(1.1);
+}
+
+/* Position for custom RTL volume in control bar */
+::v-deep .vjs-split-controls .vjs-custom-rtl-volume {
+  order: 22;
+}
+
+/* Mobile - hide slider, only show mute button */
+@media (max-width: 768px) {
+  ::v-deep .vjs-custom-rtl-volume:hover .vjs-rtl-volume-control,
+  ::v-deep .vjs-rtl-volume-control.vjs-slider-active {
+    width: 0;
+    opacity: 0;
+  }
+}
+
+::v-deep
+  .vjs-custom-rtl-volume
+  .vjs-volume-panel
+  .vjs-control
+  .vjs-volume-panel-horizontal:hover {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+}
+
+::v-deep .vjs-split-controls .vjs-control-bar > .vjs-custom-rtl-volume {
+  display: flex;
+  align-items: center;
+  justify-content: start;
 }
 </style>
