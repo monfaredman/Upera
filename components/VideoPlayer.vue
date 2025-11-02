@@ -16,8 +16,13 @@
       class="video-js vjs-default-skin vjs-theme-fantasy vjs-big-play-centered vjs-16-9"
       controls
       preload="auto"
+      playsinline
+      webkit-playsinline
+      x5-playsinline
       style="width: 100%; height: 100%; border-radius: 0.375rem"
       :poster="posterUrl"
+    />
+
     />
 
     <!-- Skip Credits Button -->
@@ -30,8 +35,14 @@
       <span class="skip-icon"><i class="fa fa-forward" /></span>
     </button>
 
-    <div v-if="title && stream" class="video-title-overlay">
+    <!-- Title Display (Bottom Left) -->
+    <div v-if="title && stream" class="video-title-bottom">
       {{ adActive ? 'نمایش تبلیغات' : title }}
+    </div>
+
+    <!-- Timer Display (Bottom Right) -->
+    <div v-if="stream" class="video-timer-bottom">
+      {{ currentTimeFormatted }} / {{ durationFormatted }}
     </div>
 
     <button id="vast-cta-btn">اطلاعات بیشتر</button>
@@ -120,6 +131,9 @@ export default {
       skipButtonText: 'رد کردن تیتراژ',
       currentCreditType: null,
       creditCheckInterval: null,
+      isMobile: false,
+      currentTimeFormatted: '00:00',
+      durationFormatted: '00:00',
     }
   },
 
@@ -149,6 +163,9 @@ export default {
   },
 
   mounted() {
+    this.isMobile = window.innerWidth <= 768
+    window.addEventListener('resize', this.handleResize)
+
     if (this.stream) {
       this.initPlayer()
     }
@@ -163,10 +180,15 @@ export default {
       clearInterval(this.creditCheckInterval)
     }
     window.removeEventListener('keydown', this.handleKeydown)
+    window.removeEventListener('resize', this.handleResize)
   },
 
   methods: {
     ...mapActions(['SET_AUTOPLAY']),
+
+    handleResize() {
+      this.isMobile = window.innerWidth <= 768
+    },
 
     initPlayer() {
       const currentLang = this.$i18n.locale
@@ -177,13 +199,25 @@ export default {
       }
 
       this.player = videojs(this.playerid, {
-        autoplay: this.playerAutoPlay,
+        autoplay: false, // Disabled autoplay as requested
         controls: true,
+        controlBar: {
+          children: [
+            'progressControl',
+            'playToggle',
+            'volumePanel',
+            'fullscreenToggle',
+            'nextButton',
+            // 'autoPlayButton',
+            'pipButton',
+          ],
+        },
         fluid: true,
         poster: this.posterUrl,
         language: currentLang,
         sources: [{ src: this.stream, type: 'application/x-mpegURL' }],
       })
+      this.player.addClass('vjs-split-controls')
 
       const videoEl = this.$refs[this.playerid]
       if (videoEl) {
@@ -265,8 +299,19 @@ export default {
         this.createPlaylistButton()
       }
 
+      // Add next button
+      this.createNextButton()
+
+      // Add picture-in-picture button
+      this.createPipButton()
+
+      // Add subtitle settings button only if subtitles are available
+      if (this.tracks && this.tracks.length > 0) {
+        this.createSubtitleSettingsButton()
+      }
+
       if (this.showAutoPlayToggle) {
-        this.createAutoPlayButton()
+        // this.createAutoPlayButton()
         this.createSkipButtons()
       }
     },
@@ -278,9 +323,10 @@ export default {
         constructor(player, options) {
           super(player, options)
           this.addClass('vjs-next-button')
-          this.controlText('Next')
+          this.controlText('قسمت بعد')
           const icon = document.createElement('span')
           icon.className = 'vjs-icon-next'
+          icon.innerHTML = '<i class="fa fa-step-forward"></i>'
           this.el().appendChild(icon)
         }
         handleClick() {
@@ -290,14 +336,174 @@ export default {
 
       videojs.registerComponent('NextButton', NextButton)
 
-      const playToggle = this.player.controlBar.getChild('PlayToggle')
-      let insertIndex = this.player.controlBar.children().indexOf(playToggle)
+      // Insert before fullscreen toggle
+      const fullscreenToggle =
+        this.player.controlBar.getChild('fullscreenToggle')
+      let insertIndex = this.player.controlBar
+        .children()
+        .indexOf(fullscreenToggle)
       insertIndex =
         insertIndex === -1
-          ? this.player.controlBar.children().length
-          : insertIndex + 1
+          ? this.player.controlBar.children().length - 1
+          : insertIndex
 
       this.player.controlBar.addChild('NextButton', {}, insertIndex)
+    },
+
+    createPipButton() {
+      const Button = videojs.getComponent('Button')
+
+      class PipButton extends Button {
+        constructor(player, options) {
+          super(player, options)
+          this.addClass('vjs-pip-button')
+          this.controlText('تصویر در تصویر')
+          const icon = document.createElement('span')
+          icon.className = 'vjs-icon-pip'
+          icon.innerHTML = '<i class="fa fa-clone"></i>'
+          this.el().appendChild(icon)
+        }
+        handleClick() {
+          const videoElement = this.player().el().querySelector('video')
+          if (videoElement) {
+            if (document.pictureInPictureElement) {
+              document.exitPictureInPicture()
+            } else if (videoElement.requestPictureInPicture) {
+              videoElement.requestPictureInPicture().catch((error) => {
+                console.error('Picture-in-Picture error:', error)
+              })
+            }
+          }
+        }
+      }
+
+      videojs.registerComponent('PipButton', PipButton)
+
+      // Insert before fullscreen toggle
+      const fullscreenToggle =
+        this.player.controlBar.getChild('fullscreenToggle')
+      let insertIndex = this.player.controlBar
+        .children()
+        .indexOf(fullscreenToggle)
+      insertIndex =
+        insertIndex === -1
+          ? this.player.controlBar.children().length - 1
+          : insertIndex
+
+      this.player.controlBar.addChild('PipButton', {}, insertIndex)
+    },
+
+    createSubtitleSettingsButton() {
+      const Button = videojs.getComponent('Button')
+      const _this = this
+
+      class SubtitleSettingsButton extends Button {
+        constructor(player, options) {
+          super(player, options)
+          this.addClass('vjs-subtitle-settings-button')
+          this.controlText('تنظیمات زیرنویس')
+          const icon = document.createElement('span')
+          icon.className = 'vjs-icon-subtitles'
+          icon.innerHTML = '<i class="fa fa-closed-captioning"></i>'
+          this.el().appendChild(icon)
+        }
+        handleClick() {
+          _this.toggleSubtitleMenu()
+        }
+      }
+
+      videojs.registerComponent(
+        'SubtitleSettingsButton',
+        SubtitleSettingsButton
+      )
+
+      // Insert before fullscreen toggle
+      const fullscreenToggle =
+        this.player.controlBar.getChild('fullscreenToggle')
+      let insertIndex = this.player.controlBar
+        .children()
+        .indexOf(fullscreenToggle)
+      insertIndex =
+        insertIndex === -1
+          ? this.player.controlBar.children().length - 1
+          : insertIndex
+
+      this.player.controlBar.addChild('SubtitleSettingsButton', {}, insertIndex)
+    },
+
+    toggleSubtitleMenu() {
+      // Get all text tracks
+      const textTracks = this.player.textTracks()
+      const trackList = []
+
+      for (let i = 0; i < textTracks.length; i++) {
+        const track = textTracks[i]
+        if (track.kind === 'subtitles' || track.kind === 'captions') {
+          trackList.push({
+            label: track.label || `Track ${i + 1}`,
+            language: track.language,
+            mode: track.mode,
+            index: i,
+          })
+        }
+      }
+
+      // Create subtitle menu overlay
+      let menu = document.querySelector('.vjs-subtitle-menu-overlay')
+      if (menu) {
+        menu.remove()
+        return
+      }
+
+      menu = document.createElement('div')
+      menu.className = 'vjs-subtitle-menu-overlay'
+
+      const menuContent = document.createElement('div')
+      menuContent.className = 'vjs-subtitle-menu-content'
+
+      const title = document.createElement('div')
+      title.className = 'vjs-subtitle-menu-title'
+      title.textContent = 'انتخاب زیرنویس'
+      menuContent.appendChild(title)
+
+      // Add "Off" option
+      const offOption = document.createElement('div')
+      offOption.className = 'vjs-subtitle-menu-item'
+      offOption.textContent = 'خاموش'
+      offOption.onclick = () => {
+        for (let i = 0; i < textTracks.length; i++) {
+          textTracks[i].mode = 'disabled'
+        }
+        menu.remove()
+      }
+      menuContent.appendChild(offOption)
+
+      // Add track options
+      trackList.forEach((track) => {
+        const option = document.createElement('div')
+        option.className = 'vjs-subtitle-menu-item'
+        if (track.mode === 'showing') {
+          option.classList.add('active')
+        }
+        option.textContent = track.label
+        option.onclick = () => {
+          for (let i = 0; i < textTracks.length; i++) {
+            textTracks[i].mode = i === track.index ? 'showing' : 'disabled'
+          }
+          menu.remove()
+        }
+        menuContent.appendChild(option)
+      })
+
+      menu.appendChild(menuContent)
+      this.player.el().appendChild(menu)
+
+      // Close menu when clicking outside
+      menu.onclick = (e) => {
+        if (e.target === menu) {
+          menu.remove()
+        }
+      }
     },
 
     createPlaylistButton() {
@@ -329,49 +535,49 @@ export default {
       })
     },
 
-    createAutoPlayButton() {
-      const Button = videojs.getComponent('Button')
-      const _this = this
+    // createAutoPlayButton() {
+    //   const Button = videojs.getComponent('Button')
+    //   const _this = this
 
-      class AutoPlayButton extends Button {
-        constructor(player, options) {
-          super(player, options)
-          this.addClass('vjs-autoplay-toggle')
-          this.controlText('Toggle AutoPlay')
-          this.icon = document.createElement('img')
-          this.icon.style.width = '28px'
-          this.icon.style.height = '28px'
-          this.el().appendChild(this.icon)
-          this.updateIcon()
-        }
+    //   class AutoPlayButton extends Button {
+    //     constructor(player, options) {
+    //       super(player, options)
+    //       this.addClass('vjs-autoplay-toggle')
+    //       this.controlText('Toggle AutoPlay')
+    //       this.icon = document.createElement('img')
+    //       this.icon.style.width = '28px'
+    //       this.icon.style.height = '28px'
+    //       this.el().appendChild(this.icon)
+    //       this.updateIcon()
+    //     }
 
-        handleClick() {
-          const newState = !_this.autoPlay
-          _this.SET_AUTOPLAY(newState)
-          this.updateIcon()
-        }
+    //     handleClick() {
+    //       const newState = !_this.autoPlay
+    //       _this.SET_AUTOPLAY(newState)
+    //       this.updateIcon()
+    //     }
 
-        updateIcon() {
-          this.icon.src = _this.autoPlay
-            ? '/images/autoplay.svg'
-            : '/images/no-autoplay.svg'
-        }
-      }
+    //     updateIcon() {
+    //       this.icon.src = _this.autoPlay
+    //         ? '/images/autoplay.svg'
+    //         : '/images/no-autoplay.svg'
+    //     }
+    //   }
 
-      videojs.registerComponent('AutoPlayButton', AutoPlayButton)
-      this.player.controlBar.addChild(
-        'AutoPlayButton',
-        {},
-        this.player.controlBar.children().length - 1
-      )
-    },
+    //   videojs.registerComponent('AutoPlayButton', AutoPlayButton)
+    //   this.player.controlBar.addChild(
+    //     'AutoPlayButton',
+    //     {},
+    //     this.player.controlBar.children().length - 1
+    //   )
+    // },
 
     createSkipButtons() {
-      this.createNextButton()
-      this.createSkip10Buttons()
-    },
+      // Don't add skip buttons on mobile
+      if (this.isMobile) {
+        return
+      }
 
-    createSkip10Buttons() {
       const Button = videojs.getComponent('Button')
 
       class Prev10Button extends Button {
@@ -429,9 +635,16 @@ export default {
       })
 
       this.player.on('timeupdate', () => {
+        const currentTime = this.player.currentTime()
+        const duration = this.player.duration()
+
+        // Update timer display
+        this.currentTimeFormatted = this.formatTime(currentTime)
+        this.durationFormatted = this.formatTime(duration)
+
         this.$emit('timeupdate', {
-          currentTime: this.player.currentTime(),
-          duration: this.player.duration(),
+          currentTime,
+          duration,
           player: this.player,
         })
       })
@@ -441,6 +654,23 @@ export default {
           this.$emit('ended')
         }
       })
+    },
+
+    formatTime(seconds) {
+      if (!seconds || isNaN(seconds)) return '00:00'
+      const hours = Math.floor(seconds / 3600)
+      const minutes = Math.floor((seconds % 3600) / 60)
+      const secs = Math.floor(seconds % 60)
+
+      if (hours > 0) {
+        return `${hours.toString().padStart(2, '0')}:${minutes
+          .toString()
+          .padStart(2, '0')}:${secs.toString().padStart(2, '0')}`
+      } else {
+        return `${minutes.toString().padStart(2, '0')}:${secs
+          .toString()
+          .padStart(2, '0')}`
+      }
     },
 
     handlePlayEvent() {
@@ -522,19 +752,19 @@ export default {
       const Component = videojs.getComponent('Component')
 
       class RuntimeDisplay extends Component {
-        constructor(player, options) {
-          super(player, options)
-          this.addClass('vjs-runtime-display')
-          this.updateText()
+        // constructor(player, options) {
+        //   super(player, options)
+        //   this.addClass('vjs-runtime-display')
+        //   this.updateText()
 
-          player.on('timeupdate', () => {
-            this.updateText()
-          })
+        //   player.on('timeupdate', () => {
+        //     this.updateText()
+        //   })
 
-          player.on('loadedmetadata', () => {
-            this.updateText()
-          })
-        }
+        //   player.on('loadedmetadata', () => {
+        //     this.updateText()
+        //   })
+        // }
 
         updateText() {
           const currentTime = this.player().currentTime()
@@ -563,12 +793,12 @@ export default {
           this.el().innerHTML = `${currentTimeFormatted} / ${durationFormatted}`
         }
 
-        createEl() {
-          return videojs.dom.createEl('div', {
-            className: 'vjs-runtime-display vjs-control',
-            innerHTML: '00:00 / 00:00',
-          })
-        }
+        // createEl() {
+        //   return videojs.dom.createEl('div', {
+        //     className: 'vjs-runtime-display vjs-control',
+        //     innerHTML: '00:00 / 00:00',
+        //   })
+        // }
       }
 
       videojs.registerComponent('RuntimeDisplay', RuntimeDisplay)
@@ -844,7 +1074,7 @@ export default {
   margin-right: 10px !important;
 }
 
-::v-deep .vjs-runtime-display {
+/* ::v-deep .vjs-runtime-display {
   color: white;
   font-size: 13px;
   font-weight: bold;
@@ -857,23 +1087,23 @@ export default {
   min-width: 118px;
   text-align: center;
   justify-content: center;
-}
+} */
 
-::v-deep .vjs-rtl .vjs-runtime-display {
+/* ::v-deep .vjs-rtl .vjs-runtime-display {
   direction: rtl !important;
-}
+} */
 
-@media (max-width: 480px) {
+/* @media (max-width: 480px) {
   ::v-deep .vjs-runtime-display {
     font-size: 11px;
     min-width: 80px;
     padding: 0 5px;
   }
-}
+} */
 
 .skip-credits-btn {
   position: absolute;
-  bottom: 80px;
+  bottom: 108px;
   left: 20px;
   background: rgba(0, 0, 0, 0.8) !important;
   color: white;
@@ -951,5 +1181,332 @@ export default {
 
 video#episode-player_html5_api {
   outline: none !important;
+}
+
+/* Title Display at Bottom Left */
+.video-title-bottom {
+  position: absolute;
+  bottom: 70px;
+  left: 20px;
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
+  z-index: 15;
+  padding: 8px 12px;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 6px;
+  max-width: 300px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Timer Display at Bottom Right */
+.video-timer-bottom {
+  position: absolute;
+  bottom: 70px;
+  right: 20px;
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
+  z-index: 15;
+  padding: 8px 12px;
+  background: rgba(0, 0, 0, 0.7);
+  border-radius: 6px;
+  font-family: Arial, sans-serif;
+  direction: ltr;
+}
+
+/* Hide skip buttons on mobile */
+@media (max-width: 768px) {
+  ::v-deep .vjs-prev10-button,
+  ::v-deep .vjs-next10-button {
+    display: none !important;
+  }
+
+  /* Simplify volume control on mobile - only mute/unmute */
+  ::v-deep .vjs-volume-panel .vjs-volume-control {
+    display: none !important;
+  }
+
+  ::v-deep .vjs-volume-panel {
+    width: auto !important;
+  }
+
+  .video-title-bottom {
+    bottom: 60px;
+    left: 10px;
+    font-size: 14px;
+    max-width: 200px;
+    padding: 6px 10px;
+  }
+
+  .video-timer-bottom {
+    bottom: 60px;
+    right: 10px;
+    font-size: 12px;
+    padding: 6px 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .video-title-bottom {
+    font-size: 12px;
+    max-width: 150px;
+    padding: 4px 8px;
+  }
+
+  .video-timer-bottom {
+    font-size: 11px;
+    padding: 4px 8px;
+  }
+}
+
+/* Hide autoplay toggle as requested */
+::v-deep .vjs-autoplay-button {
+  display: none !important;
+}
+
+/* Next Button Styles */
+::v-deep .vjs-next-button {
+  cursor: pointer;
+  color: white;
+  background-color: transparent;
+  border: none;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+::v-deep .vjs-next-button:hover {
+  color: #00a8ff;
+  transform: scale(1.1);
+}
+
+::v-deep .vjs-icon-next {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+/* Picture-in-Picture Button Styles */
+::v-deep .vjs-pip-button {
+  cursor: pointer;
+  color: white;
+  background-color: transparent;
+  border: none;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+::v-deep .vjs-pip-button:hover {
+  color: #00a8ff;
+  transform: scale(1.1);
+}
+
+::v-deep .vjs-icon-pip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+
+/* Subtitle Settings Button Styles */
+::v-deep .vjs-subtitle-settings-button {
+  cursor: pointer;
+  color: white;
+  background-color: transparent;
+  border: none;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+::v-deep .vjs-subtitle-settings-button:hover {
+  color: #00a8ff;
+  transform: scale(1.1);
+}
+
+::v-deep .vjs-icon-subtitles {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+
+/* Subtitle Menu Overlay */
+::v-deep .vjs-subtitle-menu-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+::v-deep .vjs-subtitle-menu-content {
+  background: rgba(30, 30, 30, 0.95);
+  border-radius: 8px;
+  padding: 20px;
+  min-width: 250px;
+  max-width: 400px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+::v-deep .vjs-subtitle-menu-title {
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 15px;
+  text-align: center;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+  padding-bottom: 10px;
+}
+
+::v-deep .vjs-subtitle-menu-item {
+  color: white;
+  padding: 12px 15px;
+  cursor: pointer;
+  border-radius: 4px;
+  margin-bottom: 5px;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  text-align: center;
+}
+
+::v-deep .vjs-subtitle-menu-item:hover {
+  background-color: rgba(0, 168, 255, 0.3);
+  transform: translateX(-2px);
+}
+
+::v-deep .vjs-subtitle-menu-item.active {
+  background-color: rgba(0, 168, 255, 0.5);
+  font-weight: bold;
+}
+
+/* Mobile adjustments for new buttons */
+@media (max-width: 768px) {
+  ::v-deep .vjs-next-button,
+  ::v-deep .vjs-pip-button,
+  ::v-deep .vjs-subtitle-settings-button {
+    padding: 0 8px;
+  }
+
+  ::v-deep .vjs-icon-next,
+  ::v-deep .vjs-icon-pip,
+  ::v-deep .vjs-icon-subtitles {
+    font-size: 14px;
+  }
+
+  ::v-deep .vjs-subtitle-menu-content {
+    min-width: 200px;
+    padding: 15px;
+  }
+
+  ::v-deep .vjs-subtitle-menu-title {
+    font-size: 16px;
+  }
+
+  ::v-deep .vjs-subtitle-menu-item {
+    padding: 10px 12px;
+    font-size: 14px;
+  }
+}
+
+/* Applies only to our custom layout */
+::v-deep .vjs-split-controls .vjs-control-bar {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  padding: 0;
+  gap: 0.5rem;
+  background: rgba(0, 0, 0, 0.4);
+  padding-bottom: 4px;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+/* Move the progress bar to its own row */
+::v-deep .vjs-split-controls .vjs-progress-control {
+  order: 0;
+  width: 100%;
+  margin-bottom: -24px;
+}
+
+/* LEFT SIDE: Playback controls (prev10, play, next10) */
+::v-deep .vjs-split-controls .vjs-prev10-button {
+  order: 10;
+}
+
+::v-deep .vjs-split-controls .vjs-play-control {
+  order: 11;
+}
+
+::v-deep .vjs-split-controls .vjs-next10-button {
+  order: 12;
+}
+
+/* RIGHT SIDE: Other controls */
+::v-deep .vjs-split-controls .vjs-volume-panel {
+  order: 22;
+}
+
+::v-deep .vjs-split-controls .vjs-next-button {
+  order: 21;
+  margin-left: auto;
+}
+
+::v-deep .vjs-split-controls .vjs-pip-button {
+  order: 25;
+}
+
+::v-deep .vjs-split-controls .vjs-subtitle-settings-button {
+  order: 24;
+}
+
+::v-deep .vjs-split-controls .vjs-playlist-button {
+  order: 23;
+}
+
+::v-deep .vjs-split-controls .vjs-fullscreen-control {
+  order: 27;
+}
+
+::v-deep .vjs-split-controls .vjs-quality-selector {
+  order: 26;
+}
+
+/* Keep all controls aligned properly */
+::v-deep .vjs-split-controls .vjs-control-bar > *:not(.vjs-progress-control) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Make sure progress bar spans full width on mobile too */
+::v-deep .vjs-split-controls .vjs-progress-holder {
+  width: 100% !important;
+}
+
+::v-deep .vjs-split-controls .vjs-progress-holder {
+  height: 6px !important;
+}
+
+::v-deep .video-js .vjs-control-bar {
+  bottom: 32px !important;
+  padding: 0 16px;
 }
 </style>

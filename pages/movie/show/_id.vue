@@ -1,12 +1,16 @@
 <template>
   <div class="video-container">
     <div class="hamshahri">
+      <!-- لوگوی سایت -->
+      <div class="site-logo">
+        <img src="@/assets/images/logo-mobile.svg" alt="Logo" />
+      </div>
+
       <!-- دکمه بازگشت -->
-      <a class="srmjs" @click="goBack">
-        <div id="flowplayer-back-button">
-          <div class="icon-back" />
-        </div>
-      </a>
+      <button class="back-button" @click="goBack">
+        <i class="fa fa-chevron-left" style="color: white" />
+        <p class="back-text">بازگشت</p>
+      </button>
 
       <!-- لودینگ -->
       <div v-if="loading" class="video-loading-spinner" />
@@ -400,6 +404,62 @@ export default {
   cursor: pointer;
 }
 
+/* استایل بخش بالایی */
+.hamshahri {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+/* لوگوی سایت */
+.site-logo {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 11;
+}
+
+.site-logo img {
+  height: 40px;
+  width: auto;
+}
+
+/* دکمه بازگشت */
+.back-button {
+  width: 131px;
+  height: 52px;
+  border-radius: 8px;
+  gap: 8px;
+  padding: 12px 28px;
+  background: #525252;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s;
+}
+
+.back-button:hover {
+  background: #6a6a6a;
+}
+
+.back-text {
+  font-weight: 600;
+  font-size: 16px;
+  text-align: right;
+  color: #f5f5f5;
+  margin: 0 0 0 8px;
+  height: 3rem;
+  line-height: 3.1rem;
+}
+
 /* دکمه‌های روی ویدیو */
 .video-overlay {
   position: absolute;
@@ -410,7 +470,7 @@ export default {
   display: flex;
   justify-content: space-between;
 }
-.back-button,
+
 .report-button {
   background: rgba(0, 0, 0, 0.6);
   border: none;
@@ -419,7 +479,7 @@ export default {
   cursor: pointer;
   color: #fff;
 }
-.back-button:hover,
+
 .report-button:hover {
   background: rgba(0, 0, 0, 0.8);
 }
