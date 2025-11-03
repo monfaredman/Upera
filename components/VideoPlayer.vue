@@ -48,6 +48,167 @@
 
     <!-- VAST CTA Button -->
     <button id="vast-cta-btn">اطلاعات بیشتر</button>
+
+    <!-- Settings Drawer -->
+    <div
+      v-if="showSettingsDrawer"
+      class="settings-drawer-overlay"
+      @click="closeSettingsDrawer"
+    >
+      <div
+        class="settings-drawer"
+        :class="{ 'mobile-drawer': isMobile }"
+        @click.stop
+      >
+        <!-- Main Menu -->
+        <div v-if="settingsDrawerView === 'main'" class="drawer-content">
+          <div class="drawer-header">
+            <h3>تنظیمات</h3>
+          </div>
+          <div class="drawer-body">
+            <div class="drawer-item" @click="openSpeedSettings">
+              <div class="drawer-item-icon">
+                <i class="fa fa-clock"></i>
+              </div>
+              <div class="drawer-item-info">
+                <div class="drawer-item-title">سرعت پخش</div>
+                <div class="drawer-item-value">{{ getSpeedLabel() }}</div>
+              </div>
+              <div class="drawer-item-arrow">
+                <i class="fa fa-chevron-left"></i>
+              </div>
+            </div>
+
+            <div
+              v-if="tracks && tracks.length > 0"
+              class="drawer-item"
+              @click="openSubtitleSettings"
+            >
+              <div class="drawer-item-icon">
+                <i class="fa fa-closed-captioning"></i>
+              </div>
+              <div class="drawer-item-info">
+                <div class="drawer-item-title">زیرنویس</div>
+                <div class="drawer-item-value">{{ getSubtitleLabel() }}</div>
+              </div>
+              <div class="drawer-item-arrow">
+                <i class="fa fa-chevron-left"></i>
+              </div>
+            </div>
+
+            <div class="drawer-item" @click="openQualitySettings">
+              <div class="drawer-item-icon">
+                <i class="fa fa-video-camera"></i>
+              </div>
+              <div class="drawer-item-info">
+                <div class="drawer-item-title">کیفیت</div>
+                <div class="drawer-item-value">{{ getQualityLabel() }}</div>
+              </div>
+              <div class="drawer-item-arrow">
+                <i class="fa fa-chevron-left"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Speed Settings -->
+        <div v-if="settingsDrawerView === 'speed'" class="drawer-content">
+          <div class="drawer-header with-back">
+            <button class="back-button" @click="backToMain">
+              <i class="fa fa-chevron-right"></i>
+            </button>
+            <h3>سرعت پخش</h3>
+          </div>
+          <div class="drawer-divider"></div>
+          <div class="drawer-body">
+            <div
+              v-for="rate in PLAYBACK_RATES"
+              :key="rate.value"
+              class="drawer-option"
+              :class="{ active: isSpeedActive(rate.value) }"
+              @click="selectSpeed(rate.value)"
+            >
+              <div class="drawer-option-radio">
+                <div
+                  v-if="isSpeedActive(rate.value)"
+                  class="radio-checked"
+                ></div>
+              </div>
+              <div class="drawer-option-label">{{ rate.label }}</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Subtitle Settings -->
+        <div v-if="settingsDrawerView === 'subtitle'" class="drawer-content">
+          <div class="drawer-header with-back">
+            <button class="back-button" @click="backToMain">
+              <i class="fa fa-chevron-right"></i>
+            </button>
+            <h3>زیرنویس</h3>
+          </div>
+          <div class="drawer-divider"></div>
+          <div class="drawer-body">
+            <div
+              class="drawer-option"
+              :class="{ active: currentSubtitle === null }"
+              @click="selectSubtitle(null)"
+            >
+              <div class="drawer-option-radio">
+                <div
+                  v-if="currentSubtitle === null"
+                  class="radio-checked"
+                ></div>
+              </div>
+              <div class="drawer-option-label">خاموش</div>
+            </div>
+            <div
+              v-for="(track, index) in getSubtitleTracks()"
+              :key="index"
+              class="drawer-option"
+              :class="{ active: currentSubtitle === index }"
+              @click="selectSubtitle(index)"
+            >
+              <div class="drawer-option-radio">
+                <div
+                  v-if="currentSubtitle === index"
+                  class="radio-checked"
+                ></div>
+              </div>
+              <div class="drawer-option-label">{{ track.label }}</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quality Settings -->
+        <div v-if="settingsDrawerView === 'quality'" class="drawer-content">
+          <div class="drawer-header with-back">
+            <button class="back-button" @click="backToMain">
+              <i class="fa fa-chevron-right"></i>
+            </button>
+            <h3>کیفیت</h3>
+          </div>
+          <div class="drawer-divider"></div>
+          <div class="drawer-body">
+            <div
+              v-for="quality in getAvailableQualities()"
+              :key="quality.value"
+              class="drawer-option"
+              :class="{ active: isQualityActive(quality.value) }"
+              @click="selectQuality(quality.value)"
+            >
+              <div class="drawer-option-radio">
+                <div
+                  v-if="isQualityActive(quality.value)"
+                  class="radio-checked"
+                ></div>
+              </div>
+              <div class="drawer-option-label">{{ quality.label }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -174,6 +335,11 @@ export default {
       isMobile: false,
       currentTimeFormatted: '00:00',
       durationFormatted: '00:00',
+      showSettingsDrawer: false,
+      settingsDrawerView: 'main', // 'main', 'speed', 'subtitle', 'quality'
+      currentPlaybackRate: 1,
+      currentSubtitle: null,
+      currentQuality: 'auto',
     }
   },
 
@@ -188,6 +354,10 @@ export default {
 
     isRtl() {
       return this.$i18n.locale === 'fa'
+    },
+
+    PLAYBACK_RATES() {
+      return PLAYBACK_RATES
     },
   },
 
@@ -370,11 +540,7 @@ export default {
 
       this.createNextButton()
       this.createPipButton()
-      this.createPlaybackRateButton()
-
-      if (this.tracks?.length > 0) {
-        this.createSubtitleSettingsButton()
-      }
+      this.createSettingsButton()
 
       if (this.isRtl) {
         this.createCustomRTLVolumeControl()
@@ -466,45 +632,17 @@ export default {
       )
     },
 
-    createPlaybackRateButton() {
-      const Button = videojs.getComponent('Button')
-      const self = this
-
-      class PlaybackRateButton extends Button {
-        constructor(player, options) {
-          super(player, options)
-          this.addClass('vjs-playback-rate-button')
-          this.controlText('سرعت پخش')
-          const icon = document.createElement('span')
-          icon.className = 'vjs-icon-playback-rate'
-          icon.innerHTML = '<i class="fa fa-clock"></i>'
-          this.el().appendChild(icon)
-        }
-
-        handleClick() {
-          self.togglePlaybackRateMenu()
-        }
-      }
-
-      videojs.registerComponent('PlaybackRateButton', PlaybackRateButton)
-      this.player.controlBar.addChild(
-        'PlaybackRateButton',
-        {},
-        this.getFullscreenInsertIndex()
-      )
-    },
-
-    createSubtitleSettingsButton() {
+    createSettingsButton() {
       const Button = videojs.getComponent('Button')
       const self = this
       const iconSrc = settingIcon
 
-      class SubtitleSettingsButton extends Button {
+      class SettingsButton extends Button {
         constructor(player, options) {
           super(player, options)
-          this.addClass('vjs-subtitle-settings-button')
+          this.addClass('vjs-settings-button')
           this.addClass('vjs-custom-icon-button')
-          this.controlText('تنظیمات زیرنویس')
+          this.controlText('تنظیمات')
 
           const img = document.createElement('img')
           img.src = iconSrc
@@ -513,23 +651,147 @@ export default {
         }
 
         handleClick() {
-          self.toggleSubtitleMenu()
+          self.toggleSettingsDrawer()
         }
       }
 
-      videojs.registerComponent(
-        'SubtitleSettingsButton',
-        SubtitleSettingsButton
-      )
+      videojs.registerComponent('SettingsButton', SettingsButton)
       this.player.controlBar.addChild(
-        'SubtitleSettingsButton',
+        'SettingsButton',
         {},
         this.getFullscreenInsertIndex()
       )
     },
 
     // ============================================
-    // Menu Helper Methods
+    // Settings Drawer Methods
+    // ============================================
+
+    toggleSettingsDrawer() {
+      this.showSettingsDrawer = !this.showSettingsDrawer
+      if (this.showSettingsDrawer) {
+        this.settingsDrawerView = 'main'
+      }
+    },
+
+    closeSettingsDrawer() {
+      this.showSettingsDrawer = false
+      this.settingsDrawerView = 'main'
+    },
+
+    backToMain() {
+      this.settingsDrawerView = 'main'
+    },
+
+    openSpeedSettings() {
+      this.settingsDrawerView = 'speed'
+    },
+
+    openSubtitleSettings() {
+      this.settingsDrawerView = 'subtitle'
+    },
+
+    openQualitySettings() {
+      this.settingsDrawerView = 'quality'
+    },
+
+    getSpeedLabel() {
+      const rate = PLAYBACK_RATES.find(
+        (r) => r.value === this.currentPlaybackRate
+      )
+      return rate ? rate.label : '۱x (عادی)'
+    },
+
+    getSubtitleLabel() {
+      if (this.currentSubtitle === null) return 'خاموش'
+      const tracks = this.getSubtitleTracks()
+      return tracks[this.currentSubtitle]?.label || 'خاموش'
+    },
+
+    getQualityLabel() {
+      return QUALITY_MAP[this.currentQuality] || 'خودکار'
+    },
+
+    isSpeedActive(value) {
+      return Math.abs(this.currentPlaybackRate - value) < 0.01
+    },
+
+    selectSpeed(value) {
+      this.currentPlaybackRate = value
+      if (this.player) {
+        this.player.playbackRate(value)
+      }
+      this.closeSettingsDrawer()
+    },
+
+    getSubtitleTracks() {
+      if (!this.player) return []
+      const textTracks = this.player.textTracks()
+      const trackList = []
+      for (let i = 0; i < textTracks.length; i++) {
+        const track = textTracks[i]
+        if (track.kind === 'subtitles' || track.kind === 'captions') {
+          const displayLabel =
+            LANGUAGE_MAP[track.language] || track.label || `زبان ${i + 1}`
+          trackList.push({
+            label: displayLabel,
+            language: track.language,
+            index: i,
+          })
+        }
+      }
+      return trackList
+    },
+
+    selectSubtitle(index) {
+      this.currentSubtitle = index
+      if (this.player) {
+        const textTracks = this.player.textTracks()
+        for (let i = 0; i < textTracks.length; i++) {
+          textTracks[i].mode = i === index ? 'showing' : 'disabled'
+        }
+      }
+      this.closeSettingsDrawer()
+    },
+
+    getAvailableQualities() {
+      // This will be populated from HLS quality selector
+      // For now, return common qualities
+      return [
+        { value: 'auto', label: 'خودکار' },
+        { value: '1080p', label: '۱۰۸۰p - Full HD' },
+        { value: '720p', label: '۷۲۰p - HD' },
+        { value: '480p', label: '۴۸۰p - SD' },
+        { value: '360p', label: '۳۶۰p' },
+      ]
+    },
+
+    isQualityActive(value) {
+      return this.currentQuality === value
+    },
+
+    selectQuality(value) {
+      this.currentQuality = value
+      // Here you would need to integrate with the HLS quality selector
+      // For now, we'll just update the state
+      if (this.player && this.player.qualityLevels) {
+        const levels = this.player.qualityLevels()
+        if (value === 'auto') {
+          for (let i = 0; i < levels.length; i++) {
+            levels[i].enabled = true
+          }
+        } else {
+          for (let i = 0; i < levels.length; i++) {
+            const height = levels[i].height
+            levels[i].enabled = height + 'p' === value
+          }
+        }
+      }
+      this.closeSettingsDrawer()
+    },
+
+    // ============================================
+    // Menu Helper Methods (Legacy - keeping for compatibility)
     // ============================================
 
     createMenuOverlay(className) {
@@ -1194,17 +1456,6 @@ export default {
       }
     },
 
-    setupQualitySelector() {
-      this.player.hlsQualitySelector({
-        displayCurrentQuality: true,
-      })
-
-      // Customize quality labels to Persian after a short delay
-      setTimeout(() => {
-        this.customizeQualityLabels()
-      }, 500)
-    },
-
     customizeQualityLabels() {
       const qualityButton = this.player
         .el()
@@ -1539,8 +1790,11 @@ export default {
         this.setupTextTracks()
         this.setupCustomButtons()
         this.setupPlaybackEvents()
-        this.setupQualitySelector()
         this.setupCreditsSkip()
+
+        // Initialize drawer state
+        this.currentPlaybackRate = this.player.playbackRate()
+        this.initializeSubtitleState()
 
         // Auto-hide control bar after 3 seconds of inactivity
         this.setupAutoHideControls()
@@ -1574,6 +1828,17 @@ export default {
           }
         }
       })
+    },
+
+    initializeSubtitleState() {
+      if (!this.player) return
+      const textTracks = this.player.textTracks()
+      for (let i = 0; i < textTracks.length; i++) {
+        if (textTracks[i].mode === 'showing') {
+          this.currentSubtitle = i
+          break
+        }
+      }
     },
   },
 }
@@ -2435,19 +2700,15 @@ video#episode-player_html5_api {
 }
 
 ::v-deep .vjs-split-controls .vjs-pip-button {
-  order: 25;
+  order: 23;
 }
 
-::v-deep .vjs-split-controls .vjs-playback-rate-button {
-  order: 21;
-}
-
-::v-deep .vjs-split-controls .vjs-subtitle-settings-button {
+::v-deep .vjs-split-controls .vjs-settings-button {
   order: 24;
 }
 
 ::v-deep .vjs-split-controls .vjs-playlist-button {
-  order: 23;
+  order: 25;
 }
 
 ::v-deep .vjs-split-controls .vjs-fullscreen-control {
@@ -2606,5 +2867,281 @@ video#episode-player_html5_api {
   display: flex;
   align-items: center;
   justify-content: start;
+}
+
+/* ============================================ */
+/* Settings Drawer Styles */
+/* ============================================ */
+
+.settings-drawer-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 2000;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.settings-drawer {
+  width: 40vw;
+  max-width: 500px;
+  min-width: 320px;
+  border-radius: 12px 12px 0 0;
+  opacity: 1;
+  background: #373737;
+  box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.5);
+  animation: slideUp 0.3s ease-out;
+  direction: rtl;
+  overflow: hidden;
+  max-height: 60vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.settings-drawer.mobile-drawer {
+  width: 100vw;
+  height: 100vh;
+  max-width: none;
+  border-radius: 0;
+  animation: slideUpFull 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideUpFull {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.drawer-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.drawer-header {
+  padding: 20px 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.drawer-header.with-back {
+  justify-content: center;
+}
+
+.drawer-header h3 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.back-button {
+  position: absolute;
+  right: 20px;
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 4px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease;
+}
+
+.back-button:hover {
+  color: #00a8ff;
+}
+
+.drawer-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+  margin: 0;
+}
+
+.drawer-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 0;
+}
+
+/* Main Menu Items */
+.drawer-item {
+  display: flex;
+  align-items: center;
+  padding: 16px 24px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.drawer-item:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.drawer-item-icon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  margin-left: 16px;
+  color: #ffffff;
+  font-size: 18px;
+}
+
+.drawer-item-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.drawer-item-title {
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.drawer-item-value {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 13px;
+}
+
+.drawer-item-arrow {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 14px;
+}
+
+/* Option Items (Radio Buttons) */
+.drawer-option {
+  display: flex;
+  align-items: center;
+  padding: 14px 24px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.drawer-option:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.drawer-option.active {
+  background-color: rgba(0, 168, 255, 0.15);
+}
+
+.drawer-option-radio {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-radius: 50%;
+  margin-left: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.2s ease;
+}
+
+.drawer-option.active .drawer-option-radio {
+  border-color: #00a8ff;
+}
+
+.radio-checked {
+  width: 10px;
+  height: 10px;
+  background: #00a8ff;
+  border-radius: 50%;
+}
+
+.drawer-option-label {
+  color: #ffffff;
+  font-size: 15px;
+  flex: 1;
+}
+
+.drawer-option.active .drawer-option-label {
+  color: #00a8ff;
+  font-weight: 500;
+}
+
+/* Mobile Adjustments */
+@media (max-width: 768px) {
+  .settings-drawer:not(.mobile-drawer) {
+    width: 80vw;
+  }
+
+  .drawer-header h3 {
+    font-size: 16px;
+  }
+
+  .drawer-item {
+    padding: 14px 20px;
+  }
+
+  .drawer-item-icon {
+    width: 36px;
+    height: 36px;
+    font-size: 16px;
+    margin-left: 12px;
+  }
+
+  .drawer-item-title {
+    font-size: 14px;
+  }
+
+  .drawer-item-value {
+    font-size: 12px;
+  }
+
+  .drawer-option {
+    padding: 12px 20px;
+  }
+
+  .drawer-option-label {
+    font-size: 14px;
+  }
+}
+
+/* Settings Button Styles */
+::v-deep .vjs-settings-button {
+  cursor: pointer;
+  color: white;
+  background-color: transparent;
+  border: none;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+::v-deep .vjs-settings-button:hover {
+  color: #00a8ff;
+  transform: scale(1.1);
 }
 </style>
