@@ -2,7 +2,7 @@
   <div class="video-container">
     <div class="hamshahri">
       <!-- دکمه بازگشت -->
-      <a class="srmjs " @click="goBack">
+      <a class="srmjs" @click="goBack">
         <div id="flowplayer-back-button">
           <div class="icon-back" />
         </div>
@@ -12,12 +12,14 @@
       <div v-if="loading" class="video-loading-spinner" />
 
       <!-- پیام "به زودی" -->
-      <p v-if="soon" class="soon">
-        به زودی...
-      </p>
+      <p v-if="soon" class="soon">به زودی...</p>
 
       <!-- دکمه رفرش -->
-      <button v-if="soon" class="btn btn-primary btn-lg fw-bold refresh-btn" @click="reloadPage">
+      <button
+        v-if="soon"
+        class="btn btn-primary btn-lg fw-bold refresh-btn"
+        @click="reloadPage"
+      >
         بارگذاری مجدد
       </button>
     </div>
@@ -39,15 +41,18 @@
         @ended="handleEnded"
       />
     </div>
-    <div v-if="showNextVideo && suggestion" class="next-video-overlay" @click="playNextVideo">
+    <div
+      v-if="showNextVideo && suggestion"
+      class="next-video-overlay"
+      @click="playNextVideo"
+    >
       <div class="next-video-content">
         <p>{{ $t('player.next') }}: {{ suggestion.name_fa }}</p>
-        <img :src="suggestionBackdrop" alt="Next Video Backdrop">
+        <img :src="suggestionBackdrop" alt="Next Video Backdrop" />
       </div>
     </div>
   </div>
 </template>
-
 
 <script>
 import VideoPlayer from '~/components/VideoPlayer.vue'
@@ -75,7 +80,7 @@ export default {
       suggestion: null,
       suggestionBackdrop: '',
       // اگر زمان شروع پخش از قبل وجود داشته باشد
-      startTime: 0
+      startTime: 0,
     }
   },
   mounted() {
@@ -87,62 +92,79 @@ export default {
   },
   methods: {
     showErrorAlert(data) {
-    let dlsmtitle = this.$i18n.locale === 'fa' ? data.message_fa : data.message
-// let backtohome=false
-    if(!dlsmtitle){
-      dlsmtitle=this.$t('player.error1')
-      // backtohome=true
-    }
-    let dlsmbuttons = {
-      back: {
-        text: this.$t('player.back'),
-        value: "back",
-        closeModal: true,
-        className: 'swal-back'
+      let dlsmtitle =
+        this.$i18n.locale === 'fa' ? data.message_fa : data.message
+      // let backtohome=false
+      if (!dlsmtitle) {
+        dlsmtitle = this.$t('player.error1')
+        // backtohome=true
       }
-    }
-    if (data.show_subscription === 1) {
-      dlsmbuttons.subscribe = {
-        text: this.$t('player.subscribe'),
-        value: "subscribe",
-        closeModal: true
+      let dlsmbuttons = {
+        back: {
+          text: this.$t('player.back'),
+          value: 'back',
+          closeModal: true,
+          className: 'swal-back',
+        },
       }
-    }
-    if(!this.$auth.loggedIn && data.show_login === 1){
-      Object.assign(dlsmbuttons, {login: {
+      if (data.show_subscription === 1) {
+        dlsmbuttons.subscribe = {
+          text: this.$t('player.subscribe'),
+          value: 'subscribe',
+          closeModal: true,
+        }
+      }
+      if (!this.$auth.loggedIn && data.show_login === 1) {
+        Object.assign(dlsmbuttons, {
+          login: {
             text: this.$t('nav.login'),
-            value: "login",
-            closeModal: true
-      }})
-    }
-    this.$swal({
-      title: dlsmtitle,
-      icon: 'error',
-      dangerMode: true,
-      buttons: dlsmbuttons,
-    }).then((value) => {
-      switch (value) {
-        case "back":
-          (window.history.length > 2)
-            ? this.$router.go(-1)
-            : this.$router.push({ name: 'video-id', params: { id: this.$route.params.id } })
-          break
-        case "subscribe":
-          this.$store.dispatch('subscription/SHOW_MODAL', { content_type: 'video', content_id: this.$route.params.id })
-          break
-
-                            case "login":
-                                  this.$store.dispatch('login/SHOW_MODAL',{premessage: null,premobile: null,preredirect: null,prerefresh: false})
-                                
-                              break
-        default:
-          (window.history.length > 2)
-            ? this.$router.go(-1)
-            : this.$router.push({ name: 'video-id', params: { id: this.$route.params.id } })
-          break
+            value: 'login',
+            closeModal: true,
+          },
+        })
       }
-    })
-  },
+      this.$swal({
+        title: dlsmtitle,
+        icon: 'error',
+        dangerMode: true,
+        buttons: dlsmbuttons,
+      }).then((value) => {
+        switch (value) {
+          case 'back':
+            window.history.length > 2
+              ? this.$router.go(-1)
+              : this.$router.push({
+                  name: 'video-id',
+                  params: { id: this.$route.params.id },
+                })
+            break
+          case 'subscribe':
+            this.$store.dispatch('subscription/SHOW_MODAL', {
+              content_type: 'video',
+              content_id: this.$route.params.id,
+            })
+            break
+
+          case 'login':
+            this.$store.dispatch('login/SHOW_MODAL', {
+              premessage: null,
+              premobile: null,
+              preredirect: null,
+              prerefresh: false,
+            })
+
+            break
+          default:
+            window.history.length > 2
+              ? this.$router.go(-1)
+              : this.$router.push({
+                  name: 'video-id',
+                  params: { id: this.$route.params.id },
+                })
+            break
+        }
+      })
+    },
     async loadVideo() {
       try {
         const id = this.$route.params.id
@@ -158,9 +180,10 @@ export default {
         if (response.status === 200) {
           const data = response.data.data
           // تنظیم اطلاعات اصلی فیلم
-          this.videoTitle = (this.$i18n.locale === 'fa' && data.video[0].name_fa)
-            ? data.video[0].name_fa
-            : data.video[0].name
+          this.videoTitle =
+            this.$i18n.locale === 'fa' && data.video[0].name_fa
+              ? data.video[0].name_fa
+              : data.video[0].name
           this.posterUrl = data.cdn.lg_backdrop + data.video[0].backdrop
           // فرض بر این است که آدرس ویدیو حاوی پارامتر nosub است
           const streamUrl = data.video[0].video.includes('?')
@@ -169,16 +192,15 @@ export default {
           // ذخیره زمان شروع (در صورت وجود)
           this.startTime = data.video[0].current_time || 0
 
-          const streamResponse = await fetch(streamUrl, { method: "HEAD" })
+          const streamResponse = await fetch(streamUrl, { method: 'HEAD' })
 
           if (streamResponse.ok) {
-            console.log("Stream is available:", streamUrl)
+            console.log('Stream is available:', streamUrl)
             this.videoUrl = streamUrl
             this.soon = false
           } else {
-            console.log("notok")
+            console.log('notok')
             this.soon = true
-
           }
 
           // تنظیم زیرنویس‌ها (در صورت موجود بودن)
@@ -188,28 +210,23 @@ export default {
                 kind: 'captions',
                 label: track.language,
                 src: track.url,
-                default: index === 0
+                default: index === 0,
               }
             })
           }
           // ذخیره پیشنهاد فیلم بعدی در صورت موجود بودن
           if (data.suggestion) {
             this.suggestion = data.suggestion
-            this.suggestionBackdrop = data.cdn.md_backdrop + data.suggestion.backdrop
+            this.suggestionBackdrop =
+              data.cdn.md_backdrop + data.suggestion.backdrop
           }
         } else {
-            this.showErrorAlert(response.data.data)
-
-
+          this.showErrorAlert(response.data.data)
         }
       } catch (error) {
-              this.showErrorAlert(error.response.data)
-
+        this.showErrorAlert(error.response.data)
       } finally {
         this.loading = false
-
-
-
       }
     },
     handlePlayerReady(playerInstance) {
@@ -227,7 +244,7 @@ export default {
         const payload = {
           current_time: Math.floor(currentTime),
           duration_time: Math.floor(duration),
-          video_id: this.$route.params.id
+          video_id: this.$route.params.id,
         }
         if (this.guest) {
           this.$axios.post('/ghost/create/watch/video/recently', payload)
@@ -252,20 +269,30 @@ export default {
     playNextVideo() {
       // در صورت وجود پلیر، می‌توان آن را پاک کرد یا متوقف نمود
       // سپس به صفحه فیلم بعدی هدایت می‌شویم
-      this.$router.push({ name: 'video-show-id', params: { id: this.suggestion.id } })
+      this.$router.push({
+        name: 'video-show-id',
+        params: { id: this.suggestion.id },
+      })
     },
     goBack() {
       if (window.history.length > 2) {
         this.$router.go(-1)
       } else {
-        this.$router.push({ name: 'video-id', params: { id: this.$route.params.id } })
+        this.$router.push({
+          name: 'video-id',
+          params: { id: this.$route.params.id },
+        })
       }
-    }
-  }
+    },
+  },
 }
 </script>
 
 <style scoped>
+::v-deep .full-screen-player.vjs-fluid {
+  overflow: hidden !important;
+}
+
 .video-player-page {
   position: relative;
   height: 100%;
@@ -298,7 +325,7 @@ export default {
   justify-content: space-between;
 }
 .back-button {
-  background: rgba(0,0,0,0.6);
+  background: rgba(0, 0, 0, 0.6);
   border: none;
   padding: 8px;
   border-radius: 4px;
@@ -306,7 +333,7 @@ export default {
   color: #fff;
 }
 .back-button:hover {
-  background: rgba(0,0,0,0.8);
+  background: rgba(0, 0, 0, 0.8);
 }
 
 /* استایل پوشش فیلم بعدی */
@@ -314,7 +341,7 @@ export default {
   position: absolute;
   bottom: 60px;
   right: 20px;
-  background: rgba(0,0,0,0.7);
+  background: rgba(0, 0, 0, 0.7);
   padding: 10px;
   border-radius: 8px;
   cursor: pointer;

@@ -370,6 +370,10 @@ export default {
 </script>
 
 <style scoped>
+::v-deep .full-screen-player.vjs-fluid {
+  overflow: hidden !important;
+}
+
 .movie-player-page {
   position: relative;
   height: 100%;

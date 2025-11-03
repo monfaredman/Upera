@@ -511,6 +511,10 @@ export default {
 </script>
 
 <style scoped>
+::v-deep .full-screen-player.vjs-fluid {
+  overflow: hidden !important;
+}
+
 .episode-player-page {
   position: relative;
   height: 100%;

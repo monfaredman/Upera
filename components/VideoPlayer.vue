@@ -98,7 +98,7 @@
 
             <div class="drawer-item" @click="openQualitySettings">
               <div class="drawer-item-icon">
-                <i class="fa fa-video-camera"></i>
+                <i class="fa fa-video"></i>
               </div>
               <div class="drawer-item-info">
                 <div class="drawer-item-title">کیفیت</div>
