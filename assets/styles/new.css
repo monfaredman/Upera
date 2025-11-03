@@ -11335,10 +11335,10 @@ background-color: #f6f6f6 !important;
 .vjs-theme-fantasy .vjs-play-control .vjs-icon-placeholder:before {
   height: 1.3em;
   width: 1.3em;
-  margin-top: 0.2em;
   border-radius: 1em;
   border: 3px solid var(--vjs-theme-fantasy--secondary);
-  top: 2px;
+  margin-top: 0 !important;
+  top: 0 !important;
   left: 9px;
   line-height: 1.1;
 }
@@ -11347,7 +11347,7 @@ background-color: #f6f6f6 !important;
 }
 .vjs-theme-fantasy .vjs-play-progress,
 .vjs-theme-fantasy .vjs-play-progress:before {
-  background-color: var(--vjs-theme-fantasy--primary);
+  background-color: var(--vjs-theme-fantasy--secondary);
 }
 .vjs-theme-fantasy .vjs-play-progress:before {
   height: 0.8em;

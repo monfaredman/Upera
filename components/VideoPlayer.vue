@@ -60,6 +60,12 @@ import fa from 'video.js/dist/lang/fa.json'
 
 const prev10Icon = require('@/assets/images/player/prev-10-icon.png')
 const next10Icon = require('@/assets/images/player/next-10-icon.png')
+const volumeIcon = require('@/assets/images/player/volume-icon.png')
+const volumeDownIcon = require('@/assets/images/player/volume-down-icon.png')
+const volumeOffIcon = require('@/assets/images/player/volume-off-icon.png')
+const settingIcon = require('@/assets/images/player/setting-icon.png')
+const episodesIcon = require('@/assets/images/player/episodes-icon.png')
+const nextIcon = require('@/assets/images/player/next-icon.png')
 
 // Constants
 const MOBILE_BREAKPOINT = 768
@@ -396,16 +402,19 @@ export default {
 
     createNextButton() {
       const Button = videojs.getComponent('Button')
+      const iconSrc = nextIcon
 
       class NextButton extends Button {
         constructor(player, options) {
           super(player, options)
           this.addClass('vjs-next-button')
+          this.addClass('vjs-custom-icon-button')
           this.controlText('قسمت بعد')
-          const icon = document.createElement('span')
-          icon.className = 'vjs-icon-next'
-          icon.innerHTML = '<i class="fa fa-step-forward"></i>'
-          this.el().appendChild(icon)
+
+          const img = document.createElement('img')
+          img.src = iconSrc
+          img.className = 'vjs-button-icon'
+          this.el().appendChild(img)
         }
 
         handleClick() {
@@ -488,16 +497,19 @@ export default {
     createSubtitleSettingsButton() {
       const Button = videojs.getComponent('Button')
       const self = this
+      const iconSrc = settingIcon
 
       class SubtitleSettingsButton extends Button {
         constructor(player, options) {
           super(player, options)
           this.addClass('vjs-subtitle-settings-button')
+          this.addClass('vjs-custom-icon-button')
           this.controlText('تنظیمات زیرنویس')
-          const icon = document.createElement('span')
-          icon.className = 'vjs-icon-subtitles'
-          icon.innerHTML = '<i class="fa fa-closed-captioning"></i>'
-          this.el().appendChild(icon)
+
+          const img = document.createElement('img')
+          img.src = iconSrc
+          img.className = 'vjs-button-icon'
+          this.el().appendChild(img)
         }
 
         handleClick() {
@@ -842,8 +854,7 @@ export default {
 
         createVolumeElements() {
           this.el().innerHTML = `
-            <button class="vjs-rtl-volume-button vjs-control vjs-button" type="button">
-              <i class="fa fa-volume-up"></i>
+            <button class="vjs-rtl-volume-button vjs-control vjs-button vjs-custom-icon-button" type="button">
             </button>
             <div class="vjs-rtl-volume-control vjs-control">
               <div class="vjs-rtl-volume-bar">
@@ -934,16 +945,28 @@ export default {
         }
 
         updateMuteIcon() {
-          const icon = this.el().querySelector('.vjs-rtl-volume-button i')
-          if (icon) {
+          const button = this.el().querySelector('.vjs-rtl-volume-button')
+          if (button) {
             const volume = this.player().volume()
-            if (volume === 0) {
-              icon.className = 'fa fa-volume-off'
-            } else if (volume < 0.5) {
-              icon.className = 'fa fa-volume-down'
-            } else {
-              icon.className = 'fa fa-volume-up'
+
+            // Remove existing icon/img
+            const existingImg = button.querySelector('img')
+            if (existingImg) {
+              existingImg.remove()
             }
+
+            const img = document.createElement('img')
+            img.className = 'vjs-button-icon'
+
+            if (volume === 0) {
+              img.src = volumeOffIcon
+            } else if (volume < 0.5) {
+              img.src = volumeDownIcon
+            } else {
+              img.src = volumeIcon
+            }
+
+            button.appendChild(img)
           }
         }
 
@@ -979,15 +1002,19 @@ export default {
 
     createPlaylistButton() {
       const Button = videojs.getComponent('Button')
+      const iconSrc = episodesIcon
 
       class PlaylistButton extends Button {
         constructor(player, options) {
           super(player, options)
           this.addClass('vjs-playlist-button')
+          this.addClass('vjs-custom-icon-button')
           this.controlText('انتخاب فصل و قسمت')
-          const icon = document.createElement('span')
-          icon.className = 'vjs-icon-playlist'
-          this.el().appendChild(icon)
+
+          const img = document.createElement('img')
+          img.src = iconSrc
+          img.className = 'vjs-button-icon'
+          this.el().appendChild(img)
         }
         handleClick() {
           this.player().trigger('playlistButtonClick')
@@ -1412,6 +1439,99 @@ export default {
       this.currentCreditType = null
     },
 
+    // ============================================
+    // Auto-hide Controls Functionality
+    // ============================================
+
+    setupAutoHideControls() {
+      if (!this.player) return
+
+      let inactivityTimeout = null
+      const INACTIVITY_DELAY = 3000 // 3 seconds
+
+      const hideControls = () => {
+        if (!this.player.paused()) {
+          console.log('[AutoHide] Hiding controls due to inactivity')
+          this.player.userActive(false)
+          // Also hide custom elements
+          const titleEl = document.querySelector('.video-title-bottom')
+          const timerEl = document.querySelector('.video-timer-bottom')
+          const skipBtn = document.querySelector('.skip-credits-btn')
+          const backBtn = document.querySelector('.back-button')
+          const logoEl = document.querySelector('.site-logo')
+          const controlBarEl = document.querySelector('.vjs-control-bar')
+
+          if (titleEl) titleEl.style.opacity = '0'
+          if (timerEl) timerEl.style.opacity = '0'
+          if (skipBtn) skipBtn.style.opacity = '0'
+          if (backBtn) backBtn.style.opacity = '0'
+          if (logoEl) logoEl.style.opacity = '0'
+          if (controlBarEl)
+            controlBarEl.style.setProperty('opacity', '0', 'important')
+        }
+      }
+
+      const showControls = () => {
+        console.log('[AutoHide] Showing controls due to activity')
+        this.player.userActive(true)
+        // Also show custom elements
+        const titleEl = document.querySelector('.video-title-bottom')
+        const timerEl = document.querySelector('.video-timer-bottom')
+        const skipBtn = document.querySelector('.skip-credits-btn')
+        const backBtn = document.querySelector('.back-button')
+        const logoEl = document.querySelector('.site-logo')
+        const controlBarEl = document.querySelector('.vjs-control-bar')
+
+        if (titleEl) titleEl.style.opacity = '1'
+        if (timerEl) timerEl.style.opacity = '1'
+        if (skipBtn) skipBtn.style.opacity = '1'
+        if (backBtn) backBtn.style.opacity = '1'
+        if (logoEl) logoEl.style.opacity = '1'
+        if (controlBarEl)
+          controlBarEl.style.setProperty('opacity', '1', 'important')
+      }
+
+      const resetInactivityTimer = () => {
+        clearTimeout(inactivityTimeout)
+        showControls()
+
+        // Only set hide timer if video is playing
+        if (!this.player.paused()) {
+          console.log('[AutoHide] Reset inactivity timer')
+          inactivityTimeout = setTimeout(hideControls, INACTIVITY_DELAY)
+        }
+      }
+
+      // Listen to user activity on the player element
+      const playerEl = this.player.el()
+
+      playerEl.addEventListener('mousemove', resetInactivityTimer)
+      playerEl.addEventListener('touchstart', resetInactivityTimer)
+      playerEl.addEventListener('click', resetInactivityTimer)
+
+      // Show controls when paused
+      this.player.on('pause', () => {
+        clearTimeout(inactivityTimeout)
+        console.log('[AutoHide] Paused, showing controls')
+        showControls()
+      })
+
+      // Start hiding timer when playing
+      this.player.on('play', resetInactivityTimer)
+      this.player.on('playing', resetInactivityTimer)
+
+      // Clear timeout on player dispose
+      this.player.on('dispose', () => {
+        clearTimeout(inactivityTimeout)
+        console.log('[AutoHide] Player disposed, clearing inactivity timeout')
+      })
+
+      // Start timer immediately if already playing
+      if (!this.player.paused()) {
+        resetInactivityTimer()
+      }
+    },
+
     // Call this in setupPlayerEvents
     setupPlayerEvents() {
       this.player.ready(() => {
@@ -1421,6 +1541,9 @@ export default {
         this.setupPlaybackEvents()
         this.setupQualitySelector()
         this.setupCreditsSkip()
+
+        // Auto-hide control bar after 3 seconds of inactivity
+        this.setupAutoHideControls()
 
         // ✅ Fix RTL volume bar direction
         const isRtl = this.$i18n.locale === 'fa'
@@ -1457,6 +1580,103 @@ export default {
 </script>
 
 <style scoped>
+/* Custom Button Icon Styles */
+::v-deep .vjs-custom-icon-button {
+  background-color: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+}
+
+::v-deep .vjs-button-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 32px;
+  border-width: 1px;
+  opacity: 1;
+  background: #00000040;
+  border: 1px solid;
+  border-image-source: linear-gradient(
+    202.36deg,
+    rgba(255, 255, 255, 0.2) 8.26%,
+    rgba(255, 255, 255, 0) 85.43%
+  );
+  backdrop-filter: blur(20px);
+  box-shadow: -0.73px 0.73px 0.73px -1.46px #ffffff59 inset;
+  display: block;
+  object-fit: contain;
+  padding: 6px;
+  cursor: pointer;
+  transition: transform 0.2s ease, opacity 0.3s ease;
+}
+
+::v-deep .vjs-button-icon:hover {
+  transform: scale(1.1);
+  opacity: 0.9;
+}
+
+/* Progress Bar Bullet (Handle) Styles */
+::v-deep .vjs-progress-control .vjs-play-progress::before {
+  width: 12px !important;
+  height: 12px !important;
+  opacity: 1 !important;
+  background: #ffffff !important;
+  top: -5px !important;
+  font-size: 0 !important;
+  border-radius: 50% !important;
+}
+
+/* Control Bar Styles */
+::v-deep .video-js .vjs-control-bar {
+  background: linear-gradient(
+    180deg,
+    rgba(8, 9, 13, 0) 0%,
+    rgba(8, 9, 13, 0.9) 80.37%
+  ) !important;
+  backdrop-filter: blur(2px) !important;
+  opacity: 1 !important;
+  padding-right: 16px !important;
+  padding-bottom: 24px !important;
+  padding-left: 16px !important;
+}
+
+/* Hide cursor when user is inactive */
+::v-deep .video-js.vjs-user-inactive.vjs-playing {
+  cursor: none;
+}
+
+/* Style for built-in Video.js play/pause and fullscreen controls */
+::v-deep .vjs-play-control,
+::v-deep .vjs-fullscreen-control {
+  background-color: transparent !important;
+}
+
+::v-deep .vjs-play-control .vjs-icon-placeholder::before,
+::v-deep .vjs-fullscreen-control .vjs-icon-placeholder::before {
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: 32px !important;
+  opacity: 1 !important;
+  background-color: #00000040 !important;
+  border: 1px solid !important;
+  border-image-source: linear-gradient(
+    202.36deg,
+    rgba(255, 255, 255, 0.2) 8.26%,
+    rgba(255, 255, 255, 0) 85.43%
+  ) !important;
+  backdrop-filter: blur(20px) !important;
+  box-shadow: -0.73px 0.73px 0.73px -1.46px #ffffff59 inset !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: transform 0.2s ease, opacity 0.3s ease !important;
+}
+
+::v-deep .vjs-play-control:hover .vjs-icon-placeholder::before,
+::v-deep .vjs-fullscreen-control:hover .vjs-icon-placeholder::before {
+  transform: scale(1.1) !important;
+  opacity: 0.9 !important;
+}
+
 .vjs-vast-click-container {
   position: absolute;
   top: 0;
@@ -1627,7 +1847,7 @@ export default {
   display: flex;
   align-items: center;
   gap: 8px;
-  transition: all 0.3s ease;
+  transition: all 0.3s ease, opacity 0.3s ease;
   backdrop-filter: blur(10px);
   animation: fadeInUp 0.5s ease;
 }
@@ -1710,6 +1930,7 @@ video#episode-player_html5_api {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  transition: opacity 0.3s ease;
 }
 
 /* Timer Display at Bottom Right */
@@ -1728,6 +1949,7 @@ video#episode-player_html5_api {
   font-family: Arial, sans-serif;
   direction: ltr;
   pointer-events: none;
+  transition: opacity 0.3s ease;
 }
 
 /* Hide skip buttons on mobile */
@@ -2186,6 +2408,7 @@ video#episode-player_html5_api {
   order: 0;
   width: 100%;
   margin-bottom: -24px;
+  bottom: 1.2rem !important;
 }
 
 /* LEFT SIDE: Playback controls (prev10, play, next10) */
@@ -2251,11 +2474,11 @@ video#episode-player_html5_api {
 }
 
 ::v-deep .vjs-split-controls .vjs-progress-holder {
-  height: 6px !important;
+  height: 2px !important;
 }
 
 ::v-deep .video-js .vjs-control-bar {
-  bottom: 32px !important;
+  bottom: 0 !important;
   padding: 0 16px;
 }
 
