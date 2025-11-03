@@ -527,6 +527,10 @@ export default {
 </script>
 
 <style scoped>
+.site-logo img {
+  opacity: 0.3 !important;
+}
+
 ::v-deep .full-screen-player.vjs-fluid {
   overflow: hidden !important;
 }
@@ -951,6 +955,20 @@ export default {
   .episode-image {
     width: 70px;
     height: 40px;
+  }
+  ::v-deep .vjs-split-controls .vjs-control-bar {
+    gap: 0 !important;
+  }
+
+  ::v-deep .vjs-split-controls .vjs-next-button {
+    margin-left: 0 !important;
+  }
+
+  ::v-deep .video-js .vjs-control {
+    width: 3em !important;
+  }
+  ::v-deep .vjs-progress-control.vjs-control {
+    width: 100vw !important;
   }
 }
 

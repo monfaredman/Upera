@@ -381,6 +381,10 @@ export default {
 </script>
 
 <style scoped>
+.site-logo img {
+  opacity: 0.3 !important;
+}
+
 ::v-deep .full-screen-player.vjs-fluid {
   overflow: hidden !important;
 }

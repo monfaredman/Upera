@@ -29,6 +29,7 @@
     <!-- Skip Credits Button -->
     <button
       v-if="showSkipCredits && stream"
+      :id="`${playerid}-skip-credits`"
       class="skip-credits-btn"
       @click="skipCredits"
     >
@@ -37,12 +38,16 @@
     </button>
 
     <!-- Title Display (Bottom Left) -->
-    <div v-if="title && stream" class="video-title-bottom">
+    <div
+      v-if="title && stream"
+      :id="`${playerid}-title`"
+      class="video-title-bottom"
+    >
       {{ displayTitle }}
     </div>
 
     <!-- Timer Display (Bottom Right) -->
-    <div v-if="stream" class="video-timer-bottom">
+    <div v-if="stream" :id="`${playerid}-timer`" class="video-timer-bottom">
       {{ currentTimeFormatted }} / {{ durationFormatted }}
     </div>
 
@@ -52,6 +57,8 @@
     <!-- Settings Drawer -->
     <div
       v-if="showSettingsDrawer"
+      :id="`${playerid}-settings-drawer`"
+      ref="settingsDrawer"
       class="settings-drawer-overlay"
       @click="closeSettingsDrawer"
     >
@@ -515,6 +522,14 @@ export default {
       if (this.player) {
         this.player.language(newLang)
         this.player.el().style.direction = newLang === 'fa' ? 'rtl' : 'ltr'
+      }
+    },
+    showSettingsDrawer(newVal) {
+      if (newVal) {
+        // When drawer becomes visible, move it to player element
+        this.$nextTick(() => {
+          this.moveDrawerToPlayer()
+        })
       }
     },
   },
@@ -1623,6 +1638,9 @@ export default {
         this.currentPlaybackRate = this.player.playbackRate()
         this.initializeSubtitleState()
 
+        // Move custom overlays into player for fullscreen support
+        this.setupFullscreenCustomOverlays()
+
         // Auto-hide control bar after 3 seconds of inactivity
         this.setupAutoHideControls()
 
@@ -1655,6 +1673,94 @@ export default {
           }
         }
       })
+    },
+
+    setupFullscreenCustomOverlays() {
+      if (!this.player) return
+
+      const playerEl = this.player.el()
+
+      // Function to move custom overlays into player
+      const moveOverlaysToPlayer = () => {
+        const skipBtn = document.getElementById(`${this.playerid}-skip-credits`)
+        const titleEl = document.getElementById(`${this.playerid}-title`)
+        const timerEl = document.getElementById(`${this.playerid}-timer`)
+
+        if (skipBtn && !playerEl.contains(skipBtn)) {
+          playerEl.appendChild(skipBtn)
+        }
+        if (titleEl && !playerEl.contains(titleEl)) {
+          playerEl.appendChild(titleEl)
+        }
+        if (timerEl && !playerEl.contains(timerEl)) {
+          playerEl.appendChild(timerEl)
+        }
+
+        // Move drawer if it exists
+        this.moveDrawerToPlayer()
+      }
+
+      // Function to move overlays back to original container
+      const moveOverlaysToContainer = () => {
+        const container = playerEl.parentElement
+        const skipBtn = document.getElementById(`${this.playerid}-skip-credits`)
+        const titleEl = document.getElementById(`${this.playerid}-title`)
+        const timerEl = document.getElementById(`${this.playerid}-timer`)
+        const drawerEl = document.getElementById(
+          `${this.playerid}-settings-drawer`
+        )
+
+        if (skipBtn && playerEl.contains(skipBtn)) {
+          container.appendChild(skipBtn)
+        }
+        if (titleEl && playerEl.contains(titleEl)) {
+          container.appendChild(titleEl)
+        }
+        if (timerEl && playerEl.contains(timerEl)) {
+          container.appendChild(timerEl)
+        }
+        if (drawerEl && playerEl.contains(drawerEl)) {
+          container.appendChild(drawerEl)
+        }
+      }
+
+      // Listen to fullscreen changes
+      this.player.on('fullscreenchange', () => {
+        if (this.player.isFullscreen()) {
+          console.log('Entering fullscreen - moving overlays to player')
+          moveOverlaysToPlayer()
+        } else {
+          console.log('Exiting fullscreen - moving overlays back to container')
+          moveOverlaysToContainer()
+        }
+      })
+
+      // Initial move to player element
+      setTimeout(() => {
+        moveOverlaysToPlayer()
+      }, 100)
+    },
+
+    moveDrawerToPlayer() {
+      if (!this.player) return
+
+      const playerEl = this.player.el()
+
+      // Try to get drawer by ref first, then by ID
+      let drawerEl = this.$refs.settingsDrawer
+
+      if (!drawerEl) {
+        drawerEl = document.getElementById(`${this.playerid}-settings-drawer`)
+      }
+
+      if (drawerEl && !playerEl.contains(drawerEl)) {
+        console.log('Moving drawer to player element')
+        playerEl.appendChild(drawerEl)
+      } else if (drawerEl && playerEl.contains(drawerEl)) {
+        console.log('Drawer already in player element')
+      } else {
+        console.log('Drawer element not found')
+      }
     },
 
     initializeSubtitleState() {
@@ -1873,6 +1979,14 @@ export default {
 </script>
 
 <style scoped>
+::v-deep .video-js {
+  font-family: 'dana VF' !important;
+  font-size: unset !important;
+}
+::v-deep .video-js .vjs-play-control {
+  width: 3em !important;
+}
+
 /* Custom Button Icon Styles */
 ::v-deep .vjs-custom-icon-button {
   background-color: transparent !important;
@@ -2243,6 +2357,50 @@ video#episode-player_html5_api {
   direction: ltr;
   pointer-events: none;
   transition: opacity 0.3s ease;
+}
+
+/* Fullscreen Custom Overlays Support */
+.video-js.vjs-fullscreen .skip-credits-btn,
+.video-js.vjs-fullscreen .video-title-bottom,
+.video-js.vjs-fullscreen .video-timer-bottom,
+.video-js.vjs-fullscreen .settings-drawer-overlay {
+  position: fixed !important;
+  z-index: 2147483647 !important;
+}
+
+/* Adjust positioning in fullscreen for better visibility */
+.video-js.vjs-fullscreen .skip-credits-btn {
+  bottom: 120px !important;
+}
+
+.video-js.vjs-fullscreen .video-title-bottom {
+  bottom: 80px !important;
+}
+
+.video-js.vjs-fullscreen .video-timer-bottom {
+  bottom: 80px !important;
+}
+
+.video-js.vjs-fullscreen .settings-drawer-overlay {
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  position: fixed !important;
+}
+
+/* Ensure drawer remains centered in fullscreen */
+.video-js.vjs-fullscreen .settings-drawer {
+  position: relative;
+}
+
+/* In fullscreen mode on desktop, make drawer a bit smaller for better UX */
+@media (min-width: 769px) {
+  .video-js.vjs-fullscreen .settings-drawer:not(.mobile-drawer) {
+    max-height: 70vh;
+  }
 }
 
 /* Hide skip buttons on mobile */
