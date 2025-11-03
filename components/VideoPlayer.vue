@@ -111,6 +111,99 @@
           </div>
         </div>
 
+        <!-- Subtitle Style Settings -->
+        <div
+          v-if="settingsDrawerView === 'subtitle-style'"
+          class="drawer-content"
+        >
+          <div class="drawer-header with-back">
+            <button class="back-button" @click="backToSubtitleSettings">
+              <i class="fa fa-chevron-right"></i>
+            </button>
+            <h3>تنظیمات ظاهر زیرنویس</h3>
+          </div>
+          <div class="drawer-divider"></div>
+          <div class="drawer-body px-4">
+            <!-- Font Size -->
+            <div class="subtitle-style-group">
+              <label class="subtitle-style-label">اندازه فونت</label>
+              <div class="subtitle-style-options">
+                <div
+                  v-for="size in FONT_SIZES"
+                  :key="size.value"
+                  class="subtitle-style-option"
+                  :class="{ active: subtitleStyle.fontSize === size.value }"
+                  @click="updateSubtitleStyle('fontSize', size.value)"
+                >
+                  {{ size.label }}
+                </div>
+              </div>
+            </div>
+
+            <!-- Text Color -->
+            <div class="subtitle-style-group">
+              <label class="subtitle-style-label">رنگ متن</label>
+              <div class="subtitle-style-options">
+                <div
+                  v-for="color in TEXT_COLORS"
+                  :key="color.value"
+                  class="subtitle-style-option color-option"
+                  :class="{
+                    active: subtitleStyle.color === color.value,
+                    [color.class]: true,
+                  }"
+                  @click="updateSubtitleStyle('color', color.value)"
+                >
+                  <div
+                    class="color-preview"
+                    :style="{ backgroundColor: color.value }"
+                  ></div>
+                  <span>{{ color.label }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Background Color -->
+            <div class="subtitle-style-group">
+              <label class="subtitle-style-label">پس‌زمینه</label>
+              <div class="subtitle-style-options">
+                <div
+                  v-for="bg in BACKGROUND_OPACITIES"
+                  :key="bg.value"
+                  class="subtitle-style-option"
+                  :class="{ active: subtitleStyle.background === bg.value }"
+                  @click="updateSubtitleStyle('background', bg.value)"
+                >
+                  <div class="bg-preview" :style="{ opacity: bg.value }"></div>
+                  <span>{{ bg.label }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Text Shadow -->
+            <div class="subtitle-style-group">
+              <label class="subtitle-style-label">سایه متن</label>
+              <div class="subtitle-style-options">
+                <div
+                  v-for="shadow in TEXT_SHADOWS"
+                  :key="shadow.value"
+                  class="subtitle-style-option"
+                  :class="{ active: subtitleStyle.shadow === shadow.value }"
+                  @click="updateSubtitleStyle('shadow', shadow.value)"
+                >
+                  {{ shadow.label }}
+                </div>
+              </div>
+            </div>
+
+            <!-- Reset to Default -->
+            <div class="subtitle-style-actions">
+              <button class="reset-default-btn" @click="resetSubtitleStyles">
+                بازنشانی به پیش‌فرض
+              </button>
+            </div>
+          </div>
+        </div>
         <!-- Speed Settings -->
         <div v-if="settingsDrawerView === 'speed'" class="drawer-content">
           <div class="drawer-header with-back">
@@ -176,6 +269,19 @@
                 ></div>
               </div>
               <div class="drawer-option-label">{{ track.label }}</div>
+            </div>
+            <div class="drawer-divider"></div>
+            <div class="drawer-item" @click="openSubtitleStyleSettings">
+              <div class="drawer-item-icon">
+                <i class="fa fa-cog"></i>
+              </div>
+              <div class="drawer-item-info">
+                <div class="drawer-item-title">تنظیمات زیرنویس</div>
+                <div class="drawer-item-value">سایز، رنگ، پس‌زمینه</div>
+              </div>
+              <div class="drawer-item-arrow">
+                <i class="fa fa-chevron-left"></i>
+              </div>
             </div>
           </div>
         </div>
@@ -325,6 +431,31 @@ export default {
 
   data() {
     return {
+      FONT_SIZES: [
+        { value: 'small', label: 'کوچک' },
+        { value: 'medium', label: 'متوسط' },
+        { value: 'large', label: 'بزرگ' },
+        { value: 'x-large', label: 'خیلی بزرگ' },
+      ],
+      TEXT_COLORS: [
+        { value: '#ffffff', label: 'سفید', class: 'color-white' },
+        { value: '#ffff00', label: 'زرد', class: 'color-yellow' },
+        { value: '#00ff00', label: 'سبز', class: 'color-green' },
+        { value: '#00ffff', label: 'فیروزه‌ای', class: 'color-cyan' },
+        { value: '#ffa500', label: 'نارنجی', class: 'color-orange' },
+      ],
+      BACKGROUND_OPACITIES: [
+        { value: 0, label: 'بدون پس‌زمینه' },
+        { value: 0.5, label: 'نیمه شفاف' },
+        { value: 0.8, label: 'مات', selected: true },
+        { value: 1, label: 'کاملاً مات' },
+      ],
+      TEXT_SHADOWS: [
+        { value: 'none', label: 'بدون سایه' },
+        { value: 'light', label: 'سایه کم' },
+        { value: 'medium', label: 'سایه متوسط' },
+        { value: 'heavy', label: 'سایه زیاد' },
+      ],
       adActive: false,
       viewsIncremented: false,
       player: null,
@@ -342,6 +473,12 @@ export default {
       currentQuality: 'auto',
       // Track subtitle state to prevent conflicts
       subtitleTracksInitialized: false,
+      subtitleStyle: {
+        fontSize: 'medium',
+        color: '#ffffff',
+        background: 0.8,
+        shadow: 'medium',
+      },
     }
   },
 
@@ -398,6 +535,15 @@ export default {
     }
     if (this.creditCheckInterval) {
       clearInterval(this.creditCheckInterval)
+    }
+    // Clean up observer
+    if (this.cueObserver) {
+      this.cueObserver.disconnect()
+    }
+    // Remove custom style tag
+    const existingStyle = document.getElementById('custom-subtitle-styles')
+    if (existingStyle) {
+      existingStyle.remove()
     }
     window.removeEventListener('keydown', this.handleKeydown)
     window.removeEventListener('resize', this.handleResize)
@@ -1371,6 +1517,7 @@ export default {
     // ============================================
 
     setupAutoHideControls() {
+      console.log(55, this.player)
       if (!this.player) return
 
       let inactivityTimeout = null
@@ -1378,7 +1525,6 @@ export default {
 
       const hideControls = () => {
         if (!this.player.paused()) {
-          console.log('[AutoHide] Hiding controls due to inactivity')
           this.player.userActive(false)
           // Also hide custom elements
           const titleEl = document.querySelector('.video-title-bottom')
@@ -1399,7 +1545,6 @@ export default {
       }
 
       const showControls = () => {
-        console.log('[AutoHide] Showing controls due to activity')
         this.player.userActive(true)
         // Also show custom elements
         const titleEl = document.querySelector('.video-title-bottom')
@@ -1424,7 +1569,6 @@ export default {
 
         // Only set hide timer if video is playing
         if (!this.player.paused()) {
-          console.log('[AutoHide] Reset inactivity timer')
           inactivityTimeout = setTimeout(hideControls, INACTIVITY_DELAY)
         }
       }
@@ -1439,7 +1583,6 @@ export default {
       // Show controls when paused
       this.player.on('pause', () => {
         clearTimeout(inactivityTimeout)
-        console.log('[AutoHide] Paused, showing controls')
         showControls()
       })
 
@@ -1450,7 +1593,6 @@ export default {
       // Clear timeout on player dispose
       this.player.on('dispose', () => {
         clearTimeout(inactivityTimeout)
-        console.log('[AutoHide] Player disposed, clearing inactivity timeout')
       })
 
       // Start timer immediately if already playing
@@ -1467,6 +1609,7 @@ export default {
         this.setupCustomButtons()
         this.setupPlaybackEvents()
         this.setupCreditsSkip()
+        this.applySubtitleStyles()
 
         // Initialize drawer state
         this.currentPlaybackRate = this.player.playbackRate()
@@ -1523,6 +1666,199 @@ export default {
       if (!foundActive) {
         this.currentSubtitle = null
       }
+    },
+
+    // Add to methods
+    openSubtitleStyleSettings() {
+      this.settingsDrawerView = 'subtitle-style'
+    },
+
+    backToSubtitleSettings() {
+      this.settingsDrawerView = 'subtitle'
+    },
+
+    updateSubtitleStyle(property, value) {
+      this.subtitleStyle[property] = value
+      this.applySubtitleStyles()
+    },
+
+    applySubtitleStyles() {
+      if (!this.player) return
+
+      const textTrackDisplay = this.player
+        .el()
+        .querySelector('.vjs-text-track-display')
+      if (!textTrackDisplay) return
+
+      // Apply font size to the display container with !important (using pixels)
+      const fontSizeMap = {
+        small: '20px',
+        medium: '24px',
+        large: '28px',
+        'x-large': '32px',
+      }
+
+      const fontSize = fontSizeMap[this.subtitleStyle.fontSize] || '24px'
+      textTrackDisplay.style.cssText += `font-size: ${fontSize} !important;`
+
+      // Apply styles to existing cues
+      this.updateExistingCues()
+
+      // Set up observer for new cues
+      this.setupCueObserver()
+
+      // Also inject a style tag for more specific CSS
+      this.injectSubtitleStyles()
+    },
+    setupCueObserver() {
+      const textTrackDisplay = this.player
+        .el()
+        .querySelector('.vjs-text-track-display')
+      if (!textTrackDisplay) return
+
+      // Remove existing observer if any
+      if (this.cueObserver) {
+        this.cueObserver.disconnect()
+      }
+
+      // Create mutation observer to watch for new cues
+      this.cueObserver = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          if (mutation.type === 'childList') {
+            mutation.addedNodes.forEach((node) => {
+              if (
+                node.classList &&
+                node.classList.contains('vjs-text-track-cue')
+              ) {
+                this.applyCueStyles(node)
+              }
+            })
+          }
+        })
+      })
+
+      // Start observing
+      this.cueObserver.observe(textTrackDisplay, {
+        childList: true,
+        subtree: true,
+      })
+    },
+    updateExistingCues() {
+      const textTrackDisplay = this.player
+        .el()
+        .querySelector('.vjs-text-track-display')
+      if (!textTrackDisplay) return
+
+      const cues = textTrackDisplay.querySelectorAll('.vjs-text-track-cue')
+      cues.forEach((cue) => {
+        this.applyCueStyles(cue)
+      })
+    },
+    applyCueStyles(cue) {
+      // Find the inner div that contains the actual text
+      const innerDiv = cue.querySelector('div')
+      if (!innerDiv) return
+
+      const fontSizeMap = {
+        small: '20px',
+        medium: '24px',
+        large: '28px',
+        'x-large': '32px',
+      }
+
+      const fontSize = fontSizeMap[this.subtitleStyle.fontSize] || '24px'
+
+      // Apply styles with !important using CSSText to override inline styles
+      const styles = `
+    font-size: ${fontSize} !important;
+    color: ${this.subtitleStyle.color} !important;
+    background-color: rgba(0, 0, 0, ${
+      this.subtitleStyle.background
+    }) !important;
+    padding: ${this.subtitleStyle.background > 0 ? '4px 8px' : '0'} !important;
+    border-radius: 4px !important;
+    font-family: Arial, "Segoe UI", Tahoma, sans-serif !important;
+    font-weight: bold !important;
+    line-height: 1.4 !important;
+  `
+
+      // Text shadow
+      const shadowMap = {
+        none: 'none',
+        light: '0 1px 2px rgba(0,0,0,0.8) !important',
+        medium: '0 2px 4px rgba(0,0,0,0.8) !important',
+        heavy:
+          '0 3px 6px rgba(0,0,0,0.8), 0 1px 2px rgba(0,0,0,0.9) !important',
+      }
+      const shadowStyle = shadowMap[this.subtitleStyle.shadow] || 'none'
+
+      innerDiv.style.cssText += styles + `text-shadow: ${shadowStyle};`
+
+      // Also apply font size to the cue itself
+      cue.style.cssText += `font-size: ${fontSize} !important;`
+    },
+    injectSubtitleStyles() {
+      // Remove existing style tag if any
+      const existingStyle = document.getElementById('custom-subtitle-styles')
+      if (existingStyle) {
+        existingStyle.remove()
+      }
+
+      // Create new style tag with specific CSS
+      const style = document.createElement('style')
+      style.id = 'custom-subtitle-styles'
+
+      const fontSizeMap = {
+        small: '20px',
+        medium: '24px',
+        large: '28px',
+        'x-large': '32px',
+      }
+
+      const fontSize = fontSizeMap[this.subtitleStyle.fontSize] || '24px'
+      const shadowMap = {
+        none: 'none',
+        light: '0 1px 2px rgba(0,0,0,0.8)',
+        medium: '0 2px 4px rgba(0,0,0,0.8)',
+        heavy: '0 3px 6px rgba(0,0,0,0.8), 0 1px 2px rgba(0,0,0,0.9)',
+      }
+      const textShadow = shadowMap[this.subtitleStyle.shadow] || 'none'
+
+      style.textContent = `
+    .vjs-text-track-display {
+      font-size: ${fontSize} !important;
+    }
+    .vjs-text-track-cue {
+      font-size: ${fontSize} !important;
+    }
+    .vjs-text-track-cue div {
+      font-size: ${fontSize} !important;
+      color: ${this.subtitleStyle.color} !important;
+      background-color: rgba(0, 0, 0, ${
+        this.subtitleStyle.background
+      }) !important;
+      padding: ${
+        this.subtitleStyle.background > 0 ? '4px 8px' : '0'
+      } !important;
+      border-radius: 4px !important;
+      font-family: Arial, "Segoe UI", Tahoma, sans-serif !important;
+      font-weight: bold !important;
+      text-shadow: ${textShadow} !important;
+      line-height: 1.4 !important;
+    }
+  `
+
+      document.head.appendChild(style)
+    },
+
+    resetSubtitleStyles() {
+      this.subtitleStyle = {
+        fontSize: 'medium',
+        color: '#ffffff',
+        background: 0.8,
+        shadow: 'medium',
+      }
+      this.applySubtitleStyles()
     },
   },
 }
@@ -1843,7 +2179,7 @@ export default {
 
 @media (max-width: 480px) {
   .skip-credits-btn {
-    bottom: 60px;
+    bottom: 100px;
     left: 10px;
     padding: 6px 12px;
     font-size: 11px;
@@ -1918,7 +2254,7 @@ video#episode-player_html5_api {
   }
 
   .video-title-bottom {
-    bottom: 60px;
+    bottom: 90px;
     left: 10px;
     font-size: 14px;
     max-width: 200px;
@@ -1926,7 +2262,7 @@ video#episode-player_html5_api {
   }
 
   .video-timer-bottom {
-    bottom: 60px;
+    bottom: 90px;
     right: 10px;
     font-size: 12px;
     padding: 6px 10px;
@@ -2581,7 +2917,7 @@ video#episode-player_html5_api {
   animation: slideUp 0.3s ease-out;
   direction: rtl;
   overflow: hidden;
-  max-height: 60vh;
+  max-height: 100vh;
   display: flex;
   flex-direction: column;
 }
@@ -2827,5 +3163,82 @@ video#episode-player_html5_api {
 ::v-deep .vjs-settings-button:hover {
   color: #00a8ff;
   transform: scale(1.1);
+}
+
+/* Add these styles to your CSS */
+.subtitle-style-group {
+  margin-bottom: 20px;
+}
+
+.subtitle-style-label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #e0e0e0;
+}
+
+.subtitle-style-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.subtitle-style-option {
+  padding: 10px;
+  border: 1px solid #444;
+  border-radius: 6px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: #2d2d2d;
+}
+
+.subtitle-style-option.active {
+  border-color: #ff5722;
+  background: #3d2d2d;
+}
+
+.subtitle-style-option.color-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: flex-start;
+  padding: 8px 10px;
+}
+
+.color-preview {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid #555;
+}
+
+.bg-preview {
+  width: 16px;
+  height: 16px;
+  background: #000;
+  border-radius: 2px;
+  margin-right: 8px;
+}
+
+.subtitle-style-actions {
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid #444;
+}
+
+.reset-default-btn {
+  width: 100%;
+  padding: 12px;
+  background: #ff5722;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.reset-default-btn:hover {
+  background: #e64a19;
 }
 </style>
