@@ -340,6 +340,8 @@ export default {
       currentPlaybackRate: 1,
       currentSubtitle: null,
       currentQuality: 'auto',
+      // Track subtitle state to prevent conflicts
+      subtitleTracksInitialized: false,
     }
   },
 
@@ -507,24 +509,41 @@ export default {
     },
 
     // ============================================
-    // Text Tracks & Subtitles
+    // Text Tracks & Subtitles - FIXED
     // ============================================
 
     setupTextTracks() {
-      if (!this.tracks?.length) return
+      if (!this.tracks?.length || this.subtitleTracksInitialized) return
 
-      this.tracks.forEach((track) => {
-        this.player.addRemoteTextTrack(
+      // Clear any existing tracks first
+      const existingTracks = this.player.remoteTextTracks()
+      for (let i = existingTracks.length - 1; i >= 0; i--) {
+        this.player.removeRemoteTextTrack(existingTracks[i])
+      }
+
+      // Add new tracks
+      this.tracks.forEach((track, index) => {
+        const textTrack = this.player.addRemoteTextTrack(
           {
             kind: track.kind,
             src: track.src,
             label: track.label,
-            default: track.default,
-            language: track.language || '',
+            srclang: track.language || '',
+            default: track.default || false,
           },
           false
         )
+
+        // Set initial mode based on default flag
+        if (track.default) {
+          textTrack.track.mode = 'showing'
+          this.currentSubtitle = index
+        } else {
+          textTrack.track.mode = 'disabled'
+        }
       })
+
+      this.subtitleTracksInitialized = true
     },
 
     // ============================================
@@ -664,7 +683,7 @@ export default {
     },
 
     // ============================================
-    // Settings Drawer Methods
+    // Settings Drawer Methods - FIXED SUBTITLE MANAGEMENT
     // ============================================
 
     toggleSettingsDrawer() {
@@ -705,7 +724,8 @@ export default {
     getSubtitleLabel() {
       if (this.currentSubtitle === null) return 'خاموش'
       const tracks = this.getSubtitleTracks()
-      return tracks[this.currentSubtitle]?.label || 'خاموش'
+      const track = tracks.find((t) => t.index === this.currentSubtitle)
+      return track?.label || 'خاموش'
     },
 
     getQualityLabel() {
@@ -744,19 +764,27 @@ export default {
     },
 
     selectSubtitle(index) {
+      // Update current subtitle state
       this.currentSubtitle = index
+
       if (this.player) {
         const textTracks = this.player.textTracks()
+
+        // Disable all tracks first
         for (let i = 0; i < textTracks.length; i++) {
-          textTracks[i].mode = i === index ? 'showing' : 'disabled'
+          textTracks[i].mode = 'disabled'
+        }
+
+        // Enable selected track if not null
+        if (index !== null && textTracks[index]) {
+          textTracks[index].mode = 'showing'
         }
       }
+
       this.closeSettingsDrawer()
     },
 
     getAvailableQualities() {
-      // This will be populated from HLS quality selector
-      // For now, return common qualities
       return [
         { value: 'auto', label: 'خودکار' },
         { value: '1080p', label: '۱۰۸۰p - Full HD' },
@@ -772,8 +800,6 @@ export default {
 
     selectQuality(value) {
       this.currentQuality = value
-      // Here you would need to integrate with the HLS quality selector
-      // For now, we'll just update the state
       if (this.player && this.player.qualityLevels) {
         const levels = this.player.qualityLevels()
         if (value === 'auto') {
@@ -791,301 +817,9 @@ export default {
     },
 
     // ============================================
-    // Menu Helper Methods (Legacy - keeping for compatibility)
+    // REMOVED LEGACY MENU METHODS
+    // All subtitle management is now handled through the settings drawer only
     // ============================================
-
-    createMenuOverlay(className) {
-      const overlay = document.createElement('div')
-      overlay.className = className
-      return overlay
-    },
-
-    createMenuContent(className, titleText) {
-      const content = document.createElement('div')
-      content.className = className
-
-      const title = document.createElement('div')
-      title.className = className.replace('-content', '-title')
-      title.textContent = titleText
-      content.appendChild(title)
-
-      return content
-    },
-
-    createMenuItem(text, isActive = false) {
-      const item = document.createElement('div')
-      item.className = 'vjs-playback-rate-menu-item'
-      if (isActive) {
-        item.classList.add('active')
-      }
-      item.textContent = text
-      return item
-    },
-
-    attachMenuCloseHandler(menu) {
-      menu.onclick = (e) => {
-        if (e.target === menu) {
-          menu.remove()
-        }
-      }
-    },
-
-    // ============================================
-    // Menu Toggle Methods
-    // ============================================
-
-    togglePlaybackRateMenu() {
-      const existingMenu = document.querySelector(
-        '.vjs-playback-rate-menu-overlay'
-      )
-      if (existingMenu) {
-        existingMenu.remove()
-        return
-      }
-
-      const menu = this.createMenuOverlay('vjs-playback-rate-menu-overlay')
-      const menuContent = this.createMenuContent(
-        'vjs-playback-rate-menu-content',
-        'سرعت پخش'
-      )
-      const currentRate = this.player.playbackRate()
-
-      PLAYBACK_RATES.forEach((rate) => {
-        const option = this.createMenuItem(
-          rate.label,
-          Math.abs(currentRate - rate.value) < 0.01
-        )
-        option.onclick = () => {
-          this.player.playbackRate(rate.value)
-          menu.remove()
-        }
-        menuContent.appendChild(option)
-      })
-
-      menu.appendChild(menuContent)
-      this.player.el().appendChild(menu)
-      this.attachMenuCloseHandler(menu)
-    },
-
-    toggleSubtitleMenu() {
-      const existingMenu = document.querySelector('.vjs-subtitle-menu-overlay')
-      if (existingMenu) {
-        existingMenu.remove()
-        return
-      }
-
-      const textTracks = this.player.textTracks()
-      const trackList = this.getSubtitleTrackList(textTracks)
-
-      const menu = this.createMenuOverlay('vjs-subtitle-menu-overlay')
-      const menuContent = this.createMenuContent(
-        'vjs-subtitle-menu-content',
-        'انتخاب زیرنویس'
-      )
-
-      // Add "Off" option
-      const isAllDisabled = this.areAllTracksDisabled(textTracks)
-      const offOption = this.createSubtitleMenuItem('خاموش', isAllDisabled)
-      offOption.onclick = () => {
-        this.disableAllTracks(textTracks)
-        menu.remove()
-      }
-      menuContent.appendChild(offOption)
-
-      // Add track options
-      trackList.forEach((track) => {
-        const option = this.createSubtitleMenuItem(
-          track.label,
-          track.mode === 'showing'
-        )
-        option.onclick = () => {
-          this.setActiveTrack(textTracks, track.index)
-          menu.remove()
-        }
-        menuContent.appendChild(option)
-      })
-
-      // Add advanced settings option
-      if (trackList.length > 0) {
-        this.addSubtitleSettingsOption(menuContent, menu)
-      }
-
-      menu.appendChild(menuContent)
-      this.player.el().appendChild(menu)
-      this.attachMenuCloseHandler(menu)
-    },
-
-    getSubtitleTrackList(textTracks) {
-      const trackList = []
-      for (let i = 0; i < textTracks.length; i++) {
-        const track = textTracks[i]
-        if (track.kind === 'subtitles' || track.kind === 'captions') {
-          const displayLabel =
-            LANGUAGE_MAP[track.language] || track.label || `زبان ${i + 1}`
-          trackList.push({
-            label: displayLabel,
-            language: track.language,
-            mode: track.mode,
-            index: i,
-          })
-        }
-      }
-      return trackList
-    },
-
-    createSubtitleMenuItem(text, isActive = false) {
-      const item = document.createElement('div')
-      item.className = 'vjs-subtitle-menu-item'
-      if (isActive) {
-        item.classList.add('active')
-      }
-      item.textContent = text
-      return item
-    },
-
-    areAllTracksDisabled(textTracks) {
-      for (let i = 0; i < textTracks.length; i++) {
-        if (textTracks[i].mode === 'showing') {
-          return false
-        }
-      }
-      return true
-    },
-
-    disableAllTracks(textTracks) {
-      for (let i = 0; i < textTracks.length; i++) {
-        textTracks[i].mode = 'disabled'
-      }
-    },
-
-    setActiveTrack(textTracks, activeIndex) {
-      for (let i = 0; i < textTracks.length; i++) {
-        textTracks[i].mode = i === activeIndex ? 'showing' : 'disabled'
-      }
-    },
-
-    addSubtitleSettingsOption(menuContent, menu) {
-      const settingsDivider = document.createElement('div')
-      settingsDivider.className = 'vjs-subtitle-menu-divider'
-      menuContent.appendChild(settingsDivider)
-
-      const settingsOption = document.createElement('div')
-      settingsOption.className = 'vjs-subtitle-menu-item settings'
-      settingsOption.innerHTML = '<i class="fa fa-cog"></i> تنظیمات پیشرفته'
-      settingsOption.onclick = () => {
-        menu.remove()
-        this.showSubtitleSettings()
-      }
-      menuContent.appendChild(settingsOption)
-    },
-
-    showSubtitleSettings() {
-      const existingSettings = document.querySelector(
-        '.vjs-subtitle-settings-overlay'
-      )
-      if (existingSettings) {
-        existingSettings.remove()
-        return
-      }
-
-      const settingsMenu = this.createMenuOverlay(
-        'vjs-subtitle-settings-overlay'
-      )
-      const menuContent = this.createMenuContent(
-        'vjs-subtitle-settings-content',
-        'تنظیمات زیرنویس'
-      )
-
-      // Font size setting
-      const fontSizeGroup = this.createSettingsGroup(
-        'اندازه فونت:',
-        'font-size',
-        [
-          { value: '50%', label: 'کوچک' },
-          { value: '75%', label: 'متوسط' },
-          { value: '100%', label: 'عادی', selected: true },
-          { value: '125%', label: 'بزرگ' },
-          { value: '150%', label: 'خیلی بزرگ' },
-        ]
-      )
-      menuContent.appendChild(fontSizeGroup)
-
-      // Background opacity setting
-      const bgOpacityGroup = this.createSettingsGroup(
-        'شفافیت پس‌زمینه:',
-        'bg-opacity',
-        [
-          { value: '0', label: 'بدون پس‌زمینه' },
-          { value: '0.5', label: 'نیمه شفاف' },
-          { value: '0.75', label: 'کم شفاف', selected: true },
-          { value: '1', label: 'کاملاً مات' },
-        ]
-      )
-      menuContent.appendChild(bgOpacityGroup)
-
-      // Apply button
-      const applyBtn = this.createApplyButton(menuContent, settingsMenu)
-      menuContent.appendChild(applyBtn)
-
-      settingsMenu.appendChild(menuContent)
-      this.player.el().appendChild(settingsMenu)
-      this.attachMenuCloseHandler(settingsMenu)
-    },
-
-    createSettingsGroup(labelText, settingType, options) {
-      const group = document.createElement('div')
-      group.className = 'vjs-subtitle-setting-group'
-
-      const label = document.createElement('label')
-      label.textContent = labelText
-      group.appendChild(label)
-
-      const select = document.createElement('select')
-      select.className = `vjs-subtitle-${settingType}`
-
-      options.forEach((opt) => {
-        const option = document.createElement('option')
-        option.value = opt.value
-        option.textContent = opt.label
-        if (opt.selected) {
-          option.selected = true
-        }
-        select.appendChild(option)
-      })
-
-      group.appendChild(select)
-      return group
-    },
-
-    createApplyButton(menuContent, settingsMenu) {
-      const applyBtn = document.createElement('button')
-      applyBtn.className = 'vjs-subtitle-settings-apply'
-      applyBtn.textContent = 'اعمال تغییرات'
-      applyBtn.onclick = () => {
-        const fontSize = menuContent.querySelector(
-          '.vjs-subtitle-font-size'
-        ).value
-        const bgOpacity = menuContent.querySelector(
-          '.vjs-subtitle-bg-opacity'
-        ).value
-        this.applySubtitleSettings(fontSize, bgOpacity)
-        settingsMenu.remove()
-      }
-      return applyBtn
-    },
-
-    applySubtitleSettings(fontSize, bgOpacity) {
-      const textTrackDisplay = this.player
-        .el()
-        .querySelector('.vjs-text-track-display')
-      if (!textTrackDisplay) return
-
-      textTrackDisplay.style.fontSize = fontSize
-      const cues = textTrackDisplay.querySelectorAll('.vjs-text-track-cue')
-      cues.forEach((cue) => {
-        cue.style.backgroundColor = `rgba(0, 0, 0, ${bgOpacity})`
-      })
-    },
 
     createCustomRTLVolumeControl() {
       // Remove default volume panel
@@ -1294,43 +1028,6 @@ export default {
         this.$emit('playlistButtonClick')
       })
     },
-
-    // createAutoPlayButton() {
-    //   const Button = videojs.getComponent('Button')
-    //   const _this = this
-
-    //   class AutoPlayButton extends Button {
-    //     constructor(player, options) {
-    //       super(player, options)
-    //       this.addClass('vjs-autoplay-toggle')
-    //       this.controlText('Toggle AutoPlay')
-    //       this.icon = document.createElement('img')
-    //       this.icon.style.width = '28px'
-    //       this.icon.style.height = '28px'
-    //       this.el().appendChild(this.icon)
-    //       this.updateIcon()
-    //     }
-
-    //     handleClick() {
-    //       const newState = !_this.autoPlay
-    //       _this.SET_AUTOPLAY(newState)
-    //       this.updateIcon()
-    //     }
-
-    //     updateIcon() {
-    //       this.icon.src = _this.autoPlay
-    //         ? '/images/autoplay.svg'
-    //         : '/images/no-autoplay.svg'
-    //     }
-    //   }
-
-    //   videojs.registerComponent('AutoPlayButton', AutoPlayButton)
-    //   this.player.controlBar.addChild(
-    //     'AutoPlayButton',
-    //     {},
-    //     this.player.controlBar.children().length - 1
-    //   )
-    // },
 
     createSkipButtons() {
       // Don't add skip buttons on mobile
@@ -1550,20 +1247,6 @@ export default {
       const Component = videojs.getComponent('Component')
 
       class RuntimeDisplay extends Component {
-        // constructor(player, options) {
-        //   super(player, options)
-        //   this.addClass('vjs-runtime-display')
-        //   this.updateText()
-
-        //   player.on('timeupdate', () => {
-        //     this.updateText()
-        //   })
-
-        //   player.on('loadedmetadata', () => {
-        //     this.updateText()
-        //   })
-        // }
-
         updateText() {
           const currentTime = this.player().currentTime()
           const duration = this.player().duration()
@@ -1590,13 +1273,6 @@ export default {
 
           this.el().innerHTML = `${currentTimeFormatted} / ${durationFormatted}`
         }
-
-        // createEl() {
-        //   return videojs.dom.createEl('div', {
-        //     className: 'vjs-runtime-display vjs-control',
-        //     innerHTML: '00:00 / 00:00',
-        //   })
-        // }
       }
 
       videojs.registerComponent('RuntimeDisplay', RuntimeDisplay)
@@ -1833,11 +1509,19 @@ export default {
     initializeSubtitleState() {
       if (!this.player) return
       const textTracks = this.player.textTracks()
+      let foundActive = false
+
       for (let i = 0; i < textTracks.length; i++) {
         if (textTracks[i].mode === 'showing') {
           this.currentSubtitle = i
+          foundActive = true
           break
         }
+      }
+
+      // If no active subtitle found, set to null (off)
+      if (!foundActive) {
+        this.currentSubtitle = null
       }
     },
   },
