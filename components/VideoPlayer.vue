@@ -985,6 +985,7 @@ export default {
           this.createVolumeElements()
           this.attachEventHandlers()
           this.updateVolumeDisplay()
+          this.updateMuteIcon() // Call this immediately to set initial icon
 
           // Listen to player volume changes
           player.on('volumechange', () => {
@@ -996,16 +997,17 @@ export default {
 
         createVolumeElements() {
           this.el().innerHTML = `
-            <button class="vjs-rtl-volume-button vjs-control vjs-button vjs-custom-icon-button" type="button">
-            </button>
-            <div class="vjs-rtl-volume-control vjs-control">
-              <div class="vjs-rtl-volume-bar">
-                <div class="vjs-rtl-volume-level">
-                  <span class="vjs-rtl-volume-handle"></span>
-                </div>
-              </div>
+        <button class="vjs-rtl-volume-button vjs-control vjs-button vjs-custom-icon-button" type="button">
+          <img class="vjs-button-icon" />
+        </button>
+        <div class="vjs-rtl-volume-control vjs-control">
+          <div class="vjs-rtl-volume-bar">
+            <div class="vjs-rtl-volume-level">
+              <span class="vjs-rtl-volume-handle"></span>
             </div>
-          `
+          </div>
+        </div>
+      `
         }
 
         attachEventHandlers() {
@@ -1088,17 +1090,10 @@ export default {
 
         updateMuteIcon() {
           const button = this.el().querySelector('.vjs-rtl-volume-button')
-          if (button) {
+          const img = this.el().querySelector('.vjs-button-icon')
+
+          if (button && img) {
             const volume = this.player().volume()
-
-            // Remove existing icon/img
-            const existingImg = button.querySelector('img')
-            if (existingImg) {
-              existingImg.remove()
-            }
-
-            const img = document.createElement('img')
-            img.className = 'vjs-button-icon'
 
             if (volume === 0) {
               img.src = volumeOffIcon
@@ -1108,7 +1103,8 @@ export default {
               img.src = volumeIcon
             }
 
-            button.appendChild(img)
+            // Set alt text for accessibility
+            img.alt = volume === 0 ? 'Unmute' : 'Mute'
           }
         }
 
@@ -1139,7 +1135,18 @@ export default {
         insertIndex = 1
       }
 
-      this.player.controlBar.addChild('CustomRTLVolumeControl', {}, insertIndex)
+      const volumeControl = this.player.controlBar.addChild(
+        'CustomRTLVolumeControl',
+        {},
+        insertIndex
+      )
+
+      // Force initial icon update after component is created
+      setTimeout(() => {
+        if (volumeControl && volumeControl.updateMuteIcon) {
+          volumeControl.updateMuteIcon()
+        }
+      }, 100)
     },
 
     createPlaylistButton() {
