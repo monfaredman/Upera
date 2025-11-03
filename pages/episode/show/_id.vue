@@ -46,6 +46,7 @@
             (currentEpisodeList && currentEpisodeList.length)
           )
         "
+        :credits-data="creditsData"
         class="full-screen-player vjs-fluid"
         @ready="handlePlayerReady"
         @timeupdate="handleTimeUpdate"
@@ -176,6 +177,7 @@ export default {
       posterUrl: '',
       videoUrl: '',
       vastUrl: '',
+      creditsData: {},
       tracks: [],
       loading: true,
       soon: false,
@@ -367,7 +369,11 @@ export default {
               language: track.language,
             }))
           }
-
+          this.creditsData = {
+            first_credits: data.first_credits || null,
+            after_credits: data.after_credits || null,
+            final_credits: data.final_credits || null,
+          }
           // تنظیم پیشنهاد (قسمت بعدی یا فصل بعدی)
           if (data.suggestion) {
             this.suggestion = data.suggestion
@@ -425,10 +431,20 @@ export default {
         }
       }
 
-      if (duration - currentTime <= 100 && this.suggestion) {
-        this.showNextEpisode = true
+      if (
+        this.creditsData.final_credits &&
+        currentTime >= this.creditsData.final_credits &&
+        this.suggestion
+      ) {
+        this.showNextMovie = true
+      } else if (
+        !this.creditsData.final_credits &&
+        duration - currentTime <= 100 &&
+        this.suggestion
+      ) {
+        this.showNextMovie = true
       } else {
-        this.showNextEpisode = false
+        this.showNextMovie = false
       }
       return player
     },

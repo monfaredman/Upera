@@ -1482,9 +1482,10 @@ export default {
     },
 
     isInFirstCredits(currentTime) {
-      const { first_credits = 1, after_credits = 60 } = this.creditsData
+      const { first_credits, after_credits } = this.creditsData
+
       return (
-        first_credits > 0 &&
+        first_credits >= 0 &&
         currentTime > first_credits &&
         currentTime < after_credits
       )

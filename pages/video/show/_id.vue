@@ -35,6 +35,7 @@
         :title="videoTitle"
         :tracks="tracks"
         :player-auto-play="true"
+        :credits-data="creditsData"
         class="full-screen-player vjs-fluid"
         @ready="handlePlayerReady"
         @timeupdate="handleTimeUpdate"
@@ -69,6 +70,7 @@ export default {
       videoTitle: '',
       posterUrl: '',
       videoUrl: '',
+      creditsData: {},
       tracks: [],
       loading: true,
       guest: true,
@@ -179,6 +181,12 @@ export default {
         const response = await this.$axios.get(apiUrl)
         if (response.status === 200) {
           const data = response.data.data
+
+          this.creditsData = {
+            first_credits: data.first_credits || null,
+            after_credits: data.after_credits || null,
+            final_credits: data.final_credits || null,
+          }
           // تنظیم اطلاعات اصلی فیلم
           this.videoTitle =
             this.$i18n.locale === 'fa' && data.video[0].name_fa
@@ -253,10 +261,20 @@ export default {
         }
       }
       // نمایش دکمه/اوورلی فیلم بعدی زمانی که زمان باقی‌مانده کمتر از 100 ثانیه است
-      if (duration - currentTime <= 100 && this.suggestion) {
-        this.showNextVideo = true
+      if (
+        this.creditsData.final_credits &&
+        currentTime >= this.creditsData.final_credits &&
+        this.suggestion
+      ) {
+        this.showNextMovie = true
+      } else if (
+        !this.creditsData.final_credits &&
+        duration - currentTime <= 100 &&
+        this.suggestion
+      ) {
+        this.showNextMovie = true
       } else {
-        this.showNextVideo = false
+        this.showNextMovie = false
       }
       return player
     },

@@ -75,6 +75,7 @@ export default {
     return {
       movieTitle: '',
       posterUrl: '',
+      creditsData: {},
       videoUrl: '',
       vastUrl: '',
       tracks: [],
@@ -298,7 +299,17 @@ export default {
         }
       }
       // نمایش دکمه/اوورلی فیلم بعدی زمانی که زمان باقی‌مانده کمتر از 100 ثانیه است
-      if (duration - currentTime <= 100 && this.suggestion) {
+      if (
+        this.creditsData.final_credits &&
+        currentTime >= this.creditsData.final_credits &&
+        this.suggestion
+      ) {
+        this.showNextMovie = true
+      } else if (
+        !this.creditsData.final_credits &&
+        duration - currentTime <= 100 &&
+        this.suggestion
+      ) {
         this.showNextMovie = true
       } else {
         this.showNextMovie = false
