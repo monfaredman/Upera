@@ -102,6 +102,7 @@ export default {
     '~/plugins/swal',
     './plugins/axios',
     './plugins/mixins/validation',
+    '~/plugins/persianDigits.client',
     '~/plugins/lightGallery.client',
     '~/plugins/awesomeCountdown.client',
   ],
