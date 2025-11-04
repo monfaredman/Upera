@@ -105,7 +105,7 @@
               <div
                 class="d-flex flex-column justify-content-center align-items-start"
               >
-                <span class="time-countdown" v-if="!countdown_finished">
+                <span v-if="!countdown_finished" class="time-countdown">
                   ثانیه {{ countdown }}
                 </span>
                 <a
@@ -260,15 +260,25 @@ export default {
         this.sms_sent = true
         this.startCountdown()
         this.otp = ['', '', '', '']
-        // Focus on first OTP input when SMS is sent
+
+        // stop loading (send/resend) — store confirmed send
+        this.loading.sendCode = false
+        this.loading.resendCode = false
+
+        // wait DOM update then focus first OTP input
         this.$nextTick(() => {
-          if (this.$refs['otp-0'] && this.$refs['otp-0'][0]) {
-            this.$refs['otp-0'][0].focus()
-          }
+          // small delay helps when inputs are inside conditional v-if
+          setTimeout(() => {
+            this.focusRef('otp-0')
+          }, 20)
         })
+      } else {
+        // If store resets messageSent, clear loading flags too
+        this.loading.sendCode = false
+        this.loading.resendCode = false
       }
-      // Loading states are handled in the sendcode method with finally block
     },
+
     otp: {
       handler(newVal) {
         const otpString = newVal.join('')
@@ -342,9 +352,14 @@ export default {
       if (!this.validatePhoneNumber(this.mobile)) {
         console.log('invalid phone')
         this.showPhoneError = true
+        // clear both loading flags (in case this was a resend)
+        this.loading.sendCode = false
+        this.loading.resendCode = false
         return
       }
 
+      // If this call originates from "resend", we might have set loading.resendCode already.
+      // Ensure sendCode shows spinner too (main spinner for both cases)
       this.loading.sendCode = true
       console.log('loading.sendCode = true', this.loading.sendCode)
 
@@ -353,12 +368,18 @@ export default {
           mobile: this.mobile.replace(/\s/g, ''),
         })
         console.log('SEND_LOGIN_CODE done')
+        // do not clear loading here — wait for messageSent watcher to clear it
       } catch (error) {
         console.error('Error sending code:', error)
-      } finally {
+        // clear resend flag if it was a resend attempt
         this.loading.sendCode = false
         this.loading.resendCode = false
-        console.log('loading.sendCode = false (finally)', this.loading.sendCode)
+        throw error
+      } finally {
+        // do not forcibly clear sendCode here — allow watcher to clear it on success
+        console.log(
+          'sendcode finished; waiting for messageSent to reset loading if success.'
+        )
       }
     },
     validatePhoneNumber(phone) {
@@ -402,7 +423,33 @@ export default {
         this.showPhoneError = true
       }
     },
+    getRefEl(refName) {
+      const refVal = this.$refs[refName]
+      if (!refVal) return null
+      // Vue sometimes provides array of nodes (if component wrapped or v-for).
+      if (Array.isArray(refVal)) return refVal[0] || null
+      return refVal
+    },
 
+    focusRef(refName) {
+      const el = this.getRefEl(refName)
+      if (!el) return false
+      // in some cases ref might be a Vue component, get underlying input
+      const node =
+        el instanceof HTMLElement ? el : el.$el || el.$refs?.input || null
+      if (node && typeof node.focus === 'function') {
+        node.focus()
+        // optional: place caret at end for input fields
+        try {
+          const len = node.value?.length || 0
+          node.setSelectionRange && node.setSelectionRange(len, len)
+        } catch (e) {
+          console.log(55)
+        }
+        return true
+      }
+      return false
+    },
     async login() {
       if (this.loading.login) return
 
@@ -493,6 +540,15 @@ export default {
       }
 
       this.LoginJquery()
+
+      // ✅ Focus on mobile input after modal opens
+      this.$nextTick(() => {
+        const mobileInput = document.getElementById('mobile')
+        if (mobileInput) mobileInput.focus()
+        setTimeout(() => {
+          this.focusRef('mobile')
+        }, 20)
+      })
     },
 
     showLoginAgain() {
@@ -558,16 +614,22 @@ export default {
       try {
         await this.sendcode()
         this.otp = ['', '', '', '']
+
+        // ✅ restart timer when resend is successful
+        this.startCountdown()
+
+        // ✅ focus again on first OTP input
         this.$nextTick(() => {
-          if (this.$refs['otp-0'] && this.$refs['otp-0'][0]) {
-            this.$refs['otp-0'][0].focus()
-          }
+          setTimeout(() => {
+            this.focusRef('otp-0')
+          }, 20)
         })
-      } finally {
+      } catch (e) {
         this.loading.resendCode = false
+        this.loading.sendCode = false
+        console.error('resend error', e)
       }
     },
-
     formatToNum(num) {
       if (num) {
         num = num.replace(/۱/g, '1')
