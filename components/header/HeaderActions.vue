@@ -1,79 +1,5 @@
 <template>
   <div class="header-buttons d-flex align-items-center h-full">
-    <!-- Settings Popover -->
-    <div
-      class="header-links header-links-profile-setting d-md-flex align-items-center h-full ml-lg-1 mr-lg-1 dropdown float-left hide-mobile"
-    >
-      <b-link
-        id="popover-settings"
-        class="d-flex align-items-center header-link"
-      >
-        <i class="icon-setting ml-2" />
-      </b-link>
-      <b-popover
-        id="popover-d-settings"
-        target="popover-settings"
-        triggers="hover"
-        placement="bottom"
-        fallback-placement="flip"
-        boundary-padding="1"
-      >
-        <ul class="dropdown-menu show">
-          <li class="px-3 py-2">
-            <div class="tab-content active">
-              <div id="tabsetting" class="tab-pane active">
-                <div
-                  class="d-flex align-items-center justify-content-between pt-3 py-4 border-bottom-gray"
-                >
-                  <div class="text-black">
-                    <i class="fa fa-moon ml-2" />
-                    حالت شب
-                  </div>
-                  <div class="custom-control custom-switch">
-                    <input
-                      id="nightMode"
-                      type="checkbox"
-                      class="custom-control-input"
-                      :checked="$colorMode.value === 'dark'"
-                      @change="nightmode($event.target.checked)"
-                    />
-                    <label class="custom-control-label" for="nightMode" />
-                  </div>
-                </div>
-                <div
-                  class="d-flex align-items-center justify-content-between py-4 pt-3 border-bottom-gray"
-                >
-                  <div class="text-black">
-                    <i class="fa fa-globe ml-2" />
-                    زبان فارسی
-                  </div>
-                  <div class="custom-control custom-switch">
-                    <input
-                      id="language"
-                      type="checkbox"
-                      class="custom-control-input"
-                      :checked="$i18n.locale === 'fa'"
-                      @change="changelang()"
-                    />
-                    <label class="custom-control-label" for="language" />
-                  </div>
-                </div>
-                <div class="py-4 pt-3">
-                  <div class="text-black pb-1">فیلترگذاری ثابت محتوا</div>
-                  <FilterContents
-                    :show="true"
-                    :setting="true"
-                    :savedata="true"
-                    :no-top="false"
-                    @execute_content_filtering="execute_content_filtering"
-                  />
-                </div>
-              </div>
-            </div>
-          </li>
-        </ul>
-      </b-popover>
-    </div>
     <!-- Basket Icon -->
     <div
       v-if="$store?.state?.basketActive !== false || !$auth.loggedIn"
@@ -95,89 +21,10 @@
       </b-popover>
     </div>
 
-    <!-- Subscription Buttons -->
-    <div class="btn-app">
-      <b-button
-        v-if="
-          !content_subscription &&
-          checkuser.subscription != 1 &&
-          !isLoggedIn &&
-          $route.name !== 'login'
-        "
-        variant="second"
-        class="d-flex align-items-center ml-2"
-        @click="$emit('show-modal-with-directdebit')"
-      >
-        <i class="fa fa-credit-card ml-2 hide-mobile" />
-        پرداخت خودکار
-      </b-button>
-      <b-button
-        v-else-if="
-          !content_subscription && checkuser.subscription != 1 && isLoggedIn
-        "
-        variant="second"
-        class="d-flex align-items-center ml-2"
-        @click="$emit('show-directdebit-modal')"
-      >
-        <i class="fa fa-credit-card ml-2 hide-mobile" />
-        پرداخت خودکار
-      </b-button>
-      <b-button
-        v-if="
-          (content_subscription || checkuser.subscription == 1) && !isLoggedIn
-        "
-        variant="second"
-        class="d-flex align-items-center ml-2"
-        @click="$emit('show-modal-with-subscription')"
-      >
-        <i class="fa fa-credit-card ml-2 hide-mobile" />
-        خرید اشتراک
-      </b-button>
-      <b-button
-        v-else-if="
-          (content_subscription || checkuser.subscription == 1) &&
-          !checkuser.access
-        "
-        variant="second"
-        class="d-flex align-items-center ml-2"
-        @click="$emit('show-subscription-modal')"
-      >
-        <i class="fa fa-credit-card ml-2 hide-mobile" />
-        خرید اشتراک
-      </b-button>
-      <b-button
-        v-else-if="
-          (content_subscription || checkuser.subscription == 1) &&
-          checkuser.access
-        "
-        variant="second"
-        class="d-flex align-items-center ml-2"
-        @click="$emit('show-subscription-modal')"
-      >
-        <i class="fa fa-credit-card ml-2 hide-mobile" />
-        تمدید اشتراک
-      </b-button>
-    </div>
-
-    <!-- App/Login Buttons -->
-    <nuxt-link
-      v-if="checkuser.show_app && isLoggedIn"
-      to="/app"
-      class="show-mobile btn-apps btn-main"
-    >
-      {{ $t('new.app') }}
-    </nuxt-link>
-    <b-button
-      v-else
-      variant="main"
-      class="show-mobile login-btn"
-      @click="$emit('show-modal')"
-    >
-      {{ $t('nav.login') }}
-    </b-button>
     <!-- User Profile Dropdown -->
     <UserProfileDropdown
       v-if="isLoggedIn"
+      ref="userProfileDropdown"
       :my-credit="myCredit"
       :show-payments="true"
       :content_subscription="!!contentSubscription"
@@ -185,6 +32,7 @@
       @show-subscription-modal="$emit('show-subscription-modal')"
       @show-directdebit-modal="$emit('show-directdebit-modal')"
       @logout="showLogoutConfirmation"
+      @show-profile-edit="showProfileEditModal"
     />
 
     <b-button
@@ -195,6 +43,118 @@
     >
       {{ $t('nav.login') }}
     </b-button>
+
+    <!-- Mobile Profile Drawer -->
+    <MobileProfileDrawer
+      v-if="isLoggedIn"
+      :is-visible="mobileDrawerVisible"
+      :my-credit="myCredit"
+      :show-payments="true"
+      :content-subscription="!!contentSubscription"
+      @close="closeMobileDrawer"
+      @show-credit-modal="$emit('show-credit-modal')"
+      @show-subscription-modal="$emit('show-subscription-modal')"
+      @show-directdebit-modal="$emit('show-directdebit-modal')"
+      @logout="showLogoutConfirmation"
+      @show-profile-edit="showProfileEditModal"
+    />
+
+    <!-- Profile Edit Modal -->
+    <b-modal
+      v-model="profileEditModalVisible"
+      title="ویرایش پروفایل"
+      centered
+      hide-footer
+      size="md"
+      modal-class="profile-edit-modal"
+    >
+      <b-form @submit.prevent="saveProfile">
+        <!-- Avatar Selection -->
+        <b-form-group label="تصویر پروفایل" label-for="avatar-selection">
+          <div class="avatar-grid">
+            <div
+              v-for="avatar in availableAvatars"
+              :key="avatar"
+              class="avatar-option"
+              :class="{ selected: selectedAvatar === avatar }"
+              @click="selectAvatar(avatar)"
+            >
+              <img :src="avatar" alt="Avatar" />
+            </div>
+          </div>
+          <!-- File upload for custom avatar -->
+          <div class="mt-3">
+            <label class="btn btn-outline-secondary btn-sm">
+              آپلود تصویر جدید
+              <input
+                type="file"
+                accept="image/*"
+                style="display: none"
+                @change="onFileChange"
+              />
+            </label>
+            <div v-if="customPreview" class="mt-2">
+              <div class="avatar-preview-label">پیش‌نمایش تصویر آپلود شده:</div>
+              <img :src="customPreview" alt="Preview" class="current-avatar" />
+              <b-button
+                size="sm"
+                variant="outline-danger"
+                class="ml-2"
+                @click="
+                  customPreview && URL.revokeObjectURL(customPreview),
+                    (customPreview = null),
+                    (customFile = null),
+                    (selectedAvatar = cdnUser
+                      ? `${cdnUser}/${profileForm.user_avatar || ''}`
+                      : selectedAvatar)
+                "
+              >
+                لغو بارگذاری
+              </b-button>
+            </div>
+          </div>
+        </b-form-group>
+
+        <!-- Name -->
+        <b-form-group label="نام" label-for="first-name">
+          <b-form-input
+            id="first-name"
+            v-model="profileForm.firstName"
+            placeholder="نام خود را وارد کنید"
+          />
+        </b-form-group>
+
+        <!-- Last Name -->
+        <b-form-group label="نام خانوادگی" label-for="last-name">
+          <b-form-input
+            id="last-name"
+            v-model="profileForm.lastName"
+            placeholder="نام خانوادگی خود را وارد کنید"
+          />
+        </b-form-group>
+
+        <!-- Email -->
+        <b-form-group label="ایمیل" label-for="email">
+          <b-form-input
+            id="email"
+            v-model="profileForm.email"
+            type="email"
+            placeholder="example@email.com"
+          />
+        </b-form-group>
+
+        <!-- Submit Button -->
+        <b-button
+          type="submit"
+          variant="primary"
+          block
+          :disabled="isSavingProfile"
+        >
+          <b-spinner v-if="isSavingProfile" small class="ml-2" />
+          ذخیره تغییرات
+        </b-button>
+      </b-form>
+    </b-modal>
 
     <!-- Logout Confirmation Modal -->
     <b-modal
@@ -241,12 +201,14 @@
 <script>
 import UserProfileDropdown from './UserProfileDropdown.vue'
 import BasketPopoverContent from './BasketPopoverContent.vue'
+import MobileProfileDrawer from './MobileProfileDrawer.vue'
 
 export default {
   name: 'HeaderActions',
   components: {
     UserProfileDropdown,
     BasketPopoverContent,
+    MobileProfileDrawer,
   },
   props: {
     isLoggedIn: {
@@ -267,10 +229,42 @@ export default {
       default: '',
     },
   },
+  data() {
+    return {
+      mobileDrawerVisible: false,
+      profileEditModalVisible: false,
+      availableAvatars: [],
+      selectedAvatar: null,
+      cdnUser: '',
+      customFile: null,
+      customPreview: null,
+      profileForm: {
+        firstName: '',
+        lastName: '',
+        email: '',
+      },
+      isSavingProfile: false,
+    }
+  },
   computed: {
     content_subscription() {
       return this.contentSubscription
     },
+  },
+  mounted() {
+    if (this.isLoggedIn) {
+      this.fetchAvatars()
+    }
+    // Listen for event to open mobile drawer
+
+    if (process.client) {
+      this.$root.$on('open-mobile-profile-drawer', this.openMobileDrawer)
+    }
+  },
+  beforeDestroy() {
+    if (process.client) {
+      this.$root.$off('open-mobile-profile-drawer', this.openMobileDrawer)
+    }
   },
   methods: {
     nightmode(e) {
@@ -293,6 +287,7 @@ export default {
     // Logout modal methods
     showLogoutConfirmation() {
       this.$root.$emit('bv::hide::popover') // Close the profile dropdown
+      this.closeMobileDrawer()
       this.$refs.logoutConfirmationModal.show()
     },
 
@@ -303,6 +298,161 @@ export default {
     confirmLogout() {
       this.hideLogoutModal()
       this.$emit('logout') // Emit the original logout event
+    },
+
+    // Mobile Drawer methods
+    openMobileDrawer() {
+      this.mobileDrawerVisible = true
+    },
+
+    closeMobileDrawer() {
+      this.mobileDrawerVisible = false
+    },
+
+    // Profile Edit Modal methods
+    showProfileEditModal() {
+      this.profileEditModalVisible = true
+    },
+
+    async fetchAvatars() {
+      try {
+        const response = await this.$axios.get('/get/avatars')
+        if (response.data && response.data.data) {
+          const { avatars, user_avatar, cdn_user } = response.data.data
+          // normalize avatars to full URLs when cdn_user is available
+          this.availableAvatars = (avatars || []).map((a) =>
+            /^https?:\/\//.test(a) ? a : cdn_user ? `${cdn_user}/${a}` : a
+          )
+          this.cdnUser = cdn_user || ''
+
+          if (user_avatar && !localStorage.getItem('selected_avatar')) {
+            this.selectedAvatar = cdn_user
+              ? `${cdn_user}/${user_avatar}`
+              : user_avatar
+          }
+          // if user has stored a selected avatar, prefer it
+          if (process.client) {
+            const stored = localStorage.getItem('selected_avatar')
+            if (stored) this.selectedAvatar = stored
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching avatars:', error)
+      }
+    },
+
+    selectAvatar(avatar) {
+      this.selectedAvatar = avatar
+      // clear any custom selection
+      if (this.customPreview) URL.revokeObjectURL(this.customPreview)
+      this.customFile = null
+      this.customPreview = null
+
+      if (process.client) localStorage.setItem('selected_avatar', avatar)
+      this.$root.$emit('user:avatar-changed', avatar)
+    },
+
+    onFileChange(e) {
+      const file = e.target.files && e.target.files[0]
+      if (!file) return
+      if (!file.type.startsWith('image/')) {
+        this.$swal({
+          icon: 'error',
+          title: 'فایل نامعتبر',
+          text: 'لطفا یک تصویر انتخاب کنید',
+        })
+        return
+      }
+      if (this.customPreview) URL.revokeObjectURL(this.customPreview)
+      this.customFile = file
+      this.customPreview = URL.createObjectURL(file)
+      this.selectedAvatar = this.customPreview
+    },
+
+    async saveProfile() {
+      this.isSavingProfile = true
+
+      try {
+        const userName =
+          `${this.profileForm.firstName || ''} ${
+            this.profileForm.lastName || ''
+          }`.trim() || null
+        let response = null
+        if (this.customFile) {
+          const form = new FormData()
+          form.append('name', userName || '')
+          form.append('email', this.profileForm.email || '')
+          form.append('image', this.customFile)
+
+          response = await this.$axios.post(
+            '/v1/update/profile/details',
+            form,
+            {
+              headers: { 'Content-Type': 'multipart/form-data' },
+            }
+          )
+
+          if (response.data && response.data.data) {
+            const data = response.data.data
+            const newAvatar = data.user_avatar
+              ? data.cdn_user
+                ? `${data.cdn_user}/${data.user_avatar}`
+                : data.user_avatar
+              : null
+            if (newAvatar && process.client)
+              localStorage.setItem('selected_avatar', newAvatar)
+            if (newAvatar) this.selectedAvatar = newAvatar
+          }
+        } else {
+          // Only update name/email on server when user selects existing avatar.
+          const payload = {
+            name: userName,
+            email: this.profileForm.email || null,
+          }
+          response = await this.$axios.post(
+            '/v1/update/profile/details',
+            payload
+          )
+
+          if (this.selectedAvatar && process.client) {
+            localStorage.setItem('selected_avatar', this.selectedAvatar)
+            this.$root.$emit('user:avatar-changed', this.selectedAvatar)
+          }
+        }
+
+        if (response && response.data) {
+          this.$swal({
+            icon: 'success',
+            title: 'موفق',
+            text: 'پروفایل با موفقیت به‌روزرسانی شد',
+            confirmButtonText: 'باشه',
+          })
+
+          this.profileEditModalVisible = false
+
+          // Refresh user data
+          try {
+            await this.$auth.fetchUser()
+          } catch (e) {
+            // non-fatal
+          }
+
+          // Update the UserProfileDropdown component
+          if (this.$refs.userProfileDropdown) {
+            this.$refs.userProfileDropdown.fetchAvatars()
+          }
+        }
+      } catch (error) {
+        console.error('Error saving profile:', error)
+        this.$swal({
+          icon: 'error',
+          title: 'خطا',
+          text: 'خطا در به‌روزرسانی پروفایل',
+          confirmButtonText: 'باشه',
+        })
+      } finally {
+        this.isSavingProfile = false
+      }
     },
   },
 }
@@ -333,6 +483,57 @@ export default {
   .login-btn {
     display: none !important;
   }
+}
+
+/* Profile Edit Modal Styles */
+::v-deep .profile-edit-modal .modal-content {
+  border-radius: 16px;
+}
+
+.avatar-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.avatar-option {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  overflow: hidden;
+  cursor: pointer;
+  border: 3px solid transparent;
+  transition: all 0.2s;
+}
+
+.avatar-option:hover {
+  border-color: #ccc;
+  transform: scale(1.05);
+}
+
+.avatar-option.selected {
+  border-color: #007bff;
+}
+
+.avatar-option img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatar-preview-label {
+  font-weight: 500;
+  margin-bottom: 10px;
+  color: #666;
+}
+
+.current-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #007bff;
 }
 
 /* Logout Modal Styles */

@@ -5537,6 +5537,17 @@ nav a:hover {
   direction: rtl;
   text-align: right;
 }
+.profile-edit-modal {
+  direction: rtl;
+  text-align: right;
+}
+.profile-edit-modal .close {
+  margin: -1rem -1rem -1rem 0;
+  padding-left: 0 !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
 .modal-download-link .modal-body {
   padding: 0;

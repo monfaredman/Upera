@@ -3,6 +3,9 @@
     <MobileHeader
       v-if="!itemmenu.includes($route.name)"
       :current-route="$route.name"
+      :is-logged-in="$auth.loggedIn"
+      :user-avatar="userAvatar"
+      @open-profile-drawer="handleOpenMobileDrawer"
     />
     <header id="header" class="page-header">
       <div
@@ -151,7 +154,25 @@ export default {
       showSubscriptionModal: 'subscription/showModal',
       content_subscription: 'content_subscription',
       my_credit: 'my_credit',
+      checkuser: 'checkuser',
     }),
+
+    userAvatar() {
+      // Get the stored avatar from localStorage
+      if (process.client) {
+        const stored = localStorage.getItem('selected_avatar')
+        if (stored) return stored
+      }
+      // Fallback to checkuser avatar if available
+      if (
+        this.checkuser &&
+        this.checkuser.user_avatar &&
+        this.checkuser.cdn_user
+      ) {
+        return `${this.checkuser.cdn_user}/${this.checkuser.user_avatar}`
+      }
+      return null
+    },
 
     logoTo() {
       return this.categories.includes(this.$route.path) ||
@@ -235,10 +256,20 @@ export default {
 
     if (this.$route.params.search) this.query = this.$route.params.search
     document.body.classList.add('hfixed')
+
+    // Listen for avatar changes
+    if (process.client) {
+      this.$root.$on('user:avatar-changed', this.handleAvatarChange)
+    }
   },
 
   destroyed() {
     window.removeEventListener('scroll', this.handleScroll)
+
+    // Clean up event listener
+    if (process.client) {
+      this.$root.$off('user:avatar-changed', this.handleAvatarChange)
+    }
   },
 
   methods: {
@@ -475,6 +506,14 @@ export default {
       } else {
         this.$i18n.setLocale('en')
       }
+    },
+    handleOpenMobileDrawer() {
+      // Emit event to HeaderActions to open the mobile drawer
+      this.$root.$emit('open-mobile-profile-drawer')
+    },
+    handleAvatarChange() {
+      // Force re-render of the computed userAvatar property
+      this.$forceUpdate()
     },
   },
 }
