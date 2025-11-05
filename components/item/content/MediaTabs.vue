@@ -9,6 +9,19 @@
             nav-class="item-tabs-nav"
             class="w-full"
           >
+            <!-- Teaser Tab (First Tab) -->
+            <b-tab v-if="medias.teaser === 1" title="تیزر و تریلر">
+              <div class="row">
+                <div class="col-12">
+                  <TeaserPreview
+                    :data="data"
+                    :medias="medias"
+                    @play-teaser="GET_FILE(1)"
+                  />
+                </div>
+              </div>
+            </b-tab>
+
             <!-- Backstage Tab -->
             <MediaTab
               v-if="medias.backstage === 1"
@@ -53,12 +66,14 @@
 <script>
 import GalleryTab from '@/components/item/content/tabs/GalleryTab'
 import MediaTab from '@/components/item/content/tabs/MediaTab'
+import TeaserPreview from '@/components/item/content/TeaserPreview'
 
 export default {
   name: 'MediaTabs',
   components: {
     GalleryTab,
     MediaTab,
+    TeaserPreview,
   },
   props: {
     data: { type: Object, default: () => ({ item: {} }) },
@@ -89,6 +104,7 @@ export default {
     },
     hasAnyMedia() {
       return (
+        this.medias.teaser === 1 ||
         this.medias.backstage === 1 ||
         this.medias.image === 1 ||
         this.medias.musicvideo === 1 ||

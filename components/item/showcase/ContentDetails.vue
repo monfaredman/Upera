@@ -2,13 +2,6 @@
   <section id="movie" class="page">
     <div>
       <div class="article py-3">
-        <!-- Teaser Section -->
-        <TeaserPreview
-          v-if="medias.teaser == 1"
-          :data="data"
-          :medias="medias"
-          @play-teaser="GET_FILE(1)"
-        />
         <!-- Additional Media Sections -->
         <MediaTabs
           v-if="hasMediaTabs"
@@ -27,10 +20,7 @@
           @load-images="loadImages"
         />
         <!-- No Content Message -->
-        <div
-          v-if="!hasMediaTabs || medias.teaser !== 1"
-          class="no-content-message"
-        >
+        <div v-if="!hasMediaTabs" class="no-content-message">
           <div class="text-center py-5">
             <i class="fas fa-folder-open fa-3x mb-3 text-muted"></i>
             <p class="text-muted">محتوایی برای نمایش وجود ندارد</p>
@@ -42,13 +32,11 @@
 </template>
 
 <script>
-import TeaserPreview from '@/components/item/content/TeaserPreview'
 import MediaTabs from '@/components/item/content/MediaTabs'
 
 export default {
   name: 'ContentDetails',
   components: {
-    TeaserPreview,
     MediaTabs,
   },
   props: {
@@ -111,6 +99,7 @@ export default {
   computed: {
     hasMediaTabs() {
       return (
+        this.medias.teaser === 1 ||
         this.casts?.length > 0 ||
         this.directors?.length > 0 ||
         this.producers?.length > 0 ||

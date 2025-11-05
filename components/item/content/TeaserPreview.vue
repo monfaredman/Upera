@@ -2,7 +2,7 @@
   <div v-if="mediaItems.length > 0" class="teaser-preview-wrapper">
     <HorizontalList
       title-en="Teasers & Trailers"
-      title-fa="تیزر و تریلر"
+      title-fa=" "
       :items="mediaItems"
       :instance-name="`teaser-preview-${data.item.id}`"
       :options="swiperOptions"
@@ -135,6 +135,10 @@ export default {
 </script>
 
 <style scoped>
+::v-deep .horizontal-list-container .swiper-container {
+  padding: 0 !important;
+}
+
 .teaser-preview-slider {
   position: relative;
   direction: rtl;
@@ -152,8 +156,9 @@ h5 {
   position: relative;
 }
 
-.swiper-slide {
+::v-deep .swiper-slide {
   flex-shrink: 0;
+  width: auto !important;
 }
 
 .teaser-card {
