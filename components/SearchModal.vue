@@ -121,8 +121,23 @@
           </div>
 
           <!--------------  Search Results ---------------->
+          <!-- Skeleton Loader -->
+          <div v-if="isLoading" class="search_skeleton mt-5 container-fluid">
+            <div v-for="n in 10" :key="n" class="actor">
+              <b-skeleton-img
+                no-aspect
+                width="142px"
+                height="212px"
+                animation="wave"
+                class="mb-2 rounded"
+              />
+              <b-skeleton width="70%" animation="wave" />
+            </div>
+          </div>
+
+          <!-- Actual Results -->
           <div
-            v-if="data.data != null || data.cast != null"
+            v-else-if="data.data != null || data.cast != null"
             id="actor"
             class="search_collection"
           >
@@ -240,6 +255,7 @@ export default {
       noresult: false,
       isVisible: false,
       isHandlingHashChange: false, // Prevent recursive calls
+      isLoading: false, // 👈 new
     }
   },
   computed: {
@@ -361,6 +377,8 @@ export default {
 
     async performSearch() {
       if (this.query && this.query.length > 1) {
+        this.isLoading = true // 👈 start skeleton
+
         const queries = { query: this.query }
         if (this.dubbed) queries.dubbed = 1
         if (this.subtitle) queries.subtitle = 1
@@ -389,9 +407,10 @@ export default {
           this.data = { data: null, cast: null }
           this.noresult = true
           console.error('Search error:', error)
+        } finally {
+          this.isLoading = false // 👈 stop skeleton
         }
       } else {
-        // Clear results if query is empty
         this.data = { data: null, cast: null }
         this.noresult = false
       }
@@ -736,5 +755,12 @@ span.label.label-rounded.label-red.label-1 {
 .theme-dark .form-control:focus {
   border-color: white !important;
   box-shadow: unset !important;
+}
+
+.search_skeleton .actor {
+  width: 18%;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
 }
 </style>

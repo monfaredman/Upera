@@ -258,6 +258,8 @@ export default {
       'BSpinner',
       'BootstrapVueIcons',
       'BIcon',
+      'BSkeleton',
+      'BSkeletonImg',
     ],
     directives: ['VBTooltip', 'VBToggle'],
   },
