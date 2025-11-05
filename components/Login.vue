@@ -73,7 +73,7 @@
               v-if="loading.sendCode"
               class="d-flex align-items-center justify-content-center"
             >
-              <b-spinner small class="mr-2"></b-spinner>
+              <b-spinner small class="ml-2" />
               در حال ارسال...
             </span>
             <span v-else>دریافت کد</span>
@@ -156,7 +156,7 @@
               v-if="loading.login"
               class="d-flex align-items-center justify-content-center"
             >
-              <b-spinner small class="mr-2"></b-spinner>
+              <b-spinner small class="ml-2" />
               در حال ورود...
             </span>
             <span v-else>ورود</span>

@@ -49,7 +49,6 @@
       <b-form-checkbox
         v-model="localAutoRenewal"
         switch
-        class="mb-3"
         @change="handleAutoRenewalChange"
       >
         <strong> تمدید خودکار اشتراک آپرا پلاس </strong>
@@ -190,6 +189,7 @@ export default {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
+  padding: 0 0.5rem;
   max-height: 70vh !important;
 }
 
@@ -231,7 +231,6 @@ export default {
   font-size: 0.95rem;
   font-weight: 600;
   margin-bottom: 0.5rem;
-  color: #333;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -253,7 +252,7 @@ export default {
 
 .series-switch {
   font-size: 0.775rem;
-  width: 15px;
+  width: 6px;
   height: 25px;
   margin: 0;
 }
@@ -295,7 +294,6 @@ export default {
   font-weight: 600;
   font-size: 1rem;
   margin-bottom: 0.5rem;
-  color: #333;
 }
 
 .plan-price {
@@ -328,7 +326,35 @@ export default {
   border: none !important;
 }
 
-.mb-3.custom-control.custom-switch {
+.custom-control.custom-switch {
   margin-right: 1rem !important;
+}
+
+/* Custom Scrollbar Styles */
+.series-section::-webkit-scrollbar {
+  width: 8px;
+}
+
+/* Try both selectors */
+.series-section::-webkit-scrollbar-track,
+.series-grid::-webkit-scrollbar-track {
+  border-radius: 10px;
+}
+
+/* Webkit Scrollbar */
+
+.series-section::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px !important;
+}
+
+.series-section::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Firefox Scrollbar */
+.series-section {
+  scrollbar-width: thin;
+  scrollbar-color: #888 #f1f1f1;
 }
 </style>

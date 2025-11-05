@@ -459,6 +459,10 @@ export default {
 </script>
 
 <style scoped>
+.header-buttons {
+  gap: 0 1rem;
+}
+
 .basket-popover {
   min-width: fit-content !important;
   max-width: 400px !important;
@@ -609,7 +613,7 @@ export default {
   gap: 8px;
   opacity: 1;
   border: 1px solid #ff6633;
-  background: transparent !important;
+  background: white !important;
   color: #ff6633;
 }
 

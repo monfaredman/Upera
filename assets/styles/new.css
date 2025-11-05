@@ -201,7 +201,7 @@ textarea {
 }
 
 .btn {
-  border-radius: 4px;
+  border-radius: 8px;
   font-weight: 400;
   border: none;
   word-spacing: -1px;
@@ -6169,7 +6169,7 @@ div.download-links-poster::after {
 }
 
 .btn {
-  border-radius: 4px;
+  border-radius: 8px;
   font-weight: 400;
   border: none;
   word-spacing: -1px;
@@ -6287,7 +6287,7 @@ div.download-links-poster::after {
   background-color: #f63;
   color: white;
   padding: 5px 80px;
-  border-radius: 4px;
+  border-radius: 8px;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -11163,7 +11163,7 @@ label:after {
   position: absolute;
   left: 1rem;
   right: 1rem;
-  bottom: 0;
+  bottom: -10px;
   border-bottom: 2px solid #d9d9d9;
   content: '';
 }

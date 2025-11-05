@@ -608,6 +608,9 @@ export default {
 </script>
 
 <style scoped>
+.download-links .btn i {
+  position: unset !important;
+}
 /* Modal Flex Container */
 .modal-flex-container {
   display: flex;
@@ -710,7 +713,7 @@ export default {
   align-items: center;
   justify-content: start;
   gap: 1rem;
-  padding: 0.75rem 0 0.75rem 1rem;
+  padding: 0.75rem 0 0 1rem;
 }
 
 .action-btn {

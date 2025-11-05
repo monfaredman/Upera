@@ -370,6 +370,7 @@ export default {
   max-height: 212px;
   overflow-y: auto;
   padding-right: 4px;
+  padding-left: 0.5rem !important;
 }
 
 .items-list-compact::-webkit-scrollbar {
@@ -377,8 +378,8 @@ export default {
 }
 
 .items-list-compact::-webkit-scrollbar-thumb {
-  background: #ff6633;
-  border-radius: 10px;
+  background: #888;
+  border-radius: 10px !important;
 }
 
 .basket-item-compact {
@@ -635,13 +636,13 @@ export default {
 }
 
 .theme-dark .btn-add-more-compact {
-  background: #2d2d2d;
+  background: white;
   border-color: #ff6633;
   color: #ff6633;
 }
 
 .theme-dark .btn-add-more-compact:hover {
-  background: #3a2419;
+  background: white;
   border-color: #ff8866;
   color: #ff8866;
 }
@@ -739,10 +740,12 @@ export default {
 }
 
 .theme-dark .items-list-compact::-webkit-scrollbar-thumb {
-  background: #ff6633;
+  background: #888;
+  border-radius: 10px !important;
 }
 
 .theme-dark .items-list-compact::-webkit-scrollbar-thumb:hover {
-  background: #ff8866;
+  background: #888;
+  border-radius: 10px !important;
 }
 </style>

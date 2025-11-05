@@ -1,8 +1,9 @@
 <template>
   <div class="header-links d-md-flex align-items-center dropdown">
-    <div
+    <nuxt-link
       id="popover-profile"
       class="d-flex align-items-center profile-avatar-trigger hide-mobile"
+      to="/profile"
     >
       <div
         v-if="userAvatar"
@@ -10,7 +11,7 @@
         :style="{ backgroundImage: `url(${userAvatar})` }"
       />
       <i v-else class="fa fa-user header-avatar-icon" />
-    </div>
+    </nuxt-link>
     <a class="d-inline d-md-none" @click.prevent="openProfileDrawer">
       <i class="fa fa-user ml-2" />
     </a>
@@ -75,7 +76,7 @@
             <li class="nav-item nav-item-padding">
               <b-button
                 variant="second"
-                class="d-flex align-items-center justify-content-center w-full"
+                class="d-flex align-items-center justify-content-center w-full create-subscription-button"
                 @click="handleSubscriptionAction"
               >
                 <i class="fa fa-credit-card ml-2" />
@@ -94,16 +95,17 @@
                     <div class="font-weight-bold">کیف پول</div>
                     <div class="p-fs-small mt-1">
                       <a class="text-black" @click="handleCreditAction">
-                        افزایش موجودی
+                        {{ myCredit }}
                       </a>
                     </div>
                   </div>
                 </div>
                 <button
-                  class="btn btn-secondary btn-sm"
+                  class="btn btn-secondary-outline btn-sm"
                   @click="handleCreditAction"
                 >
-                  {{ myCredit }}
+                  <i class="fa fa-plus" style="color: #003dcf !important" />
+                  افزایش موجودی
                 </button>
               </div>
             </li>
@@ -487,7 +489,7 @@
               <li class="nav-item nav-item-padding">
                 <b-button
                   variant="second"
-                  class="d-flex align-items-center justify-content-center w-full"
+                  class="d-flex align-items-center justify-content-center w-full create-subscription-button"
                   @click="handleSubscriptionAction"
                 >
                   <i class="fa fa-credit-card ml-2" />
@@ -1076,8 +1078,8 @@ export default {
 
 /* User Avatar */
 .user-avatar-wrapper {
-  width: 60px;
-  height: 60px;
+  width: 55px;
+  height: 55px;
   border-radius: 5rem;
   background-size: cover;
   background-position: center;
@@ -1210,7 +1212,7 @@ export default {
   padding: 0;
   margin: 8px 0 0 0;
   background-color: rgba(0, 0, 0, 0.03);
-  border-radius: 8px;
+  border-radius: 0;
   overflow: hidden;
 }
 
@@ -1397,8 +1399,8 @@ ul.dropdown-menu {
 }
 
 .header-avatar-wrapper {
-  width: 40px;
-  height: 40px;
+  width: 42px;
+  height: 42px;
   border-radius: 50%;
   background-size: cover;
   background-position: center;
@@ -1427,5 +1429,10 @@ ul.dropdown-menu {
 
 ::v-deep .modal-header {
   direction: rtl !important;
+}
+
+.create-subscription-button {
+  line-height: 2rem !important;
+  border-radius: 8px !important;
 }
 </style>

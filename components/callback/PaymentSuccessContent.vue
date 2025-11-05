@@ -555,8 +555,8 @@ export default {
 
 .accordion-wrapper::-webkit-scrollbar-thumb,
 .accordion-body::-webkit-scrollbar-thumb {
-  background: #ff6633;
-  border-radius: 8px;
+  background: #888;
+  border-radius: 10px !important;
 }
 
 .accordion-wrapper::-webkit-scrollbar-track,

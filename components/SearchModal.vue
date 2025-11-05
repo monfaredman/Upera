@@ -28,9 +28,6 @@
             <i class="icon-search" />
           </button>
         </div>
-        <button type="button" class="btn-close" @click="hideModal">
-          <i class="fas fa-times" />
-        </button>
       </div>
 
       <!-- Content -->
@@ -510,6 +507,12 @@ export default {
 }
 </script>
 <style scoped>
+.title {
+  border-radius: 12px;
+  padding: 0.3rem !important;
+  font-size: 0.8rem !important;
+}
+
 .search-modal-container {
   display: flex;
   flex-direction: column;
@@ -711,12 +714,12 @@ span.label.label-rounded.label-red.label-1 {
 .search-modal-content::-webkit-scrollbar,
 .search-modal-content::-webkit-scrollbar {
   width: 8px;
-  background: #f9f9f9;
 }
 
 .search-modal-content::-webkit-scrollbar-thumb,
 .search-modal-content::-webkit-scrollbar-thumb {
-  background: #ff6633;
+  background: #888;
+
   border-radius: 8px;
 }
 

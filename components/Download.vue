@@ -900,17 +900,18 @@ export default {
 }
 
 .content-card::-webkit-scrollbar-thumb {
-  background: #ff6633;
-  border-radius: 10px;
+  background: #888;
+  border-radius: 10px !important;
 }
 
 .content-card::-webkit-scrollbar-thumb:hover {
-  background: #ff4400;
+  background: #888;
+  border-radius: 10px !important;
 }
 
 .content-card {
   scrollbar-width: thin;
-  scrollbar-color: #ff6633 #f8f9fa;
+  scrollbar-color: #888 #f8f9fa;
 }
 
 .card-content {

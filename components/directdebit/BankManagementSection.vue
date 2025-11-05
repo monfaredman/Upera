@@ -237,4 +237,8 @@ export default {
     grid-template-columns: 1fr;
   }
 }
+
+::v-deep label.custom-control-label {
+  padding: 0 !important;
+}
 </style>
