@@ -6,8 +6,11 @@
       class="header-links header-links-profile d-md-flex align-items-center mr-md-2 mr-lg-3 h-full"
     >
       <a href="/kids" class="profile d-flex align-items-center header-link">
-        <i class="icon-kids-version" />
-        <span>کودک</span>
+        <img
+          src="@/assets/images/kid-logo.png"
+          alt="کودک"
+          style="width: 54px"
+        />
       </a>
     </div>
   </div>

@@ -21,6 +21,8 @@
       </b-popover>
     </div>
 
+    <SearchInput :value="query" @input="query = $event" />
+
     <!-- User Profile Dropdown -->
     <UserProfileDropdown
       v-if="isLoggedIn"
@@ -197,6 +199,7 @@
 import UserProfileDropdown from './UserProfileDropdown.vue'
 import BasketPopoverContent from './BasketPopoverContent.vue'
 import MobileProfileDrawer from './MobileProfileDrawer.vue'
+import SearchInput from '@/components/header/SearchInput.vue'
 
 export default {
   name: 'HeaderActions',
@@ -204,6 +207,7 @@ export default {
     UserProfileDropdown,
     BasketPopoverContent,
     MobileProfileDrawer,
+    SearchInput,
   },
   props: {
     isLoggedIn: {

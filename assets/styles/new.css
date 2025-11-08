@@ -2318,9 +2318,6 @@ a.thumbnail-wrapper {
 }
 @media (min-width: 768px) {
   .header-search {
-    margin-right: 1rem;
-    width: 16.875rem;
-    max-width: 100%;
     z-index: 10;
   }
   .header-search .search-result {
@@ -2380,11 +2377,6 @@ a.thumbnail-wrapper {
 .header-search .header-search-submit [class^='icon-'],
 .header-search .header-search-submit [class*=' icon-'] {
   vertical-align: middle;
-}
-@media (min-width: 992px) {
-  .header-search {
-    width: 20.125rem;
-  }
 }
 
 @media (min-width: 768px) {

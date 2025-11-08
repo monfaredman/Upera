@@ -35,8 +35,6 @@
                 @menu-leave="categoriesleave"
               />
 
-              <SearchInput :value="query" @input="query = $event" />
-
               <KidsSection v-if="$config.envname === 'upera'" />
 
               <!-- <NavigationMenu
@@ -49,6 +47,7 @@
               /> -->
             </div>
           </div>
+
           <HeaderActions
             :is-logged-in="$auth.loggedIn"
             :subscription-type="currentSubscriptionType"
@@ -80,7 +79,6 @@ import { mapGetters } from 'vuex'
 import MobileHeader from '@/components/header/MobileHeader.vue'
 import Logo from '@/components/header/Logo.vue'
 import NavigationMenu from '@/components/header/NavigationMenu.vue'
-import SearchInput from '@/components/header/SearchInput.vue'
 import HeaderActions from '@/components/header/HeaderActions.vue'
 import MobileNavigationMenus from '@/components/header/MobileNavigationMenus.vue'
 import ModalManager from '@/components/header/ModalManager.vue'
@@ -92,7 +90,6 @@ export default {
     MobileHeader,
     Logo,
     NavigationMenu,
-    SearchInput,
     HeaderActions,
     MobileNavigationMenus,
     ModalManager,

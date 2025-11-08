@@ -1,14 +1,18 @@
 <template>
   <div class="header-search">
-    <input
+    <!-- <input
       v-model="searchQuery"
       class="header-search-input"
       :placeholder="$t('new.search')"
       type="text"
       @keyup.enter="handleSearch"
-    />
-    <button class="header-search-submit" @click="handleSearch">
-      <i class="icon-search-stroke" />
+    /> -->
+    <button
+      @keyup.enter="handleSearch"
+      class="header-search-submit"
+      @click="handleSearch"
+    >
+      <i class="icon-search-stroke" style="font-size: 22px" />
     </button>
   </div>
 </template>
@@ -50,3 +54,11 @@ export default {
   },
 }
 </script>
+<style scoped>
+.header-search {
+  position: unset !important;
+}
+.header-search-submit {
+  position: unset !important;
+}
+</style>
