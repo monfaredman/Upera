@@ -3,7 +3,7 @@
     <!-- Season Dropdown and Sort Button -->
     <div class="container-fluid mb-3">
       <div class="row align-items-center">
-        <div class="col-auto">
+        <div class="col-6 col-md-auto">
           <b-dropdown
             class="season-dropdown"
             :text="seasontitle"
@@ -21,7 +21,7 @@
             </b-dropdown-item>
           </b-dropdown>
         </div>
-        <div class="col-auto">
+        <div class="col-6 col-md-auto">
           <b-dropdown class="sort-dropdown" variant="text" size="md" right>
             <template #button-content>
               <i class="fa fa-sort-alpha-down ml-2"></i>
@@ -445,6 +445,12 @@ section#watching {
   vertical-align: middle;
   position: relative;
   top: 1px;
+}
+
+@media (max-width: 767.98px) {
+  .season-dropdown {
+    width: fit-content;
+  }
 }
 
 @media (max-width: 575.98px) {

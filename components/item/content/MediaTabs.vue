@@ -1,7 +1,7 @@
 <template>
   <section class="horizontal-list-container mt-4">
     <div class="swiper-container horizontal-list">
-      <div id="movie-tabs" :class="{ 'border-top border-dark': hasAnyMedia }">
+      <div id="movie-tabs">
         <div class="nav mt-3" role="tablist">
           <b-tabs
             v-model="activeTab"
@@ -79,9 +79,6 @@ export default {
     data: { type: Object, default: () => ({ item: {} }) },
     type: { type: String, default: '' },
     medias: { type: Object, default: () => ({}) },
-    casts: { type: Array, default: () => [] },
-    directors: { type: Array, default: () => [] },
-    producers: { type: Array, default: () => [] },
     writers: { type: Array, default: () => [] },
     investors: { type: Array, default: () => [] },
     commNum: { type: Number, default: 0 },
@@ -95,13 +92,6 @@ export default {
     }
   },
   computed: {
-    hasCasts() {
-      return (
-        this.casts?.length > 0 ||
-        this.directors?.length > 0 ||
-        this.producers?.length > 0
-      )
-    },
     hasAnyMedia() {
       return (
         this.medias.teaser === 1 ||

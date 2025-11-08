@@ -74,6 +74,13 @@ export default {
 </script>
 
 <style scoped>
+.col-md-6.order-md-1 {
+  align-self: end;
+}
+.movie-info-wrapper {
+  padding-bottom: 0 !important;
+}
+
 .movie-content-section {
   padding: 2rem 0;
 }
@@ -114,7 +121,6 @@ export default {
   line-height: 1.7;
   color: rgba(255, 255, 255, 0.85);
   margin-bottom: 1.5rem;
-  max-height: 150px;
   overflow-y: auto;
 }
 
@@ -180,7 +186,6 @@ export default {
 
   .movie-description {
     font-size: 0.95rem;
-    max-height: 120px;
   }
 
   .btn-watch {
@@ -190,6 +195,10 @@ export default {
 
   .movie-info-wrapper {
     padding: 0.5rem;
+  }
+
+  i.icon-play {
+    top: 0 !important;
   }
 }
 

@@ -178,7 +178,7 @@ export default {
     .showcase-thumbnail-wrapper-outter
     .showcase-button-wrapper {
     display: flex !important;
-    justify-content: start !important;
+    justify-content: space-around !important;
     align-content: center !important;
     flex-wrap: wrap;
     justify-content: center;

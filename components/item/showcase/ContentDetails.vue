@@ -8,9 +8,6 @@
           :data="data"
           :type="type"
           :medias="medias"
-          :casts="casts"
-          :directors="directors"
-          :producers="producers"
           :writers="writers"
           :investors="investors"
           :comm-num="commNum"
@@ -62,18 +59,12 @@ export default {
       type: Number,
       default: 0,
     },
-    casts: {
-      type: Array,
-      default: () => [],
-    },
+
     directors: {
       type: Array,
       default: () => [],
     },
-    producers: {
-      type: Array,
-      default: () => [],
-    },
+
     writers: {
       type: Array,
       default: () => [],
@@ -100,9 +91,6 @@ export default {
     hasMediaTabs() {
       return (
         this.medias.teaser === 1 ||
-        this.casts?.length > 0 ||
-        this.directors?.length > 0 ||
-        this.producers?.length > 0 ||
         this.medias.backstage === 1 ||
         this.medias.image === 1 ||
         this.medias.musicvideo === 1 ||
@@ -135,7 +123,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: -6rem;
+  margin-top: 3rem;
 }
 
 .no-content-message .text-muted {
@@ -144,12 +132,16 @@ export default {
 }
 
 section#movie {
-  margin-top: -1rem !important;
+  margin-top: -4rem !important;
 }
 
 @media (max-width: 768px) {
   section#movie {
-    margin-top: -5rem !important;
+    margin-top: 1rem !important;
+  }
+
+  .no-content-message {
+    margin-top: -1rem;
   }
 }
 </style>

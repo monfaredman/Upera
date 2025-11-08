@@ -150,9 +150,6 @@
           :total-claps="total_claps"
           :episode-num="episode_num"
           :season-num="season_num"
-          :casts="casts"
-          :directors="directors"
-          :producers="producers"
           :writers="writers"
           :investors="investors"
           :comm-num="comm_num"
@@ -977,7 +974,6 @@ export default {
 }
 
 .content-section {
-  margin-bottom: 3rem;
   padding-top: 2rem;
 }
 
@@ -1091,13 +1087,13 @@ section#content {
   .content-nav-header .nav {
     width: 93%;
     height: auto;
-    border-radius: 10px;
     padding: 4px 5px;
     top: 0;
     right: 0;
     left: 0.5rem;
     margin: 0 auto !important;
     gap: 5px;
+    justify-content: space-around;
   }
 
   .content-nav-header .nav-link {

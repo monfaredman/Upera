@@ -105,8 +105,7 @@ export default {
   flex-direction: row;
   justify-content: space-between;
   align-items: flex-start;
-  max-width: 1356px;
-  width: 100%;
+  max-width: 100%;
   min-height: 232px;
   padding: 12px;
   gap: 12px;
