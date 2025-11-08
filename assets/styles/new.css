@@ -4779,9 +4779,10 @@ nav a:hover {
   #genre .subtitle {
     font-size: 1.8em;
   }
-  #actor {
-    margin-top: 90px;
+  div#actor {
+    padding: 5rem 0 1rem 0;
   }
+
   #banner .image-profile {
     max-height: 300px;
   }
@@ -6952,7 +6953,7 @@ body widget .-bold {
 }
 
 .slideshow {
-  margin-top: 75px !important;
+  padding-top: 75px !important;
 }
 
 #genre .title {
@@ -8754,10 +8755,6 @@ body widget .-bold {
     letter-spacing: -0.5px;
   }
 
-  #actor {
-    margin-top: 110px;
-  }
-
   .modal-lg {
     max-width: 650px;
   }
@@ -9577,6 +9574,10 @@ small,
   #feature .feature .tags {
     color: #0f252a;
     padding-left: 35px;
+  }
+
+  div#actor {
+    padding: 1rem 0 1rem 0 !important;
   }
 }
 @media (max-width: 576px) {

@@ -13,7 +13,12 @@
       <i v-else class="fa fa-user header-avatar-icon" />
     </nuxt-link>
     <a class="d-inline d-md-none" @click.prevent="openProfileDrawer">
-      <i class="fa fa-user ml-2" />
+      <div
+        v-if="userAvatar"
+        class="header-avatar-wrapper"
+        :style="{ backgroundImage: `url(${userAvatar})` }"
+      />
+      <i v-else class="fa fa-user header-avatar-icon" />
     </a>
     <b-popover
       id="popover-d-profile"

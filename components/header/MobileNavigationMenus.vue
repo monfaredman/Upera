@@ -1,6 +1,6 @@
 <template>
   <div>
-    <ul v-if="showCategoriesMenu" class="d-md-none category-menu-mobile mt-5">
+    <ul v-if="showCategoriesMenu" class="d-md-none category-menu-mobile pt-5">
       <li>
         <nuxt-link to="/genres">
           {{ $t('new.genres') }}
@@ -24,7 +24,7 @@
     </ul>
     <ul
       v-if="showProfileMenu"
-      class="container d-md-none category-menu-mobile category-menu-mobile-setting mt-5 pt-md-3 pt-lg-5 p- app_container_pricing_res"
+      class="container d-md-none category-menu-mobile category-menu-mobile-setting pt-5 pt-md-3 pt-lg-5 p- app_container_pricing_res"
     >
       <li class="mr-3">
         <nuxt-link to="/profile"> لیست‌های من </nuxt-link>

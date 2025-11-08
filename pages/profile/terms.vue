@@ -1,6 +1,6 @@
 <template>
   <div id="checkcontainer" class="container-fluid">
-    <div class="container mt-5 pt-lg-5 pt-md-5 mb-5 pt-1  faq-page">
+    <div class="container pt-5 pt-lg-5 pt-md-5 mb-5 pt-1 faq-page">
       <section id="banner">
         <div class="container">
           <header class="headline mt-5">
@@ -10,12 +10,16 @@
           </header>
         </div>
       </section>
-      <br><br>
+      <br /><br />
       <!--     <h4 class="font-weight-bold h6 mt-1 pt-2">
       <span class="pl-2 title">{{ $t('new.term') }}</span>
     </h4> -->
       <!-- <hr> -->
-      <div v-if="!checkuser.terms" v-lazy-load="data.terms" class="body text-justify" />
+      <div
+        v-if="!checkuser.terms"
+        v-lazy-load="data.terms"
+        class="body text-justify"
+      />
       <div v-else v-lazy-load="checkuser.terms" class="body text-justify" />
 
       <section id="banner">
@@ -27,12 +31,16 @@
           </header>
         </div>
       </section>
-      <br><br>
+      <br /><br />
       <!--     <h4 class="font-weight-bold h6 mt-1 pt-2">
       <span class="pl-2 title">{{ $t('new.term') }}</span>
     </h4> -->
       <!-- <hr> -->
-      <div v-if="!checkuser.privacy" v-lazy-load="data.privacy" class="body text-justify" />
+      <div
+        v-if="!checkuser.privacy"
+        v-lazy-load="data.privacy"
+        class="body text-justify"
+      />
       <div v-else v-lazy-load="checkuser.privacy" class="body text-justify" />
     </div>
   </div>
@@ -40,22 +48,23 @@
 
 <script>
 export default {
-  async asyncData (context) {
+  async asyncData(context) {
     let res
     res = await context.app.$axios.get('/get/app/details')
     // if(context.app.i18n.locale=="fa")
-    return {data:{terms:res.data.data.terms,privacy:res.data.data.privacy}}
+    return {
+      data: { terms: res.data.data.terms, privacy: res.data.data.privacy },
+    }
     // else
     //   return {data:{terms:res.data.data.terms_en,privacy:res.data.data.privacy_en}}
   },
-    data () {
-      return {
-        data:{},
-      }
-    },
+  data() {
+    return {
+      data: {},
+    }
+  },
   head() {
-
-    return { title:  this.$t('footer.terms') }
-  }
+    return { title: this.$t('footer.terms') }
+  },
 }
 </script>

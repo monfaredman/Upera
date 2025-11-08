@@ -80,3 +80,8 @@ export default {
   },
 }
 </script>
+<style scoped>
+.title {
+  border-radius: 8px;
+}
+</style>

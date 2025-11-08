@@ -35,12 +35,7 @@
       @show-profile-edit="showProfileEditModal"
     />
 
-    <b-button
-      v-else
-      variant="main"
-      class="hide-mobile"
-      @click="$emit('show-modal')"
-    >
+    <b-button v-else variant="main" @click="$emit('show-modal')">
       {{ $t('nav.login') }}
     </b-button>
 
