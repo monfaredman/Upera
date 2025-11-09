@@ -41,7 +41,7 @@
     </div>
 
     <!-- New Types Section with Skeleton -->
-    <HorizontalListSkeleton v-if="isLoadingLives" variant="backdrop" />
+    <!-- <HorizontalListSkeleton v-if="isLoadingLives" variant="backdrop" />
     <div v-else-if="data" class="mt-4">
       <HorizontalList
         :title-en="lives.list_en"
@@ -82,7 +82,7 @@
         :type="'slider'"
         :single-item-type="'simple'"
       />
-    </div>
+    </div> -->
 
     <!-- Lives Section with Skeleton -->
     <HorizontalListSkeleton v-if="isLoadingLives" variant="backdrop" />
