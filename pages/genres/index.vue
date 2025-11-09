@@ -30,9 +30,9 @@
           class="col-6 col-md-4 col-lg-3"
         >
           <nuxt-link
-            :to="{
-              path: item.href,
-            }"
+            :to="
+              item.type === 'genre' ? { path: item.href } : { path: item.href }
+            "
             class="category-box"
           >
             <div class="category-image">
@@ -145,6 +145,7 @@ export default {
           en: genre.en,
           cover: genre.cover || 'top_250_movies_series',
           type: 'genre',
+          href: `/lists/${this.toLowerCase(genre.en)}`,
         })),
       ]
     },
