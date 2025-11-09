@@ -175,7 +175,7 @@
         </div>
       </div>
       <div v-else class="container-fluid">
-        <div class="text-center my-5">
+        <div class="text-center py-5">
           <h2>محتوایی جهت نمایش وجود ندارد</h2>
         </div>
       </div>
