@@ -604,7 +604,7 @@ export default {
 }
 @media (min-width: 1300px) and (max-width: 1500px) {
   .swiper-wrapper >>> .slick-dots {
-    bottom: 10rem !important;
+    bottom: 12rem !important;
   }
   .custom-prev {
     left: 2.6rem;
@@ -622,7 +622,7 @@ export default {
     margin-top: 14rem;
   }
   .swiper-wrapper >>> .slick-dots {
-    bottom: 14rem;
+    bottom: 12rem;
   }
 }
 

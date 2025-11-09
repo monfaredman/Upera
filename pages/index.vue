@@ -1046,6 +1046,11 @@ export default {
   margin-top: -11rem;
 }
 
+@media (max-width: 1600px) {
+  .offer-section {
+    margin-top: -7rem;
+  }
+}
 @media (max-width: 1500px) {
   .offer-section {
     margin-top: -7rem;
