@@ -37,7 +37,11 @@
           </template>
      -->
 
-    <div v-for="(item, index) in sliders" :key="index" class="swiper-slide">
+    <div
+      v-for="(item, index) in reorderedSliders"
+      :key="index"
+      class="swiper-slide"
+    >
       <div class="row no-gutters">
         <div class="col-12 showcase-pic showcase-pic-main">
           <template v-if="item.media_type === 'video2'">
@@ -304,6 +308,13 @@ export default {
     sliders: { type: Array, required: true },
     options: { type: Object, default: () => ({}) },
     swiperKey: { type: [String, Number], default: '' },
+  },
+  computed: {
+    reorderedSliders() {
+      if (this.sliders.length === 0) return []
+      const [first, ...rest] = this.sliders
+      return [...rest, first]
+    },
   },
   methods: {
     next() {

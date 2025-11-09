@@ -8,8 +8,8 @@
       @keyup.enter="handleSearch"
     /> -->
     <button
-      @keyup.enter="handleSearch"
       class="header-search-submit"
+      @keyup.enter="handleSearch"
       @click="handleSearch"
     >
       <i class="icon-search-stroke" style="font-size: 22px" />

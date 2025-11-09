@@ -646,7 +646,12 @@ export default {
   },
   computed: {
     sliders() {
-      return this.$store.state.slider.sliders
+      console.log('sliders', this.$store.state.slider.sliders)
+      // Return sliders sorted by index property, or empty array if not found
+      const sliders = this.$store.state.slider.sliders
+      return Array.isArray(sliders) && sliders.length > 0
+        ? sliders.slice().sort((a, b) => (a.index ?? 0) - (b.index ?? 0))
+        : []
     },
   },
   destroyed() {
@@ -699,7 +704,7 @@ export default {
     // Fetch lives
     this.isLoadingLives = true
     this.$axios
-      .get('/get/lives?ref=' + '7202018')
+      .get('/get/lives?ref=' + this.checkuser?.ref)
       .then((livesRes) => {
         this.lives = livesRes.data
       })
@@ -713,7 +718,7 @@ export default {
     // Fetch UGCs
     this.isLoadingUgcs = true
     this.$axios
-      .get('/get/ugcs?ref=' + '7202018')
+      .get('/get/ugcs?ref=' + this.checkuser?.ref)
       .then((ugcsRes) => {
         this.ugcs = ugcsRes.data
         this.ugcs = this.transformUgcsData(this.ugcs)

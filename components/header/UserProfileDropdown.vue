@@ -719,7 +719,6 @@ export default {
   data() {
     return {
       profileEditModalVisible: false,
-      availableAvatars: [],
       selectedAvatar: null,
       userAvatar: null,
       // custom upload file (when user picks a new image file)
@@ -749,6 +748,9 @@ export default {
       }
       return 'پرداخت خودکار'
     },
+    availableAvatars() {
+      return this.$store.getters.avatars.availableAvatars
+    },
     userName() {
       const { firstName, lastName } = this.profileForm
       if (firstName || lastName) {
@@ -769,14 +771,16 @@ export default {
     },
   },
   mounted() {
-    if (this.checkuser) {
-      this.fetchAvatars()
-    }
     this.checkIfMobile()
     if (process.client) {
       window.addEventListener('resize', this.checkIfMobile)
     }
-    this.fetchAvatars()
+
+    // Fetch avatars only once
+    if (this.checkuser) {
+      this.fetchAvatars()
+    }
+
     if (this.userAvatar) {
       this.selectedAvatar = this.userAvatar
     }
@@ -841,23 +845,18 @@ export default {
     },
     async fetchAvatars() {
       try {
-        const response = await this.$axios.get('/get/avatars')
-        if (response.data && response.data.data) {
-          const { avatars, user_avatar, cdn_user } = response.data.data
-          const avatarUrl = (avatars || []).map((avatar) => {
-            // if avatar strings already look like URLs, keep them
-            if (/^https?:\/\//.test(avatar)) return avatar
-            return cdn_user ? `${cdn_user}/${avatar}` : avatar
-          })
-          this.availableAvatars = avatarUrl || []
+        // Use Vuex store action to fetch avatars (only fetches once)
+        await this.$store.dispatch('FETCH_AVATARS')
 
-          if (user_avatar) {
-            const ua = cdn_user ? `${cdn_user}/${user_avatar}` : user_avatar
-            // only set userAvatar if not overridden by stored selection
-            if (!localStorage.getItem('selected_avatar')) {
-              this.userAvatar = ua
-              this.selectedAvatar = this.userAvatar
-            }
+        const { userAvatar: user_avatar, cdnUser: cdn_user } =
+          this.$store.getters.avatars
+
+        if (user_avatar) {
+          const ua = cdn_user ? `${cdn_user}/${user_avatar}` : user_avatar
+          // only set userAvatar if not overridden by stored selection
+          if (!localStorage.getItem('selected_avatar')) {
+            this.userAvatar = ua
+            this.selectedAvatar = this.userAvatar
           }
         }
       } catch (error) {

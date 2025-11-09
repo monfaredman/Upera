@@ -21,7 +21,7 @@
       </b-popover>
     </div>
 
-    <SearchInput :value="query" @input="query = $event" />
+    <SearchInput :value="query || ''" @input="query = $event" />
 
     <!-- User Profile Dropdown -->
     <UserProfileDropdown
@@ -232,10 +232,9 @@ export default {
     return {
       mobileDrawerVisible: false,
       profileEditModalVisible: false,
-      availableAvatars: [],
       selectedAvatar: null,
-      cdnUser: '',
       customFile: null,
+      query: null,
       customPreview: null,
       profileForm: {
         firstName: '',
@@ -248,6 +247,12 @@ export default {
   computed: {
     content_subscription() {
       return this.contentSubscription
+    },
+    availableAvatars() {
+      return this.$store.getters.avatars.availableAvatars
+    },
+    cdnUser() {
+      return this.$store.getters.avatars.cdnUser || ''
     },
   },
   mounted() {
@@ -315,25 +320,20 @@ export default {
 
     async fetchAvatars() {
       try {
-        const response = await this.$axios.get('/get/avatars')
-        if (response.data && response.data.data) {
-          const { avatars, user_avatar, cdn_user } = response.data.data
-          // normalize avatars to full URLs when cdn_user is available
-          this.availableAvatars = (avatars || []).map((a) =>
-            /^https?:\/\//.test(a) ? a : cdn_user ? `${cdn_user}/${a}` : a
-          )
-          this.cdnUser = cdn_user || ''
+        // Use Vuex store action to fetch avatars (only fetches once)
+        await this.$store.dispatch('FETCH_AVATARS')
 
-          if (user_avatar && !localStorage.getItem('selected_avatar')) {
-            this.selectedAvatar = cdn_user
-              ? `${cdn_user}/${user_avatar}`
-              : user_avatar
-          }
-          // if user has stored a selected avatar, prefer it
-          if (process.client) {
-            const stored = localStorage.getItem('selected_avatar')
-            if (stored) this.selectedAvatar = stored
-          }
+        const { userAvatar, cdnUser } = this.$store.getters.avatars
+
+        if (userAvatar && !localStorage.getItem('selected_avatar')) {
+          this.selectedAvatar = cdnUser
+            ? `${cdnUser}/${userAvatar}`
+            : userAvatar
+        }
+        // if user has stored a selected avatar, prefer it
+        if (process.client) {
+          const stored = localStorage.getItem('selected_avatar')
+          if (stored) this.selectedAvatar = stored
         }
       } catch (error) {
         console.error('Error fetching avatars:', error)
@@ -435,6 +435,10 @@ export default {
           } catch (e) {
             // non-fatal
           }
+
+          // Clear and refetch avatars from store
+          await this.$store.dispatch('CLEAR_AVATARS')
+          await this.$store.dispatch('FETCH_AVATARS')
 
           // Update the UserProfileDropdown component
           if (this.$refs.userProfileDropdown) {

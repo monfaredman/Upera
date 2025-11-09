@@ -1,3 +1,6 @@
+// Global promise to track ongoing avatar fetch
+let avatarFetchPromise = null
+
 export const state = () => ({
   locales: ['en', 'fa'],
   locale: 'fa',
@@ -12,6 +15,12 @@ export const state = () => ({
   showDownloadModal: false,
   autoplay: true,
   basketActive: false,
+  avatars: {
+    availableAvatars: [],
+    userAvatar: null,
+    cdnUser: null,
+    loaded: false,
+  },
 })
 
 // getters
@@ -47,6 +56,9 @@ export const getters = {
   basketActive(state) {
     return state.basketActive
   },
+  avatars(state) {
+    return state.avatars
+  },
 }
 
 export const mutations = {
@@ -73,6 +85,14 @@ export const mutations = {
   },
   SET_BASKET_ACTIVE_MUTATION(state, basketActive) {
     state.basketActive = basketActive
+  },
+  SET_AVATARS(state, data) {
+    state.avatars = {
+      availableAvatars: data.availableAvatars,
+      userAvatar: data.userAvatar,
+      cdnUser: data.cdnUser,
+      loaded: true,
+    }
   },
 }
 
@@ -182,5 +202,61 @@ export const actions = {
 
   SET_MY_CREDIT(store, data) {
     store.commit('SET_MY_CREDIT', data)
+  },
+
+  async FETCH_AVATARS(store) {
+    // If already loaded, return immediately
+    if (store.state.avatars.loaded) {
+      console.log('[FETCH_AVATARS] Already loaded, skipping')
+      return
+    }
+
+    // If a fetch is already in progress, wait for it
+    if (avatarFetchPromise) {
+      console.log(
+        '[FETCH_AVATARS] Fetch in progress, waiting for existing promise'
+      )
+      return avatarFetchPromise
+    }
+
+    console.log('[FETCH_AVATARS] Starting new fetch')
+    // Start the fetch and store the promise
+    avatarFetchPromise = (async () => {
+      try {
+        console.log('[FETCH_AVATARS] Making API call to /get/avatars')
+        const response = await this.$axios.get('/get/avatars')
+        if (response?.data?.data) {
+          const { avatars, user_avatar, cdn_user } = response.data.data
+          // Normalize avatars to full URLs when cdn_user is available
+          const availableAvatars = (avatars || []).map((a) =>
+            cdn_user && !a.startsWith('http') ? cdn_user + a : a
+          )
+          store.commit('SET_AVATARS', {
+            availableAvatars,
+            userAvatar: user_avatar,
+            cdnUser: cdn_user,
+          })
+          console.log('[FETCH_AVATARS] Successfully fetched and stored avatars')
+        }
+      } catch (error) {
+        console.error('[FETCH_AVATARS] Error fetching avatars:', error)
+      } finally {
+        // Clear the promise after completion
+        avatarFetchPromise = null
+      }
+    })()
+
+    return avatarFetchPromise
+  },
+
+  CLEAR_AVATARS(store) {
+    // Reset the promise as well
+    avatarFetchPromise = null
+    store.commit('SET_AVATARS', {
+      availableAvatars: [],
+      userAvatar: null,
+      cdnUser: null,
+      loaded: false,
+    })
   },
 }
