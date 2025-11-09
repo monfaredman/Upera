@@ -89,8 +89,6 @@ export default {
   // },
   methods: {
     async loadVideo() {
-      console.log('loadVideo() is called!')
-
       try {
         const id = this.$route.params.id
         if (!id) {
@@ -98,12 +96,8 @@ export default {
           return
         }
 
-        console.log('ID:', id)
-
         const ref = this.$cookiz.get('ref') || ''
         const apiUrl = `/ghost/get/watch/live/${id}${ref ? `?ref=${ref}` : ''}`
-
-        console.log('API URL:', apiUrl)
 
         // **دریافت اطلاعات ویدیو از API**
         const apiResponse = await this.$axios.get(apiUrl)
@@ -114,27 +108,21 @@ export default {
           this.posterUrl = data.poster || ''
           const streamUrl = data.video.video // دریافت آدرس استریم از API
 
-          console.log('Stream URL from API:', streamUrl)
-
           // **بررسی استریم با `HEAD` request**
           const streamResponse = await fetch(streamUrl, { method: 'HEAD' })
 
           if (streamResponse.ok) {
-            console.log('Stream is available:', streamUrl)
             this.videoUrl = streamUrl
             this.soon = false
           } else {
-            console.log("Stream not available - Showing 'Soon' message")
             this.soon = true
           }
         } else {
-          console.log('API response was not 200')
           this.soon = true
         }
 
         this.loading = false
       } catch (error) {
-        console.error('API Error:', error)
         this.loading = false
         this.soon = true
       }

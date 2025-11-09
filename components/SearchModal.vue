@@ -288,8 +288,6 @@ export default {
     },
 
     handleHashChange(hash) {
-      console.log('Hash changed:', hash)
-
       if (hash === '#search') {
         // Open modal without query
         this.query = ''
@@ -309,7 +307,6 @@ export default {
         }
       } else if (this.isVisible && !hash.includes('#search')) {
         // Only close modal if hash doesn't contain search AND modal is visible
-        console.log('Closing modal - no search hash')
         this.hideModal()
       }
     },
@@ -511,7 +508,6 @@ export default {
 
     onShown() {
       this.isVisible = true
-      console.log('Search modal shown')
 
       // Perform search if we have a query when modal opens
       if (this.query) {

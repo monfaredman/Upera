@@ -43,10 +43,10 @@
               @change="change_mobile"
               @blur="validatePhoneOnBlur"
             />
-            <div v-if="typeof errors === 'string'" class="text-danger">
+            <!-- <div v-if="typeof errors === 'string'" class="text-danger">
               {{ errors }}
-            </div>
-            <div v-else-if="errors && errors.mobile" class="text-danger">
+            </div> -->
+            <div v-if="errors && errors.mobile" class="text-danger">
               {{ errors.mobile[0] }}
             </div>
             <div v-else-if="showPhoneError" class="invalid-error-phone">
@@ -256,7 +256,6 @@ export default {
     },
     messageSent(val) {
       if (val) {
-        console.log('Message sent:', val)
         this.sms_sent = true
         this.startCountdown()
         this.otp = ['', '', '', '']
@@ -347,10 +346,7 @@ export default {
     },
 
     async sendcode() {
-      console.log('sendcode() called')
-
       if (!this.validatePhoneNumber(this.mobile)) {
-        console.log('invalid phone')
         this.showPhoneError = true
         // clear both loading flags (in case this was a resend)
         this.loading.sendCode = false
@@ -361,25 +357,19 @@ export default {
       // If this call originates from "resend", we might have set loading.resendCode already.
       // Ensure sendCode shows spinner too (main spinner for both cases)
       this.loading.sendCode = true
-      console.log('loading.sendCode = true', this.loading.sendCode)
 
       try {
         await this.$store.dispatch('login/SEND_LOGIN_CODE', {
           mobile: this.mobile.replace(/\s/g, ''),
         })
-        console.log('SEND_LOGIN_CODE done')
         // do not clear loading here — wait for messageSent watcher to clear it
       } catch (error) {
-        console.error('Error sending code:', error)
         // clear resend flag if it was a resend attempt
         this.loading.sendCode = false
         this.loading.resendCode = false
         throw error
       } finally {
         // do not forcibly clear sendCode here — allow watcher to clear it on success
-        console.log(
-          'sendcode finished; waiting for messageSent to reset loading if success.'
-        )
       }
     },
     validatePhoneNumber(phone) {
@@ -444,7 +434,7 @@ export default {
           const len = node.value?.length || 0
           node.setSelectionRange && node.setSelectionRange(len, len)
         } catch (e) {
-          console.log(55)
+          // ignore
         }
         return true
       }
@@ -513,7 +503,6 @@ export default {
 
         return response
       } catch (err) {
-        console.error('Login error:', err)
         if (submitcode) {
           submitcode.setAttribute('disabled', false)
         }
@@ -627,7 +616,6 @@ export default {
       } catch (e) {
         this.loading.resendCode = false
         this.loading.sendCode = false
-        console.error('resend error', e)
       }
     },
     formatToNum(num) {

@@ -1304,11 +1304,7 @@ export default {
           .$post(`/nocache/videos/${this.videoid}/increment-views`, {
             videotype: this.videotype,
           })
-          .then((response) => {
-            console.log(
-              'Views incremented, new view count:',
-              response.views_count
-            )
+          .then(() => {
             this.viewsIncremented = true
           })
           .catch((error) => {
@@ -1540,7 +1536,6 @@ export default {
     // ============================================
 
     setupAutoHideControls() {
-      console.log(55, this.player)
       if (!this.player) return
 
       let inactivityTimeout = null
@@ -1647,13 +1642,11 @@ export default {
         // ✅ Fix RTL volume bar direction
         const isRtl = this.$i18n.locale === 'fa'
         if (isRtl) {
-          console.log('isRtl', isRtl)
           const volumeBar =
             this.player.controlBar?.getChild('volumePanel')?.volumeControl
               ?.volumeBar
 
           if (volumeBar) {
-            console.log('volumeBar', volumeBar)
             const originalHandleMouseMove = volumeBar.handleMouseMove
             volumeBar.handleMouseMove = function (event) {
               // reverse the x position
@@ -1727,10 +1720,8 @@ export default {
       // Listen to fullscreen changes
       this.player.on('fullscreenchange', () => {
         if (this.player.isFullscreen()) {
-          console.log('Entering fullscreen - moving overlays to player')
           moveOverlaysToPlayer()
         } else {
-          console.log('Exiting fullscreen - moving overlays back to container')
           moveOverlaysToContainer()
         }
       })
@@ -1754,12 +1745,7 @@ export default {
       }
 
       if (drawerEl && !playerEl.contains(drawerEl)) {
-        console.log('Moving drawer to player element')
         playerEl.appendChild(drawerEl)
-      } else if (drawerEl && playerEl.contains(drawerEl)) {
-        console.log('Drawer already in player element')
-      } else {
-        console.log('Drawer element not found')
       }
     },
 

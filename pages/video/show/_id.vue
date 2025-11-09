@@ -203,11 +203,9 @@ export default {
           const streamResponse = await fetch(streamUrl, { method: 'HEAD' })
 
           if (streamResponse.ok) {
-            console.log('Stream is available:', streamUrl)
             this.videoUrl = streamUrl
             this.soon = false
           } else {
-            console.log('notok')
             this.soon = true
           }
 

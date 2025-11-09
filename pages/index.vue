@@ -646,7 +646,6 @@ export default {
   },
   computed: {
     sliders() {
-      console.log('sliders', this.$store.state.slider.sliders)
       // Return sliders sorted by index property, or empty array if not found
       const sliders = this.$store.state.slider.sliders
       return Array.isArray(sliders) && sliders.length > 0
@@ -808,7 +807,6 @@ export default {
         )
         if (response.status === 200) {
           this.data = response.data.data
-          console.log(this.data)
           if (!this.data.data.length) this.nocontent = true
         }
       } catch (error) {

@@ -138,7 +138,6 @@ export default {
   },
   computed: {
     filtercontents() {
-      console.log([...this.categories, ...this.data])
       return [
         ...this.categories,
         ...this.data.map((genre) => ({

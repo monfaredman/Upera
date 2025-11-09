@@ -121,11 +121,6 @@ export default {
   },
   computed: {
     canProceed() {
-      console.log(
-        this.localFormData.bank,
-        this.localFormData.mobile,
-        this.acceptedTerms
-      )
       return (
         this.localFormData.bank &&
         this.localFormData.mobile &&

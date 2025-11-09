@@ -120,15 +120,12 @@ export default {
           const streamResponse = await fetch(streamUrl, { method: 'HEAD' })
 
           if (streamResponse.ok) {
-            console.log('Stream is available:', streamUrl)
             this.videoUrl = streamUrl
             this.soon = false
           } else {
-            console.log("Stream not available - Showing 'Soon' message")
             this.soon = true
           }
         } else {
-          console.log('API response was not 200')
           this.soon = true
         }
 
