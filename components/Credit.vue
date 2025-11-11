@@ -158,7 +158,6 @@ export default {
   },
 
   mounted() {
-    console.log(1435435435456456)
     if (this.$auth.loggedIn && !this.prewallet) {
       this.walletloading = true
 

@@ -453,7 +453,6 @@ export default {
   mounted() {
     this.INIT(1)
     this.loadAdditionalData()
-    console.log('data', this.data)
   },
 
   methods: {

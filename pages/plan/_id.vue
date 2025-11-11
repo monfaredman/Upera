@@ -421,7 +421,6 @@ export default {
                   if (res.data.data.payment_id) {
                     this.directdebit_payment_id = res.data.data.payment_id
                   }
-                  console.log(this.directdebit_payment_id)
                   if (res.data.data.showdirectdebitbox == 1)
                     this.SHOW_MODAL_DIRECTDEBIT()
                   else {

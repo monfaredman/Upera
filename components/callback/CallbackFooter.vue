@@ -398,8 +398,6 @@ export default {
           this.$emit('show-direct-debit')
           break
         case 'showContent':
-          console.log('showContent action triggered', this.files)
-
           this.$emit('return-to-content', {
             id: this.files[0]?.m_id,
             type: this.files[0]?.type,
