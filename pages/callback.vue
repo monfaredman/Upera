@@ -111,7 +111,6 @@
         </label>
       </div>
     </div>
-
     <section class="download-page">
       <div class="container">
         <div class="row justify-content-center">
@@ -180,7 +179,7 @@
                         :checkuser="checkuser"
                         :ref-num="ref_num"
                         :wallet-amount="wallet_amount"
-                        :wallet-balance="wallet_balance"
+                        :wallet-balance="my_credit"
                         :subscription-days="subscription_days"
                         @watch="EKRAN($event)"
                         @copy="COPY($event)"
@@ -512,7 +511,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters({ cart: 'download/cart' }),
+    ...mapGetters({ cart: 'download/cart', my_credit: 'my_credit' }),
     checkuser() {
       return this.$auth.loggedIn ? this.$auth.user : null
     },
