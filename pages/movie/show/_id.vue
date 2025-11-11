@@ -450,7 +450,7 @@ export default {
 /* دکمه بازگشت */
 .back-button {
   width: 131px;
-  height: 52px;
+  height: 40px;
   border-radius: 8px;
   gap: 8px;
   padding: 12px 28px;

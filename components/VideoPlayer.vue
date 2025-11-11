@@ -1980,6 +1980,69 @@ export default {
   padding: 0 !important;
 }
 
+::v-deep .vjs-icon-pip {
+  width: 36px;
+  height: 36px;
+  border-radius: 32px;
+  border-width: 1px;
+  opacity: 1;
+  background: #00000040;
+  border: 1px solid;
+  border-image-source: linear-gradient(
+    202.36deg,
+    rgba(255, 255, 255, 0.2) 8.26%,
+    rgba(255, 255, 255, 0) 85.43%
+  );
+  backdrop-filter: blur(20px);
+  box-shadow: -0.73px 0.73px 0.73px -1.46px #ffffff59 inset;
+  display: block;
+  object-fit: contain;
+  padding: 6px;
+  cursor: pointer;
+  transition: transform 0.2s ease, opacity 0.3s ease;
+}
+::v-deep .vjs-next10-button {
+  width: 36px;
+  height: 36px;
+  border-radius: 32px;
+  border-width: 1px;
+  opacity: 1;
+  background: #00000040;
+  border: 1px solid;
+  border-image-source: linear-gradient(
+    202.36deg,
+    rgba(255, 255, 255, 0.2) 8.26%,
+    rgba(255, 255, 255, 0) 85.43%
+  );
+  backdrop-filter: blur(20px);
+  box-shadow: -0.73px 0.73px 0.73px -1.46px #ffffff59 inset;
+  display: block;
+  object-fit: contain;
+  padding: 6px;
+  cursor: pointer;
+  transition: transform 0.2s ease, opacity 0.3s ease;
+}
+::v-deep .vjs-prev10-button {
+  width: 36px;
+  height: 36px;
+  border-radius: 32px;
+  border-width: 1px;
+  opacity: 1;
+  background: #00000040;
+  border: 1px solid;
+  border-image-source: linear-gradient(
+    202.36deg,
+    rgba(255, 255, 255, 0.2) 8.26%,
+    rgba(255, 255, 255, 0) 85.43%
+  );
+  backdrop-filter: blur(20px);
+  box-shadow: -0.73px 0.73px 0.73px -1.46px #ffffff59 inset;
+  display: block;
+  object-fit: contain;
+  padding: 6px;
+  cursor: pointer;
+  transition: transform 0.2s ease, opacity 0.3s ease;
+}
 ::v-deep .vjs-button-icon {
   width: 36px;
   height: 36px;
