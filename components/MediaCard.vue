@@ -8,7 +8,11 @@
           <template v-if="variant === 'poster'">
             <nuxt-link
               :to="resolvedLink"
-              :class="(computedLinkClass, ['media-card', { offer: hoverable }])"
+              :class="
+                (computedLinkClass,
+                ['media-card', { offer: hoverable }],
+                { 'is-series': item.type != 'movie' })
+              "
             >
               <template v-if="hoverable">
                 <div class="media-image-wrapper">
@@ -61,6 +65,7 @@
                 </div>
               </template>
               <template v-else>
+                <!-- Desktop Images  -->
                 <b-img
                   blank
                   blank-color="#bbb"
@@ -79,6 +84,7 @@
                   :alt="altText"
                   rounded
                 />
+                <!--xl Desktop Images  -->
                 <b-img
                   blank
                   blank-color="#bbb"
@@ -96,6 +102,40 @@
                   "
                   :alt="altText"
                   rounded
+                />
+                <b-img
+                  v-if="item.type != 'movie'"
+                  v-bind="{
+                    fluidGrow: true,
+                    blank: true,
+                    blankColor: '#bbb',
+                    width: 142,
+                    height: 212,
+                    show: true,
+                  }"
+                  class="d-none d-lg-none d-xl-block d-xxl-none non-hover-media-image-xxl"
+                  :src="
+                    'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/' +
+                    item.poster
+                  "
+                  :alt="item.name"
+                />
+                <b-img
+                  v-if="item.type != 'movie'"
+                  v-bind="{
+                    fluidGrow: true,
+                    blank: true,
+                    blankColor: '#bbb',
+                    width: 142,
+                    height: 212,
+                    show: true,
+                  }"
+                  class="d-none d-lg-none d-xl-block d-xxl-none non-hover-media-image-xxl"
+                  :src="
+                    'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/' +
+                    item.poster
+                  "
+                  :alt="item.name"
                 />
               </template>
             </nuxt-link>
@@ -758,5 +798,36 @@ export default {
     height: auto !important;
     width: 100% !important;
   }
+}
+
+.is-series {
+  position: relative;
+  display: block;
+}
+
+.is-series img:nth-child(2) {
+  -webkit-transform: scale(0.96);
+  transform: scale(0.96);
+  opacity: 0.3;
+  position: absolute;
+  top: -4%;
+  left: 0;
+  border-radius: 8px;
+}
+
+.is-series img:nth-child(3) {
+  -webkit-transform: scale(0.91);
+  transform: scale(0.91);
+  opacity: 0.15;
+  position: absolute;
+  top: -8%;
+  left: 0;
+  border-radius: 8px;
+}
+
+.is-series img:nth-child(4) {
+  position: relative;
+  z-index: 5;
+  border-radius: 8px;
 }
 </style>
