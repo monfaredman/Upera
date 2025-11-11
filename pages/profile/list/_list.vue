@@ -174,7 +174,7 @@
           </div>
         </div>
       </div>
-      <div v-else class="container-fluid">
+      <div v-else class="container-fluid-notfound">
         <div class="text-center py-5">
           <h2>محتوایی جهت نمایش وجود ندارد</h2>
         </div>
@@ -366,3 +366,12 @@ export default {
   },
 }
 </script>
+<style scoped>
+.container-fluid-notfound {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80vh !important;
+}
+</style>

@@ -35,9 +35,9 @@
             <!-- User Info Section -->
             <li class="nav-item">
               <div
-                class="nav-link nav-link-divider d-flex align-items-center flex-wrap w-100"
+                class="nav-link nav-link-divider d-flex align-items-center flex-wrap w-100 cursor-pointer"
                 :style="!hasUserName ? 'cursor: pointer;' : ''"
-                @click="!hasUserName ? showProfileEditModal() : null"
+                @click="showProfileEditModal()"
               >
                 <div
                   v-if="userAvatar"
@@ -55,6 +55,9 @@
                 <div class="pr-2 flex-grow-1">
                   <div v-if="userName" class="font-weight-bold">
                     {{ userName }}
+                  </div>
+                  <div v-else-if="checkuser.mobile" class="font-weight-bold">
+                    {{ checkuser.mobile }}
                   </div>
 
                   <b-button
@@ -74,6 +77,13 @@
                   </div>
                   <div v-else class="p-fs-small mt-2">بدون اشتراک</div>
                 </div>
+                <b-button
+                  variant="link"
+                  class="p-0 text-primary"
+                  @click.stop="showProfileEditModal"
+                >
+                  <i class="fa fa-edit" />
+                </b-button>
               </div>
             </li>
 
@@ -141,7 +151,7 @@
                   <transition-group name="list-item">
                     <li key="downloads">
                       <nuxt-link
-                        to="/lists/downloads"
+                        to="/profile/list/downloads"
                         class="nested-mobile-item"
                       >
                         <i class="fa fa-download ml-2" />
@@ -150,7 +160,7 @@
                     </li>
                     <li key="watchlist">
                       <nuxt-link
-                        to="/lists/watchlist"
+                        to="/profile/list/watchlist"
                         class="nested-mobile-item"
                       >
                         <i class="fa fa-clock ml-2" />
@@ -158,19 +168,28 @@
                       </nuxt-link>
                     </li>
                     <li key="likes">
-                      <nuxt-link to="/lists/likes" class="nested-mobile-item">
+                      <nuxt-link
+                        to="/profile/list/likes"
+                        class="nested-mobile-item"
+                      >
                         <i class="fa fa-heart ml-2" />
                         مورد علاقه‌ها
                       </nuxt-link>
                     </li>
                     <li key="offer">
-                      <nuxt-link to="/lists/offer" class="nested-mobile-item">
+                      <nuxt-link
+                        to="/profile/list/offer"
+                        class="nested-mobile-item"
+                      >
                         <i class="fa fa-star ml-2" />
                         عناوین پیشنهادی
                       </nuxt-link>
                     </li>
                     <li key="watched">
-                      <nuxt-link to="/lists/watched" class="nested-mobile-item">
+                      <nuxt-link
+                        to="/profile/list/watched"
+                        class="nested-mobile-item"
+                      >
                         <i class="fa fa-eye ml-2" />
                         دیده شده‌ها
                       </nuxt-link>

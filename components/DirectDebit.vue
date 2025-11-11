@@ -19,19 +19,17 @@
         <template v-else>
           <!-- Edit Mode: Registered Card Display -->
           <div v-if="isEditMode && configs.id" class="registered-card-box mb-4">
-            <p class="cart-payment">شماره کارت ثبت شده</p>
+            <p class="cart-payment">اطلاعات ثبت شده</p>
             <div class="card-display">
               <div class="bank-info-row">
                 <div class="bank-logo-container">
                   <img
-                    :src="
-                      require(`@/assets/images/banks/${
-                        formData.bank || '012'
-                      }.png`)
-                    "
+                    v-if="formData.bank"
+                    :src="require(`@/assets/images/banks/${formData.bank}.png`)"
                     alt="Bank Logo"
                     class="bank-logo-img"
                   />
+                  <i v-else class="fa fa-credit-card" style="color: black" />
                 </div>
                 <div class="mobile-info">
                   <p class="mobile-number">{{ configs.mobile }}</p>
@@ -199,7 +197,7 @@ export default {
         subscribe_fee: 0,
         days_period_to_end: 0,
         pay_anything: true,
-        bank: '012',
+        bank: null,
         mobile: '',
         series: [],
       },

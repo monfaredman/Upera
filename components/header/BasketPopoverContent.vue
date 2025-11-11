@@ -172,7 +172,7 @@ export default {
       )
     },
     taxAmount() {
-      return Math.floor(this.subtotalAmount * 0.09)
+      return Math.floor(this.subtotalAmount * 0.1) // 10% VAT
     },
     totalAmount() {
       return this.subtotalAmount + this.taxAmount

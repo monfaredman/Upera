@@ -23,7 +23,7 @@
               :banner-nav="bannerNav"
               :logo-to="logoTo"
               :additional-classes="logoClasses"
-              :is-another-page="isAnotherPage"
+              :is-another-page="false"
             />
 
             <div class="d-none d-md-flex align-items-center h-full">

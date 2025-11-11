@@ -51,7 +51,7 @@
         switch
         @change="handleAutoRenewalChange"
       >
-        <strong> تمدید خودکار اشتراک آپرا پلاس </strong>
+        <strong class="mr-2"> تمدید خودکار اشتراک آپرا پلاس </strong>
       </b-form-checkbox>
 
       <div v-if="localAutoRenewal" class="subscription-options">
@@ -294,6 +294,7 @@ export default {
   font-weight: 600;
   font-size: 1rem;
   margin-bottom: 0.5rem;
+  color: black;
 }
 
 .plan-price {
@@ -332,7 +333,7 @@ export default {
 
 /* Custom Scrollbar Styles */
 .series-section::-webkit-scrollbar {
-  width: 8px;
+  width: 4px;
 }
 
 /* Try both selectors */

@@ -701,7 +701,7 @@
           data.watchlist == null &&
           data.offer == null
         "
-        class="container-fluid"
+        class="container-fluid-notfound"
       >
         <div class="text-center py-5">
           <h2>محتوایی جهت نمایش وجود ندارد</h2>
@@ -851,5 +851,13 @@ export default {
 <style scoped>
 ::v-deep .title {
   border-radius: 8px;
+}
+
+.container-fluid-notfound {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80vh !important;
 }
 </style>

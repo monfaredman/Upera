@@ -57,6 +57,7 @@ export default {
 <style scoped>
 .header-search {
   position: unset !important;
+  margin: 0 0.5rem;
 }
 .header-search-submit {
   position: unset !important;

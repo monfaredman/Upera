@@ -173,7 +173,7 @@
 
                     <!-- Success State -->
                     <div v-else-if="success">
-                      <payment-success-content
+                      <PaymentSuccessContent
                         :files="files"
                         :purchase-type="$route.query.purchase || 'download'"
                         :is-logged-in="$auth.loggedIn"
@@ -191,7 +191,7 @@
 
                     <!-- Error States -->
                     <div v-else>
-                      <payment-error-content
+                      <PaymentErrorContent
                         v-if="checkagain"
                         error-type="checkagain"
                         :ref-num="ref_num"
@@ -216,7 +216,7 @@
                   </div>
                 </div>
 
-                <callback-footer
+                <CallbackFooter
                   v-if="!loading && !buyloading"
                   :files="files"
                   :success="success"
@@ -287,117 +287,98 @@ export default {
       testModeReactNative: false,
       // Mock data for different scenarios
       mockScenarios: {
-        // Scenario 1: Single file download (no ekran)
+        // Scenario 1: Single file download (matching real API structure)
         singleFileDownload: {
           success: true,
           purchaseType: 'download',
           files: [
             {
-              id: 1,
-              title: 'فیلم تست - نسخه کامل',
+              id: 3024942,
+              m_id: '828193b0-f4f2-11ef-b260-6b4574883f9f',
+              title: 'قیف',
+              poster:
+                'https://thumb.upera.shop/s3/posters/eMUobcb7reFy8BBgveWt.jpg',
+              type: 'movie',
               presale: false,
-              presale_date: null,
+              presale_date: '11 دی',
               screening: {
-                ekran: false,
-                ekran_hour: null,
+                ekran: 0,
+                ekran_period_end: null,
+                ekran_hour: 0,
+                ekran_owned: 0,
+                owned_period_end: null,
+                ekran_id: 0,
               },
+              stream_link:
+                'https://s800.upera.tv/hls.m3u8?id=828193b0-f4f2-11ef-b260-6b4574883f9f&resolution[360]=RCSiKxdLkMEr1f4yuarZ&resolution[480]=evSn3829HnBPWqlXm6oO&resolution[720]=0NQ3tUuVakEiev9VTOOm&resolution[1080]=K8EF1gurSoygIkpCRnv6&md5=K9BGq3YQejRC_6e1tfLIAw&expires=1762799529',
               qualities: [
                 {
-                  quality: '1080p',
-                  size: '2.5 GB',
-                  download_url: 'https://example.com/movie-1080p.mp4',
-                },
-                {
-                  quality: '720p',
-                  size: '1.2 GB',
-                  download_url: 'https://example.com/movie-720p.mp4',
-                },
-                {
                   quality: '480p',
-                  size: '600 MB',
-                  download_url: 'https://example.com/movie-480p.mp4',
+                  size: '',
+                  download_url:
+                    'https://dl.upera.shop/3024942/wqjz6911e9597c3b5/Ghif-480.mp4',
                 },
               ],
             },
           ],
         },
-        // Scenario 2: Multiple files download
+        // Scenario 2: Multiple files download (matching real API structure)
         multipleFilesDownload: {
           success: true,
           purchaseType: 'download',
           files: [
             {
-              id: 1,
-              title: 'قسمت اول - فصل یک',
+              id: 3059192,
+              m_id: '6dbe3540-b8d0-11f0-b284-8d7812ae3350',
+              title: 'قسمت هفدهم از یاد رفته',
+              poster:
+                'https://thumb.upera.shop/s3/posters/tVUt1SwMGEth138YeqbM.jpg',
+              type: 'episode',
               presale: false,
+              presale_date: '11 دی',
               screening: {
-                ekran: false,
+                ekran: 0,
+                ekran_period_end: null,
+                ekran_hour: 0,
+                ekran_owned: 0,
+                owned_period_end: null,
+                ekran_id: 0,
               },
+              stream_link: null,
               qualities: [
                 {
-                  quality: '1080p',
-                  size: '1.8 GB',
-                  download_url: 'https://example.com/ep1-1080p.mp4',
-                },
-                {
-                  quality: '720p',
-                  size: '900 MB',
-                  download_url: 'https://example.com/ep1-720p.mp4',
-                },
-                {
                   quality: '480p',
-                  size: '450 MB',
-                  download_url: 'https://example.com/ep1-480p.mp4',
+                  size: '',
+                  download_url:
+                    'https://dl.upera.shop/3059192/426g6911ec287f891/TheForgotten_S1E17-480.mp4',
                 },
               ],
             },
             {
-              id: 2,
-              title: 'قسمت دوم - فصل یک',
+              id: 3047391,
+              m_id: '87de2750-72a8-11f0-9bba-91b158394961',
+              title: 'هفت بهار نارنج',
+              poster:
+                'https://thumb.upera.shop/s3/posters/4CbsTo4aNewrwYTARn6Q.jpg',
+              type: 'movie',
               presale: false,
+              presale_date: '11 دی',
               screening: {
-                ekran: false,
+                ekran: 0,
+                ekran_period_end: null,
+                ekran_hour: 0,
+                ekran_owned: 0,
+                owned_period_end: null,
+                ekran_id: 0,
               },
+              stream_link:
+                'https://s13000.upera.tv/hls.m3u8?id=87de2750-72a8-11f0-9bba-91b158394961&resolution[360]=DNFGKp4mf40z20ndUC9B&resolution[480]=wRkLeYbIZvayZ7AvHTCP&resolution[720]=jjI7dEQT4vYIPmIBgPsX&resolution[1080]=7EKVVAMdg484Ukq3Hwdn&md5=DDGugp_1-Uaz36XT6cO22w&expires=1762800249',
               qualities: [
                 {
-                  quality: '1080p',
-                  size: '1.7 GB',
-                  download_url: 'https://example.com/ep2-1080p.mp4',
-                },
-                {
-                  quality: '720p',
-                  size: '850 MB',
-                  download_url: 'https://example.com/ep2-720p.mp4',
-                },
-                {
                   quality: '480p',
-                  size: '420 MB',
-                  download_url: 'https://example.com/ep2-480p.mp4',
-                },
-              ],
-            },
-            {
-              id: 3,
-              title: 'قسمت سوم - فصل یک',
-              presale: false,
-              screening: {
-                ekran: false,
-              },
-              qualities: [
-                {
-                  quality: '1080p',
-                  size: '1.9 GB',
-                  download_url: 'https://example.com/ep3-1080p.mp4',
-                },
-                {
-                  quality: '720p',
-                  size: '950 MB',
-                  download_url: 'https://example.com/ep3-720p.mp4',
-                },
-                {
-                  quality: '480p',
-                  size: '470 MB',
-                  download_url: 'https://example.com/ep3-480p.mp4',
+                  size: '',
+                  download_url:
+                    'https://dl.upera.shop/3047391/zenj6911ec28d0503/SevenCitrusAurantium-480.mp4',
                 },
               ],
             },
@@ -409,17 +390,29 @@ export default {
           purchaseType: 'download',
           files: [
             {
-              id: 1,
+              id: 9999991,
+              m_id: 'presale-ekran-movie-id',
               title: 'فیلم پیش فروش - اکران آنلاین',
-              download_url: 'https://example.com/presale-movie.mp4',
-              quality: '1080p',
-              size: '3 GB',
+              poster: 'https://thumb.upera.shop/s3/posters/example.jpg',
+              type: 'movie',
               presale: true,
               presale_date: '1404/08/15',
               screening: {
-                ekran: true,
+                ekran: 1,
+                ekran_period_end: null,
                 ekran_hour: 48,
+                ekran_owned: 0,
+                owned_period_end: null,
+                ekran_id: 123,
               },
+              stream_link: 'https://example.com/stream.m3u8',
+              qualities: [
+                {
+                  quality: '1080p',
+                  size: '3 GB',
+                  download_url: 'https://example.com/presale-movie.mp4',
+                },
+              ],
             },
           ],
         },
@@ -429,16 +422,29 @@ export default {
           purchaseType: 'download',
           files: [
             {
-              id: 1,
+              id: 9999992,
+              m_id: 'ekran-only-movie-id',
               title: 'فیلم اکران آنلاین',
-              download_url: 'https://example.com/ekran-movie.mp4',
-              quality: '1080p',
-              size: '2.8 GB',
+              poster: 'https://thumb.upera.shop/s3/posters/example2.jpg',
+              type: 'movie',
               presale: false,
+              presale_date: null,
               screening: {
-                ekran: true,
+                ekran: 1,
+                ekran_period_end: null,
                 ekran_hour: 72,
+                ekran_owned: 0,
+                owned_period_end: null,
+                ekran_id: 456,
               },
+              stream_link: 'https://example.com/stream2.m3u8',
+              qualities: [
+                {
+                  quality: '1080p',
+                  size: '2.8 GB',
+                  download_url: 'https://example.com/ekran-movie.mp4',
+                },
+              ],
             },
           ],
         },
@@ -521,6 +527,13 @@ export default {
         await this.$auth.fetchUser()
         this.$store.dispatch('SPA_INIT')
       }
+      if (
+        val &&
+        this.purchaseType !== 'wallet' &&
+        this.$route.query.purchase == 'download'
+      ) {
+        this.toggleBasket()
+      }
     },
   },
   mounted() {
@@ -570,9 +583,21 @@ export default {
     window.removeEventListener('resize', this.Resize)
   },
   methods: {
+    toggleBasket() {
+      if (process.client) {
+        localStorage.removeItem('_cart')
+      }
+    },
+
+    hideModal() {
+      this.$refs['callbackModal']?.hide()
+      this.$emit('hide-modal', null)
+      document.getElementsByClassName('default')[0].classList.remove('blure')
+    },
+
     Push2(id, type) {
       this.hideModal()
-
+      console.log(type + '-id', id)
       this.$router.push({
         name: type + '-id',
         params: {
@@ -634,7 +659,47 @@ export default {
             if (res.status === 200) {
               this.success = true
               this.ref_num = res.data.data.ref
-              this.files = res.data.data.files
+
+              // Transform the API response to match component expectations
+              if (res.data.data.files && Array.isArray(res.data.data.files)) {
+                this.files = res.data.data.files.map((file) => {
+                  // Extract quality from name (e.g., "قسمت هفدهم از یاد رفته - 480p")
+                  const qualityMatch = file.name.match(/(\d+p)/)
+                  const quality = qualityMatch ? qualityMatch[1] : '1080p'
+
+                  // Remove quality from title
+                  const title = file.name.replace(/\s*-\s*\d+p\s*$/, '')
+
+                  return {
+                    id: file.id,
+                    m_id: file.m_id,
+                    title: title,
+                    poster: file.poster,
+                    type: file.type,
+                    presale: file.presale === 1 || file.presale === true,
+                    presale_date: file.presale_date,
+                    screening: file.screening || {
+                      ekran: 0,
+                      ekran_period_end: null,
+                      ekran_hour: 0,
+                      ekran_owned: 0,
+                      owned_period_end: null,
+                      ekran_id: 0,
+                    },
+                    stream_link: file.stream_link,
+                    qualities: [
+                      {
+                        quality: quality,
+                        download_url: file.link1 || file.link2,
+                        size: '', // Size not provided in API
+                      },
+                    ],
+                  }
+                })
+              } else {
+                this.files = res.data.data.files
+              }
+
               if (this.files != null) this.divcount = this.divcount + 1
 
               if (this.$route.query.purchase == 'download') {

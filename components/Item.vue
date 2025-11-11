@@ -64,6 +64,7 @@
 
         <!-- محتوا : ContentDetails -->
         <a
+          v-if="hasMediaTabs"
           href="#content"
           class="nav-link"
           @click.prevent="scrollToSection('content')"
@@ -138,9 +139,8 @@
           <MovieContentTab v-else :data="data" @play="handlePlay" />
         </div>
       </section>
-
       <!-- محتوا : ContentDetails -->
-      <section id="content" class="content-section">
+      <section v-if="hasMediaTabs" id="content" class="content-section">
         <ContentDetailsSkeleton v-if="isLoadingContent" />
         <ContentDetails
           v-else
@@ -404,6 +404,16 @@ export default {
     mainButtonAction() {
       return this.hasMainButton ? this.actions.mainButton.action : ''
     },
+
+    hasMediaTabs() {
+      return (
+        this.medias.teaser === 1 ||
+        this.medias.backstage === 1 ||
+        this.medias.image === 1 ||
+        this.medias.musicvideo === 1 ||
+        this.medias.next === 1
+      )
+    },
     downloadButtonLabel() {
       if (!this.hasDownloadButton) return ''
       const lbl = this.actions.downloadButton.label || {}
@@ -443,6 +453,7 @@ export default {
   mounted() {
     this.INIT(1)
     this.loadAdditionalData()
+    console.log('data', this.data)
   },
 
   methods: {
@@ -535,7 +546,6 @@ export default {
           this.investors = castRes.data.data.investors || null
           this.characters = castRes.data.data.characters || null
           this.isLoadingCasts = false
-
           this.medias = mediaRes.data.data.medias || {}
           this.isLoadingContent = false
 

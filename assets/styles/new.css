@@ -5968,7 +5968,7 @@ div.download-links-poster::after {
   }
 
   .credit .download-links-items {
-    top: 0 !important;
+    top: 20px !important;
   }
   .download-links-3 .download-links-items {
     bottom: 13.1rem;

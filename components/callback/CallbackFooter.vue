@@ -93,14 +93,10 @@
       <!-- Show Login State -->
       <div v-else-if="showLogin" class="row">
         <div :class="isReactNative ? 'col-6' : 'col-12'">
-          <a
-            href=""
-            class="btn btn-main btn-block"
-            @click.prevent="$emit('login')"
-          >
+          <button class="btn btn-main btn-block" @click="$emit('login')">
             <i class="fa fa-sign-in-alt pl-2" />
             ورود به سایت
-          </a>
+          </button>
         </div>
 
         <!-- React Native Back to App Button for Show Login State -->
@@ -265,7 +261,9 @@ export default {
     },
     hasEkranScreening() {
       if (!this.files || this.files.length === 0) return false
-      return this.files.some((file) => file.screening?.ekran)
+      return this.files.some(
+        (file) => file.screening?.ekran && file.screening.ekran_id
+      )
     },
     hasPresale() {
       if (!this.files || this.files.length === 0) return false
@@ -297,13 +295,13 @@ export default {
               action: 'watch',
             }
           }
-          return { text: 'تماشا', iconClass: 'fa-play', action: 'watch' }
+          return { text: 'تماشا', iconClass: 'fa-play', action: 'showContent' }
         }
         if (this.isMultipleFiles) {
           return {
-            text: 'بازگشت به صفحه اصلی',
-            iconClass: 'fa-home',
-            action: 'goHome',
+            text: 'مشاهده محتواها',
+            iconClass: 'fa-play',
+            action: 'goProfile',
           }
         }
       }
@@ -398,6 +396,17 @@ export default {
           break
         case 'directDebitSettings':
           this.$emit('show-direct-debit')
+          break
+        case 'showContent':
+          console.log('showContent action triggered', this.files)
+
+          this.$emit('return-to-content', {
+            id: this.files[0]?.m_id,
+            type: this.files[0]?.type,
+          })
+          break
+        case 'goProfile':
+          this.$router.push('/profile/list/downloads')
           break
       }
     },

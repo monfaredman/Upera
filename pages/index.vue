@@ -430,7 +430,7 @@
       </div>
     </div>
 
-    <div v-else-if="nocontent" class="container-fluid">
+    <div v-else-if="nocontent" class="container-fluid-notfound">
       <div class="text-center py-5">
         <h2>محتوایی جهت نمایش وجود ندارد</h2>
       </div>
@@ -1082,5 +1082,13 @@ export default {
   .offer-section {
     margin-top: 2rem;
   }
+}
+
+.container-fluid-notfound {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80vh !important;
 }
 </style>

@@ -86,7 +86,9 @@
                       نسخه {{ quality.quality || '1080p' }}</span
                     >
                   </a>
-                  <span class="quality-size">حجم {{ quality.size || '' }}</span>
+                  <span v-if="quality && quality.size" class="quality-size"
+                    >حجم {{ quality.size || '' }}</span
+                  >
                 </div>
                 <div class="quality-actions">
                   <button
@@ -129,10 +131,7 @@ export default {
       type: Boolean,
       default: false,
     },
-    checkuser: {
-      type: Object,
-      default: null,
-    },
+
     refNum: {
       type: [String, Number],
       default: null,
@@ -164,11 +163,15 @@ export default {
     },
     hasEkranScreening() {
       if (!this.files || this.files.length === 0) return false
-      return this.files.some((file) => file.screening?.ekran)
+      return this.files.some(
+        (file) => file.screening?.ekran === 1 || file.screening?.ekran === true
+      )
     },
     hasPresale() {
       if (!this.files || this.files.length === 0) return false
-      return this.files.some((file) => file.presale)
+      return this.files.some(
+        (file) => file.presale === 1 || file.presale === true
+      )
     },
     showAccordion() {
       return (
@@ -181,11 +184,14 @@ export default {
           const text = 'قسمت انتخابی شما به لیست تماشای شما اضافه شد.'
           const file = this.files[0]
 
-          if (file.presale && file.screening?.ekran) {
+          if (
+            (file.presale === 1 || file.presale === true) &&
+            (file.screening?.ekran === 1 || file.screening?.ekran === true)
+          ) {
             return `${text}<br><br>اکران سراسری فیلم از روز ${file.presale_date} آغاز خواهد شد، لطفا قبل از این تاریخ به هیچ عنوان برای جلوگیری از اشکال فنی احتمالی نسبت به تست اتصال و کیفیت پخش اقدام ننمایید و فقط با اکران سراسری فیلم را مشاهده نمایید.<br><br>برای تماشا از خانه، سانس سینمای آنلاین ${file.screening.ekran_hour} ساعته است، طوری تنظیم کنید که تماشای کامل فیلم را در سانس خود از دست ندهید.`
           }
 
-          if (file.screening?.ekran) {
+          if (file.screening?.ekran === 1 || file.screening?.ekran === true) {
             return `${text}<br><br>برای تماشا از خانه، سانس سینمای آنلاین ${file.screening.ekran_hour} ساعته است، دقیقا از زمانی که فیلم را شروع به تماشا کنید، سانس شما آغاز و تا ${file.screening.ekran_hour} ساعت بعد به پایان می‌رسد، طوری تنظیم کنید که تماشای کامل فیلم را در سانس خود از دست ندهید.`
           }
 
@@ -258,7 +264,7 @@ export default {
   background: #f0fdf4;
   border: 1px solid #86efac;
   border-radius: 8px;
-  margin-bottom: 24px;
+  margin: auto auto 24px auto;
   width: fit-content;
   justify-self: center;
 }

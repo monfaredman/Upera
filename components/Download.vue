@@ -383,7 +383,7 @@ export default {
     },
 
     taxAmount() {
-      return Math.floor(this.subtotalAmount * 0.09) // 9% VAT
+      return Math.floor(this.subtotalAmount * 0.1) // 10% VAT
     },
 
     totalAmount() {
@@ -446,6 +446,15 @@ export default {
   mounted() {
     this.setupModalEvents()
     this.syncWithCart()
+
+    // Show modal if show prop is initially true
+    if (this.show) {
+      this.showModal()
+      if (!this.viewOnly) {
+        this.loadContentData(this.type, this.id)
+      }
+      this.loadAvailableItems()
+    }
   },
   methods: {
     setupModalEvents() {
@@ -457,6 +466,13 @@ export default {
 
     syncWithCart() {
       try {
+        // If basketActive is not active, clear cart storage
+        if (!this.$store?.state?.basketActive) {
+          localStorage.removeItem('_cart')
+          this.addedItems = []
+          return
+        }
+
         const cart = localStorage.getItem('_cart')
         if (cart) {
           const parsedCart = JSON.parse(cart)
@@ -471,6 +487,12 @@ export default {
 
     syncToCart() {
       try {
+        // Only sync to cart if basketActive is active
+        if (!this.$store?.state?.basketActive) {
+          localStorage.removeItem('_cart')
+          return
+        }
+
         const cart = {
           content: this.addedItems,
           amount: this.totalAmount,
@@ -483,6 +505,13 @@ export default {
 
     addToCart(item) {
       try {
+        // If basketActive is not active, only keep the last item
+        if (!this.$store?.state?.basketActive) {
+          this.addedItems = [item]
+          localStorage.removeItem('_cart')
+          return
+        }
+
         let cart = localStorage.getItem('_cart')
         let parsedCart = cart ? JSON.parse(cart) : { content: [], amount: 0 }
 
@@ -511,6 +540,13 @@ export default {
 
     removeFromCart(itemId) {
       try {
+        // If basketActive is not active, don't use cart storage
+        if (!this.$store?.state?.basketActive) {
+          this.addedItems = this.addedItems.filter((item) => item.id !== itemId)
+          localStorage.removeItem('_cart')
+          return
+        }
+
         let cart = localStorage.getItem('_cart')
         let parsedCart = cart ? JSON.parse(cart) : { content: [], amount: 0 }
 
