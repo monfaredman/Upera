@@ -3,7 +3,21 @@
     <Banner />
     <AppLinks />
     <NewMoviesSlider :ugc-movies="ugcs ? ugcs : []" />
-    <TopRatedSlider :ugc-movies="offers ? offers : []" />
+    <div v-if="offers && offers.length" class="mt-5">
+      <HorizontalList
+        title-en="Top Rated"
+        title-fa="پیشنهادی"
+        :show-all-route="{ name: 'lists-list', params: { list: 'offer' } }"
+        :items="offers"
+        instance-name="topRatedSwiper"
+        :options="swiperOptionPoster"
+        card-variant="poster"
+        :size="{ w: 183, h: 273 }"
+        :link-builder="buildIdRoute"
+        :show-badges="true"
+        :type="'offer'"
+      />
+    </div>
     <ChildSection />
     <LogoSection />
     <Highlights />
@@ -14,7 +28,7 @@
 import Banner from '@/components/app/Banner.vue'
 import AppLinks from '@/components/app/AppLinks'
 import NewMoviesSlider from '@/components/app/NewMoviesSlider'
-import TopRatedSlider from '@/components/app/TopRatedSlider.vue'
+import HorizontalList from '@/components/HorizontalList'
 import ChildSection from '@/components/app/ChildSection'
 import LogoSection from '@/components/app/LogoSection.vue'
 import Highlights from '../components/app/Highlights.vue'
@@ -24,7 +38,7 @@ export default {
     Banner,
     AppLinks,
     NewMoviesSlider,
-    TopRatedSlider,
+    HorizontalList,
     ChildSection,
     LogoSection,
     Highlights,
@@ -62,6 +76,23 @@ export default {
           },
         },
       },
+      swiperOptionPoster: {
+        spaceBetween: 10,
+        slidesPerView: 3.3,
+        grabCursor: true,
+        setWrapperSize: true,
+        threshold: 2,
+        breakpoints: {
+          200: { slidesPerView: 2.5 },
+          420: { slidesPerView: 3.5 },
+          768: { slidesPerView: 4.5 },
+          992: { slidesPerView: 5.5 },
+          1024: { slidesPerView: 6.5 },
+          1200: { slidesPerView: 7 },
+          1420: { slidesPerView: 8 },
+          1670: { slidesPerView: 9 },
+        },
+      },
       ghostApi: '/getV2/discover',
     }
   },
@@ -78,6 +109,9 @@ export default {
     this.fetchOfferData()
   },
   methods: {
+    buildIdRoute(item) {
+      return { name: item.type + '-id', params: { id: item.id } }
+    },
     async fetchDiscoverData() {
       try {
         const response = await this.$axios.get(
