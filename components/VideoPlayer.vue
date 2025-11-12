@@ -505,6 +505,7 @@ export default {
       previewPosition: { x: 0, y: 0 },
       previewTime: '00:00',
       progressBarElement: null,
+      lastPreviewTime: -1,
     }
   },
 
@@ -2029,6 +2030,7 @@ export default {
 
     handleProgressBarEnter() {
       this.showProgressPreview = true
+      this.lastPreviewTime = -1 // Reset to ensure first preview is shown
     },
 
     handleProgressBarMove(event) {
@@ -2044,8 +2046,11 @@ export default {
       const percentage = Math.max(0, Math.min(1, mouseX / rect.width))
       const hoverTime = percentage * duration
 
+      // Round to nearest second for 1-second precision
+      const roundedTime = Math.round(hoverTime)
+
       // Update preview time
-      this.previewTime = this.formatTime(hoverTime)
+      this.previewTime = this.formatTime(roundedTime)
 
       // Calculate popover position (centered on cursor)
       const popoverWidth = 160 // matches canvas width
@@ -2053,13 +2058,15 @@ export default {
 
       // Keep popover within bounds
       xPos = Math.max(10, Math.min(xPos, rect.width - popoverWidth - 10))
-      console.log('xPos', xPos)
       this.previewPosition.x = xPos + 14
 
-      // Generate thumbnail preview
-      this.$nextTick(() => {
-        this.generateThumbnailPreview(hoverTime)
-      })
+      // Generate thumbnail preview only if time changed (1-second precision)
+      if (roundedTime !== this.lastPreviewTime) {
+        this.lastPreviewTime = roundedTime
+        this.$nextTick(() => {
+          this.generateThumbnailPreview(roundedTime)
+        })
+      }
     },
 
     handleProgressBarLeave() {
