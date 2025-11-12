@@ -2061,12 +2061,12 @@ export default {
       this.previewPosition.x = xPos + 14
 
       // Generate thumbnail preview only if time changed (1-second precision)
-      if (roundedTime !== this.lastPreviewTime) {
-        this.lastPreviewTime = roundedTime
-        this.$nextTick(() => {
-          this.generateThumbnailPreview(roundedTime)
-        })
-      }
+      // if (roundedTime !== this.lastPreviewTime) {
+      //   this.lastPreviewTime = roundedTime
+      //   this.$nextTick(() => {
+      //     this.generateThumbnailPreview(roundedTime)
+      //   })
+      // }
     },
 
     handleProgressBarLeave() {
@@ -3624,6 +3624,7 @@ video#episode-player_html5_api {
 }
 
 .preview-thumbnail {
+  display: none;
   background: #1a1a1a;
   border-radius: 8px;
   overflow: hidden;
@@ -3640,6 +3641,7 @@ video#episode-player_html5_api {
 }
 
 .preview-time {
+  width: 160px;
   background: rgba(0, 0, 0, 0.9);
   color: #ffffff;
   padding: 6px 12px;
