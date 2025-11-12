@@ -51,6 +51,20 @@
       {{ currentTimeFormatted }} / {{ durationFormatted }}
     </div>
 
+    <!-- Progress Bar Preview Popover -->
+    <div
+      v-if="stream && showProgressPreview"
+      :id="`${playerid}-progress-preview`"
+      ref="progressPreview"
+      class="progress-preview-popover"
+      :style="{ left: previewPosition.x + 'px' }"
+    >
+      <div class="preview-thumbnail">
+        <canvas ref="previewCanvas" width="160" height="90"></canvas>
+      </div>
+      <div class="preview-time">{{ previewTime }}</div>
+    </div>
+
     <!-- VAST CTA Button -->
     <button id="vast-cta-btn">اطلاعات بیشتر</button>
 
@@ -486,6 +500,11 @@ export default {
         background: 0.8,
         shadow: 'medium',
       },
+      // Progress preview state
+      showProgressPreview: false,
+      previewPosition: { x: 0, y: 0 },
+      previewTime: '00:00',
+      progressBarElement: null,
     }
   },
 
@@ -1628,6 +1647,7 @@ export default {
         this.setupPlaybackEvents()
         this.setupCreditsSkip()
         this.applySubtitleStyles()
+        this.setupProgressBarPreview()
 
         // Initialize drawer state
         this.currentPlaybackRate = this.player.playbackRate()
@@ -1959,6 +1979,135 @@ export default {
         shadow: 'medium',
       }
       this.applySubtitleStyles()
+    },
+
+    // ============================================
+    // Progress Bar Preview Methods
+    // ============================================
+
+    setupProgressBarPreview() {
+      if (!this.player) return
+
+      // Get the progress control element
+      const progressControl = this.player.controlBar.getChild('progressControl')
+      if (!progressControl) return
+
+      this.progressBarElement = progressControl.el()
+
+      // Add event listeners for hover
+      this.progressBarElement.addEventListener(
+        'mouseenter',
+        this.handleProgressBarEnter
+      )
+      this.progressBarElement.addEventListener(
+        'mousemove',
+        this.handleProgressBarMove
+      )
+      this.progressBarElement.addEventListener(
+        'mouseleave',
+        this.handleProgressBarLeave
+      )
+
+      // Clean up on dispose
+      this.player.on('dispose', () => {
+        if (this.progressBarElement) {
+          this.progressBarElement.removeEventListener(
+            'mouseenter',
+            this.handleProgressBarEnter
+          )
+          this.progressBarElement.removeEventListener(
+            'mousemove',
+            this.handleProgressBarMove
+          )
+          this.progressBarElement.removeEventListener(
+            'mouseleave',
+            this.handleProgressBarLeave
+          )
+        }
+      })
+    },
+
+    handleProgressBarEnter() {
+      this.showProgressPreview = true
+    },
+
+    handleProgressBarMove(event) {
+      if (!this.player || !this.progressBarElement) return
+
+      const rect = this.progressBarElement.getBoundingClientRect()
+      const duration = this.player.duration()
+
+      if (!duration || isNaN(duration)) return
+
+      // Calculate hover position and time
+      const mouseX = event.clientX - rect.left
+      const percentage = Math.max(0, Math.min(1, mouseX / rect.width))
+      const hoverTime = percentage * duration
+
+      // Update preview time
+      this.previewTime = this.formatTime(hoverTime)
+
+      // Calculate popover position (centered on cursor)
+      const popoverWidth = 160 // matches canvas width
+      let xPos = event.clientX - rect.left - popoverWidth / 2
+
+      // Keep popover within bounds
+      xPos = Math.max(10, Math.min(xPos, rect.width - popoverWidth - 10))
+      console.log('xPos', xPos)
+      this.previewPosition.x = xPos + 14
+
+      // Generate thumbnail preview
+      this.$nextTick(() => {
+        this.generateThumbnailPreview(hoverTime)
+      })
+    },
+
+    handleProgressBarLeave() {
+      this.showProgressPreview = false
+    },
+
+    generateThumbnailPreview(time) {
+      if (!this.player || !this.$refs.previewCanvas) return
+
+      const canvas = this.$refs.previewCanvas
+      const ctx = canvas.getContext('2d')
+      const videoElement = this.player.el().querySelector('video')
+
+      if (!videoElement) return
+
+      try {
+        // Create a temporary video element to seek to the time
+        const tempVideo = document.createElement('video')
+        tempVideo.src = videoElement.src || videoElement.currentSrc
+        tempVideo.crossOrigin = 'anonymous'
+        tempVideo.muted = true
+        tempVideo.currentTime = time
+
+        tempVideo.addEventListener('loadeddata', () => {
+          // Draw the frame to canvas
+          ctx.drawImage(tempVideo, 0, 0, canvas.width, canvas.height)
+          tempVideo.remove()
+        })
+
+        // Fallback: if thumbnail generation fails, show a placeholder
+        tempVideo.addEventListener('error', () => {
+          ctx.fillStyle = '#1a1a1a'
+          ctx.fillRect(0, 0, canvas.width, canvas.height)
+          ctx.fillStyle = '#ffffff'
+          ctx.font = '14px Arial'
+          ctx.textAlign = 'center'
+          ctx.fillText('پیش‌نمایش', canvas.width / 2, canvas.height / 2)
+          tempVideo.remove()
+        })
+      } catch (error) {
+        // Fallback for CORS or other errors
+        ctx.fillStyle = '#1a1a1a'
+        ctx.fillRect(0, 0, canvas.width, canvas.height)
+        ctx.fillStyle = '#ffffff'
+        ctx.font = '14px Arial'
+        ctx.textAlign = 'center'
+        ctx.fillText('پیش‌نمایش', canvas.width / 2, canvas.height / 2)
+      }
     },
   },
 }
@@ -2402,10 +2551,11 @@ video#episode-player_html5_api {
   padding: 8px 12px;
   background: rgba(0, 0, 0, 0.7);
   border-radius: 6px;
-  font-family: Arial, sans-serif;
   direction: ltr;
   pointer-events: none;
   transition: opacity 0.3s ease;
+  text-align: center !important;
+  font-family: 'dana VF', sans-serif !important;
 }
 
 /* Fullscreen Custom Overlays Support */
@@ -3455,5 +3605,68 @@ video#episode-player_html5_api {
 
 .reset-default-btn:hover {
   background: #e64a19;
+}
+
+/* Progress Bar Preview Popover */
+.progress-preview-popover {
+  position: absolute;
+  bottom: 78px;
+  z-index: 100;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.preview-thumbnail {
+  background: #1a1a1a;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 8px;
+}
+
+.preview-thumbnail canvas {
+  display: block;
+  width: 160px;
+  height: 90px;
+  object-fit: cover;
+}
+
+.preview-time {
+  background: rgba(0, 0, 0, 0.9);
+  color: #ffffff;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  font-family: 'dana VF', sans-serif;
+}
+
+/* Arrow pointing down to progress bar */
+.progress-preview-popover::after {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid rgba(0, 0, 0, 0.9);
+}
+
+::v-deep .video-js .vjs-progress-control:hover .vjs-time-tooltip,
+.video-js
+  .vjs-progress-control:hover
+  .vjs-progress-holder:focus
+  .vjs-time-tooltip,
+.video-js.vjs-scrubbing.vjs-touch-enabled
+  .vjs-progress-control
+  .vjs-time-tooltip {
+  display: none !important;
 }
 </style>
