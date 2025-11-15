@@ -175,9 +175,9 @@
                     {{ $t('show.episode') }} {{ item.episode_number }}
                   </div>
                   <div v-else class="detail-paragraph text-invert mb-2 mb-md-3">
-                    <nuxt-link v-if="item.slogan" class="tag">
+                    <div v-if="item.slogan" class="tag">
                       {{ item.slogan }}
-                    </nuxt-link>
+                    </div>
                     <template v-else>
                       <nuxt-link
                         v-for="(persianName, englishName) in item.genre"

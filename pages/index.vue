@@ -715,19 +715,19 @@ export default {
       })
 
     // Fetch UGCs
-    this.isLoadingUgcs = true
-    this.$axios
-      .get('/get/ugcs?ref=' + this.checkuser?.ref)
-      .then((ugcsRes) => {
-        this.ugcs = ugcsRes.data
-        this.ugcs = this.transformUgcsData(this.ugcs)
-      })
-      .catch((e) => {
-        console.error('fetch ugcs failed', e)
-      })
-      .finally(() => {
-        this.isLoadingUgcs = false
-      })
+    // this.isLoadingUgcs = true
+    // this.$axios
+    //   .get('/get/ugcs?ref=' + this.checkuser?.ref)
+    //   .then((ugcsRes) => {
+    //     this.ugcs = ugcsRes.data
+    //     this.ugcs = this.transformUgcsData(this.ugcs)
+    //   })
+    //   .catch((e) => {
+    //     console.error('fetch ugcs failed', e)
+    //   })
+    //   .finally(() => {
+    //     this.isLoadingUgcs = false
+    //   })
   },
   methods: {
     ChooseLang(en, fa) {
