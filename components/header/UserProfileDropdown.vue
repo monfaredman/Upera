@@ -358,7 +358,7 @@
             </div>
 
             <!-- File upload for custom avatar -->
-            <div class="mt-3">
+            <!-- <div class="mt-3">
               <label class="btn btn-outline-secondary btn-sm">
                 آپلود تصویر جدید
                 <input
@@ -391,7 +391,7 @@
                   لغو بارگذاری
                 </b-button>
               </div>
-            </div>
+            </div> -->
 
             <!-- Cancel button when changing avatar -->
             <div v-if="userAvatar && showAvatarPicker" class="text-center mt-3">

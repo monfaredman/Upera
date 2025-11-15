@@ -185,14 +185,11 @@ export default {
         this.episode && this.episode.runtime !== undefined
           ? this.episode.runtime
           : (this.data && this.data.item && this.data.item.runtime) || ''
-      const hour =
-        this.episode && this.episode.hour !== undefined
-          ? this.episode.hour
-          : (this.data && this.data.item && this.data.item.hour) || ''
+      const hour = '-'
       return src && this.type == 'movie'
         ? `${src} دقیقه`
         : hour && this.type !== 'movie'
-        ? `ساعت ${hour}`
+        ? `${hour}`
         : '-'
     },
     likes() {
