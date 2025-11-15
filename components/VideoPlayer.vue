@@ -602,8 +602,11 @@ export default {
         videojs.addLanguage('fa', fa)
       }
 
+      // Determine initial autoplay based on prop and global setting
+      const initialAutoplay = !!(this.playerAutoPlay && this.autoPlay !== false)
+
       this.player = videojs(this.playerid, {
-        autoplay: false,
+        autoplay: initialAutoplay,
         controls: true,
         controlBar: {
           children: [
@@ -1684,6 +1687,26 @@ export default {
               }
               return originalHandleMouseMove.call(this, event)
             }
+          }
+        }
+        // Attempt autoplay when player becomes ready if requested.
+        // Some browsers block autoplay unless muted — try to play, and if blocked
+        // mute and retry to provide a silent autoplay fallback.
+        const shouldAutoplay = !!(
+          this.playerAutoPlay && this.autoPlay !== false
+        )
+        if (shouldAutoplay) {
+          const playResult = this.player.play()
+          if (playResult && typeof playResult.then === 'function') {
+            playResult.catch(() => {
+              // Try muted autoplay as a fallback
+              try {
+                this.player.muted(true)
+                this.player.play().catch(() => {})
+              } catch (e) {
+                // ignore
+              }
+            })
           }
         }
       })

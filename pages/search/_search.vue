@@ -301,11 +301,8 @@ export default {
       }
 
       let res2
-      if (context.app.$auth.loggedIn) {
-        res2 = await context.app.$axios.get('/topsearch')
-      } else {
-        res2 = await context.app.$axios.get('/ghost/topsearch')
-      }
+
+      res2 = await context.app.$axios.get('/ghost/topsearch')
 
       if (context.app.i18n.locale !== 'fa')
         res2.data.data.topsearch = res2.data.data.topsearch_en
@@ -317,11 +314,8 @@ export default {
       }
     } else {
       let res
-      if (context.app.$auth.loggedIn) {
-        res = await context.app.$axios.get('/topsearch')
-      } else {
-        res = await context.app.$axios.get('/ghost/topsearch')
-      }
+
+      res = await context.app.$axios.get('/ghost/topsearch')
 
       if (context.app.i18n.locale !== 'fa')
         res.data.data.topsearch = res.data.data.topsearch_en

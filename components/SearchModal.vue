@@ -348,11 +348,8 @@ export default {
     async loadTopSearch() {
       try {
         let res
-        if (this.$auth.loggedIn) {
-          res = await this.$axios.get('/topsearch')
-        } else {
-          res = await this.$axios.get('/ghost/topsearch')
-        }
+
+        res = await this.$axios.get('/ghost/topsearch')
 
         if (this.$i18n.locale !== 'fa')
           res.data.data.topsearch = res.data.data.topsearch_en
