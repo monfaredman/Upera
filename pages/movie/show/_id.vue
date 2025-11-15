@@ -180,7 +180,7 @@ export default {
             break
           case 'download':
             this.$router.push({
-              name: 'movie-download-id',
+              name: 'movie-payment-id',
               params: { id: this.$route.params.id },
               query: { force_to_buy: 1 },
             })

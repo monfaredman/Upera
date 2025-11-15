@@ -214,7 +214,7 @@
     </div>
 
     <!-- Modal Components -->
-    <Download
+    <DownloadNew
       :id="data.item.id"
       :show="showDownloadModal"
       :ftb="ftb"
@@ -271,7 +271,7 @@ import SimilarContent from '@/components/item/SimilarContent'
 import MovieContentTab from '@/components/item/MovieContentTab'
 import CastsTab from '@/components/item/content/tabs/CastsTab'
 import CommentsTab from '@/components/item/content/tabs/CommentsTab'
-import Download from '@/components/Download'
+import DownloadNew from '@/components/Download-New.vue'
 import File from '@/components/item/File'
 
 // Skeleton Components
@@ -297,7 +297,7 @@ export default {
     MovieContentTab,
     CastsTab,
     CommentsTab,
-    Download,
+    DownloadNew,
     File,
     Socialsharing,
     ContentStatistics,

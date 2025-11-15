@@ -386,7 +386,7 @@
 /*----------------------header-Menu---------------------*/
 
 .theme-dark .bg-filtermenu {
-  background: #121212;
+  background: black;
   transition: transform 0.4s;
   box-shadow: 0px 1px 10px -2px rgb(18, 18, 18);
 }

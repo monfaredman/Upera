@@ -3,249 +3,1015 @@
     <b-modal
       id="downloadLinks"
       ref="downloadLinks"
-      :centered="!staticmodal"
+      :centered="staticmodal ? false : true"
       hide-footer
       hide-header
-      size="lg"
-      :no-close-on-backdrop="staticmodal"
-      :hide-backdrop="staticmodal"
-      :no-close-on-esc="staticmodal"
+      size="xl"
+      :no-close-on-backdrop="staticmodal ? true : false"
+      :hide-backdrop="staticmodal ? true : false"
+      :no-close-on-esc="staticmodal ? true : false"
       modal-class="modal-download-link"
-      :static="staticmodal"
+      :static="staticmodal ? true : false"
       no-enforce-focus
     >
       <div class="download-links">
-        <!-- Simple Header -->
-        <div class="top-section">
-          <div class="download-links-header-simple">
-            <div class="download-links-title-simple">
-              {{ getContentTitleHeader() }}
-            </div>
-            <button
-              v-show="!staticmodal"
-              type="button"
-              class="close"
-              @click="hideModal"
-            >
-              <i
-                class="fas fa-times"
-                :style="{
-                  color: $colorMode.value === 'dark' ? 'white' : 'black',
-                }"
+        <!-- <div class="download-links-poster" :style="'background-image: url(\'https://thumb.upera.shop/thumb?w=800&h=300&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/'+backdrop+'\')'"> -->
+
+        <div
+          class="download-links-poster download-links-poster2"
+          :style="
+            'background-image: url(\'https://thumb.upera.shop/thumb?w=800&h=412&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/' +
+            backdrop +
+            '\')'
+          "
+        >
+          <div class="download-links-info d-flex align-items-center">
+            <div class="download-links-thumbnail">
+              <img
+                class="download-links-thumbnail"
+                :src="
+                  'https://thumb.upera.shop/thumb?w=70&h=103&q=100&a=c&src=https://cdn.upera.shop/s3/posters/' +
+                  posterf
+                "
               />
-            </button>
+            </div>
+            <div
+              v-if="type != 'episode'"
+              class="download-links-title font-weight-bold"
+            >
+              <a href="" class="text-white" @click.prevent="Push(id, type)">
+                {{ ChooseLang(name, namefa) }}
+              </a>
+            </div>
+            <div v-else class="download-links-title font-weight-bold">
+              <a href="" class="text-white" @click.prevent="Push(id, type)">
+                {{
+                  ChooseLang(itemdata.series_name, itemdata.series_name_fa)
+                }} </a
+              ><br />
+              <h6 class="text-small">
+                {{ ChooseLang(name, namefa) }}
+              </h6>
+            </div>
           </div>
-
-          <!-- Modal Content -->
-          <div class="download-links-body-simple">
-            <!-- Loading State -->
-            <div v-if="loading" class="loading-state">
-              <div class="spinner-border" role="status">
-                <span class="sr-only">Loading...</span>
+          <button
+            v-show="!staticmodal"
+            type="button"
+            class="close"
+            @click="hideModal"
+          >
+            <i class="fas fa-times" />
+          </button>
+        </div>
+        <!-- !owned && (!free || (free && (ftb || $route.query.force_to_buy))) &&  -->
+        <!-- && (!free || ftb2) -->
+        <div
+          v-if="
+            !cartloading &&
+            Object.keys(downloadslist).length > 0 &&
+            cart.length > 0 &&
+            cart.some(function (el) {
+              return downloadslist.some(function (el2) {
+                return el.itemid === el2.id
+              })
+            })
+          "
+        >
+          <div
+            class="download-links-body"
+            :class="{
+              'download-links-body2':
+                ($auth.loggedIn || !totalamount) && !lastseason,
+            }"
+          >
+            <div v-if="lastseason" class="row py-4 download-options-wrapper">
+              <div v-if="season_num > 1" class="col-sm-6">
+                <b-dropdown block :text="seasontitle" variant="dark">
+                  <b-dropdown-item
+                    v-for="(item, index) in lastseason"
+                    :key="index"
+                    href="#"
+                    :active="selectseriesid == index"
+                    @click.prevent="
+                      selectseries(index, lastseason[index][0].id)
+                    "
+                  >
+                    فصل {{ index }}
+                  </b-dropdown-item>
+                </b-dropdown>
               </div>
-              <p>در حال بارگذاری...</p>
-            </div>
-
-            <!-- Error State -->
-            <div v-else-if="error" class="error-state">
-              <p class="text-danger">{{ error }}</p>
-              <button
-                class="btn btn-primary"
-                @click="loadContentData(type, id)"
+              <div
+                :class="{
+                  'col-sm-6': season_num > 1,
+                  'col-sm-12': season_num <= 1,
+                }"
               >
-                تلاش مجدد
-              </button>
+                <b-dropdown
+                  block
+                  :text="episodetitle"
+                  variant="outline-dark"
+                  class="srmb"
+                  :class="{
+                    scrollable: episode_num > 20,
+                    scrollable2: episode_num > 20 && staticmodal,
+                  }"
+                >
+                  <b-dropdown-item
+                    v-for="(item, index) in lastseason[selectseriesid]"
+                    :key="index"
+                    href="#"
+                    :active="
+                      type == 'episode' &&
+                      itemdata.episode_number == item.episode_number
+                    "
+                    @click.prevent="selectepisode(item.id)"
+                  >
+                    قسمت {{ item.episode_number }}
+                  </b-dropdown-item>
+                </b-dropdown>
+              </div>
+            </div>
+            <div
+              v-show="!$auth.loggedIn && totalamount"
+              class="row download-options-wrapper"
+              :class="{ 'py-4': !lastseason }"
+            >
+              <div class="col-12">
+                <div class="position-relative">
+                  <label for="premobile">{{ $t('new.enter_mobile') }}</label>
+                  <b-form-input
+                    id="premobile"
+                    ref="focusMe"
+                    v-model="mobile"
+                    style="text-align: left !important"
+                    name="mobile"
+                    dir="ltr"
+                    class="form-control large text-right mobile-input"
+                    :placeholder="$t('download.enter_mobile')"
+                    :title="$t('download.enter_mobile')"
+                    autofocus
+                    @keyup.enter="BUY"
+                  />
+                  <div v-if="typeof errors === 'string'" class="text-danger">
+                    {{ errors }}
+                  </div>
+                  <div v-else-if="errors && errors.mobile" class="text-danger">
+                    {{ errors.mobile[0] }}
+                  </div>
+                  <div v-else class="invalid-feedback">
+                    {{ $t('new.enter_correctly') }}
+                  </div>
+                </div>
+              </div>
             </div>
 
-            <!-- Content Loaded -->
-            <div v-else class="tvod-content">
-              <!-- Main Content Card -->
-              <div class="content-card">
-                <!-- List of added cards -->
-                <div v-if="addedItems.length > 0" class="added-items-list">
-                  <div
-                    v-for="item in addedItems"
-                    :key="item.id"
-                    class="added-item-card"
-                  >
-                    <div class="card-content">
-                      <div class="card-image">
-                        <img :src="posterSrc(item.poster)" alt="Poster" />
-                      </div>
-                      <div class="card-details">
-                        <div class="content-name">
-                          {{ getContentTitle(item) }}
-                        </div>
-                        <div class="content-info">
-                          <span
-                            v-if="item.season_number && item.episode_number"
-                          >
-                            فصل {{ item.season_number }} - قسمت
-                            {{ item.episode_number }}
-                          </span>
-                        </div>
-                        <div class="content-price">
-                          {{ formatPrice(item.tvod_price) }}
-                          <span class="toman-title">تومان</span>
-                        </div>
-                      </div>
-                      <div class="card-actions">
-                        <button
-                          class="btn-delete"
-                          @click="removeAddedItem(item.id)"
-                        >
-                          <i
-                            class="fas fa-trash-alt"
-                            style="color: #ff6633; font-size: 1.5rem"
-                          />
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <!-- Add More Items Button (for cases 1 and 3) -->
-              </div>
-              <div v-if="showAddMoreButton" class="add-more-section">
-                <button class="btn-add-more" @click="hideModal">
-                  <i class="fas fa-plus" />اضافه کردن قسمت های دیگر
-                </button>
-              </div>
-
-              <!-- Payment Method Selection (for cases 1 and 2) -->
-              <div v-if="showPaymentMethods" class="payment-section">
-                <div class="section-title">انتخاب روش پرداخت</div>
-                <div class="payment-options">
-                  <div
-                    class="payment-option"
-                    v-for="method in paymentMethods"
-                    :key="method.value"
-                    :class="{ disabled: useWalletCredit }"
-                  >
-                    <div class="payment-option-content">
-                      <div class="payment-image">
-                        <img :src="require(`@/assets/images/${method.src}`)" />
-                      </div>
-                      <div class="payment-info">
-                        <div class="payment-name">{{ method.name }}</div>
-                      </div>
-                      <div class="payment-radio">
-                        <input
-                          :id="`payment-${method.value}`"
-                          v-model="paymentMethod"
-                          type="radio"
-                          name="payment"
-                          :value="method.value"
-                          :disabled="useWalletCredit"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Wallet Section (for cases 1 and 2) -->
-              <div v-if="showWalletSection" class="wallet-section">
-                <div class="d-flex justify-content-start align-content-center">
-                  <i
-                    class="fas fa-wallet fa-2x"
-                    style="color: #525252; padding: 1rem"
-                  />
-                  <div class="wallet-option">
-                    <label
-                      for="use-wallet"
-                      class="text-sm mb-0"
-                      style="font-weight: 600"
-                      >کیف پول</label
-                    >
-                    <div class="wallet-balance">
-                      <span>موجودی :</span>
-                      <span class="balance-amount">
-                        {{ my_credit }}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <div class="custom-control custom-switch ml-2 mb-2" dir="rtl">
-                  <input
-                    id="use-wallet"
-                    v-model="useWalletCredit"
-                    class="custom-control-input"
-                    type="checkbox"
-                    :disabled="!hasEnoughWalletBalance"
-                  />
-                  <label class="custom-control-label" for="use-wallet"> </label>
-                </div>
-              </div>
-
-              <!-- Mobile Input (for case 3 - no login) -->
-              <div v-if="showMobileInput" class="mobile-section">
-                <div class="mobile-input-container">
-                  <label for="mobile-input">شماره موبایل</label>
-                  <input
-                    id="mobile-input"
-                    v-model="mobile"
-                    type="tel"
-                    placeholder="شماره موبایل خود را وارد کنید"
-                    class="form-control"
-                    dir="rtl"
-                    @input="validateMobile"
-                  />
-                  <div class="input-note">
-                    برای خرید شماره تلفن خودرا وارد کنید
-                  </div>
-                  <div v-if="mobileError" class="error-message">
-                    {{ mobileError }}
-                  </div>
-                </div>
-              </div>
-
-              <!-- Price Summary -->
-              <div class="price-summary">
-                <div class="price-row">
-                  <span>جمع</span>
-                  <span class="amount-value"
-                    >{{ formatPrice(subtotalAmount) }}
-                    <span class="toman-title">تومان</span>
-                  </span>
-                </div>
-                <div v-if="taxAmount > 0" class="price-row">
-                  <span>ارزش افزوده (۱۰٪)</span>
-                  <span class="amount-value"
-                    >{{ formatPrice(taxAmount) }}
-                    <span class="toman-title">تومان</span>
-                  </span>
-                </div>
-                <!-- <div class="price-row total">
-                <span>مبلغ قابل پرداخت:</span>
-                <span class="total-amount"
-                  >{{ formatPrice(totalAmount) }} تومان</span
+            <div
+              id="download-links-items"
+              class="download-links-items"
+              :class="{
+                'download-links-items2':
+                  !$auth.loggedIn && totalamount && !lastseason,
+                'download-links-season2':
+                  !$auth.loggedIn && totalamount && lastseason,
+                'download-links-season':
+                  ($auth.loggedIn || !totalamount) && lastseason,
+                'download-links-season-num2': season_num == 1,
+              }"
+            >
+              <div class="col-12">
+                <svg
+                  v-if="buyloading"
+                  id="L9"
+                  class="svg-loader"
+                  version="1.1"
+                  xmlns="http://www.w3.org/2000/svg"
+                  xmlns:xlink="http://www.w3.org/1999/xlink"
+                  x="0px"
+                  y="0px"
+                  viewBox="0 0 100 100"
+                  enable-background="new 0 0 0 0"
+                  xml:space="preserve"
                 >
-              </div> -->
+                  <path
+                    data-v-28f0b4cb=""
+                    fill="#373737"
+                    d="M73,50c0-12.7-10.3-23-23-23S27,37.3,27,50 M30.9,50c0-10.5,8.5-19.1,19.1-19.1S69.1,39.5,69.1,50"
+                    transform="rotate(109.69 50 50)"
+                  >
+                    <animateTransform
+                      data-v-28f0b4cb=""
+                      attributeName="transform"
+                      attributeType="XML"
+                      type="rotate"
+                      dur="1s"
+                      from="0 50 50"
+                      to="360 50 50"
+                      repeatCount="indefinite"
+                    />
+                  </path>
+                </svg>
+
+                <p v-if="message" class="text-danger">
+                  {{ message }}
+                </p>
+              </div>
+              <div>
+                <div
+                  v-for="(item, index) in cart"
+                  :key="index"
+                  class="download-links-item"
+                >
+                  <div class="row">
+                    <div class="col-sm-6">
+                      <div class="row">
+                        <div class="col-9">
+                          <div class="download-quality font-weight-bold">
+                            <a
+                              href=""
+                              @click.prevent="Push(item.id, item.type)"
+                            >
+                              {{ item.name }}
+                            </a>
+                          </div>
+                          <div class="download-suitable">
+                            {{ item.quality }}
+                          </div>
+                        </div>
+                        <div
+                          class="col-3 d-flex justify-end align-items-end text-right"
+                        >
+                          <div v-if="item.size" class="download-size">
+                            {{ item.size }}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-sm-6">
+                      <div class="d-flex h-100 align-items-end">
+                        <div class="download-link">
+                          <a
+                            href=""
+                            class="text-sm text-danger"
+                            @click.prevent="
+                              REMOVEFROMCART(item.itemid, item.amount)
+                            "
+                          >
+                            حذف از سبد خرید
+                          </a>
+                        </div>
+
+                        <div
+                          class="copy-link"
+                          :class="{
+                            'text-right': staticmodal,
+                            'text-left': !staticmodal,
+                          }"
+                        >
+                          <span class="overlay_price font-weight-light"
+                            ><span class="overlay_price_label position-relative"
+                              ><i class="icon-toman" /></span
+                            ><span>{{ charAt2(item.amount) }}</span
+                            >.{{ substring2(item.amount) }}</span
+                          >
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div
+                v-show="screening.ekran"
+                class="col-12 text-info text-justify pt-4"
+              >
+                توجه: به دلیل حفظ رعایت حقوق صاحبان اثر، فیلم‌های در حال اکران
+                در سینما آنلاین قابل دانلود نیست.<br /><br />
+                مدت زمان سانس {{ screening.ekran_hour }} ساعت
+                <span v-show="screening.ekran_owned" class="text-danger"
+                  ><br />زمان باقیمانده تا پایان سانس شما:
+                  {{ screening.owned_period_end }} ساعت</span
+                >
+                <span class="text-danger"
+                  ><br />آخرین روز اکران: {{ screening.ekran_period_end }}</span
+                >
+                <br /><br />
+              </div>
+
+              <div class="col-12">
+                <p
+                  v-show="totalamount && checkuser.tax"
+                  class="col-12 text-danger small"
+                >
+                  + {{ totalamount * 0.1 }} {{ $t('download.toman') }} (10 درصد
+                  مالیات بر ارزش افزوده)
+                </p>
+              </div>
+
+              <header class="headline">
+                <h5 class="title font-weight-bold pt-1">انتخاب روش پرداخت</h5>
+              </header>
+              <div
+                v-if="$auth.loggedIn && typeof errors === 'string'"
+                class="text-danger"
+              >
+                {{ errors }}
+              </div>
+              <div
+                v-else-if="$auth.loggedIn && errors && errors.method"
+                class="text-danger"
+              >
+                {{ errors.method[0] }}
+              </div>
+
+              <div class="col-12">
+                <div class="row position-relative payment_methods">
+                  <div class="container">
+                    <!-- <div class="text-muted mb-2">انتخاب روش پرداخت:</div> -->
+                    <div id="payment-1" class="option">
+                      <input
+                        id="payment1"
+                        v-model="method"
+                        type="radio"
+                        name="card"
+                        value="saman3"
+                      />
+                      <label for="payment1" aria-label="درگاه بانکی">
+                        <span />
+
+                        درگاه بانکی
+
+                        <div class="card card--white card--sm">
+                          <div class="card__chip" />
+                          <div class="card__content">
+                            <div class="card__text">
+                              <div class="text__row">
+                                <div class="text__loader" />
+                                <div class="text__loader" />
+                              </div>
+                              <div class="text__row">
+                                <div class="text__loader" />
+                                <div class="text__loader" />
+                              </div>
+                            </div>
+                            <div class="card__symbol">
+                              <span />
+                              <span />
+                            </div>
+                          </div>
+                        </div>
+                      </label>
+                    </div>
+                    <!-- <b-tooltip target="payment-1" title="پرداخت با کلیه کارت های بانکی" placement="bottomleft" variant="primary" /> -->
+
+                    <div id="payment-2" class="option">
+                      <input
+                        id="payment2"
+                        v-model="method"
+                        type="radio"
+                        name="card"
+                        value="directdebit"
+                      />
+                      <label for="payment2" aria-label="پرداخت خودکار">
+                        <span />
+
+                        پرداخت خودکار
+
+                        <div class="card card--blue card--sm">
+                          <div class="card__chip" />
+                          <div class="card__content">
+                            <div class="card__text">
+                              <div class="text__row">
+                                <div class="text__loader" />
+                                <div class="text__loader" />
+                              </div>
+                              <div class="text__row">
+                                <div class="text__loader" />
+                                <div class="text__loader" />
+                              </div>
+                            </div>
+                            <div class="card__symbol">
+                              <span />
+                              <span />
+                            </div>
+                          </div>
+                        </div>
+                      </label>
+                    </div>
+                    <!-- <b-tooltip target="payment-2" title="خرید خودکار در آپرا بدون وارد کردن اطلاعات بانکی" placement="bottomleft" variant="success" /> -->
+
+                    <div id="payment-5" class="option">
+                      <input
+                        id="payment5"
+                        v-model="method"
+                        type="radio"
+                        name="card"
+                        value="credit"
+                      />
+                      <label for="payment5" aria-label="اعتبار آپرا">
+                        <span />
+
+                        موجودی آپرا
+
+                        <div class="card card--white card--sm">
+                          <div class="card__chip" />
+                          <img src="@/assets/img/logo.svg" />
+                        </div>
+                      </label>
+                    </div>
+                    <!-- <b-tooltip target="payment-5" title="خرید با اعتبار آپرا" placement="bottomleft" variant="dark" /> -->
+
+                    <div id="payment-4" class="option">
+                      <input
+                        id="payment4"
+                        v-model="method"
+                        type="radio"
+                        name="card"
+                        value="tally"
+                      />
+                      <label for="payment4" aria-label="اعتبار تالی">
+                        <span />
+
+                        اعتبار تالی
+
+                        <div class="card card--white card--sm">
+                          <img src="@/assets/img/tally.png" />
+                        </div>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div v-show="false" class="col-12 p-4 text-right">
+                <a href="tel:02191079979"
+                  >تلفن پشتیبانی در ساعات اداری:‌ 02191079979</a
+                ><br />
+                <a href="tel:09022018555"
+                  >تلفن پشتیبانی در ساعات غیر اداری:‌ 09022018555</a
+                ><br />
+                <a href="https://telegram.me/srmweb" target="_blank"
+                  >تلگرام پشتیبانی</a
+                >
+              </div>
+            </div>
+            <div class="download-links-footer footer-1">
+              <div class="download-links-item">
+                <div class="row">
+                  <div class="col-sm-6">
+                    <div class="font-weight-bold d-none d-sm-block">
+                      {{ $t('download.amount_payable') }}:
+                      <span v-if="checkuser.tax"
+                        ><span class="overlay_price font-weight-light"
+                          ><span class="overlay_price_label position-relative"
+                            ><i class="icon-toman" /></span
+                          ><span>{{
+                            charAt2(totalamount + totalamount * 0.1)
+                          }}</span
+                          >.{{
+                            substring2(totalamount + totalamount * 0.1)
+                          }}</span
+                        ></span
+                      >
+                      <span v-else
+                        ><span class="overlay_price font-weight-light"
+                          ><span class="overlay_price_label position-relative"
+                            ><i class="icon-toman" /></span
+                          ><span>{{ charAt2(totalamount) }}</span
+                          >.{{ substring2(totalamount) }}</span
+                        ></span
+                      >
+
+                      <svg
+                        v-if="buyloading"
+                        id="L9"
+                        class="svg-loader"
+                        version="1.1"
+                        xmlns="http://www.w3.org/2000/svg"
+                        xmlns:xlink="http://www.w3.org/1999/xlink"
+                        x="0px"
+                        y="0px"
+                        viewBox="0 0 100 100"
+                        enable-background="new 0 0 0 0"
+                        xml:space="preserve"
+                      >
+                        <path
+                          data-v-28f0b4cb=""
+                          fill="#373737"
+                          d="M73,50c0-12.7-10.3-23-23-23S27,37.3,27,50 M30.9,50c0-10.5,8.5-19.1,19.1-19.1S69.1,39.5,69.1,50"
+                          transform="rotate(109.69 50 50)"
+                        >
+                          <animateTransform
+                            data-v-28f0b4cb=""
+                            attributeName="transform"
+                            attributeType="XML"
+                            type="rotate"
+                            dur="1s"
+                            from="0 50 50"
+                            to="360 50 50"
+                            repeatCount="indefinite"
+                          />
+                        </path>
+                      </svg>
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <button
+                      v-if="buyloading"
+                      class="btn btn-secondary btn-block"
+                      type="button"
+                      disabled
+                    >
+                      <span
+                        class="spinner-border spinner-border-sm"
+                        role="status"
+                        aria-hidden="true"
+                      /><span class="sr-only">Loading...</span>
+                    </button>
+                    <button
+                      v-else-if="disable_button || !totalamount"
+                      disabled
+                      class="btn btn-secondary btn-block"
+                    >
+                      <span v-if="!screening.ekran">{{
+                        $t('download.pay_download')
+                      }}</span
+                      ><span v-else>پرداخت و تماشا</span>
+
+                      <i class="fa fa-money-bill pr-2" />
+                    </button>
+
+                    <button
+                      v-else
+                      class="btn btn-secondary btn-block"
+                      @click="BUY"
+                    >
+                      <span v-if="!screening.ekran">{{
+                        $t('download.pay_download')
+                      }}</span
+                      ><span v-else>پرداخت و تماشا</span>
+
+                      <i class="fa fa-money-bill pr-2" />
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
-        <!-- Footer -->
-        <div v-if="!loading && !error" class="download-links-footer-simple">
-          <div class="footer-content">
-            <div class="payable-amount">
-              <span class="amount-label">مبلغ قابل پرداخت:</span>
-              <span class="amount-value">
-                {{ formatPrice(totalAmount) }}
-                <span class="toman-title">تومان</span>
-              </span>
+        <div v-else>
+          <div
+            class="download-links-body"
+            :class="{
+              'download-links-body2': !lastseason,
+              'download-links-0': divcount == 0,
+              'download-links-2': divcount == 2,
+              'download-links-3': divcount == 3,
+            }"
+          >
+            <div v-if="lastseason" class="row py-4 download-options-wrapper">
+              <div v-if="season_num > 1" class="col-sm-6">
+                <b-dropdown block :text="seasontitle" variant="dark">
+                  <b-dropdown-item
+                    v-for="(item, index) in lastseason"
+                    :key="index"
+                    href="#"
+                    :active="selectseriesid == index"
+                    @click.prevent="
+                      selectseries(index, lastseason[index][0].id)
+                    "
+                  >
+                    فصل {{ index }}
+                  </b-dropdown-item>
+                </b-dropdown>
+              </div>
+              <div
+                :class="{
+                  'col-sm-6': season_num > 1,
+                  'col-sm-12': season_num <= 1,
+                }"
+              >
+                <b-dropdown
+                  block
+                  :text="episodetitle"
+                  variant="outline-dark"
+                  class="srmb"
+                  :class="{
+                    scrollable: episode_num > 20,
+                    scrollable2: episode_num > 20 && staticmodal,
+                  }"
+                >
+                  <b-dropdown-item
+                    v-for="(item, index) in lastseason[selectseriesid]"
+                    :key="index"
+                    href="#"
+                    :active="
+                      type == 'episode' &&
+                      itemdata.episode_number == item.episode_number
+                    "
+                    @click.prevent="selectepisode(item.id)"
+                  >
+                    قسمت {{ item.episode_number }}
+                  </b-dropdown-item>
+                </b-dropdown>
+              </div>
             </div>
-            <button
-              class="btn btn-primary btn-payment"
-              :disabled="!canPurchase || processing"
-              @click="handlePurchase"
+
+            <div
+              id="download-links-items"
+              class="download-links-items"
+              :class="{ 'download-links-season-num1': season_num == 1 }"
             >
-              <span
-                v-if="processing"
-                class="spinner-border spinner-border-sm"
-              />
-              <span v-else>پرداخت</span>
-            </button>
+              <div class="col-12">
+                <svg
+                  v-if="cartloading || downloadloading"
+                  id="L9"
+                  class="svg-loader"
+                  version="1.1"
+                  xmlns="http://www.w3.org/2000/svg"
+                  xmlns:xlink="http://www.w3.org/1999/xlink"
+                  x="0px"
+                  y="0px"
+                  viewBox="0 0 100 100"
+                  enable-background="new 0 0 0 0"
+                  xml:space="preserve"
+                >
+                  <path
+                    data-v-28f0b4cb=""
+                    fill="#373737"
+                    d="M73,50c0-12.7-10.3-23-23-23S27,37.3,27,50 M30.9,50c0-10.5,8.5-19.1,19.1-19.1S69.1,39.5,69.1,50"
+                    transform="rotate(109.69 50 50)"
+                  >
+                    <animateTransform
+                      data-v-28f0b4cb=""
+                      attributeName="transform"
+                      attributeType="XML"
+                      type="rotate"
+                      dur="1s"
+                      from="0 50 50"
+                      to="360 50 50"
+                      repeatCount="indefinite"
+                    />
+                  </path>
+                </svg>
+
+                <span
+                  v-if="!screening.ekran && !cartloading"
+                  class="text-info h6 text-justify"
+                  >حجم مصرفی: {{ fullrate_data.fa.title }}<br /><br
+                /></span>
+                <!-- !ftb2 &&  -->
+
+                <!-- && trafficoo -->
+
+                <span
+                  v-if="
+                    !ftb2 &&
+                    !cartloading &&
+                    traffic &&
+                    !downloadslist.some(function (el) {
+                      return el.owned === 1
+                    })
+                  "
+                  class="text-justify"
+                  >دسترسی بدون خرید، با اینترنت {{ operator_fullrate
+                  }}<br /><button
+                    class="btn btn-secondary text-right"
+                    @click="SHOWAGAIN(0)"
+                  >
+                    بررسی اتصال اینترنت
+                    <i class="fas fa-sync-alt" /></button
+                  ><br />و یا خرید با اینترنت فعلی شما:<br /><br
+                /></span>
+
+                <span
+                  v-if="screening.ekran && !cartloading"
+                  class="text-info h6 text-justify"
+                  >مصرف اینترنت جهت تماشای آنلاین
+                  {{ fullrate_data.fa.title }} می باشد<br /><br
+                /></span>
+
+                <span
+                  v-if="!cartloading && screening.ekran && presale"
+                  class="text-danger h6 text-justify"
+                  >برای تماشا از خانه، سانس سینمای آنلاین
+                  {{ screening.ekran_hour }} ساعته است، طوری تنظیم کنید که
+                  تماشای کامل فیلم را در سانس خود از دست ندهید.<br /><br
+                /></span>
+
+                <span
+                  v-if="!cartloading && !presale && pass"
+                  class="text-danger h6 text-justify"
+                  >رمز پیش خرید:
+                  <span class="text-primary">{{ pass }}</span> (مخصوص کسانی که
+                  قبلا خرید کرده اند)<br /><br
+                /></span>
+              </div>
+              <!-- && showlinks -->
+              <div
+                v-if="
+                  !cartloading &&
+                  Object.keys(downloadslist).length > 0 &&
+                  (downloadslist.some(function (el) {
+                    return el.owned === 1
+                  }) ||
+                    !cart.some(function (el) {
+                      return downloadslist.some(function (el2) {
+                        return el.itemid === el2.id
+                      })
+                    }))
+                "
+              >
+                <div
+                  v-for="(item, index) in downloadslist"
+                  :key="index"
+                  class="download-links-item"
+                >
+                  <div class="row">
+                    <div class="col-sm-6">
+                      <div class="row">
+                        <div v-if="screening.ekran" class="col-9">
+                          <div class="download-quality font-weight-bold">
+                            بلیط اکران
+                          </div>
+                          <div class="download-suitable">تماشای آنلاین</div>
+                        </div>
+                        <div
+                          v-else-if="item.isfolder && type != 'series'"
+                          class="col-9"
+                        >
+                          <div class="download-quality font-weight-bold">
+                            {{ $t('download.all_qualities') }}
+                          </div>
+                          <div class="download-suitable">
+                            {{ item.info }}
+                          </div>
+                        </div>
+                        <div v-else class="col-9">
+                          <div class="download-quality font-weight-bold">
+                            {{ item.quality }}
+                          </div>
+                          <div v-show="showinfo" class="download-suitable">
+                            {{ item.info }}
+                          </div>
+                        </div>
+                        <div
+                          class="col-3 d-flex justify-end align-items-end text-right"
+                        >
+                          <div v-if="item.isfolder == 0" class="download-size">
+                            {{ item.size }}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div
+                      v-if="
+                        item.owned == 1 &&
+                        item.isfolder == 1 &&
+                        !screening.ekran
+                      "
+                      class="col-sm-6"
+                    >
+                      <div class="d-flex h-100 align-items-end">
+                        <div class="download-full-link">
+                          <button class="btn btn-info btn-block">
+                            خریداری شده
+                            <i class="icon-download" />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div
+                      v-else-if="item.owned == 1 && item.isfolder == 1"
+                      class="col-sm-6"
+                    >
+                      <div class="d-flex h-100 align-items-end">
+                        <div class="download-full-link">
+                          <button
+                            class="btn btn-secondary btn-block"
+                            @click="EKRAN(screening.ekran_id)"
+                          >
+                            تماشا
+                            <i class="icon-play" />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div v-else-if="item.owned == 1" class="col-sm-6">
+                      <div class="d-flex h-100 align-items-end">
+                        <div class="download-link">
+                          <button
+                            class="btn btn-secondary btn-block"
+                            @click="LINK_DOWNLOAD(item.id)"
+                          >
+                            {{ $t('show.download') }}
+                            <i class="icon-download" />
+                          </button>
+                        </div>
+                        <div class="copy-link">
+                          <button
+                            class="btn btn-copy btn-block"
+                            @click="COPY_DOWNLOAD(item.id)"
+                          >
+                            کپی لینک
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div
+                      v-else-if="
+                        cart.some(function (el) {
+                          return el.itemid === item.id
+                        })
+                      "
+                      class="col-sm-6"
+                    >
+                      <div class="d-flex h-100 align-items-end">
+                        <div class="download-full-link">
+                          <button
+                            class="btn btn-secondary btn-block"
+                            @click="REMOVEFROMCART(item.id, item.amount)"
+                          >
+                            {{ $t('download.cancel') }}
+                            <i class="icon-download" />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div v-else class="col-sm-6">
+                      <div class="d-flex h-100 align-items-end">
+                        <div class="download-link">
+                          <button
+                            class="btn btn-danger btn-block"
+                            @click="
+                              ADDTOCART(
+                                item.id,
+                                item.amount,
+                                item.size,
+                                item.quality
+                              )
+                            "
+                          >
+                            <span v-if="presale">{{
+                              $t('download.presale')
+                            }}</span
+                            ><span v-else>{{ $t('download.buy') }}</span
+                            ><span v-if="screening.ekran"> بلیط</span
+                            ><span v-else> و دانلود</span>
+                            <i
+                              v-if="screening.ekran"
+                              class="fa fa-ticket-alt pr-2"
+                            />
+                            <i v-else class="icon-download" />
+                          </button>
+                        </div>
+
+                        <div
+                          class="copy-link"
+                          :class="{
+                            'text-right': staticmodal,
+                            'text-left': !staticmodal,
+                          }"
+                        >
+                          <span class="overlay_price font-weight-light"
+                            ><span class="overlay_price_label position-relative"
+                              ><i class="icon-toman" /></span
+                            ><span>{{ charAt2(item.amount) }}</span
+                            >.{{ substring2(item.amount) }}</span
+                          >
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div v-if="!cartloading && notes" class="col-12">
+                <span class="text-info h6 text-justify"
+                  ><br />{{ notes }}<br /><br
+                /></span>
+              </div>
+            </div>
+            <div
+              v-if="!cartloading"
+              class="download-links-footer"
+              :class="{ 'footer-0': divcount == 0, 'footer-1': divcount == 1 }"
+            >
+              <div v-show="play_button" class="download-links-item">
+                <div class="row">
+                  <div class="col-sm-6">
+                    <div class="font-weight-bold d-none d-sm-block">
+                      کیفیت متناسب با سرعت اینترنت
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <a
+                      v-if="type == 'movie'"
+                      href=""
+                      class="btn btn-main btn-block"
+                      @click.prevent="Push2(id, type)"
+                    >
+                      نمایش فیلم
+                      <i class="icon-play" />
+                    </a>
+                    <a
+                      v-else-if="type == 'series'"
+                      class="btn btn-main btn-block"
+                      href=""
+                      @click.prevent="Push2(season[1][0].id, 'episode')"
+                    >
+                      نمایش قسمت اول سریال
+                      <i class="icon-play" />
+                    </a>
+                    <a
+                      v-else
+                      href=""
+                      class="btn btn-main btn-block"
+                      @click.prevent="Push2(id, type)"
+                    >
+                      نمایش این قسمت
+                      <i class="icon-play" />
+                    </a>
+                  </div>
+                </div>
+              </div>
+              <div v-show="sub_button" class="download-links-item">
+                <div class="row">
+                  <div class="col-sm-6">
+                    <div class="font-weight-bold d-none d-sm-block">
+                      دسترسی همزمان به ۳۰۰۰۰ عنوان فیلم و اپیزود
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <a
+                      href=""
+                      class="btn btn-main btn-block"
+                      @click.prevent="UPERAPLUS(id, type)"
+                    >
+                      خرید اشتراک<span v-if="fullrate_data.rate == 1">
+                        (حجم مصرفی: نیم بها)</span
+                      >
+                      <i class="fa fa-money-bill pr-2" />
+                    </a>
+                  </div>
+                </div>
+              </div>
+              <div v-show="show_free" class="download-links-item">
+                <div class="row">
+                  <div class="col-sm-6">
+                    <div class="font-weight-bold d-none d-sm-block">
+                      همه کیفیت ها
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <button
+                      class="btn btn-secondary btn-block"
+                      @click="SHOWAGAIN(0)"
+                    >
+                      دانلود رایگان
+                      <i class="icon-download" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div v-show="show_buy" class="download-links-item">
+                <div class="row">
+                  <div class="col-sm-6">
+                    <div class="font-weight-bold d-none d-sm-block">
+                      خرید و دانلود
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <button
+                      class="btn btn-danger btn-block"
+                      @click="SHOWAGAIN(1)"
+                    >
+                      خرید و دانلود با حجم {{ fullrate_data.fa.alternative }}
+                      <i class="fa fa-money-bill pr-2" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div v-show="ussd" class="download-links-item">
+                <div class="row">
+                  <div class="col-sm-6">
+                    <div class="font-weight-bold d-none d-sm-block">
+                      خرید با USSD
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <a :href="'tel:' + ussd" class="btn btn-danger btn-block">
+                      خرید تکی از طریق هف هشتاد
+                      <i class="fa fa-money-bill pr-2" />
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -255,19 +1021,39 @@
 
 <script>
 import { mapGetters } from 'vuex'
-
-const THUMB_BASE = 'https://thumb.upera.shop/thumb'
-const CDN_POSTERS = 'https://cdn.upera.shop/s3/posters'
-
 export default {
-  name: 'Download',
   props: {
     show: Boolean,
     staticmodal: Boolean,
-    viewOnly: {
-      type: Boolean,
-      default: false,
+    owned: {
+      type: Number,
+      default: 0,
     },
+    traffic: {
+      type: Number,
+      default: 0,
+    },
+    ir: {
+      type: Number,
+      default: 0,
+    },
+    // hour: {
+    //     type: Number,
+    //     default: 0
+    // },
+    trafficoo: {
+      type: Number,
+      default: 0,
+    },
+    vod: {
+      type: Number,
+      default: 0,
+    },
+    free: {
+      type: Number,
+      default: 0,
+    },
+    ftb: Boolean,
     id: {
       type: String,
       default: null,
@@ -292,1171 +1078,829 @@ export default {
       type: String,
       default: null,
     },
+    redirect: {
+      type: String,
+      default: null,
+    },
+    season: {
+      type: Object,
+      default: null,
+    },
     itemdata: {
       type: Object,
       default: null,
     },
-    season: {
-      type: [Array, Object],
-      default: null,
-    },
   },
+
   data() {
     return {
-      loading: false,
-      error: null,
-      processing: false,
-      paymentMethod: 'sep',
-      mobile: null,
-      mobileError: '',
-      useWallet: false,
-      useWalletCredit: false,
-      showAddMoreDropdown: false,
-      addedItems: [],
-      availableItems: [],
-      paymentMethods: [
-        {
-          value: 'sep',
-          name: 'درگاه بانکی',
-          description: 'پرداخت با کلیه کارت‌های بانکی',
-          icon: 'BankIcon',
-          src: 'Shaparak.png',
-        },
-        // {
-        //   value: 'directdebit',
-        //   name: 'پرداخت خودکار',
-        //   description: 'خرید خودکار بدون وارد کردن اطلاعات بانکی',
-        //   icon: 'AutoPaymentIcon',
-        //   src: 'kart.png',
-        // },
-        {
-          value: 'directdebit',
-          name: 'پرداخت خودکار',
-          description: 'پرداخت با اعتبار حساب آپرا',
-          icon: 'OperaCreditIcon',
-          src: 'directdebit.png',
-        },
-        // {
-        //   value: 'tally',
-        //   name: 'اعتبار تالی',
-        //   description: 'پرداخت با اعتبار تالی',
-        //   icon: 'TallyIcon',
-        //   src: 'tally.png',
-        // },
+      payment_selected: 'radio1',
+      payment_options: [
+        { text: 'Radio 1', value: 'radio1' },
+        { text: 'Radio 3', value: 'radio2' },
+        { text: 'Radio 3 (disabled)', value: 'radio3', disabled: true },
+        { text: 'Radio 4', value: 'radio4' },
       ],
+      castShow: null,
+      method: 'saman3',
+      methods: [
+        { text: 'درگاه بانکی', value: 'saman3' },
+        { text: 'موجودی', value: 'credit' },
+      ],
+      mobile: null,
+      login: 0,
+      ftb2: 0,
+      mref: 0,
+      i: 0,
+      downloadloading: false,
+      message: null,
+      premessage: null,
+      buyloading: null,
+      disable_button: false,
+      operator_fullrate: 'همراه اول یا ایرانسل',
+      season_num: 0,
+      episode_num: 0,
+      showinfo: true,
+      lastseason: {},
+      showBoxAnimation: false,
+      selectseriesid: 1,
+      seasontitle: 'فصل 1',
+      episodetitle: 'قسمت ها',
+      directdebit_payment_id: 0,
     }
   },
+
   computed: {
-    ...mapGetters({
-      user: 'auth/user',
-    }),
-    ...mapGetters({ my_credit: 'my_credit' }),
-
-    // Determine user state
-    userState() {
-      if (!this.$auth.loggedIn) return 3 // No login
-      return this.$store?.state?.basketActive ? 1 : 2 // 1: activated cart, 2: not activated
-    },
-    userLogin() {
-      return this.$auth.loggedIn
-    },
-
-    // Show conditions based on user state
-    showAddMoreButton() {
-      return this.$store?.state?.basketActive
-    },
-
-    showPaymentMethods() {
-      return this.userState === 1 || this.userState === 2
-    },
-
-    showWalletSection() {
-      return this.userState === 1 || this.userState === 2
-    },
-
-    showMobileInput() {
-      return this.userState === 3
-    },
-
-    subtotalAmount() {
-      return this.addedItems.reduce((sum, item) => sum + item.tvod_price, 0)
-    },
-
-    taxAmount() {
-      return Math.floor(this.subtotalAmount * 0.1) // 10% VAT
-    },
-
-    totalAmount() {
-      return this.subtotalAmount + this.taxAmount
-    },
-
-    canPurchase() {
-      // For logged-in users (states 1 and 2)
-      if (this.userState === 1 || this.userState === 2) {
-        return this.subtotalAmount > 0
-      }
-      // For guest users (state 3)
-      if (this.userState === 3) {
-        return this.subtotalAmount > 0 && this.mobile && !this.mobileError
-      }
-      return false
-    },
-
-    // Check if wallet has sufficient balance
-    hasEnoughWalletBalance() {
-      return this.myCreditValue >= this.totalAmount
-    },
-
-    myCreditValue() {
-      if (!this.my_credit) return 0
-      // Remove non-digit characters
-      const num = this.my_credit.replace(/[^\d.]/g, '')
-      return Number(num) || 0
-    },
+    ...mapGetters({ downloadslist: 'download/downloadslist' }),
+    ...mapGetters({ cartloading: 'download/cartloading' }),
+    ...mapGetters({ cart: 'download/cart' }),
+    ...mapGetters({ presale: 'download/presale' }),
+    ...mapGetters({ presale_date: 'download/presale_date' }),
+    ...mapGetters({ pass: 'download/pass' }),
+    ...mapGetters({ title_poster: 'download/title_poster' }),
+    ...mapGetters({ screening: 'download/screening' }),
+    ...mapGetters({ ussd: 'download/ussd' }),
+    ...mapGetters({ fullrate_data: 'download/fullrate_data' }),
+    ...mapGetters({ show_free: 'download/show_free' }),
+    ...mapGetters({ play_button: 'download/play_button' }),
+    ...mapGetters({ sub_button: 'download/sub_button' }),
+    ...mapGetters({ show_buy: 'download/show_buy' }),
+    ...mapGetters({ notes: 'download/notes' }),
+    ...mapGetters({ totalamount: 'download/total_amount' }),
+    ...mapGetters({ divcount: 'download/divcount' }),
   },
+
   watch: {
     show(val) {
-      if (val) {
+      if (val !== null && this.show) {
         this.showModal()
-        this.syncWithCart()
-        if (!this.viewOnly) {
-          this.loadContentData(this.type, this.id)
-        }
-        this.loadAvailableItems()
       } else {
         this.hideModal()
       }
     },
-    useWalletCredit(val) {
-      if (val) {
-        // When wallet is enabled, set payment method to credit
-        this.paymentMethod = 'credit'
-      } else {
-        // When wallet is disabled, reset to default payment method
-        this.paymentMethod = 'sep'
-      }
+    show_free() {
+      this.checkdiv()
     },
-    addedItems: {
-      deep: true,
-      handler() {
-        this.syncToCart()
-      },
+    show_buy() {
+      this.checkdiv()
     },
   },
+
   mounted() {
-    this.setupModalEvents()
-    this.syncWithCart()
+    // if(this.show){
+    //             if (this.$auth.loggedIn) {
+    //                 this.$store.dispatch("download/GET_DOWNLOAD", {id: this.id,type:this.type,quality:this.$route.query.quality,force_to_buy:this.$route.query.force_to_buy})
+    //             } else {
+    //                 this.$store.dispatch("download/GET_GHOST_DOWNLOAD", {id: this.id,type:this.type,quality:this.$route.query.quality,force_to_buy:this.$route.query.force_to_buy})
+    //             }
+    //             this.$route.query.quality=0
+    //             this.$route.query.force_to_buy=0
+    //   }
 
-    // Show modal if show prop is initially true
-    if (this.show) {
-      this.showModal()
-      if (!this.viewOnly) {
-        this.loadContentData(this.type, this.id)
-      }
-      this.loadAvailableItems()
+    this.mref = this.$cookiz.get('ref')
+
+    if (this.checkuser.operator_fullrate) {
+      this.operator_fullrate = this.checkuser.operator_fullrate
     }
+
+    if (this.staticmodal) {
+      this.showModal()
+
+      document
+        .getElementsByClassName('modal-content')[0]
+        .removeAttribute('tabindex')
+    }
+
+    if (this.type == 'episode') {
+      this.selectseriesid = this.itemdata.season_number
+      this.seasontitle = 'فصل ' + this.selectseriesid
+      this.episodetitle = 'قسمت ' + this.itemdata.episode_number
+    } else if (this.type == 'series' && this.season) {
+      this.selectseriesid = Object.keys(this.season)[0]
+      this.seasontitle = 'فصل ' + this.selectseriesid
+    }
+
+    this.$refs['downloadLinks'].$on('hide', () => {
+      window.removeEventListener('resize', this.Resize)
+      this.$store.dispatch('download/RESET_DOWNLOAD')
+
+      document.getElementsByClassName('default')[0].classList.remove('blure')
+      this.$emit('hide-modal', null)
+    })
+    if (document.getElementsByClassName('download-options-label').length)
+      document
+        .getElementsByClassName('download-options-label')[0]
+        .classList.remove('btn')
+
+    document.body.classList.add('loaded')
   },
+
   methods: {
-    setupModalEvents() {
-      this.$refs.downloadLinks?.$on('hide', () => {
-        this.cleanup()
-        this.$emit('hide-modal')
-      })
+    Resize(e) {
+      let vh = window.innerHeight * 0.01
+      let element = document.getElementsByClassName('download-links')
+
+      if (element.length) element[0].style.setProperty('--vh', `${vh}px`)
+
+      return e
     },
-
-    syncWithCart() {
-      try {
-        // If basketActive is not active, clear cart storage
-        if (!this.$store?.state?.basketActive) {
-          localStorage.removeItem('_cart')
-          this.addedItems = []
-          return
-        }
-
-        const cart = localStorage.getItem('_cart')
-        if (cart) {
-          const parsedCart = JSON.parse(cart)
-          if (parsedCart.content && Array.isArray(parsedCart.content)) {
-            this.addedItems = parsedCart.content
-          }
-        }
-      } catch (error) {
-        console.error('Error syncing with cart:', error)
-      }
-    },
-
-    syncToCart() {
-      try {
-        // Only sync to cart if basketActive is active
-        if (!this.$store?.state?.basketActive) {
-          localStorage.removeItem('_cart')
-          return
-        }
-
-        const cart = {
-          content: this.addedItems,
-          amount: this.totalAmount,
-        }
-        localStorage.setItem('_cart', JSON.stringify(cart))
-      } catch (error) {
-        console.error('Error syncing to cart:', error)
-      }
-    },
-
-    addToCart(item) {
-      try {
-        // If basketActive is not active, only keep the last item
-        if (!this.$store?.state?.basketActive) {
-          this.addedItems = [item]
-          localStorage.removeItem('_cart')
-          return
-        }
-
-        let cart = localStorage.getItem('_cart')
-        let parsedCart = cart ? JSON.parse(cart) : { content: [], amount: 0 }
-
-        // Check if item already exists
-        const existingIndex = parsedCart.content.findIndex(
-          (cartItem) => cartItem.id === item.id
-        )
-
-        if (existingIndex === -1) {
-          parsedCart.content.push(item)
-        } else {
-          parsedCart.content[existingIndex] = item
-        }
-
-        parsedCart.amount = parsedCart.content.reduce(
-          (sum, i) => sum + (i.tvod_price || 0),
-          0
-        )
-
-        localStorage.setItem('_cart', JSON.stringify(parsedCart))
-        this.addedItems = parsedCart.content
-      } catch (error) {
-        console.error('Error adding to cart:', error)
-      }
-    },
-
-    removeFromCart(itemId) {
-      try {
-        // If basketActive is not active, don't use cart storage
-        if (!this.$store?.state?.basketActive) {
-          this.addedItems = this.addedItems.filter((item) => item.id !== itemId)
-          localStorage.removeItem('_cart')
-          return
-        }
-
-        let cart = localStorage.getItem('_cart')
-        let parsedCart = cart ? JSON.parse(cart) : { content: [], amount: 0 }
-
-        parsedCart.content = parsedCart.content.filter(
-          (item) => item.id !== itemId
-        )
-        parsedCart.amount = parsedCart.content.reduce(
-          (sum, i) => sum + (i.tvod_price || 0),
-          0
-        )
-
-        localStorage.setItem('_cart', JSON.stringify(parsedCart))
-        this.addedItems = parsedCart.content
-      } catch (error) {
-        console.error('Error removing from cart:', error)
-      }
-    },
-
-    async loadContentData(type, id) {
-      this.loading = true
-      this.error = null
-
-      try {
-        let endpoint
-        if (type === 'movie') {
-          endpoint = `/getV2/movie/${id}`
-        } else if (type === 'episode' || type === 'series') {
-          endpoint = `/getV2/episode/${id}`
-        }
-
-        const resp = await this.$axios.get(endpoint)
-        const api = resp.data
-
-        // Normalize getV2 response to a flat object with cdn + entity fields
-        let normalized = null
-        if (api?.data?.episode) {
-          normalized = { ...api.data.episode, cdn: api.data.cdn }
-        } else if (api?.data?.movie) {
-          normalized = { ...api.data.movie, cdn: api.data.cdn }
-        } else if (api?.data) {
-          normalized = api.data
-        } else {
-          normalized = api
-        }
-
-        // Add to cart instead of directly pushing
-        this.addToCart(normalized)
-        // this.showAddMoreDropdown = false
-      } catch (error) {
-        this.error = 'خطا در بارگذاری اطلاعات محتوا'
-        console.error('Error loading content data:', error)
-      } finally {
-        this.showAddMoreDropdown = false
-        this.loading = false
-      }
-    },
-
-    loadAvailableItems() {
-      if (this.season && typeof this.season === 'object') {
-        this.availableItems = Object.values(this.season).flat()
-      } else {
-        this.availableItems = []
-      }
-    },
-
-    // getPosterUrl() {
-    //   // Prefer API response (cdn + poster), fallback to prop-based poster
-    //   if (this.contentData?.poster && this.contentData?.cdn?.sm_poster) {
-    //     return `${this.contentData.cdn.sm_poster}${this.contentData.poster}`
-    //   }
-    //   if (this.posterf) {
-    //     return `https://thumb.upera.shop/thumb?w=70&h=103&q=100&a=c&src=https://cdn.upera.shop/s3/posters/${this.posterf}`
-    //   }
-    //   return ''
-    // },
-
-    getContentTitle(item) {
-      if (item) {
-        const en = item.name || item.title
-        const fa = item.name_fa || item.title_fa
-        const title = this.chooseLang(en, fa)
-        if (title) return title
-      }
-      return this.chooseLang(this.name, this.namefa)
-    },
-    getContentTitleHeader() {
-      if (this.addedItems[0]?.type === 'series') {
-        return 'خرید سریال '
-      } else if (this.addedItems[0]?.type === 'episode') {
-        return 'خرید قسمت '
-      } else if (this.addedItems[0]?.type === 'movie') {
-        return 'خرید فیلم '
-      }
-    },
-
-    formatPrice(cents) {
-      if (!cents) return '0'
-      const tomansStr = String(cents)
-      const length = tomansStr.length
-
-      if (length === 4)
-        return tomansStr.substring(0, 1) + '.' + tomansStr.substring(1)
-      else if (length === 5)
-        return tomansStr.substring(0, 2) + '.' + tomansStr.substring(2)
-      else return tomansStr.substring(0, 3) + '.' + tomansStr.substring(3)
-    },
-
-    removeItem() {
-      // Logic to remove the main item
-      // This would need to be handled based on your business logic
-      this.hideModal()
-    },
-
-    addItem(item) {
-      this.loadContentData(item.type, item.id)
-      this.showAddMoreDropdown = true
-    },
-
-    removeAddedItem(itemId) {
-      if (this.addedItems.length <= 1) {
-        this.hideModal()
-        return
-      }
-      this.removeFromCart(itemId)
-    },
-
-    validateMobile() {
-      const mobileRegex = /^09[0-9]{9}$/
-      if (!this.mobile) {
-        this.mobileError = 'شماره موبایل الزامی است'
-      } else if (!mobileRegex.test(this.mobile)) {
-        this.mobileError = 'شماره موبایل معتبر نیست'
-      } else {
-        this.mobileError = ''
-      }
-    },
-
-    async handlePurchase() {
-      if (!this.canPurchase) return
-
-      // Check if payment method is 'directdebit' (پرداخت خودکار)
-      if (this.paymentMethod === 'directdebit') {
-        this.hideModal()
-        this.$store.dispatch('directdebit/SHOW_MODAL', {
-          premobile: null,
-          forsubscription: false,
-          id: null,
-          type: null,
-          paymentid: 0,
-        })
-        return
-      }
-
-      this.processing = true
-
-      try {
-        let payload = {}
-        if (this.userLogin) {
-          payload = {
-            method: this.paymentMethod,
-            cart: [],
-            ekran: 0,
-            callback_url: 'https://upera.tv/callback',
-            ref: 0,
-            sms: false,
-            mobile: this.mobile,
-          }
-        } else {
-          payload = {
-            method: this.paymentMethod,
-            cart: [],
-            ekran: 0,
-            callback_url: 'https://upera.tv/callback',
-            ref: 0,
-            sms: false,
-          }
-        }
-
-        // Add main item
-        // if (this.type === 'movie') {
-        //   payload.movie_id = this.id
-        // }
-
-        // else if (this.type === 'episode' || this.type === 'series') {
-        //   payload.episode_id = this.id
-        // }
-
-        // Add additional items
-        if (this.addedItems.length > 0) {
-          payload.cart = this.addedItems.map((item) => {
-            return item.type === 'movie'
-              ? { movie_id: item.id }
-              : { episode_id: item.id }
-          })
-        }
-
-        // Add mobile for guest users
-        if (this.userState === 3) {
-          payload.mobile = this.mobile
-        }
-
-        const endpoint = this.userLogin ? '/get/buy' : '/ghost/get/buy'
-
-        const response = await this.$axios.post(endpoint, payload)
-        if (response.data.data.pay_url) {
-          // Redirect to payment gateway
-          window.location.href = response.data.data.pay_url
-        } else {
-          this.error = 'خطا در ایجاد لینک پرداخت'
-        }
-      } catch (error) {
-        if (
-          error.response &&
-          error.response.data &&
-          error.response.data.message
-        ) {
-          this.error = error.response.data.message
-          return
-        }
-        this.error = 'خطا در انجام عملیات پرداخت'
-      } finally {
-        this.processing = false
-      }
-    },
-
-    cleanup() {
-      this.error = null
-      this.mobile = null
-      this.mobileError = ''
-      this.useWallet = false
-      this.showAddMoreDropdown = false
-      this.availableItems = []
-      // Clear cart from localStorage
-      // localStorage.removeItem('_cart')
-      // this.addedItems = []
-    },
-
-    chooseLang(en, fa) {
+    ChooseLang(en, fa) {
       if (fa && this.$i18n.locale == 'fa') return fa
       else return en
     },
+    Push(id, type) {
+      // if(this.$route.query.ref){
+      //   return
+      // }
+      if (this.staticmodal || id != this.id) {
+        // this.hideModal()
 
+        this.$router.push({
+          name: type + '-id',
+          params: {
+            id: id,
+          },
+        })
+      }
+    },
+    UPERAPLUS(id, type) {
+      // if(this.checkuser.subscription){
+      this.$store.dispatch('subscription/SHOW_MODAL', {
+        content_type: this.type,
+        content_id: this.id,
+      })
+      return id + type
+      // }else{
+      //   var ref=this.$cookiz.get('refb')
+      //   if(!ref || isNaN(ref))
+      //     ref=0
+
+      //   var url
+      //   if(this.$route.query.ref)
+      //     url='https://plus.upera.tv/'+type+'/'+id+'?force_subscription=1&ref='+this.$route.query.ref
+      //   else if(ref)
+      //     url='https://plus.upera.tv/'+type+'/'+id+'?force_subscription=1&ref='+ref
+      //   else
+      //     url='https://plus.upera.tv/'+type+'/'+id+'?force_subscription=1'
+
+      //   window.location.href = url
+      // }
+    },
+    sizeofobj(obj) {
+      if (!obj) return 0
+      var size = 0,
+        key
+      for (key in obj) {
+        if ({}.propertyIsEnumerable.call(obj, key)) size++
+      }
+      return size
+    },
+    Push2(id, type) {
+      // this.hideModal()
+      this.$router.push({
+        name: type + '-show-id',
+        params: {
+          id: id,
+        },
+      })
+      // if(this.$route.query.ref){
+      //   this.$router.push({
+      //       name: type+"-show-id",
+      //       params: {
+      //           id: id
+      //       },
+      //       query: {
+      //           ref: this.$route.query.ref
+      //       }
+      //   })
+      // }else{
+      //   this.$router.push({
+      //       name: type+"-show-id",
+      //       params: {
+      //           id: id
+      //       }
+      //   })
+      // }
+    },
+    charAt2(string) {
+      string = String(string)
+      var l = string.length
+      if (l == 4) return string.substring(0, 1)
+      else if (l == 5) return string.substring(0, 2)
+      else return string.substring(0, 3)
+    },
+    substring2(string) {
+      string = String(string)
+      var l = string.length
+      if (l == 4) return string.substring(1)
+      else if (l == 5) return string.substring(2)
+      else return string.substring(3)
+    },
     showModal() {
-      this.$refs.downloadLinks?.show()
+      this.$refs['downloadLinks'].show()
+      if (!this.staticmodal)
+        document.getElementsByClassName('default')[0].classList.add('blure')
+
+      if (window.innerHeight <= 500) {
+        this.lastseason = null
+      } else {
+        this.lastseason = this.season
+      }
+
+      this.$refs['downloadLinks'].$on('shown', () => {
+        window.addEventListener('resize', this.Resize)
+        this.Resize('e')
+        if (this.lastseason) {
+          this.season_num = this.sizeofobj(this.lastseason)
+          this.episode_num = this.sizeofobj(
+            this.lastseason[this.selectseriesid]
+          )
+        }
+      })
+
+      if (!this.ftb) this.ftb2 = 0
+      else this.ftb2 = 1
+
+      if (this.ftb2 != 1 && this.$route.query.force_to_buy == 1) this.ftb2 = 1
+
+      if (this.$auth.loggedIn) {
+        this.$store.dispatch('download/GET_DOWNLOAD', {
+          id: this.id,
+          type: this.type,
+          quality: this.$route.query.quality,
+          force_to_buy: this.ftb2,
+        })
+      } else {
+        this.$store.dispatch('download/GET_GHOST_DOWNLOAD', {
+          id: this.id,
+          type: this.type,
+          quality: this.$route.query.quality,
+          force_to_buy: this.ftb2,
+        })
+      }
+
+      this.checkdiv()
+
+      if (this.$route.query.quality) {
+        this.showinfo = false
+      }
+
+      this.$route.query.quality = 0
+      this.$route.query.force_to_buy = 0
+    },
+    hideModal() {
+      this.$refs['downloadLinks'].hide()
+      this.$emit('hide-modal', null)
+      this.$store.dispatch('download/RESET_DOWNLOAD')
+      document.getElementsByClassName('default')[0].classList.remove('blure')
     },
 
-    hideModal() {
-      this.$refs.downloadLinks?.hide()
-      this.$emit('hide-modal', null)
-      this.cleanup()
+    ADDTOCART(itemid, amount, size, quality) {
+      var name
+
+      if (this.type == 'episode') {
+        if (this.itemdata.season_number == 1)
+          name =
+            this.ChooseLang(
+              this.itemdata.series_name,
+              this.itemdata.series_name_fa
+            ) +
+            ',قسمت ' +
+            this.itemdata.episode_number
+        else
+          name =
+            this.ChooseLang(
+              this.itemdata.series_name,
+              this.itemdata.series_name_fa
+            ) +
+            ',قسمت ' +
+            this.itemdata.episode_number +
+            ' فصل ' +
+            this.itemdata.season_number
+      } else name = this.ChooseLang(this.name, this.namefa)
+
+      this.$store.dispatch('download/ADD_NEW_TO_DOWNLOAD', {
+        itemid: itemid,
+        amount: amount,
+        size: size,
+        name: name,
+        quality: quality,
+        id: this.id,
+        type: this.type,
+        poster:
+          'https://thumb.upera.shop/thumb?w=70&h=103&q=100&a=c&src=https://cdn.upera.shop/s3/posters/' +
+          this.posterf,
+      })
+
+      document.getElementById('download-links-items').scrollTop = 0
     },
-    posterSrc(filename) {
-      if (!filename) return ''
-      const { w, h } = { w: 142, h: 212 }
-      return `${THUMB_BASE}?w=${w}&h=${h}&q=100&a=c&src=${CDN_POSTERS}/${filename}`
+    REMOVEFROMCART(itemid, amount) {
+      this.$store.dispatch('download/DELETE_FROM_DOWNLOAD', {
+        itemid: itemid,
+        amount: amount,
+      })
+      document.getElementById('download-links-items').scrollTop = 0
+    },
+    EKRAN(ekranid) {
+      // this.hideModal()
+      this.$router.push({
+        name: 'ekran-id',
+        params: {
+          id: ekranid,
+        },
+      })
+    },
+    SHOWAGAIN(force_to_buy) {
+      this.ftb2 = force_to_buy
+
+      if (this.$auth.loggedIn) {
+        this.$store.dispatch('download/GET_DOWNLOAD', {
+          id: this.id,
+          type: this.type,
+          quality: 0,
+          force_to_buy: force_to_buy,
+        })
+      } else {
+        this.$store.dispatch('download/GET_GHOST_DOWNLOAD', {
+          id: this.id,
+          type: this.type,
+          quality: 0,
+          force_to_buy: force_to_buy,
+        })
+      }
+
+      this.checkdiv()
+    },
+    checkdiv() {
+      var free
+      free = this.free
+      if (this.show_free == 1) free = 0
+
+      if (this.show_buy == 1) free = 1
+
+      if (
+        this.show_free == 0 &&
+        (this.owned ||
+          (free && this.vod) ||
+          (this.vod && this.checkuser.access))
+      ) {
+        this.$store.dispatch('download/ADD_DIVCOUNT')
+      } else {
+        this.$store.dispatch('download/MIN_DIVCOUNT')
+      }
+
+      // && (!free || this.show_free==1)
+      if (!this.owned && this.vod && !this.checkuser.access) {
+        this.$store.dispatch('download/ADD_DIVCOUNT2')
+      } else {
+        this.$store.dispatch('download/MIN_DIVCOUNT2')
+      }
+    },
+    DOWNLOAD(itemid) {
+      this.downloadloading = true
+      var api_url
+      if (this.$auth.loggedIn) {
+        api_url = '/get/download'
+      } else {
+        api_url = '/ghost/get/download'
+      }
+      var traffic_button
+      if (this.fullrate_data.rate) {
+        traffic_button = 'دانلود ' + this.fullrate_data.fa.title
+      } else {
+        traffic_button = 'دانلود'
+      }
+
+      var ref = this.$cookiz.get('ref')
+      if (!ref || isNaN(ref)) ref = 0
+
+      this.$axios
+        .post(api_url, {
+          itemid: itemid,
+          ref: ref,
+          content: this.$route.query.content,
+        })
+        .then(
+          (res) => {
+            this.downloadloading = false
+            if (res.status === 200) {
+              var dlsmbuttons = {
+                back: {
+                  text: this.$t('player.back'),
+                  value: 'back',
+                  closeModal: true,
+                  className: 'swal-back',
+                },
+              }
+
+              if (res.data.data.url2) {
+                Object.assign(dlsmbuttons, {
+                  dl2: {
+                    text: 'لینک کمکی',
+                    value: 'dl2',
+                    closeModal: true,
+                  },
+                })
+              }
+
+              Object.assign(dlsmbuttons, {
+                copy: {
+                  text: 'کپی لینک',
+                  value: 'copy',
+                  closeModal: true,
+                },
+              })
+
+              Object.assign(dlsmbuttons, {
+                dl1: {
+                  text: traffic_button,
+                  value: 'dl1',
+                  closeModal: true,
+                  className: 'btn-success',
+                },
+              })
+
+              this.$swal({
+                title: this.ChooseLang(this.name, this.namefa) + '!',
+                icon: 'success',
+                dangerMode: false,
+                buttons: dlsmbuttons,
+              }).then((value) => {
+                switch (value) {
+                  case 'back':
+                    this.$swal.close()
+                    break
+
+                  case 'dl1':
+                    window.location.href = res.data.data.url
+                    break
+
+                  case 'dl2':
+                    window.location.href = res.data.data.url2
+                    break
+
+                  case 'copy':
+                    this.copy(res.data.data.url)
+                    break
+                  default:
+                    this.$swal.close()
+                    break
+                }
+              })
+            } else {
+              this.message = res.data.message
+            }
+          },
+          (error) => {
+            this.downloadloading = false
+            return error
+          }
+        )
+    },
+    LINK_DOWNLOAD(itemid) {
+      this.downloadloading = true
+      var api_url
+      if (this.$auth.loggedIn) {
+        api_url = '/get/download'
+      } else {
+        api_url = '/ghost/get/download'
+      }
+      var ref = this.$cookiz.get('ref')
+      if (!ref || isNaN(ref)) ref = 0
+
+      this.$axios
+        .post(api_url, {
+          itemid: itemid,
+          ref: ref,
+          content: this.$route.query.content,
+        })
+        .then(
+          (res) => {
+            this.downloadloading = false
+            if (res.status === 200) {
+              window.location.href = res.data.data.url
+            } else {
+              this.message = res.data.message
+            }
+          },
+          (error) => {
+            this.downloadloading = false
+            return error
+          }
+        )
+    },
+    COPY_DOWNLOAD(itemid) {
+      this.downloadloading = true
+      var api_url
+      if (this.$auth.loggedIn) {
+        api_url = '/get/download'
+      } else {
+        api_url = '/ghost/get/download'
+      }
+      var ref = this.$cookiz.get('ref')
+      if (!ref || isNaN(ref)) ref = 0
+      this.$axios
+        .post(api_url, {
+          itemid: itemid,
+          ref: ref,
+          content: this.$route.query.content,
+        })
+        .then(
+          (res) => {
+            this.downloadloading = false
+            if (res.status === 200) {
+              this.copy(res.data.data.url)
+            } else {
+              this.message = res.data.message
+            }
+          },
+          (error) => {
+            this.downloadloading = false
+            return error
+          }
+        )
+    },
+    SHOW_MODAL_CREDIT() {
+      this.$store.dispatch('credit/SHOW_MODAL', { prewallet: null })
+    },
+    HIDE_MODAL_CREDIT() {
+      this.$store.dispatch('credit/HIDE_MODAL')
+    },
+    SHOW_MODAL_DIRECTDEBIT() {
+      this.$store.dispatch('directdebit/SHOW_MODAL', {
+        premobile: this.mobile,
+        forsubscription: false,
+        id: this.id,
+        type: this.type,
+        paymentid: this.directdebit_payment_id,
+      })
+    },
+    HIDE_MODAL_DIRECTDEBIT() {
+      this.$store.dispatch('directdebit/HIDE_MODAL')
+    },
+    BUY() {
+      if (this.mobile) {
+        this.mobile = this.mobile.replace(/۱/g, '1')
+        this.mobile = this.mobile.replace(/۲/g, '2')
+        this.mobile = this.mobile.replace(/۳/g, '3')
+        this.mobile = this.mobile.replace(/۴/g, '4')
+        this.mobile = this.mobile.replace(/۵/g, '5')
+        this.mobile = this.mobile.replace(/۶/g, '6')
+        this.mobile = this.mobile.replace(/۷/g, '7')
+        this.mobile = this.mobile.replace(/۸/g, '8')
+        this.mobile = this.mobile.replace(/۹/g, '9')
+        this.mobile = this.mobile.replace(/۰/g, '0')
+        this.mobile = this.mobile.replace(/\D/g, '')
+      }
+
+      var ref = this.$cookiz.get('ref')
+      if (!ref || isNaN(ref)) ref = 0
+
+      if (this.method == 'directdebit' && !this.$auth.loggedIn) {
+        this.$store.dispatch('login/SHOW_MODAL', {
+          premessage: this.premessage,
+          premobile: this.mobile,
+          preredirect: null,
+          prerefresh: 'directdebit',
+        })
+      } else if (this.method == 'credit' && !this.$auth.loggedIn) {
+        this.$store.dispatch('login/SHOW_MODAL', {
+          premessage: this.premessage,
+          premobile: this.mobile,
+          preredirect: null,
+          prerefresh: false,
+        })
+      }
+      var api_url
+      if (this.$auth.loggedIn) {
+        api_url = '/get/buy'
+      } else {
+        api_url = '/ghost/get/buy'
+      }
+      this.buyloading = true
+      this.$axios
+        .post(api_url, {
+          cart: this.cart,
+          mobile: this.mobile,
+          ekran: this.screening.ekran,
+          callback_url: location.origin + '/callback?mobile=' + this.mobile,
+          method: this.method,
+          ref: ref,
+        })
+        .then(
+          (res) => {
+            this.buyloading = false
+            if (res.status === 200) {
+              if (res.data.data.login) {
+                this.$store.dispatch('login/SHOW_MODAL', {
+                  premessage: this.premessage,
+                  premobile: this.mobile,
+                  preredirect: null,
+                  prerefresh: false,
+                })
+              } else if (this.method == 'directdebit') {
+                if (res.data.data.payment_id) {
+                  this.directdebit_payment_id = res.data.data.payment_id
+                }
+                if (res.data.data.showdirectdebitbox == 1)
+                  this.SHOW_MODAL_DIRECTDEBIT()
+                else {
+                  localStorage.removeItem('_cart')
+                  // if(!this.staticmodal)
+                  // this.$router.replace({query: { force_download: 1 }})
+                  this.$router.go()
+                }
+              } else if (this.method == 'credit') {
+                localStorage.removeItem('_cart')
+                if (this.$auth.loggedIn) {
+                  // if(!this.staticmodal)
+                  // this.$router.replace({query: { force_download: 1 }})
+                  this.$router.go()
+                } else {
+                  this.$swal(
+                    'لینک های دانلود پیامک شدند. لطفا جهت دسترسی از طریق سایت وارد سایت شوید',
+                    {
+                      icon: 'success',
+                    }
+                  )
+                }
+              } else {
+                window.location.href = res.data.data.pay_url
+              }
+            } else {
+              this.message = res.data.message
+            }
+          },
+          (error) => {
+            this.buyloading = false
+            this.premessage = error.response.data.message
+            if (error.response.data.login)
+              this.$store.dispatch('login/SHOW_MODAL', {
+                premessage: this.premessage,
+                premobile: this.mobile,
+                preredirect: null,
+                prerefresh: false,
+              })
+            else if (
+              (this.$auth.loggedIn ||
+                (this.method != 'credit' && this.method != 'directdebit')) &&
+              error.response.data.message
+            ) {
+              var dlsmbuttons = {
+                back: {
+                  text: 'ok',
+                  value: 'back',
+                  closeModal: true,
+                  className: 'swal-back',
+                },
+              }
+
+              if (this.method == 'credit') {
+                Object.assign(dlsmbuttons, {
+                  addcredit: {
+                    text: 'افزایش موجودی آپرا',
+                    value: 'addcredit',
+                    closeModal: true,
+                  },
+                })
+              }
+
+              this.$swal({
+                icon: 'error',
+                title: error.response.data.message,
+                dangerMode: true,
+                buttons: dlsmbuttons,
+              }).then((value) => {
+                switch (value) {
+                  case 'back':
+                    this.$swal.close()
+                    if (!this.$auth.loggedIn) this.$refs.focusMe.focus()
+                    break
+
+                  case 'addcredit':
+                    this.SHOW_MODAL_CREDIT()
+                    this.$swal.close()
+                    break
+
+                  default:
+                    this.$swal.close()
+                    if (!this.$auth.loggedIn) this.$refs.focusMe.focus()
+                    break
+                }
+              })
+            }
+          }
+        )
+    },
+    async copy(text) {
+      try {
+        await this.$copyText(text)
+        this.$swal('لینک کپی شد', {
+          icon: 'success',
+        })
+      } catch (e) {
+        this.$swal('لینک در دیوایس شما قابل کپی نیست.')
+        return e
+      }
+    },
+    selectseries(id, num) {
+      if (num && num != this.id) {
+        // this.hideModal()
+
+        this.$router.push({
+          name: 'episode-download-id',
+          params: {
+            id: num,
+          },
+        })
+        // if(this.$route.query.ref){
+        //   this.$router.push({
+        //       name:"episode-download-id",
+        //       params: {
+        //           id: num
+        //       },
+        //       query: {
+        //           ref: this.$route.query.ref,
+        //           content: this.$route.query.content
+        //       }
+        //   })
+        // }else{
+        //   this.$router.push({
+        //       name:"episode-download-id",
+        //       params: {
+        //           id: num
+        //       }
+        //   })
+        // }
+      } else {
+        this.selectseriesid = id
+
+        this.seasontitle = 'فصل ' + id
+      }
+    },
+
+    selectepisode(id) {
+      if (id != this.id) {
+        // this.hideModal()
+        this.$router.push({
+          name: 'episode-download-id',
+          params: {
+            id: id,
+          },
+        })
+        // if(this.$route.query.ref){
+        //   this.$router.push({
+        //       name:"episode-download-id",
+        //       params: {
+        //           id: id
+        //       },
+        //       query: {
+        //           ref: this.$route.query.ref,
+        //           content: this.$route.query.content
+        //       }
+        //   })
+        // }else{
+        //   this.$router.push({
+        //       name:"episode-download-id",
+        //       params: {
+        //           id: id
+        //       }
+        //   })
+        // }
+      }
+    },
+    lottery() {
+      if (!this.$auth.loggedIn) {
+        this.$store.dispatch('login/SHOW_MODAL', {
+          premessage: this.premessage,
+          premobile: this.mobile,
+          preredirect: null,
+          prerefresh: false,
+        })
+      } else {
+        window.location.href = 'https://www.instagram.com/uperatv/'
+      }
     },
   },
 }
 </script>
-
-<style scoped>
-.download-links {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  height: auto;
-  max-height: 90vh;
-}
-
-.download-links-header-simple {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 0;
-  margin: 0 1rem;
-  border-bottom: 1px solid #e9ecef;
-  flex-shrink: 0;
-}
-
-.download-links-title-simple {
-  font-weight: 700;
-  font-size: 1rem;
-  color: #121212;
-}
-
-.download-links-body-simple {
-  padding: 1rem 1rem 0 1rem;
-  min-height: 200px;
-  flex: 1;
-  overflow-y: auto;
-  max-height: calc(90vh - 180px);
-  direction: rtl;
-}
-
-/* Custom Scrollbar Styles */
-.download-links-body-simple::-webkit-scrollbar {
-  width: 8px;
-}
-
-.download-links-body-simple::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 10px;
-}
-
-.download-links-body-simple::-webkit-scrollbar-thumb {
-  background: #888;
-  border-radius: 10px;
-}
-
-.download-links-body-simple::-webkit-scrollbar-thumb:hover {
-  background: #555;
-}
-
-/* Firefox Scrollbar */
-.download-links-body-simple {
-  scrollbar-width: thin;
-  scrollbar-color: #888 #f1f1f1;
-}
-
-.download-links-footer-simple {
-  padding: 1rem 0;
-  border-top: 1px solid #e9ecef;
-  border-radius: 0 0 32px 32px;
-  color: black;
-  margin: 0 1rem;
-  flex-shrink: 0;
-}
-
-.footer-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.payable-amount {
-  display: flex;
-  justify-content: start;
-  gap: 0.5rem;
-}
-
-.amount-label {
-  font-weight: 600;
-  font-size: 0.9rem;
-  color: #525252;
-}
-
-.amount-value {
-  font-weight: 600;
-  font-size: 1.2rem;
-}
-
-.loading-state,
-.error-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 2rem;
-  text-align: center;
-  color: black;
-}
-
-.tvod-content {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.content-card {
-  border-radius: 12px;
-  overflow: hidden;
-  background: white;
-  border-radius: 0 0 8px 8px;
-  overflow: auto;
-  max-height: 240px !important;
-  direction: rtl;
-}
-
-/* Custom Scrollbar for Content Card */
-.content-card::-webkit-scrollbar {
-  width: 6px;
-}
-
-.content-card::-webkit-scrollbar-track {
-  background: #f8f9fa;
-  border-radius: 10px;
-}
-
-.content-card::-webkit-scrollbar-thumb {
-  background: #888;
-  border-radius: 10px !important;
-}
-
-.content-card::-webkit-scrollbar-thumb:hover {
-  background: #888;
-  border-radius: 10px !important;
-}
-
-.content-card {
-  scrollbar-width: thin;
-  scrollbar-color: #888 #f8f9fa;
-}
-
-.card-content {
-  display: flex;
-  align-items: end;
-  padding-bottom: 1rem;
-}
-
-.card-image {
-  width: 120px;
-  height: 180px;
-  margin-left: 1rem;
-  flex-shrink: 0;
-  border-radius: 11.15px !important;
-}
-
-.card-image img {
-  width: 100%;
-  object-fit: cover;
-  border-radius: 8px;
-}
-
-.card-details {
-  flex: 1;
-}
-
-.content-name {
-  font-weight: bold;
-  font-size: 1.1rem;
-  margin-bottom: 0.5rem;
-  color: #333;
-}
-
-.content-info {
-  color: #6c757d;
-  font-size: 0.9rem;
-  margin-bottom: 0.5rem;
-}
-
-.content-price {
-  font-weight: bold;
-  font-size: 16pxrem;
-  color: #ff6633;
-  background: #ffece5;
-  padding: 10px;
-  width: 100%;
-  text-align: center;
-  border-radius: 8px;
-  padding-top: 14px !important;
-}
-
-.card-actions {
-  margin-right: 1rem;
-}
-
-.btn-delete {
-  background: none;
-  border: none;
-  color: #dc3545;
-  cursor: pointer;
-  padding: 0.5rem;
-  border-radius: 4px;
-  transition: background-color 0.3s ease;
-}
-
-.btn-delete:hover {
-  background-color: #f8f9fa;
-}
-
-.add-more-section {
-  position: relative;
-}
-
-.btn-add-more {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1rem;
-  background: #ffffff;
-  border: 1px solid #ff6633;
-  border-radius: 8px;
-  color: #ff6633;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  width: 100%;
-  justify-content: center;
-}
-
-.btn-add-more:hover {
-  border-color: #007bff;
-  color: #007bff;
-}
-
-.add-more-dropdown {
-  position: absolute;
-  width: 100%;
-  top: 100%;
-  background: rgb(158, 158, 158);
-  border: 1px solid #e9ecefe7;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  z-index: 10000 !important;
-  border: 1px solid gray;
-  margin-top: 0.5rem;
-}
-
-.dropdown-content {
-  max-height: 200px;
-  overflow-y: auto;
-  direction: rtl;
-}
-
-/* Custom Scrollbar for Dropdown */
-.dropdown-content::-webkit-scrollbar {
-  width: 6px;
-}
-
-.dropdown-content::-webkit-scrollbar-track {
-  background: #e9ecef;
-  border-radius: 10px;
-}
-
-.dropdown-content::-webkit-scrollbar-thumb {
-  background: #6c757d;
-  border-radius: 10px;
-}
-
-.dropdown-content::-webkit-scrollbar-thumb:hover {
-  background: #495057;
-}
-
-.dropdown-content {
-  scrollbar-width: thin;
-  scrollbar-color: #6c757d #e9ecef;
-}
-
-.dropdown-item {
-  padding: 1rem;
-  border-bottom: 1px solid #f8f9fa;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.dropdown-item:hover {
-  background-color: #f8f9fa;
-}
-
-.dropdown-item:last-child {
-  border-bottom: none;
-}
-
-.item-info {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.item-name {
-  font-weight: 500;
-}
-
-.item-price {
-  color: #007bff;
-  font-weight: bold;
-}
-
-.added-items-list {
-  display: flex;
-  flex-direction: column;
-}
-
-.added-item-card {
-  background: white;
-}
-
-.mobile-section,
-.payment-section,
-.wallet-section {
-  color: #404040;
-}
-
-.wallet-section {
-  display: flex;
-  justify-content: space-between;
-  align-content: center;
-  gap: 1rem;
-  align-items: center;
-}
-
-.section-title {
-  font-weight: 400;
-  margin-bottom: 1rem;
-  font-size: 1rem;
-  color: #333;
-}
-
-.mobile-input-container {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.mobile-input-container label {
-  font-weight: 600;
-  color: #333;
-}
-
-.mobile-input-container input {
-  padding: 0.75rem;
-  border: 2px solid #e9ecef;
-  border-radius: 8px;
-  font-size: 1rem;
-  transition: border-color 0.3s ease;
-}
-
-.mobile-input-container input:focus {
-  border-color: #007bff;
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
-}
-
-.input-note {
-  font-size: 0.85rem;
-  color: #6c757d;
-  line-height: 1.4;
-}
-
-.error-message {
-  color: #dc3545;
-  font-size: 0.85rem;
-  margin-top: 0.25rem;
-}
-
-/* Payment Methods Styles */
-.payment-options {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.payment-option {
-  border: 1px solid #e9ecef;
-  border-radius: 12px;
-  background: white;
-  transition: all 0.3s ease;
-  cursor: pointer;
-}
-
-.payment-option:hover {
-  border-color: #007bff;
-  box-shadow: 0 2px 8px rgba(0, 123, 255, 0.1);
-}
-
-.payment-option.disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  pointer-events: none;
-}
-
-.payment-option.disabled:hover {
-  border-color: #e9ecef;
-  box-shadow: none;
-}
-
-.payment-option-content {
-  display: flex;
-  align-items: center;
-  padding: 0.6rem;
-  gap: 1rem;
-}
-
-.payment-image {
-  flex-shrink: 0;
-  width: 50px;
-  height: 35px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.payment-icon {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.card-shape {
-  width: 40px;
-  height: 25px;
-  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-  border-radius: 4px;
-  position: relative;
-  border: 1px solid #dee2e6;
-}
-
-.card-shape.blue {
-  background: linear-gradient(135deg, #007bff, #0056b3);
-}
-
-.card-chip {
-  position: absolute;
-  top: 5px;
-  left: 5px;
-  width: 12px;
-  height: 8px;
-  background: #ffd700;
-  border-radius: 2px;
-}
-
-.card-lines {
-  position: absolute;
-  top: 15px;
-  left: 5px;
-  right: 5px;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.line {
-  height: 2px;
-  background: #6c757d;
-  border-radius: 1px;
-}
-
-.line:first-child {
-  width: 80%;
-}
-
-.line:last-child {
-  width: 60%;
-}
-
-.logo-circle,
-.logo-square {
-  width: 30px;
-  height: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 6px;
-  background: #007bff;
-  color: white;
-  font-weight: bold;
-  font-size: 14px;
-}
-
-.logo-circle {
-  border-radius: 50%;
-}
-
-.logo-square {
-  border-radius: 6px;
-  background: #28a745;
-}
-
-.payment-info {
-  flex: 1;
-}
-
-.payment-name {
-  font-weight: 500;
-  font-size: 14px;
-  color: #333;
-  margin-bottom: 0.25rem;
-}
-
-.payment-description {
-  font-size: 0.85rem;
-  color: #6c757d;
-}
-
-.payment-radio {
-  flex-shrink: 0;
-}
-
-.payment-radio input[type='radio'] {
-  width: 17px;
-  height: 17px;
-  accent-color: #007bff;
-  cursor: pointer;
-}
-
-.wallet-option {
-  display: flex;
-  flex-direction: column;
-  align-items: start;
-  justify-content: center;
-  gap: 0.2rem;
-}
-
-.wallet-balance {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-radius: 8px;
-  font-weight: 500;
-}
-
-.balance-amount {
-  font-weight: 400;
-  color: #000000;
-  font-size: 1rem;
-  margin-right: 0.5rem;
-}
-
-.price-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.5rem 0;
-}
-
-.price-row.total {
-  border-top: 1px solid #e9ecef;
-  margin-top: 0.5rem;
-  padding-top: 1rem;
-  font-weight: bold;
-  color: #333;
-}
-
-.total-amount {
-  color: #007bff;
-  font-size: 1.2rem;
-}
-
-.btn-payment {
-  min-width: 280px !important;
-  border-radius: 7px !important;
-}
-
-.wallet-balance {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-radius: 8px;
-  font-weight: 500;
-}
-
-.price-summary {
-  color: black;
-  margin-top: -1rem;
-}
-
-.price-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.5rem 0;
-}
-
-.price-row.total {
-  border-top: 1px solid #e9ecef;
-  margin-top: 0.5rem;
-  padding-top: 1rem;
-  font-weight: bold;
-  color: #333;
-}
-
-.total-amount {
-  color: #007bff;
-  font-size: 1.2rem;
-}
-
-.btn-payment {
-  min-width: 120px;
-}
-
-.payment-image img {
-  max-width: 100%;
-  max-height: 40px !important;
-  object-fit: contain;
-}
-
-.top-section {
-  display: flex;
-  flex-direction: column;
-  justify-content: start;
-}
-
-.toman-title {
-  font-size: 14px !important;
-}
-
-.amount-value {
-  font-size: 18px !important;
-  font-weight: 400 !important;
-}
-
-.payment-radio {
-  display: flex;
-  justify-content: center;
-}
-
-@media (max-width: 576px) {
-  .btn-payment {
-    min-width: 150px !important;
-  }
-}
-@media (max-width: 768px) {
-  .btn-payment {
-    min-width: 190px;
-  }
-}
-@media (max-width: 992px) {
-  .btn-payment {
-    min-width: 200px;
-  }
-}
-</style>

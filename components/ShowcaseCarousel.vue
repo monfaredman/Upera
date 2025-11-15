@@ -90,7 +90,7 @@
               height="576"
               show
               class="showcase-img d-none d-lg-block"
-              :src="item.image_src"
+              :src="transformThumbUrl(item.image_src)"
               :alt="item.name"
             />
             <b-img
@@ -100,7 +100,7 @@
               height="300"
               show
               class="showcase-img d-lg-none"
-              :src="item.image_mobile_src"
+              :src="transformMobileUrl(item.image_mobile_src)"
               :alt="item.name"
             />
           </template>
@@ -332,6 +332,32 @@ export default {
       if (!en) return fa || ''
       return en.charAt(0).toUpperCase() + en.slice(1)
     },
+    transformThumbUrl(url) {
+      if (!url) return url
+
+      const urlObj = new URL(url)
+
+      // Keep the same `src` param
+      const src = urlObj.searchParams.get('src')
+
+      // Build the new URL
+      return `https://thumb.upera.shop/thumb?w=1920&h=1070&src=${encodeURIComponent(
+        src
+      )}`
+    },
+    transformMobileUrl(url) {
+      if (!url) return url
+
+      const urlObj = new URL(url)
+
+      // Keep the same `src` param
+      const src = urlObj.searchParams.get('src')
+
+      // Build the new URL
+      return `https://thumb.upera.shop/thumb?w=960&h=1000&a=c&src=${encodeURIComponent(
+        src
+      )}`
+    },
   },
 }
 </script>
@@ -350,6 +376,11 @@ export default {
   padding: 0 2.6rem !important;
 }
 
+.showcase-thumbnail-wrapper-outter {
+  position: relative;
+  background-color: black;
+}
+
 .col-md-6.col-lg-7.col-xl-12.showcase-pic {
   height: 100vh !important;
 }
@@ -359,10 +390,25 @@ export default {
   align-items: flex-start;
   justify-content: flex-end;
   min-height: 160px;
+  display: flex;
+  /* place buttons on the same horizontal baseline as arrows and dots */
+  position: absolute;
+  right: 2.6rem;
+  bottom: calc(var(--controls-bottom) + 4rem);
+  z-index: 25;
+  gap: 0.75rem;
+  flex-wrap: nowrap;
 }
 .showcase-button-wrapper {
   display: flex;
-  width: 100%;
+  /* place buttons on the same horizontal baseline as arrows and dots */
+  position: absolute;
+  right: 2.6rem;
+  bottom: var(--controls-bottom);
+  z-index: 25;
+  gap: 0.75rem;
+  align-items: center;
+  flex-wrap: nowrap;
 }
 .showcase-details {
   display: flex;
@@ -394,7 +440,7 @@ export default {
 }
 .swiper-wrapper >>> .slick-dots {
   position: absolute;
-  bottom: 19rem;
+  bottom: var(--controls-bottom);
   left: 50%;
   transform: translateX(-50%);
   z-index: 20;
@@ -430,11 +476,13 @@ export default {
 
 .swiper-wrapper {
   position: relative;
+  /* controls vertical baseline (arrows, dots, buttons) — adjusted per-media queries below */
+  --controls-bottom: 19rem;
 }
 
 .custom-arrow {
   position: absolute;
-  bottom: 16px;
+  bottom: var(--controls-bottom) !important;
   top: auto;
   transform: none;
   width: 42px;
@@ -456,12 +504,12 @@ export default {
 .custom-prev {
   left: 2.6rem;
   right: auto;
-  bottom: 18rem;
+  bottom: var(--controls-bottom) !important;
 }
 .custom-next {
   left: 6rem;
   right: auto;
-  bottom: 18rem;
+  bottom: var(--controls-bottom) !important;
 }
 
 @media (max-width: 768px) {
@@ -480,10 +528,12 @@ export default {
     font-weight: 700 !important;
   }
 
+  /* keep dots horizontally centered but on the shared controls baseline */
+  .swiper-wrapper {
+    --controls-bottom: 6rem;
+  }
   .swiper-wrapper >>> .slick-dots {
-    position: relative;
     justify-content: center;
-    bottom: 0 !important;
   }
   .showcase-button-wrapper {
     flex-wrap: wrap;
@@ -521,7 +571,151 @@ export default {
   }
 }
 
+@media (max-width: 1300px) {
+  .showcases-desc-wrapper {
+    padding: 0 1rem !important;
+  }
+
+  .swiper-wrapper {
+    --controls-bottom: 20rem;
+  }
+  .swiper-wrapper >>> .slick-dots {
+    bottom: var(--controls-bottom);
+  }
+
+  .showcase-thumbnail-wrapper {
+    margin-top: 10rem !important;
+  }
+
+  .custom-prev {
+    left: 1rem;
+    right: auto;
+    bottom: var(--controls-bottom) !important;
+  }
+  .custom-next {
+    left: 4rem;
+    right: auto;
+    bottom: var(--controls-bottom) !important;
+  }
+}
+@media (min-width: 1300px) and (max-width: 1500px) {
+  .swiper-wrapper {
+    --controls-bottom: 11rem !important;
+  }
+  .swiper-wrapper >>> .slick-dots {
+    bottom: var(--controls-bottom) !important;
+  }
+  .custom-prev {
+    left: 2.6rem;
+    right: auto;
+    bottom: var(--controls-bottom) !important;
+  }
+  .custom-next {
+    left: 5.8rem;
+    right: auto;
+    bottom: var(--controls-bottom) !important;
+  }
+}
+@media (min-width: 1300px) {
+  .showcase-thumbnail-wrapper {
+    margin-top: 0rem;
+  }
+  .swiper-wrapper {
+    --controls-bottom: 21rem;
+  }
+  .swiper-wrapper >>> .slick-dots {
+    bottom: var(--controls-bottom);
+  }
+
+  .showcase-button-wrapper {
+    bottom: calc(var(--controls-bottom) - 0.5rem);
+  }
+
+  .showcase-desc {
+    bottom: calc(var(--controls-bottom) + 3rem);
+  }
+}
+
+@media (min-width: 1500px) and (max-width: 1700px) {
+  .swiper-wrapper {
+    --controls-bottom: 19rem;
+  }
+  .custom-prev {
+    left: 2.6rem;
+    right: auto;
+    bottom: var(--controls-bottom) !important;
+  }
+  .custom-next {
+    left: 5.8rem;
+    right: auto;
+    bottom: var(--controls-bottom) !important;
+  }
+}
+@media (min-width: 1500px) and (max-width: 1600px) {
+  .swiper-wrapper {
+    --controls-bottom: 12rem;
+  }
+  .custom-prev {
+    left: 2.6rem;
+    right: auto;
+    bottom: var(--controls-bottom) !important;
+  }
+  .custom-next {
+    left: 5.8rem;
+    right: auto;
+    bottom: var(--controls-bottom) !important;
+  }
+}
+
+@media (max-width: 992px) {
+  .showcase .showcase-img {
+    height: 100%;
+  }
+
+  .swiper-wrapper {
+    --controls-bottom: 30rem;
+  }
+
+  .showcase-button-wrapper {
+    bottom: calc(var(--controls-bottom) + 1rem);
+  }
+
+  .showcase-desc {
+    bottom: calc(var(--controls-bottom) + 4rem);
+  }
+
+  .swiper-wrapper >>> .slick-dots {
+    bottom: var(--controls-bottom);
+  }
+
+  .showcase-thumbnail-wrapper {
+    margin-top: 10rem !important;
+  }
+  .custom-prev {
+    left: 12px;
+    right: auto;
+    bottom: var(--controls-bottom) !important;
+  }
+  .custom-next {
+    left: 64px;
+    right: auto;
+    bottom: var(--controls-bottom) !important;
+  }
+}
+
 @media (max-width: 768px) {
+  .swiper-wrapper {
+    --controls-bottom: 10rem;
+  }
+
+  .showcase-button-wrapper {
+    bottom: calc(var(--controls-bottom) + 1rem);
+  }
+
+  .showcase-desc {
+    bottom: calc(var(--controls-bottom) + 4rem);
+  }
+
   .showcase-button-wrapper {
     flex-wrap: wrap;
     gap: 0.5rem;
@@ -533,7 +727,7 @@ export default {
   }
 
   .swiper-wrapper >>> .slick-dots {
-    bottom: 19rem;
+    bottom: calc(var(--controls-bottom) - 3rem) !important;
   }
 
   .custom-next {
@@ -552,90 +746,11 @@ export default {
   .swiper-wrapper >>> .slick-dots li.slick-active button {
     width: 20px;
   }
-}
-
-@media (max-width: 992px) {
-  .showcase .showcase-img {
-    height: 100%;
+  .showcase-desc {
+    bottom: calc(var(--controls-bottom) + 2rem);
   }
-
-  .swiper-wrapper >>> .slick-dots {
-    bottom: 19rem;
-  }
-
-  .showcase-thumbnail-wrapper {
-    margin-top: 10rem !important;
-  }
-  .custom-prev {
-    left: 12px;
-    right: auto;
-    bottom: 11rem !important;
-  }
-  .custom-next {
-    left: 64px;
-    right: auto;
-    bottom: 11rem !important;
-  }
-}
-
-@media (max-width: 1300px) {
-  .showcases-desc-wrapper {
-    padding: 0 1rem !important;
-  }
-
-  .swiper-wrapper >>> .slick-dots {
-    bottom: 7rem;
-  }
-
-  .showcase-thumbnail-wrapper {
-    margin-top: 10rem !important;
-  }
-
-  .custom-prev {
-    left: 1rem;
-    right: auto;
-    bottom: 8rem;
-  }
-  .custom-next {
-    left: 4rem;
-    right: auto;
-    bottom: 8rem;
-  }
-}
-@media (min-width: 1300px) and (max-width: 1500px) {
-  .swiper-wrapper >>> .slick-dots {
-    bottom: 11rem !important;
-  }
-  .custom-prev {
-    left: 2.6rem;
-    right: auto;
-    bottom: 10.3rem;
-  }
-  .custom-next {
-    left: 5.8rem;
-    right: auto;
-    bottom: 10.3rem;
-  }
-}
-@media (min-width: 1300px) {
-  .showcase-thumbnail-wrapper {
-    margin-top: 14rem;
-  }
-  .swiper-wrapper >>> .slick-dots {
-    bottom: 12rem;
-  }
-}
-
-@media (min-width: 1500px) and (max-width: 1700px) {
-  .custom-prev {
-    left: 2.6rem;
-    right: auto;
-    bottom: 12rem;
-  }
-  .custom-next {
-    left: 5.8rem;
-    right: auto;
-    bottom: 12rem;
+  .showcase-button-wrapper {
+    bottom: calc(var(--controls-bottom) - 2rem);
   }
 }
 

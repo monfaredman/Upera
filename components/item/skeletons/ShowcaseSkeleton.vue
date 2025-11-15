@@ -108,7 +108,7 @@ export default {
 
 .skeleton-backdrop {
   width: 100%;
-  height: 576px;
+  height: 790px;
   border-radius: 0;
 }
 
@@ -172,7 +172,21 @@ export default {
   border-radius: 50%;
 }
 
+@media (max-width: 1700px) {
+  .skeleton-backdrop {
+    width: 100%;
+    height: 590px;
+    border-radius: 0;
+  }
+}
+
 @media (max-width: 576px) {
+  .skeleton-backdrop {
+    width: 100%;
+    height: 200px !important;
+    border-radius: 0;
+  }
+
   .skeleton-logo {
     width: 150px;
     height: 90px;
@@ -200,18 +214,13 @@ export default {
   left: 0;
   right: 0;
   z-index: 102;
+  padding: 0 1rem !important;
+  margin-top: 4rem !important;
 }
 
 .showcase-thumbnail-wrapper-outter {
   position: relative;
   z-index: 101;
-}
-
-@media (max-width: 576px) {
-  .showcase-thumbnail-wrapper {
-    padding: 0 1rem !important;
-    margin-top: 4rem !important;
-  }
 }
 
 @media (max-width: 992px) {

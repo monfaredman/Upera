@@ -1043,7 +1043,7 @@ export default {
 </script>
 <style scoped>
 .offer-section {
-  margin-top: -11rem;
+  margin-top: -17rem;
 }
 
 @media (max-width: 1600px) {
@@ -1059,23 +1059,28 @@ export default {
 
 @media (max-width: 1400px) {
   .offer-section {
-    margin-top: -5rem;
+    margin-top: -9rem;
   }
 }
 
+@media (max-width: 1300px) {
+  .offer-section {
+    margin-top: -14rem;
+  }
+}
 @media (max-width: 1200px) {
   .offer-section {
-    margin-top: -3rem;
+    margin-top: -16rem;
   }
 }
 @media (max-width: 992px) {
   .offer-section {
-    margin-top: -2rem;
+    margin-top: -27rem;
   }
 }
 @media (max-width: 768px) {
   .offer-section {
-    margin-top: -1rem;
+    margin-top: -4rem;
   }
 }
 @media (max-width: 576px) {

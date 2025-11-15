@@ -134,7 +134,9 @@ export default {
       itemmenu: [
         'callback',
         'movie-download-id',
+        'movie-payment-id',
         'episode-download-id',
+        'episode-payment-id',
         'ekran-id',
         'movie-id',
         'episode-id',

@@ -465,7 +465,9 @@ export default {
         } else if (this.prerefresh) {
           if (
             this.$route.name === 'movie-download-id' ||
+            this.$route.name === 'movie-payment-id' ||
             this.$route.name === 'episode-download-id' ||
+            this.$route.name === 'episode-payment-id' ||
             this.$route.name === 'series-download-id'
           ) {
             await this.$store.dispatch('login')
