@@ -45,7 +45,7 @@
                 }"
                 :src="
                   item.type === 'genre'
-                    ? item.cover
+                    ? require(`@/assets/images/category/${item.en}.png`)
                     : require(`@/assets/images/category/${item.cover}.png`)
                 "
                 :alt="item.fa"
@@ -92,13 +92,14 @@ export default {
           fa: 'بازیگر خارجی',
           en: 'foreign-actors',
           href: '/casts/foreign-actors',
+          // cover: 'cast-foreign-category',
           cover: 'cast-ir-category',
         },
         {
           fa: 'کارگردان',
           en: 'directors',
           href: '/casts/directors',
-          cover: 'cast-category',
+          cover: 'director-category',
         },
         {
           fa: 'دوبله آپرا',
