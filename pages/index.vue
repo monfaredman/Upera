@@ -633,7 +633,7 @@ export default {
       isLoadingSlider: true,
       isLoadingRecently: true,
       isLoadingLives: true,
-      isLoadingUgcs: true,
+      isLoadingUgcs: false,
       isLoadingDiscover: true,
       isLoadingFilters: true,
       startFetchingFilters: false,
