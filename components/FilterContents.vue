@@ -19,7 +19,7 @@
       </b-button>
       <b-collapse id="collapse-filter" v-model="visible">
         <div class="filter-background">
-          <div class="filter-container" :style="filterContainerStyle">
+          <div class="filter-container" :style="filterStyle">
             <div class="filter-item">
               <b-form-select
                 v-model="f_type"
@@ -89,6 +89,11 @@ export default {
       type: String,
       default: null,
     },
+    isSearch: {
+      type: Boolean,
+      default: false,
+      require: false,
+    },
   },
 
   data() {
@@ -130,28 +135,13 @@ export default {
       visible: true,
       disable_age: false,
       windowWidth: 0,
+      filterStyle: { justifyContent: 'flex-between' },
     }
   },
 
   computed: {
     ...mapGetters({ filter: 'filter/data' }),
     ...mapGetters({ filter_loading: 'filter/filter_loading' }),
-
-    filterContainerStyle() {
-      // Define routes that should use start (flex-start)
-      const startRoutes = ['search']
-
-      const isSearchRoute = this.$route.hash === '#search'
-
-      const currentRouteName = this.$route.name
-      console.log(this.$route)
-      if (startRoutes.includes(currentRouteName) || isSearchRoute) {
-        return { justifyContent: 'flex-start' }
-      } else {
-        // Default behavior - you can change this to your preferred default
-        return { justifyContent: 'flex-between' }
-      }
-    },
   },
 
   watch: {
@@ -193,6 +183,7 @@ export default {
         }
       }
     }
+    this.filterContainerStyle()
   },
 
   methods: {
@@ -284,6 +275,13 @@ export default {
         }
 
         this.$emit('execute_content_filtering', null)
+      }
+    },
+    filterContainerStyle() {
+      if (this.isSearch) {
+        this.filterStyle = { justifyContent: 'flex-start' }
+      } else {
+        this.filterStyle = { justifyContent: 'flex-between' }
       }
     },
   },

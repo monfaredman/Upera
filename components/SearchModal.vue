@@ -36,6 +36,7 @@
           :show="true"
           :savedata="false"
           :no-top="false"
+          :is-search="true"
           @execute_content_filtering="execute_content_filtering"
         />
 
