@@ -2,7 +2,7 @@
   <div class="container">
     <div class="error-wrapper">
       <h1>404</h1>
-      <h5>صفحه مورد نظر یافت نشد</h5>
+      <h5>صفحه مورد نظر پیدا نشد</h5>
     </div>
   </div>
 </template>

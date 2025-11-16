@@ -129,6 +129,26 @@
                 <i class="fa fa-chevron-left"></i>
               </div>
             </div>
+
+            <!-- Audio Settings -->
+            <div
+              v-if="audioOptions && audioOptions.length > 0"
+              class="drawer-item"
+              @click="openAudioSettings"
+            >
+              <div class="drawer-item-icon">
+                <i class="fa fa-headphones"></i>
+              </div>
+              <div class="drawer-item-info">
+                <div class="drawer-item-title">صدا</div>
+                <div class="drawer-item-value">
+                  {{ getAudioLabelDisplay() }}
+                </div>
+              </div>
+              <div class="drawer-item-arrow">
+                <i class="fa fa-chevron-left"></i>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -303,6 +323,48 @@
               <div class="drawer-item-arrow">
                 <i class="fa fa-chevron-left"></i>
               </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Audio Settings -->
+        <div v-if="settingsDrawerView === 'audio'" class="drawer-content">
+          <div class="drawer-header with-back">
+            <button class="back-button" @click="backToMain">
+              <i class="fa fa-chevron-right"></i>
+            </button>
+            <h3>صدا</h3>
+          </div>
+          <div class="drawer-divider"></div>
+          <div class="drawer-body">
+            <div
+              class="drawer-option"
+              :class="{ active: currentAudioLang === null }"
+              @click="selectAudio(null)"
+            >
+              <div class="drawer-option-radio">
+                <div
+                  v-if="currentAudioLang === null"
+                  class="radio-checked"
+                ></div>
+              </div>
+              <div class="drawer-option-label">پیش‌فرض</div>
+            </div>
+
+            <div
+              v-for="opt in audioOptions"
+              :key="opt.lang"
+              class="drawer-option"
+              :class="{ active: currentAudioLang === opt.lang }"
+              @click="selectAudio(opt.lang)"
+            >
+              <div class="drawer-option-radio">
+                <div
+                  v-if="currentAudioLang === opt.lang"
+                  class="radio-checked"
+                ></div>
+              </div>
+              <div class="drawer-option-label">{{ opt.label }}</div>
             </div>
           </div>
         </div>
@@ -506,6 +568,11 @@ export default {
       previewTime: '00:00',
       progressBarElement: null,
       lastPreviewTime: -1,
+      // audio selection state
+      audioOptions: null,
+      currentAudioLang: null,
+      // the actual stream currently loaded into the player
+      currentStream: null,
     }
   },
 
@@ -530,6 +597,10 @@ export default {
   watch: {
     stream(newVal) {
       if (newVal) {
+        // update parsed audio options and currentStream when parent changes stream prop
+        this.parseAudioOptionsFromStream(newVal)
+        // reset currentStream to the new incoming stream (will be used on next init)
+        this.currentStream = newVal
         this.initPlayer()
       }
     },
@@ -605,6 +676,69 @@ export default {
       // Determine initial autoplay based on prop and global setting
       const initialAutoplay = !!(this.playerAutoPlay && this.autoPlay !== false)
 
+      // parse audio options from the original prop stream first
+      this.parseAudioOptionsFromStream(this.stream)
+
+      console.log('[VideoPlayer] Parsed audio options:', this.audioOptions)
+
+      // Determine initial stream to load. If user has a persisted audio selection
+      // and that audio option exists in the parsed audioOptions, build a stream
+      // containing only the selected audio param so the player loads with correct audio.
+      let initialStream = this.currentStream || this.stream
+      try {
+        const persisted = localStorage.getItem(`${this.playerid}-audioLang`)
+        if (persisted && this.audioOptions) {
+          const match = this.audioOptions.find((o) => o.lang === persisted)
+          if (match) {
+            console.log('[VideoPlayer] Using persisted audio:', persisted)
+            initialStream = this.buildStreamWithAudio(this.stream, match.lang)
+            this.currentAudioLang = match.lang
+          }
+        } else {
+          // No persisted selection: prefer FA audio if available (main language is FA)
+          if (this.audioOptions) {
+            const faOpt = this.audioOptions.find(
+              (o) => o.lang && o.lang.toString().toLowerCase() === 'fa'
+            )
+            if (faOpt) {
+              console.log('[VideoPlayer] Using FA audio as default')
+              initialStream = this.buildStreamWithAudio(this.stream, faOpt.lang)
+              this.currentAudioLang = faOpt.lang
+            } else {
+              // FA not available, detect which audio will be default from stream URL
+              // If no audio param is specified, the stream will use its natural default
+              // which is typically the first audio track (often EN)
+              const url = new URL(this.stream, window.location.origin)
+              const params = new URLSearchParams(url.search)
+              let hasAudioParam = false
+
+              for (const key of params.keys()) {
+                if (/^audio\[.+\]$/.test(key)) {
+                  hasAudioParam = true
+                  break
+                }
+              }
+
+              // If no audio param exists and we have audio options,
+              // assume the first option in audioOptions is the default
+              if (!hasAudioParam && this.audioOptions && this.audioOptions.length > 0) {
+                console.log('[VideoPlayer] No audio param in URL, assuming first option as default:', this.audioOptions[0].lang)
+                this.currentAudioLang = this.audioOptions[0].lang
+              }
+            }
+          }
+        }
+      } catch (e) {
+        // ignore localStorage errors
+        console.warn('[VideoPlayer] Error initializing audio state:', e)
+      }
+
+      console.log('[VideoPlayer] Initial audio lang:', this.currentAudioLang)
+      console.log('[VideoPlayer] Initial stream:', initialStream)
+
+      // ensure we track the actual stream we've chosen to load
+      this.currentStream = initialStream
+
       this.player = videojs(this.playerid, {
         autoplay: initialAutoplay,
         controls: true,
@@ -619,7 +753,7 @@ export default {
         fluid: true,
         poster: this.posterUrl,
         language: currentLang,
-        sources: [{ src: this.stream, type: 'application/x-mpegURL' }],
+        sources: [{ src: initialStream, type: 'application/x-mpegURL' }],
       })
 
       this.player.addClass('vjs-split-controls')
@@ -696,8 +830,11 @@ export default {
     // Text Tracks & Subtitles - FIXED
     // ============================================
 
-    setupTextTracks() {
-      if (!this.tracks?.length || this.subtitleTracksInitialized) return
+    setupTextTracks(force = false) {
+      if (!this.tracks?.length) return
+      if (this.subtitleTracksInitialized && !force) return
+
+      console.log('[VideoPlayer] Setting up text tracks. Current audio lang:', this.currentAudioLang)
 
       // Clear any existing tracks first
       const existingTracks = this.player.remoteTextTracks()
@@ -706,7 +843,7 @@ export default {
       }
 
       // Add new tracks
-      this.tracks.forEach((track, index) => {
+      this.tracks.forEach((track) => {
         const textTrack = this.player.addRemoteTextTrack(
           {
             kind: track.kind,
@@ -719,13 +856,89 @@ export default {
         )
 
         // Set initial mode based on default flag
-        if (track.default) {
-          textTrack.track.mode = 'showing'
-          this.currentSubtitle = index
-        } else {
-          textTrack.track.mode = 'disabled'
-        }
+        // we'll set modes after adding all tracks according to audio rules
+        textTrack.track.mode = 'disabled'
       })
+
+      // Decide which subtitle should be active based on current audio selection
+      // Main language is FA. Rules:
+      // - If current audio is FA => subtitles OFF
+      // - Else if a FA subtitle exists => enable FA subtitle
+      // - Else fall back to provided default flags
+      let faSubtitleIndex = -1
+
+      for (let i = 0; i < this.tracks.length; i++) {
+        const t = this.tracks[i]
+        const lang = (t.language || t.label || '').toString().toLowerCase()
+        if (lang === 'fa' || lang === 'farsi' || lang.includes('fa')) {
+          faSubtitleIndex = i
+          break
+        }
+      }
+
+      const textTracks = this.player.textTracks()
+
+      // Determine which subtitle to show based on audio language
+      if (
+        this.currentAudioLang &&
+        this.currentAudioLang.toString().toLowerCase() === 'fa'
+      ) {
+        // audio is FA, leave all subtitles disabled
+        console.log('[VideoPlayer] FA audio detected, disabling all subtitles')
+        for (let i = 0; i < textTracks.length; i++) {
+          textTracks[i].mode = 'disabled'
+        }
+        this.currentSubtitle = null
+      } else if (
+        this.currentAudioLang &&
+        this.currentAudioLang.toString().toLowerCase() === 'en'
+      ) {
+        // audio is EN, enable FA subtitle if available
+        if (faSubtitleIndex !== -1) {
+          console.log('[VideoPlayer] EN audio detected, enabling FA subtitle at index:', faSubtitleIndex)
+          for (let i = 0; i < textTracks.length; i++) {
+            textTracks[i].mode = i === faSubtitleIndex ? 'showing' : 'disabled'
+          }
+          this.currentSubtitle = faSubtitleIndex
+        } else {
+          // no FA subtitle, leave all disabled
+          console.log('[VideoPlayer] EN audio but no FA subtitle found, disabling all')
+          for (let i = 0; i < textTracks.length; i++) {
+            textTracks[i].mode = 'disabled'
+          }
+          this.currentSubtitle = null
+        }
+      } else {
+        // audio language not determined or other language
+        // Try to detect from stream or honor defaults
+        console.log('[VideoPlayer] Audio language unknown, applying fallback logic')
+        if (faSubtitleIndex !== -1) {
+          // enable FA subtitle as fallback
+          console.log('[VideoPlayer] Enabling FA subtitle as fallback at index:', faSubtitleIndex)
+          for (let i = 0; i < textTracks.length; i++) {
+            textTracks[i].mode = i === faSubtitleIndex ? 'showing' : 'disabled'
+          }
+          this.currentSubtitle = faSubtitleIndex
+        } else {
+          // no FA subtitle found, honor default flags from tracks
+          let found = false
+          for (let i = 0; i < this.tracks.length; i++) {
+            if (this.tracks[i].default) {
+              textTracks[i].mode = 'showing'
+              this.currentSubtitle = i
+              found = true
+              break
+            }
+          }
+          if (!found) {
+            // leave all disabled
+            for (let i = 0; i < textTracks.length; i++) {
+              textTracks[i].mode = 'disabled'
+            }
+            this.currentSubtitle = null
+          }
+        }
+      }
 
       this.subtitleTracksInitialized = true
     },
@@ -1656,6 +1869,11 @@ export default {
         // Initialize drawer state
         this.currentPlaybackRate = this.player.playbackRate()
         this.initializeSubtitleState()
+        // apply persisted audio selection if available
+        this.initializeAudioState()
+
+        // Detect actual audio track after loadedmetadata
+        this.detectActualAudioTrack()
 
         // Move custom overlays into player for fullscreen support
         this.setupFullscreenCustomOverlays()
@@ -1810,6 +2028,233 @@ export default {
       if (!foundActive) {
         this.currentSubtitle = null
       }
+    },
+
+    detectActualAudioTrack() {
+      // Listen for when metadata is loaded to detect which audio track is actually playing
+      if (!this.player) return
+
+      this.player.on('loadedmetadata', () => {
+        try {
+          // Try to detect active audio track from HLS tech
+          const tech = this.player.tech({ IWillNotUseThisInPlugins: true })
+
+          if (tech && tech.vhs) {
+            // Check the active audio track in HLS
+            const audioTracks = tech.audioTracks()
+
+            if (audioTracks && audioTracks.length > 0) {
+              for (let i = 0; i < audioTracks.length; i++) {
+                if (audioTracks[i].enabled) {
+                  // Found the active audio track
+                  const trackLabel = audioTracks[i].label || audioTracks[i].language || ''
+                  const trackLang = trackLabel.toLowerCase()
+
+                  // Try to determine language from track info
+                  let detectedLang = null
+
+                  if (trackLang.includes('fa') || trackLang.includes('farsi') || trackLang.includes('persian')) {
+                    detectedLang = 'FA'
+                  } else if (trackLang.includes('en') || trackLang.includes('english')) {
+                    detectedLang = 'EN'
+                  }
+
+                  // If we detected a language and it differs from current state, update
+                  if (detectedLang && (!this.currentAudioLang || this.currentAudioLang !== detectedLang)) {
+                    console.log('Detected actual audio track:', detectedLang)
+                    this.currentAudioLang = detectedLang
+
+                    // Re-sync subtitles based on detected audio
+                    this.syncSubtitlesWithAudio()
+                  }
+                  break
+                }
+              }
+            }
+          }
+        } catch (e) {
+          console.warn('Could not detect audio track:', e)
+        }
+      })
+    },
+
+    syncSubtitlesWithAudio() {
+      // Sync subtitle display with current audio language
+      if (!this.player || !this.tracks || this.tracks.length === 0) return
+
+      const textTracks = this.player.textTracks()
+
+      // Find FA subtitle index
+      let faSubtitleIndex = -1
+      for (let i = 0; i < this.tracks.length; i++) {
+        const t = this.tracks[i]
+        const lang = (t.language || t.label || '').toString().toLowerCase()
+        if (lang === 'fa' || lang === 'farsi' || lang.includes('fa')) {
+          faSubtitleIndex = i
+          break
+        }
+      }
+
+      // Apply subtitle logic based on audio
+      if (this.currentAudioLang && this.currentAudioLang.toString().toLowerCase() === 'fa') {
+        // FA audio -> subtitles OFF
+        for (let i = 0; i < textTracks.length; i++) {
+          textTracks[i].mode = 'disabled'
+        }
+        this.currentSubtitle = null
+      } else if (this.currentAudioLang && faSubtitleIndex !== -1) {
+        // Non-FA audio and FA subtitle exists -> enable FA subtitle
+        for (let i = 0; i < textTracks.length; i++) {
+          textTracks[i].mode = i === faSubtitleIndex ? 'showing' : 'disabled'
+        }
+        this.currentSubtitle = faSubtitleIndex
+      }
+    },
+
+    // ============================================
+    // Audio parsing & selection
+    // ============================================
+    parseAudioOptionsFromStream(streamUrl) {
+      try {
+        if (!streamUrl) {
+          this.audioOptions = null
+          return
+        }
+
+        const url = new URL(streamUrl, window.location.origin)
+        const params = new URLSearchParams(url.search)
+
+        const options = []
+
+        // Find params like audio[FA]=token
+        for (const [key, value] of params.entries()) {
+          const m = key.match(/^audio\[(.+)\]$/)
+          if (m) {
+            const lang = m[1]
+            // Map to labels requested by product: FA -> دوبله, EN -> زبان اصلی
+            let label = LANGUAGE_MAP[lang.toLowerCase()] || lang
+            if (lang.toLowerCase() === 'fa' || lang === 'FA') {
+              label = 'دوبله'
+            } else if (lang.toLowerCase() === 'en' || lang === 'EN') {
+              label = 'زبان اصلی'
+            }
+
+            options.push({ lang, token: value, label })
+          }
+        }
+
+        this.audioOptions = options.length ? options : null
+      } catch (e) {
+        console.warn('parseAudioOptionsFromStream error', e)
+        this.audioOptions = null
+      }
+    },
+
+    buildStreamWithAudio(streamUrl, lang) {
+      try {
+        if (!streamUrl) return streamUrl
+        const url = new URL(streamUrl, window.location.origin)
+        const params = new URLSearchParams(url.search)
+
+        // remove existing audio[...] params
+        for (const key of Array.from(params.keys())) {
+          if (/^audio\[.+\]$/.test(key)) params.delete(key)
+        }
+
+        if (lang) {
+          const opt = this.audioOptions?.find((o) => o.lang === lang)
+          if (opt) {
+            params.set(`audio[${opt.lang}]`, opt.token)
+          }
+        }
+
+        url.search = params.toString()
+        return url.toString()
+      } catch (e) {
+        console.warn('buildStreamWithAudio error', e)
+        return streamUrl
+      }
+    },
+
+    initializeAudioState() {
+      // No-op now: initial audio selection is applied before player creation
+      // This method kept for compatibility but does not force a reload.
+    },
+
+    openAudioSettings() {
+      this.settingsDrawerView = 'audio'
+    },
+
+    getAudioLabelDisplay() {
+      if (!this.audioOptions) return 'پیش‌فرض'
+      if (!this.currentAudioLang) return 'پیش‌فرض'
+      const found = this.audioOptions.find(
+        (o) => o.lang === this.currentAudioLang
+      )
+      return found ? found.label : 'پیش‌فرض'
+    },
+
+    selectAudio(lang, opts = {}) {
+      // lang: null => default (do not force any audio param)
+      // preserveDrawer: when true don't close drawer (used at init)
+      if (!this.player) {
+        this.currentAudioLang = lang
+        return
+      }
+
+      this.currentAudioLang = lang
+
+      // persist selection
+      try {
+        if (lang) localStorage.setItem(`${this.playerid}-audioLang`, lang)
+        else localStorage.removeItem(`${this.playerid}-audioLang`)
+      } catch (e) {
+        console.warn('parseAudioOptionsFromStream error', e)
+      }
+
+      // Rebuild stream URL based on original prop stream and selected lang
+      try {
+        const original = this.stream
+        const newStream = this.buildStreamWithAudio(original, lang)
+
+        // update internal currentStream
+        this.currentStream = newStream
+
+        // reload player source while preserving time and playback
+        const currentTime = this.player.currentTime()
+        const wasPlaying = !this.player.paused()
+
+        this.player.pause()
+        this.player.src({ src: newStream, type: 'application/x-mpegURL' })
+        // wait for metadata then seek and resume if needed
+        this.player.one('loadedmetadata', () => {
+          try {
+            if (!isNaN(currentTime) && currentTime > 0) {
+              const dur = this.player.duration()
+              if (!dur || currentTime <= dur) {
+                this.player.currentTime(currentTime)
+              }
+            }
+          } catch (err) {
+            console.warn('seek after audio change failed', err)
+          }
+
+          // Reinitialize subtitles according to new audio selection
+          try {
+            this.setupTextTracks(true)
+          } catch (err) {
+            console.warn('reinit subtitles after audio change failed', err)
+          }
+
+          if (wasPlaying) {
+            this.player.play().catch(() => {})
+          }
+        })
+      } catch (e) {
+        console.error('selectAudio error', e)
+      }
+
+      if (!opts.preserveDrawer) this.closeSettingsDrawer()
     },
 
     // Add to methods
