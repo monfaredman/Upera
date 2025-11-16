@@ -5,7 +5,7 @@
   >
     <div :class="{ 'mt-5 pt-lg-2 pt-md-2 pt-1': noTop }">
       <b-button
-        class="btn btn-block mb-1 d-sm-none"
+        class="btn btn-block mb-1 filter-btn"
         :class="{
           'btn-secondary': $colorMode.value == 'dark',
           'btn-dark btn-download': $colorMode.value != 'dark',
@@ -18,51 +18,53 @@
         <i class="icon-filter ml-2" /> <span>فیلتر</span>
       </b-button>
       <b-collapse id="collapse-filter" v-model="visible">
-        <div :class="{ row: !setting }">
-          <div class="col-sm">
-            <b-form-select
-              v-model="f_type"
-              :options="f_types"
-              :disabled="filter_loading"
-              class="mb-1"
-              @change="change_filter('f_type', f_type)"
-            />
-          </div>
-          <div class="col-sm">
-            <b-form-select
-              v-model="country"
-              :options="countries"
-              :disabled="filter_loading"
-              class="mb-1"
-              @change="change_filter('country', country)"
-            />
-          </div>
-          <div class="col-sm">
-            <b-form-select
-              v-model="lang"
-              :options="langs"
-              :disabled="filter_loading"
-              class="mb-1"
-              @change="change_filter('lang', lang)"
-            />
-          </div>
-          <div class="col-sm">
-            <b-form-select
-              v-model="age"
-              :options="ages"
-              :disabled="filter_loading || disable_age"
-              class="mb-1"
-              @change="change_filter('age', age)"
-            />
-          </div>
-          <div v-show="localshowgenres" class="col-sm">
-            <b-form-select
-              v-model="genre"
-              :options="genres"
-              :disabled="filter_loading"
-              class="mb-1"
-              @change="change_filter('genre', genre)"
-            />
+        <div class="filter-background">
+          <div class="filter-container" :style="filterContainerStyle">
+            <div class="filter-item">
+              <b-form-select
+                v-model="f_type"
+                :options="f_types"
+                :disabled="filter_loading"
+                class="filter-input"
+                @change="change_filter('f_type', f_type)"
+              />
+            </div>
+            <div class="filter-item">
+              <b-form-select
+                v-model="country"
+                :options="countries"
+                :disabled="filter_loading"
+                class="filter-input"
+                @change="change_filter('country', country)"
+              />
+            </div>
+            <div class="filter-item">
+              <b-form-select
+                v-model="lang"
+                :options="langs"
+                :disabled="filter_loading"
+                class="filter-input"
+                @change="change_filter('lang', lang)"
+              />
+            </div>
+            <div class="filter-item">
+              <b-form-select
+                v-model="age"
+                :options="ages"
+                :disabled="filter_loading || disable_age"
+                class="filter-input"
+                @change="change_filter('age', age)"
+              />
+            </div>
+            <div v-show="localshowgenres" class="filter-item">
+              <b-form-select
+                v-model="genre"
+                :options="genres"
+                :disabled="filter_loading"
+                class="filter-input"
+                @change="change_filter('genre', genre)"
+              />
+            </div>
           </div>
         </div>
       </b-collapse>
@@ -134,6 +136,22 @@ export default {
   computed: {
     ...mapGetters({ filter: 'filter/data' }),
     ...mapGetters({ filter_loading: 'filter/filter_loading' }),
+
+    filterContainerStyle() {
+      // Define routes that should use start (flex-start)
+      const startRoutes = ['search']
+
+      const isSearchRoute = this.$route.hash === '#search'
+
+      const currentRouteName = this.$route.name
+      console.log(this.$route)
+      if (startRoutes.includes(currentRouteName) || isSearchRoute) {
+        return { justifyContent: 'flex-start' }
+      } else {
+        // Default behavior - you can change this to your preferred default
+        return { justifyContent: 'flex-between' }
+      }
+    },
   },
 
   watch: {
@@ -271,3 +289,84 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+.filter-background {
+  width: 100% !important;
+  padding: 16px;
+  border-radius: 12px;
+  background: #525252;
+}
+
+.filter-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+}
+
+.filter-item {
+  flex: 1 1 20%;
+  min-width: 200px;
+}
+
+.filter-input {
+  width: 100% !important;
+  height: 44px;
+  border-radius: 12px;
+  border-width: 1px;
+  border: 1px solid #737373;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23343a40' viewBox='0 0 16 16'%3E%3Cpath d='M1.5 5.5L8 12l6.5-6.5-1.75-1.75L8 8.5 3.25 3.75z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: left 16px center;
+  background-size: 1rem;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+/* Mobile styles */
+@media (max-width: 576px) {
+  .filter-container {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .filter-item {
+    flex: 1 1 100%; /* 100% width on mobile */
+    min-width: unset; /* Remove min-width on mobile */
+    width: 100%;
+  }
+
+  .filter-input {
+    width: 100% !important;
+  }
+
+  .filter-btn {
+    color: white !important;
+    background-color: #525252 !important;
+  }
+}
+
+/* Tablet styles */
+@media (min-width: 577px) and (max-width: 768px) {
+  .filter-item {
+    flex: 1 1 50%; /* 50% width on tablet */
+    min-width: 150px;
+  }
+}
+
+/* Desktop styles */
+@media (min-width: 769px) {
+  .filter-btn {
+    display: none !important;
+    color: #525252;
+  }
+
+  .filter-item {
+    flex: 1 1 20%;
+    max-width: 19%;
+  }
+}
+</style>
