@@ -116,9 +116,9 @@
                 <div class="section-title">انتخاب روش پرداخت</div>
                 <div class="payment-options">
                   <div
-                    class="payment-option"
                     v-for="method in paymentMethods"
                     :key="method.value"
+                    class="payment-option"
                     :class="{ disabled: useWalletCredit }"
                   >
                     <div class="payment-option-content">
@@ -419,7 +419,20 @@ export default {
       if (val) {
         this.showModal()
         this.syncWithCart()
-        if (!this.viewOnly) {
+        let skipMainItem = false
+        if (process.client) {
+          try {
+            skipMainItem =
+              localStorage.getItem('_download_skip_main_item') === '1'
+            if (skipMainItem) {
+              localStorage.removeItem('_download_skip_main_item')
+            }
+          } catch (error) {
+            console.error('Failed to read skip flag:', error)
+          }
+        }
+
+        if (!this.viewOnly && !skipMainItem) {
           this.loadContentData(this.type, this.id)
         }
         this.loadAvailableItems()
@@ -470,6 +483,7 @@ export default {
         if (!this.$store?.state?.basketActive) {
           localStorage.removeItem('_cart')
           this.addedItems = []
+          this.emitCartChange()
           return
         }
 
@@ -490,16 +504,42 @@ export default {
         // Only sync to cart if basketActive is active
         if (!this.$store?.state?.basketActive) {
           localStorage.removeItem('_cart')
+          this.emitCartChange()
           return
         }
 
+        const normalizedContent = Array.isArray(this.addedItems)
+          ? this.addedItems.map((item) =>
+              item && typeof item === 'object'
+                ? {
+                    ...item,
+                    id:
+                      item.id !== undefined && item.id !== null
+                        ? String(item.id)
+                        : item.id,
+                  }
+                : item
+            )
+          : []
+
         const cart = {
-          content: this.addedItems,
+          content: normalizedContent,
           amount: this.totalAmount,
         }
         localStorage.setItem('_cart', JSON.stringify(cart))
+        this.emitCartChange()
       } catch (error) {
         console.error('Error syncing to cart:', error)
+      }
+    },
+
+    emitCartChange() {
+      if (!process.client) return
+      try {
+        const event = new StorageEvent('storage', { key: '_cart' })
+        window.dispatchEvent(event)
+      } catch (error) {
+        window.dispatchEvent(new Event('storage'))
       }
     },
 
@@ -509,30 +549,28 @@ export default {
         if (!this.$store?.state?.basketActive) {
           this.addedItems = [item]
           localStorage.removeItem('_cart')
+          this.emitCartChange()
           return
         }
 
-        let cart = localStorage.getItem('_cart')
-        let parsedCart = cart ? JSON.parse(cart) : { content: [], amount: 0 }
+        const cart = localStorage.getItem('_cart')
+        const parsedCart = cart ? JSON.parse(cart) : { content: [] }
+        const content = Array.isArray(parsedCart.content)
+          ? [...parsedCart.content]
+          : []
 
         // Check if item already exists
-        const existingIndex = parsedCart.content.findIndex(
-          (cartItem) => cartItem.id === item.id
+        const existingIndex = content.findIndex(
+          (cartItem) => cartItem?.id === item.id
         )
 
         if (existingIndex === -1) {
-          parsedCart.content.push(item)
+          content.push(item)
         } else {
-          parsedCart.content[existingIndex] = item
+          content.splice(existingIndex, 1, item)
         }
 
-        parsedCart.amount = parsedCart.content.reduce(
-          (sum, i) => sum + (i.tvod_price || 0),
-          0
-        )
-
-        localStorage.setItem('_cart', JSON.stringify(parsedCart))
-        this.addedItems = parsedCart.content
+        this.addedItems = content
       } catch (error) {
         console.error('Error adding to cart:', error)
       }
@@ -544,22 +582,17 @@ export default {
         if (!this.$store?.state?.basketActive) {
           this.addedItems = this.addedItems.filter((item) => item.id !== itemId)
           localStorage.removeItem('_cart')
+          this.emitCartChange()
           return
         }
 
-        let cart = localStorage.getItem('_cart')
-        let parsedCart = cart ? JSON.parse(cart) : { content: [], amount: 0 }
+        const cart = localStorage.getItem('_cart')
+        const parsedCart = cart ? JSON.parse(cart) : { content: [] }
+        const content = Array.isArray(parsedCart.content)
+          ? parsedCart.content.filter((item) => item?.id !== itemId)
+          : []
 
-        parsedCart.content = parsedCart.content.filter(
-          (item) => item.id !== itemId
-        )
-        parsedCart.amount = parsedCart.content.reduce(
-          (sum, i) => sum + (i.tvod_price || 0),
-          0
-        )
-
-        localStorage.setItem('_cart', JSON.stringify(parsedCart))
-        this.addedItems = parsedCart.content
+        this.addedItems = content
       } catch (error) {
         console.error('Error removing from cart:', error)
       }

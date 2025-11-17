@@ -510,9 +510,9 @@ export default {
       const base = cdnType === 1 ? CDN_BACKDROPS_1 : CDN_BACKDROPS_2
       if (this.isOffer) {
         if (this.index === 0)
-          return `https://thumb.upera.shop/thumb?w=${w}&h=${h}&q=100&a=t&src=https://cdn.upera.shop/s3/files/${filename}`
+          return `https://thumb.upera.shop/thumb?w=${w}&h=${h}&q=100&a=t&src=https://cdn.upera.shop/s3/${filename}`
         else {
-          return `https://thumb.upera.shop/thumb?w=${1600}&h=${1000}&q=100&a=r&src=https://cdn.upera.shop/s3/files/${filename}`
+          return `https://thumb.upera.shop/thumb?w=${1600}&h=${1000}&q=100&a=r&src=https://cdn.upera.shop/s3/${filename}`
         }
       }
       return this.variant === 'md_backdrop'

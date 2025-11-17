@@ -2,16 +2,22 @@
   <div id="showcase-button-wrapper" class="showcase-button-wrapper">
     <!-- Main Action Button -->
     <button
-      v-if="actions && actions.mainButton.exist"
+      v-if="shouldShowRemoveButton"
+      class="btn btn-danger mr-1 ml-0 btn-main-section btn-remove"
+      @click="removeFromCart"
+    >
+      <span class="smallsrm">
+        <i class="fa fa-trash pr-2" />
+        <span>{{ removeButtonLabel }}</span>
+      </span>
+    </button>
+    <button
+      v-else-if="actions && actions.mainButton.exist"
       class="btn btn-main mr-1 ml-0 btn-main-section"
       @click="handleMainAction"
     >
       <span class="smallsrm">
-        <i
-          v-if="actions.mainButton.action === 'play'"
-          class="fa fa-play pr-2"
-        />
-        <i v-else class="fa fa-shopping-cart pr-2" />
+        <i :class="mainButtonIcon" />
         <span>
           {{ mainButtonDisplayLabel }}
           <span v-if="showEpisodeNumber">
@@ -24,7 +30,7 @@
 
     <!-- Download Button -->
     <button
-      v-if="actions && actions.downloadButton.exist"
+      v-if="!shouldShowRemoveButton && actions && actions.downloadButton.exist"
       class="btn btn-dark btn-download mr-1 ml-0 btn-main-section"
       @click="handleDownload"
     >
@@ -97,7 +103,18 @@ export default {
     'clap-stop',
     'share',
   ],
+  data() {
+    return {
+      cartItemIds: [],
+      cartStorageListener: null,
+    }
+  },
   computed: {
+    isBasketActive() {
+      if (!this.$store) return true
+      const state = this.$store.state?.basketActive
+      return state === undefined ? true : Boolean(state)
+    },
     mainButtonDisplayLabel() {
       if (!this.actions?.mainButton?.label) return this.mainButtonLabel
       const lbl = this.actions.mainButton.label
@@ -106,6 +123,56 @@ export default {
     showEpisodeNumber() {
       return this.mainButtonAction === 'play' && this.episode?.id
     },
+    cartTargetId() {
+      if (!this.isBasketActive) return null
+      if (this.mainButtonAction !== 'buy') return null
+      const target =
+        (this.episode && this.episode.id != null ? this.episode.id : null) ??
+        this.id
+      return target != null ? String(target) : null
+    },
+    shouldShowRemoveButton() {
+      if (!this.cartTargetId) return false
+      return this.cartItemIds.includes(this.cartTargetId)
+    },
+    mainButtonIcon() {
+      if (this.mainButtonAction === 'play') return 'fa fa-play pr-2'
+      if (this.mainButtonAction === 'subscription') return 'fa fa-id-card pr-2'
+      if (this.mainButtonAction === 'buy') return 'fa fa-shopping-cart pr-2'
+      return 'fa fa-play pr-2'
+    },
+    removeButtonLabel() {
+      if (typeof this.$te === 'function' && this.$te('cart.remove')) {
+        return this.$t('cart.remove')
+      }
+      return 'حذف از سبد'
+    },
+  },
+  watch: {
+    isBasketActive: {
+      immediate: true,
+      handler(active) {
+        if (!process.client) return
+        if (active) {
+          this.syncCartItems()
+          this.attachCartListener()
+        } else {
+          this.cartItemIds = []
+          this.detachCartListener()
+        }
+      },
+    },
+  },
+  mounted() {
+    if (!process.client) return
+    if (this.isBasketActive) {
+      this.syncCartItems()
+      this.attachCartListener()
+    }
+  },
+  beforeDestroy() {
+    if (!process.client) return
+    this.detachCartListener()
   },
 
   methods: {
@@ -117,6 +184,84 @@ export default {
     },
     handleDownload() {
       this.$emit('download')
+    },
+    syncCartItems() {
+      if (!process.client) return
+      if (!this.isBasketActive) {
+        this.cartItemIds = []
+        return
+      }
+      try {
+        const raw = localStorage.getItem('_cart')
+        if (!raw) {
+          this.cartItemIds = []
+          return
+        }
+        const cart = JSON.parse(raw)
+        this.updateCartState(cart)
+      } catch (error) {
+        console.error('Failed to sync cart items:', error)
+      }
+    },
+    updateCartState(cart) {
+      if (!cart || !Array.isArray(cart.content)) {
+        this.cartItemIds = []
+        return
+      }
+      this.cartItemIds = cart.content
+        .map((item) => (item && item.id != null ? String(item.id) : null))
+        .filter((id) => id !== null)
+    },
+    removeFromCart() {
+      if (!process.client || !this.cartTargetId) return
+      try {
+        const raw = localStorage.getItem('_cart')
+        const cart = raw
+          ? JSON.parse(raw)
+          : {
+              content: [],
+              amount: 0,
+            }
+
+        if (!Array.isArray(cart.content)) {
+          cart.content = []
+        }
+
+        cart.content = cart.content.filter(
+          (item) => String(item?.id) !== this.cartTargetId
+        )
+        cart.amount = cart.content.reduce(
+          (sum, current) => sum + (current.tvod_price || 0),
+          0
+        )
+
+        localStorage.setItem('_cart', JSON.stringify(cart))
+        this.updateCartState(cart)
+        this.emitCartChange()
+      } catch (error) {
+        console.error('Failed to remove item from cart:', error)
+      }
+    },
+    emitCartChange() {
+      if (!process.client) return
+      try {
+        const event = new StorageEvent('storage', { key: '_cart' })
+        window.dispatchEvent(event)
+      } catch (error) {
+        window.dispatchEvent(new Event('storage'))
+      }
+    },
+    attachCartListener() {
+      if (!process.client) return
+      if (this.cartStorageListener) return
+      this.cartStorageListener = () => this.syncCartItems()
+      window.addEventListener('storage', this.cartStorageListener)
+    },
+    detachCartListener() {
+      if (!process.client) return
+      if (!this.cartStorageListener) return
+      window.removeEventListener('storage', this.cartStorageListener)
+      this.cartStorageListener = null
     },
     ChooseLang(en, fa) {
       if (fa && this.$i18n.locale === 'fa') return fa

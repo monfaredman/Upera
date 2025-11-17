@@ -102,12 +102,24 @@
                 {{ ChooseLang(episode.name, episode.name_fa) }}
               </h6>
               <button
-                v-if="getMainButton(episode).exist"
+                v-if="
+                  getMainButton(episode).exist &&
+                  getMainButtonAction(episode) === 'buy' &&
+                  isEpisodeInCart(episode.id)
+                "
+                class="episode-remove-btn"
+                @click="removeEpisodeFromCart(episode)"
+              >
+                حذف از سبد
+                <i class="fa fa-trash mr-2"></i>
+              </button>
+              <button
+                v-else-if="getMainButton(episode).exist"
                 class="episode-play-btn"
                 @click="handleAction(episode, getMainButtonAction(episode))"
               >
                 {{ getMainButtonLabel(episode) }}
-                <i class="fa fa-play mr-2"></i>
+                <i :class="getMainButtonIcon(episode)"></i>
               </button>
               <nuxt-link
                 v-else
@@ -165,9 +177,15 @@ export default {
       showAll: false,
       itemsPerRow: 4,
       sortOrder: 'asc', // 'asc' for oldest first, 'desc' for newest first
+      cartItemIds: [],
     }
   },
   computed: {
+    isBasketActive() {
+      if (!this.$store) return true
+      const state = this.$store.state?.basketActive
+      return state === undefined ? true : Boolean(state)
+    },
     currentSeasonEpisodes() {
       if (!this.season || !this.selectseriesid) return []
       const episodes = this.season[this.selectseriesid] || []
@@ -189,6 +207,35 @@ export default {
     hasMoreEpisodes() {
       return this.currentSeasonEpisodes.length > this.itemsPerRow
     },
+  },
+  watch: {
+    isBasketActive: {
+      immediate: true,
+      handler(val) {
+        if (!process.client) return
+        if (val) {
+          this.syncCartItems()
+          this.attachCartListener()
+        } else {
+          this.cartItemIds = []
+          this.detachCartListener()
+        }
+      },
+    },
+  },
+  mounted() {
+    if (!process.client) return
+    if (this.isBasketActive) {
+      this.syncCartItems()
+      this.attachCartListener()
+    } else {
+      this.cartItemIds = []
+      this.detachCartListener()
+    }
+  },
+  beforeDestroy() {
+    if (!process.client) return
+    this.detachCartListener()
   },
   methods: {
     ChooseLang(en, fa) {
@@ -214,10 +261,183 @@ export default {
       const mainButton = this.getMainButton(episode)
       return mainButton.exist ? mainButton.action : ''
     },
-    handleAction(episode, action) {
+    getMainButtonIcon(episode) {
+      const action = this.getMainButtonAction(episode)
+      if (action === 'buy') return 'fa fa-shopping-cart mr-2'
+      if (action === 'subscription') return 'fa fa-id-card mr-2'
+      return 'fa fa-play mr-2'
+    },
+    isEpisodeInCart(episodeId) {
+      if (!this.isBasketActive || !episodeId) return false
+      const targetId = String(episodeId)
+      return this.cartItemIds.includes(targetId)
+    },
+    updateCartState(cart) {
+      if (!cart || !Array.isArray(cart.content)) {
+        this.cartItemIds = []
+        return
+      }
+      this.cartItemIds = cart.content
+        .map((item) => (item && item.id != null ? String(item.id) : null))
+        .filter((id) => id !== null)
+    },
+    syncCartItems() {
+      if (!process.client) return
+      if (!this.isBasketActive) {
+        this.cartItemIds = []
+        return
+      }
+      try {
+        const raw = localStorage.getItem('_cart')
+        if (!raw) {
+          this.cartItemIds = []
+          return
+        }
+        const cart = JSON.parse(raw)
+        this.updateCartState(cart)
+      } catch (error) {
+        console.error('Failed to sync cart items:', error)
+      }
+    },
+    emitCartChange() {
+      if (!process.client) return
+      try {
+        const event = new StorageEvent('storage', { key: '_cart' })
+        window.dispatchEvent(event)
+      } catch (error) {
+        window.dispatchEvent(new Event('storage'))
+      }
+    },
+    attachCartListener() {
+      if (!process.client || !this.isBasketActive) return
+      if (this._cartStorageListener) return
+      this._cartStorageListener = () => this.syncCartItems()
+      window.addEventListener('storage', this._cartStorageListener)
+    },
+    detachCartListener() {
+      if (!process.client) return
+      if (!this._cartStorageListener) return
+      window.removeEventListener('storage', this._cartStorageListener)
+      this._cartStorageListener = null
+    },
+    persistCartItem(item) {
+      if (!process.client) return
+
+      try {
+        const raw = localStorage.getItem('_cart')
+        const cart = raw
+          ? JSON.parse(raw)
+          : {
+              content: [],
+              amount: 0,
+            }
+
+        if (!Array.isArray(cart.content)) {
+          cart.content = []
+        }
+
+        const targetId = String(item.id)
+        const index = cart.content.findIndex(
+          (existing) => String(existing.id) === targetId
+        )
+        const normalizedItem = { ...item, id: targetId }
+        if (index === -1) cart.content.push(normalizedItem)
+        else cart.content.splice(index, 1, normalizedItem)
+
+        cart.amount = cart.content.reduce(
+          (sum, current) => sum + (current.tvod_price || 0),
+          0
+        )
+
+        localStorage.setItem('_cart', JSON.stringify(cart))
+        this.updateCartState(cart)
+        this.emitCartChange()
+      } catch (error) {
+        console.error('Failed to persist cart item:', error)
+      }
+    },
+    removeEpisodeFromCart(episode) {
+      if (!episode?.id || !process.client) return
+
+      try {
+        const raw = localStorage.getItem('_cart')
+        const cart = raw
+          ? JSON.parse(raw)
+          : {
+              content: [],
+              amount: 0,
+            }
+
+        if (!Array.isArray(cart.content)) {
+          cart.content = []
+        }
+
+        const targetId = String(episode.id)
+        cart.content = cart.content.filter(
+          (item) => String(item?.id) !== targetId
+        )
+        cart.amount = cart.content.reduce(
+          (sum, current) => sum + (current.tvod_price || 0),
+          0
+        )
+
+        localStorage.setItem('_cart', JSON.stringify(cart))
+        this.updateCartState(cart)
+        this.emitCartChange()
+      } catch (error) {
+        console.error('Failed to remove episode from cart:', error)
+      }
+    },
+    async addEpisodeToCart(episode) {
+      if (!episode?.id || !process.client) return
+
+      try {
+        const endpoint = `/getV2/episode/${episode.id}`
+        const response = await this.$axios.get(endpoint)
+        const api = response?.data
+
+        let normalized = null
+        if (api?.data?.episode) {
+          normalized = { ...api.data.episode, cdn: api.data.cdn }
+        } else if (api?.data?.movie) {
+          normalized = { ...api.data.movie, cdn: api.data.cdn }
+        } else if (api?.data) {
+          normalized = api.data
+        } else {
+          normalized = api
+        }
+
+        if (!normalized || !normalized.id) return
+
+        const prepared = {
+          ...normalized,
+          id: String(normalized.id),
+          type: normalized.type || 'episode',
+        }
+
+        this.persistCartItem(prepared)
+      } catch (error) {
+        console.error('Failed to add episode to cart:', error)
+      }
+    },
+    async handleAction(episode, action) {
       if (action === 'play') {
         this.$router.push({ name: 'episode-id', params: { id: episode.id } })
       } else if (action === 'buy') {
+        if (this.$store?.state?.basketActive === false) {
+          this.$store.dispatch('SET_BASKET_ACTIVE', true)
+        }
+
+        if (process.client) {
+          try {
+            localStorage.setItem('_download_skip_main_item', '1')
+          } catch (error) {
+            console.error('Failed to set skip flag:', error)
+          }
+        }
+
+        await this.addEpisodeToCart(episode)
+        this.$store.dispatch('DOWNLOAD_MODAL_LOAD')
         this.$emit('buy', episode)
       } else if (action === 'subscription') {
         this.$emit('subscription', episode)
@@ -396,6 +616,7 @@ section#watching {
   margin: 0;
   overflow: hidden;
   text-overflow: ellipsis;
+  line-clamp: 2;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -418,6 +639,30 @@ section#watching {
   transition: all 0.3s ease;
   border: none;
   cursor: pointer;
+}
+
+.episode-remove-btn {
+  width: 100%;
+  height: 36px;
+  border-radius: 8px;
+  padding: 8px 20px;
+  gap: 4px;
+  background: #ff4d4f;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.episode-remove-btn:hover {
+  background: #ff3335;
+  color: #ffffff;
 }
 
 .episode-play-btn:hover {
@@ -499,6 +744,7 @@ section#watching {
     margin: 0;
     overflow: hidden;
     text-overflow: ellipsis;
+    line-clamp: 2;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
