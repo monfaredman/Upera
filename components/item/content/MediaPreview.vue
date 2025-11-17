@@ -6,7 +6,7 @@
   >
     <i class="far fa-2x fa-play-circle play-icon" />
     <OptimizedImage
-      :image-src="data.item.backdrop"
+      :image-src="data.item.back_teaser || data.item.backdrop"
       :alt="`${mediaTypeText} ${data.item.name_fa}`"
       class="img-fluid"
       fluid-grow

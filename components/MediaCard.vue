@@ -208,14 +208,18 @@
                   v-if="variant === 'backdrop'"
                   blank
                   blank-color="#bbb"
-                  :src="backdropSrc(item.backdrop, item.cdnType ?? 1)"
+                  :src="
+                    backdropSrc(
+                      isOffer ? item.back_teaser : item.backdrop,
+                      item.cdnType ?? 1
+                    )
+                  "
                   :alt="altText"
                   :width="size.w"
                   :height="size.h"
                   class="media-image"
                   rounded
                 />
-
                 <!-- Hover Overlay -->
                 <div
                   v-if="hoverable"
@@ -232,7 +236,7 @@
                       {{ ChooseLang(item.name, item.name_fa) }}
                     </h5>
                     <p class="media-genre">
-                      {{ item.genre || '...' }}
+                      {{ getGenreDisplay(item.new_genres) || '...' }}
                     </p>
                   </template>
                   <div v-else-if="item.type === 'video'" class="video-stats">
@@ -503,7 +507,9 @@ export default {
         h = 300
       }
       const base = cdnType === 1 ? CDN_BACKDROPS_1 : CDN_BACKDROPS_2
-
+      if (this.isOffer) {
+        return `https://thumb.upera.shop/thumb?w=${w}&h=${h}&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/${filename}`
+      }
       return this.variant === 'md_backdrop'
         ? `${THUMB_BASE}?w=${w}&h=${h}&q=100&src=${base}/${filename}`
         : `${THUMB_BASE}?w=${w}&h=${h}&q=100&a=t&src=${base}/${filename}`
@@ -511,6 +517,16 @@ export default {
     ChooseLang(en, fa) {
       if (fa && this.$i18n.locale === 'fa') return fa
       return en
+    },
+
+    getGenreDisplay(newGenre) {
+      if (!newGenre) return ''
+
+      if (typeof newGenre === 'object' && newGenre !== null) {
+        return Object.values(newGenre).join(', ')
+      }
+
+      return newGenre
     },
   },
 }

@@ -101,7 +101,16 @@
               <h6 class="episode-title">
                 {{ ChooseLang(episode.name, episode.name_fa) }}
               </h6>
+              <button
+                v-if="getMainButton(episode).exist"
+                class="episode-play-btn"
+                @click="handleAction(episode, getMainButtonAction(episode))"
+              >
+                {{ getMainButtonLabel(episode) }}
+                <i class="fa fa-play mr-2"></i>
+              </button>
               <nuxt-link
+                v-else
                 :to="{ name: 'episode-id', params: { id: episode.id } }"
                 class="episode-play-btn"
               >
@@ -191,6 +200,28 @@ export default {
     },
     setSortOrder(order) {
       this.sortOrder = order
+    },
+    getMainButton(episode) {
+      return episode?.actions?.mainButton || { exist: false }
+    },
+    getMainButtonLabel(episode) {
+      const mainButton = this.getMainButton(episode)
+      if (!mainButton.exist) return ''
+      const lbl = mainButton.label || {}
+      return this.ChooseLang(lbl.en, lbl.fa)
+    },
+    getMainButtonAction(episode) {
+      const mainButton = this.getMainButton(episode)
+      return mainButton.exist ? mainButton.action : ''
+    },
+    handleAction(episode, action) {
+      if (action === 'play') {
+        this.$router.push({ name: 'episode-id', params: { id: episode.id } })
+      } else if (action === 'buy') {
+        this.$emit('buy', episode)
+      } else if (action === 'subscription') {
+        this.$emit('subscription', episode)
+      }
     },
   },
 }
