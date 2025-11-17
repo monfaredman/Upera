@@ -92,8 +92,7 @@ export default {
           fa: 'بازیگر خارجی',
           en: 'foreign-actors',
           href: '/casts/foreign-actors',
-          // cover: 'cast-foreign-category',
-          cover: 'cast-ir-category',
+          cover: 'cast-foreign-category',
         },
         {
           fa: 'کارگردان',
