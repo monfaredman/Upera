@@ -213,16 +213,16 @@ export default {
         }`
       }
 
-      if (this.purchaseType === 'wallet') {
-        // const amount = this.walletAmount || '0'
-        const balance = this.walletBalance || '0'
-        return `مبلغ  به کیف پول شما اضافه شد.<br>موجودی فعلی: ${balance}`
-      }
       // if (this.purchaseType === 'wallet') {
-      //   const amount = this.walletAmount || '0'
+      //   // const amount = this.walletAmount || '0'
       //   const balance = this.walletBalance || '0'
-      //   return `مبلغ ${amount}  به کیف پول شما اضافه شد.<br>موجودی فعلی: ${balance}`
+      //   return `مبلغ  به کیف پول شما اضافه شد.<br>موجودی فعلی: ${balance}`
       // }
+      if (this.purchaseType === 'wallet') {
+        const amount = `${this.walletAmount || '0'} تومان` || '0'
+        const balance = `${this.walletBalance || '0'} تومان` || '0'
+        return `مبلغ ${amount}  به کیف پول شما اضافه شد.<br>موجودی فعلی: ${balance}`
+      }
 
       if (this.purchaseType === 'directdebit') {
         return 'از شما جهت فعال کردن پرداخت خودکار متشکریم.'

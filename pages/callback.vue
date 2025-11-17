@@ -178,8 +178,14 @@
                         :is-logged-in="$auth.loggedIn"
                         :checkuser="checkuser"
                         :ref-num="ref_num"
-                        :wallet-amount="wallet_amount"
-                        :wallet-balance="my_credit"
+                        :wallet-amount="
+                          walletDetail ? walletDetail.added_amount : null
+                        "
+                        :wallet-balance="
+                          walletDetail
+                            ? walletDetail.current_balance
+                            : my_credit
+                        "
                         :subscription-days="subscription_days"
                         @watch="EKRAN($event)"
                         @copy="COPY($event)"
@@ -263,6 +269,7 @@ export default {
   data() {
     return {
       castShow: null,
+      walletDetail: null,
       method: 'saman',
       login: 0,
       message: null,
@@ -658,7 +665,7 @@ export default {
             if (res.status === 200) {
               this.success = true
               this.ref_num = res.data.data.ref
-
+              this.walletDetail = res?.data?.data?.wallet || null
               // Transform the API response to match component expectations
               if (res.data.data.files && Array.isArray(res.data.data.files)) {
                 this.files = res.data.data.files.map((file) => {

@@ -182,9 +182,11 @@ export default {
     watchTime() {
       // using 'hour' from provided object as watch time fallback
       const src =
-        this.episode && this.episode.exact_runtime !== undefined
-          ? this.episode.exact_runtime
-          : (this.data && this.data.item && this.data.item.exact_runtime) || ''
+        this.data && this.data.item && this.data.item.exact_runtime
+          ? this.data.item.exact_runtime
+          : this.data && this.data.item && this.data.item.runtime
+          ? this.data.item.runtime
+          : ''
       const hour =
         this.episode && this.episode.exact_runtime !== undefined
           ? this.episode.exact_runtime
