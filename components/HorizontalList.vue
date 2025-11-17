@@ -27,14 +27,11 @@
         }"
         style="z-index: 4"
       >
-        <span class="watch-more-text ml-1">
-          {{ $t('new.show_all') }}
-        </span>
+        <span class="watch-more-text ml-1"> {{ $t('new.show_all') }} </span>
         <i v-if="localizedTitle === 'پیشنهادی'" class="fa fa-ellipsis-h" />
         <img v-else src="@/assets/img/more.svg" class="text-white" height="3" />
       </nuxt-link>
     </div>
-
     <!-- Type 1: Normal swiper layout (default + lives + ugcs + offer) -->
     <div
       v-if="!isSingleItem"
@@ -52,6 +49,7 @@
         >
           <MediaCard
             :item="item"
+            :index="index"
             :variant="cardVariant"
             :size="size"
             :linkBuilder="linkBuilder"

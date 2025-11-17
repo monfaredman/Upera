@@ -424,6 +424,7 @@ export default {
   name: 'MediaCard',
   props: {
     item: { type: Object, required: true },
+    index: { type: Number, default: 0 },
     hoverable: { type: Boolean, default: false },
     // 'poster' or 'backdrop'
     variant: { type: String, default: 'poster' },
@@ -508,7 +509,11 @@ export default {
       }
       const base = cdnType === 1 ? CDN_BACKDROPS_1 : CDN_BACKDROPS_2
       if (this.isOffer) {
-        return `https://thumb.upera.shop/thumb?w=${w}&h=${h}&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/${filename}`
+        if (this.index === 0)
+          return `https://thumb.upera.shop/thumb?w=${w}&h=${h}&q=100&a=t&src=https://cdn.upera.shop/s3/files/${filename}`
+        else {
+          return `https://thumb.upera.shop/thumb?w=${1600}&h=${1000}&q=100&a=r&src=https://cdn.upera.shop/s3/files/${filename}`
+        }
       }
       return this.variant === 'md_backdrop'
         ? `${THUMB_BASE}?w=${w}&h=${h}&q=100&src=${base}/${filename}`
