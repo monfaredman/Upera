@@ -228,9 +228,9 @@
               نمایش تیزر
             </div>
             <div class="article-img-holder d-none d-lg-block">
-              <b-img class="article-img" v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 413,height: 258,show:true}" :src="Chooseback('https://thumb.upera.shop/thumb?w=413&h=258&q=100&a=c&src=https://cdn.upera.shop/s3/',data.item.back_teaser,data.item.backdrop)" :alt="'تیزر '+data.item.name_fa" />
+              <b-img class="article-img" v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 413,height: 258,show:true}" :src="'https://thumb.upera.shop/thumb?w=413&h=258&q=100&a=c&src=https://cdn.upera.shop/s3/'+data.item.back_teaser" :alt="'تیزر '+data.item.name_fa" />
 
-              <!-- <img loading="lazy" data-back="/images/413x258.png" class="article-img" :src="Chooseback('https://thumb.upera.shop/thumb?w=413&h=258&q=100&a=c&src=https://cdn.upera.shop/s3/',data.item.back_teaser,data.item.backdrop)" :alt="'تیزر '+data.item.name_fa"> -->
+              <!-- <img loading="lazy" data-back="/images/413x258.png" class="article-img" :src="'https://thumb.upera.shop/thumb?w=413&h=258&q=100&a=c&src=https://cdn.upera.shop/s3/'+data.item.back_teaser" :alt="'تیزر '+data.item.name_fa"> -->
               <a href="#" class="play-movie text-invert">
                 <i class="icon-play" />
               </a>
@@ -513,7 +513,7 @@
                       <i class="far fa-2x fa-play-circle"
                          style="color: white; position: absolute; top: 45%; left: 45%;"
                       />
-                      <img :src="Chooseback('https://thumb.upera.shop/thumb?w=1920&h=1200&q=100&a=c&src=https://cdn.upera.shop/s3/',data.item.back_teaser,data.item.backdrop)" class="img-fluid" :alt="'تیزر '+data.item.name_fa">
+                      <img :src="'https://thumb.upera.shop/thumb?w=1920&h=1200&q=100&a=c&src=https://cdn.upera.shop/s3/'+data.item.back_teaser" class="img-fluid" :alt="'تیزر '+data.item.name_fa">
                     </a>
                   </div>
                 </div>
@@ -546,7 +546,7 @@
                       <i class="far fa-2x fa-play-circle"
                          style="color: white; position: absolute; top: 45%; left: 45%;"
                       />
-                      <img :src="Chooseback('https://thumb.upera.shop/thumb?w=1920&h=1200&q=100&a=c&src=https://cdn.upera.shop/s3/',data.item.back_teaser,data.item.backdrop)" class="img-fluid" :alt="'تیزر '+data.item.name_fa">
+                      <img :src="'https://thumb.upera.shop/thumb?w=1920&h=1200&q=100&a=c&src=https://cdn.upera.shop/s3/'+data.item.back_teaser" class="img-fluid" :alt="'تیزر '+data.item.name_fa">
                     </a>
                   </div>
                 </div>
@@ -558,7 +558,7 @@
                       <i class="far fa-2x fa-play-circle"
                          style="color: white; position: absolute; top: 45%; left: 45%;"
                       />
-                      <img :src="Chooseback('https://thumb.upera.shop/thumb?w=1920&h=1200&q=100&a=c&src=https://cdn.upera.shop/s3/',data.item.back_teaser,data.item.backdrop)" class="img-fluid" :alt="'تیزر '+data.item.name_fa">
+                      <img :src="'https://thumb.upera.shop/thumb?w=1920&h=1200&q=100&a=c&src=https://cdn.upera.shop/s3/'+data.item.back_teaser" class="img-fluid" :alt="'تیزر '+data.item.name_fa">
                     </a>
                   </div>
                 </div>
@@ -952,12 +952,6 @@ this.$store.dispatch('SET_CONTENT_SUBSCRIPTION_ACTION',this.data.item.vod)
                     return fa
                 else
                     return en
-            },
-            Chooseback(cdn,teaser,backdrop){
-                if(teaser)
-                    return cdn+'files/'+teaser
-                else
-                    return cdn+'backdrops/'+backdrop
             },
             hasHistory () { return window.history.length > 2 },
 
