@@ -240,6 +240,7 @@ export default {
         )
 
         localStorage.setItem('_cart', JSON.stringify(parsedCart))
+        this.emitCartChange()
         this.loadCart()
       } catch (error) {
         console.error('Error removing item:', error)
@@ -330,6 +331,15 @@ export default {
       if (!filename) return ''
       const { w, h } = { w: 80, h: 120 }
       return `${THUMB_BASE}?w=${w}&h=${h}&q=100&a=c&src=${CDN_POSTERS}/${filename}`
+    },
+    emitCartChange() {
+      if (!process.client) return
+      try {
+        const event = new StorageEvent('storage', { key: '_cart' })
+        window.dispatchEvent(event)
+      } catch (error) {
+        window.dispatchEvent(new Event('storage'))
+      }
     },
   },
 }
