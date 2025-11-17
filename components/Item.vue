@@ -72,15 +72,6 @@
           محتوا
         </a>
 
-        <!-- بازیگران : CastsTab -->
-        <a
-          href="#casts"
-          class="nav-link"
-          @click.prevent="scrollToSection('casts')"
-        >
-          بازیگران
-        </a>
-
         <!-- درباره سریال/فیلم : ContentStatistics -->
         <a
           href="#about"
@@ -88,6 +79,15 @@
           @click.prevent="scrollToSection('about')"
         >
           {{ type === 'movie' ? 'درباره فیلم' : 'درباره سریال' }}
+        </a>
+
+        <!-- بازیگران : CastsTab -->
+        <a
+          href="#casts"
+          class="nav-link"
+          @click.prevent="scrollToSection('casts')"
+        >
+          بازیگران
         </a>
 
         <!-- فیلم های مشابه : SimilarContent -->
@@ -160,19 +160,6 @@
         />
       </section>
 
-      <!-- بازیگران : CastsTab -->
-      <section id="casts" class="content-section">
-        <CastsTabSkeleton v-if="isLoadingCasts" />
-        <CastsTab
-          v-else-if="casts && casts.length"
-          :casts="casts"
-          :directors="directors"
-          :producers="producers"
-          :writers="writers"
-          :investors="investors"
-        />
-      </section>
-
       <!-- درباره سریال/فیلم : ContentStatistics -->
       <section id="about" class="content-section">
         <ContentStatisticsSkeleton v-if="isLoadingStatistics" />
@@ -184,6 +171,19 @@
           :episode-num="episode_num"
           :season-num="season_num"
           :directors="directors"
+        />
+      </section>
+
+      <!-- بازیگران : CastsTab -->
+      <section id="casts" class="content-section">
+        <CastsTabSkeleton v-if="isLoadingCasts" />
+        <CastsTab
+          v-else-if="casts && casts.length"
+          :casts="casts"
+          :directors="directors"
+          :producers="producers"
+          :writers="writers"
+          :investors="investors"
         />
       </section>
 

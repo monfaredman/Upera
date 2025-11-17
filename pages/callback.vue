@@ -179,10 +179,12 @@
                         :checkuser="checkuser"
                         :ref-num="ref_num"
                         :wallet-amount="
-                          walletDetail ? walletDetail.added_amount : null
+                          walletDetail && walletDetail.added_amount
+                            ? walletDetail.added_amount
+                            : null
                         "
                         :wallet-balance="
-                          walletDetail
+                          walletDetail && walletDetail.current_balance
                             ? walletDetail.current_balance
                             : my_credit
                         "
@@ -665,7 +667,8 @@ export default {
             if (res.status === 200) {
               this.success = true
               this.ref_num = res.data.data.ref
-              this.walletDetail = res?.data?.data?.wallet || null
+
+              this.walletDetail = res?.data?.wallet || null
               // Transform the API response to match component expectations
               if (res.data.data.files && Array.isArray(res.data.data.files)) {
                 this.files = res.data.data.files.map((file) => {
