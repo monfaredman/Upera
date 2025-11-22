@@ -325,6 +325,7 @@ export default {
         return tomansStr.substring(0, 1) + '.' + tomansStr.substring(1)
       else if (length === 5)
         return tomansStr.substring(0, 2) + '.' + tomansStr.substring(2)
+      else if (length === 3) return tomansStr
       else return tomansStr.substring(0, 3) + '.' + tomansStr.substring(3)
     },
     posterSrc(filename) {

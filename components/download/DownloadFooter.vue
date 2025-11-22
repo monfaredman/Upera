@@ -142,6 +142,8 @@ export default {
         return amountStr.substring(0, 1) + '.' + amountStr.substring(1)
       } else if (length === 5) {
         return amountStr.substring(0, 2) + '.' + amountStr.substring(2)
+      } else if (length === 3) {
+        return amountStr
       } else {
         return amountStr.substring(0, 3) + '.' + amountStr.substring(3)
       }

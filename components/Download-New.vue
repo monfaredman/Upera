@@ -679,11 +679,11 @@ export default {
       if (!cents) return '0'
       const tomansStr = String(cents)
       const length = tomansStr.length
-
       if (length === 4)
         return tomansStr.substring(0, 1) + '.' + tomansStr.substring(1)
       else if (length === 5)
         return tomansStr.substring(0, 2) + '.' + tomansStr.substring(2)
+      else if (length === 3) return tomansStr
       else return tomansStr.substring(0, 3) + '.' + tomansStr.substring(3)
     },
 
