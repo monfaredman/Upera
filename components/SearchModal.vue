@@ -61,7 +61,7 @@
               !query && lastsearchs && data.data == null && data.cast == null
             "
             id="search-tags"
-            class="mt-4 search-tags"
+            class="search-tags"
           >
             <div
               v-for="(item, index) in lastsearchs"
@@ -625,7 +625,7 @@ export default {
   display: block;
   padding: 0.5rem 0;
   text-decoration: none;
-  border-bottom: 1px solid #f8f9fa;
+  border-bottom: 1px solid #525252;
   transition: color 0.3s ease;
 }
 

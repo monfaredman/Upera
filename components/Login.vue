@@ -121,7 +121,7 @@
                   v-for="index in 4"
                   :key="index"
                   :ref="`otp-${index - 1}`"
-                  v-model="otp[index - 1]"
+                  :value="toPersianDigit(otp[index - 1])"
                   type="text"
                   inputmode="numeric"
                   placeholder="-"
@@ -663,16 +663,29 @@ export default {
     },
 
     // OTP Input Methods
+    toPersianDigit(digit) {
+      if (!digit) return ''
+      const persianMap = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹']
+      return String(digit).replace(/\d/g, (d) => persianMap[+d])
+    },
+
     handleOtpInput(index, event) {
       if (this.loading.login) return
 
-      const value = event.target.value
+      let value = event.target.value
+
+      // Convert Persian digits to Latin for storage
+      value = this.formatToNum(value)
 
       // Only allow numbers
       if (!/^\d*$/.test(value)) {
         this.otp[index] = ''
+        event.target.value = ''
         return
       }
+
+      // Update the model with Latin digit
+      this.otp[index] = value
 
       // If a number is entered, move to next input
       if (value && index < 3) {
@@ -711,7 +724,11 @@ export default {
       if (this.loading.login) return
 
       event.preventDefault()
-      const pasteData = event.clipboardData.getData('text').slice(0, 4)
+      let pasteData = event.clipboardData.getData('text').slice(0, 4)
+
+      // Convert Persian digits to Latin
+      pasteData = this.formatToNum(pasteData)
+
       const numbers = pasteData.replace(/\D/g, '')
 
       for (let i = 0; i < Math.min(numbers.length, 4); i++) {

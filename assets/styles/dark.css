@@ -525,7 +525,7 @@
 }
 
 .theme-dark .headline::before {
-  background-color: #4c4c4c;
+  background-color: white;
 }
 
 .theme-dark .headline .title {
