@@ -73,6 +73,7 @@
                   :height="size.h"
                   show
                   class="d-none d-lg-block d-xl-none d-xxl-none"
+                  style="min-height: fit-content"
                   :src="
                     variant === 'poster'
                       ? posterSrc(item.poster)
@@ -92,6 +93,7 @@
                   :height="size.h"
                   show
                   class="d-none d-lg-none d-xl-block d-xxl-none non-hover-media-image-xxl"
+                  style="min-height: fit-content"
                   :src="
                     variant === 'poster'
                       ? posterSrc(item.poster)
@@ -137,6 +139,22 @@
                   "
                   :alt="item.name"
                 />
+                <!-- Badges -->
+                <template v-if="showBadges">
+                  <span
+                    v-if="showDubbed"
+                    class="label label-rounded label-red label-1"
+                    >دوبله</span
+                  >
+                  <span
+                    v-else-if="showSubtitle"
+                    class="label label-rounded label-warning label-1"
+                    >زیرنویس</span
+                  >
+                  <span v-if="showFree" class="label label-blue label-2"
+                    >رایگان</span
+                  >
+                </template>
               </template>
             </nuxt-link>
 
