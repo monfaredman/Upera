@@ -518,6 +518,22 @@ const SWIPER_OPTION_BACKDROP = {
   },
 }
 
+const SWIPER_OPTION_RECENTLY = {
+  slidesPerView: 2.5,
+  spaceBetween: 10,
+  grabCursor: true,
+  watchOverflow: true,
+  threshold: 2,
+  breakpoints: {
+    320: { slidesPerView: 1.5 },
+    768: { slidesPerView: 2.5 },
+    992: { slidesPerView: 3.5 },
+    1024: { slidesPerView: 4.5 },
+    1420: { slidesPerView: 4.5 },
+    1670: { slidesPerView: 4.5 },
+  },
+}
+
 const SLICK_MAIN_OPTIONS = {
   dots: false,
   arrows: false,
@@ -628,7 +644,7 @@ export default {
       SWIPER_OPTION_BACKDROP,
       SWIPER_OPTION_OFFER,
       swiperOption3: SLICK_MAIN_OPTIONS,
-      swiperOption2: SWIPER_OPTION_BACKDROP,
+      swiperOption2: SWIPER_OPTION_RECENTLY,
       // Loading states
       isLoadingSlider: true,
       isLoadingRecently: true,
