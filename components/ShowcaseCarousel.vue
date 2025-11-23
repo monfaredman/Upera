@@ -124,8 +124,6 @@
                       fluidGrow: true,
                       blank: true,
                       blankColor: '#bbb',
-                      width: 207,
-                      height: 307,
                       show: true,
                     }"
                   />
@@ -374,7 +372,7 @@ export default {
 .detail-title {
   font-size: 44px !important;
   font-weight: 700 !important;
-  text-wrap: nowrap;
+  white-space: nowrap;
 }
 
 .showcases-desc-wrapper {
@@ -421,14 +419,19 @@ export default {
   align-items: flex-start;
 }
 .showcase-logo {
-  max-width: 220px;
-  min-height: 60px;
   margin-bottom: 0.5rem;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
 }
 .showcase-logo >>> img {
-  width: 100%;
-  height: 100px;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
   object-fit: contain;
+  object-position: bottom right;
 }
 .showcase-about-btn {
   background: #00000040;
@@ -550,16 +553,18 @@ export default {
     margin: 0;
   }
   .showcase-logo {
-    max-width: 150px !important;
-    max-height: 90px !important;
-    min-height: 60px !important;
+    width: 150px !important;
+    height: 90px !important;
     margin-bottom: 0.5rem;
   }
 
   .showcase-logo >>> img {
-    width: 100%;
-    height: 90px;
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 100%;
     object-fit: contain;
+    object-position: bottom right;
   }
 
   .showcase-thumbnail-wrapper {

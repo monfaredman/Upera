@@ -26,8 +26,6 @@
                 fluidGrow: true,
                 blank: true,
                 blankColor: '#bbb',
-                width: 207,
-                height: 307,
                 show: true,
               }"
             />
@@ -278,27 +276,36 @@ export default {
 }
 
 .showcase-logo {
-  max-width: 220px;
-  min-height: 60px;
+  width: 220px;
+  height: 120px;
   margin-bottom: 0.5rem;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
 }
 .showcase-logo >>> img {
-  width: 100%;
-  height: 100px;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
   object-fit: contain;
+  object-position: bottom right;
 }
 @media (max-width: 767.98px) {
   .showcase-logo {
-    max-width: 220px !important;
-    max-height: 100px !important;
-    min-height: 60px !important;
+    width: 220px !important;
+    height: 100px !important;
     margin-bottom: 4rem !important;
   }
 
   .showcase-logo >>> img {
-    width: 100%;
-    height: 100px;
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 100%;
     object-fit: contain;
+    object-position: bottom right;
   }
 
   .showcase-thumbnail-wrapper {

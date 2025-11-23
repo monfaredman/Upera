@@ -13,7 +13,14 @@
           height="30"
           class="ml-2"
         />
-        <h4 class="font-weight-bold" style="z-index: 4">
+        <h4
+          class="font-weight-bold"
+          style="z-index: 4"
+          :class="{
+            'text-white': localizedTitle === 'پیشنهادی',
+            '': localizedTitle !== 'پیشنهادی',
+          }"
+        >
           {{ localizedTitle }}
         </h4>
       </div>
