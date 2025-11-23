@@ -24,7 +24,7 @@ export default {
 <style scoped>
 .comments-tab-container {
   padding: 24px 0;
-  width: 100%;
+  width: 100% !important;
   margin-top: -1rem;
 }
 

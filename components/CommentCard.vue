@@ -197,7 +197,7 @@ p.comment-text {
   border: none;
   color: #a3a3a3;
   cursor: pointer;
-  padding: 6px 0 6px 12px;
+  padding: 6px;
   border-radius: 6px;
   font-size: 14px;
   transition: all 0.2s ease;

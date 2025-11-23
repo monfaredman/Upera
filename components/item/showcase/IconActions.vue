@@ -180,11 +180,11 @@ i {
 
 .likes .badge {
   position: absolute;
-  top: -8px;
-  right: -8px;
+  top: -18px;
+  right: -18px;
   font-size: 10px;
-  min-width: 18px;
-  height: 18px;
+  min-width: 28px;
+  height: 28px;
   display: flex;
   align-items: center;
   justify-content: center;

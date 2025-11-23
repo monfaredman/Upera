@@ -135,7 +135,7 @@
       </div>
 
       <!-- Show More Button -->
-      <div v-if="hasMoreEpisodes" class="row mt-3">
+      <div v-if="hasMoreEpisodes" class="row mt-3 mb-5 mb-sm-4">
         <div class="col-12">
           <div class="show-more-container">
             <div class="show-more-divider"></div>
@@ -448,11 +448,11 @@ export default {
 </script>
 <style scoped>
 section#watching {
-  margin-top: -1rem !important;
+  margin: -1rem 50px 0 50px !important;
 }
 
 .container-fluid {
-  padding-right: 1.5rem !important;
+  padding: 0 !important;
 }
 .col-lg-3.col-md-6.col-6.mb-3 {
   padding-right: 0 !important;
@@ -528,6 +528,11 @@ section#watching {
 .show-more-divider {
   flex: 1;
   height: 1px;
+  background-color: black;
+}
+.theme-dark .show-more-divider {
+  flex: 1;
+  height: 1px;
   background-color: rgba(255, 255, 255, 0.2);
 }
 
@@ -559,6 +564,12 @@ section#watching {
 }
 
 .show-more-btn:hover {
+  background-color: #303030;
+  transform: translateY(-2px);
+  color: white !important;
+}
+
+.theme-dark .show-more-btn:hover {
   background-color: rgba(255, 255, 255, 0.1);
   transform: translateY(-2px);
   color: white !important;
@@ -731,7 +742,7 @@ section#watching {
 
 @media (max-width: 575.98px) {
   section#watching {
-    margin-top: -3rem !important;
+    margin: -1rem unset 1rem unset !important;
   }
 
   .episode-title {

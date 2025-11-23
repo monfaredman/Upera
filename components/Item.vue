@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="width: 100%">
     <!-- Loading Spinner Overlay -->
     <div v-if="isLoading" class="loading-overlay">
       <div class="spinner-container">
@@ -201,7 +201,7 @@
         <div v-show="commentsloading">
           <CommentsTabSkeleton />
         </div>
-        <div v-show="!commentsloading">
+        <div v-show="!commentsloading" style="width: 100%">
           <CommentsTab
             :id="data.item.id"
             :type="type"
@@ -980,10 +980,6 @@ export default {
 
 .content-body {
   margin-top: 2rem;
-}
-
-.content-section {
-  padding-top: 2rem;
 }
 
 section#content {

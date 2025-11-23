@@ -2,7 +2,10 @@
   <div class="comments-container">
     <!-- Comment count header -->
     <div class="comments-count-header">
-      {{ commentsData.length }} دیدگاه ثبت شده
+      <span v-if="commentsData && commentsData.length">{{
+        commentsData.length
+      }}</span>
+      دیدگاه ثبت شده
     </div>
 
     <!-- Main comment submission form -->
@@ -485,8 +488,6 @@ export default {
 
 <style scoped>
 .comments-container {
-  width: 100%;
-  max-width: 1292px;
   margin: 0 41px;
 }
 
@@ -538,7 +539,6 @@ export default {
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  max-width: 1292px;
   height: 68px;
   opacity: 1;
   border-radius: 8px;

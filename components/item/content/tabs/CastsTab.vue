@@ -73,7 +73,6 @@ export default {
 .section-title {
   font-size: 1.5rem;
   font-weight: 700;
-  color: white;
   margin-bottom: 20px;
   padding: 0 12px;
   position: relative;

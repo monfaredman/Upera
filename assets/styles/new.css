@@ -9598,6 +9598,9 @@ small,
   .series-ads__bg--desk {
     display: none;
   }
+    div#actor {
+    padding: 6rem 0 3rem 0 !important;
+  }
 }
 
 #episode_topNav h2 {
