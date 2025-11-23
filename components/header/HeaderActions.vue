@@ -5,8 +5,19 @@
       v-if="$store?.state?.basketActive !== false || !$auth.loggedIn"
       class="header-links header-links-basket d-md-flex align-items-center h-full ml-lg-1 mr-lg-1 float-left hide-mobile"
     >
-      <b-link id="popover-basket" class="d-flex align-items-center header-link">
-        <i class="fa fa-shopping-basket ml-2" />
+      <b-link
+        id="popover-basket"
+        class="d-flex align-items-center header-link basket-icon-wrapper"
+      >
+        <!-- <i class="fa fa-shopping-basket ml-2" /> -->
+        <img
+          :src="require('/assets/images/header/basket-icon.png')"
+          alt="Basket"
+          class="basket-icon"
+        />
+        <span v-if="basketLength > 0" class="basket-badge">{{
+          basketLength
+        }}</span>
       </b-link>
       <b-popover
         id="popover-d-basket"
@@ -234,6 +245,7 @@ export default {
       profileEditModalVisible: false,
       selectedAvatar: null,
       customFile: null,
+      basketLength: 0,
       query: null,
       customPreview: null,
       profileForm: {
@@ -263,14 +275,41 @@ export default {
 
     if (process.client) {
       this.$root.$on('open-mobile-profile-drawer', this.openMobileDrawer)
+      // Listen for cart updates
+      this.$root.$on('cart-updated', this.updateBasketLength)
+      window.addEventListener('storage', this.handleStorageChange)
     }
+    this.updateBasketLength()
   },
   beforeDestroy() {
     if (process.client) {
       this.$root.$off('open-mobile-profile-drawer', this.openMobileDrawer)
+      this.$root.$off('cart-updated', this.updateBasketLength)
+      window.removeEventListener('storage', this.handleStorageChange)
     }
   },
   methods: {
+    updateBasketLength() {
+      let addedItems = []
+      const cartData = localStorage.getItem('_cart')
+      if (cartData) {
+        try {
+          const parsedCart = JSON.parse(cartData)
+          if (parsedCart.content && Array.isArray(parsedCart.content)) {
+            addedItems = parsedCart.content
+          }
+        } catch (e) {
+          console.error('Error parsing cart:', e)
+        }
+      }
+      this.basketLength = addedItems.length
+    },
+    handleStorageChange(event) {
+      // Handle storage events from other tabs/windows
+      if (event.key === '_cart') {
+        this.updateBasketLength()
+      }
+    },
     nightmode(e) {
       if (e == true) this.$colorMode.preference = 'dark'
       else this.$colorMode.preference = 'light'
@@ -462,6 +501,34 @@ export default {
 </script>
 
 <style scoped>
+.basket-icon-wrapper {
+  position: relative;
+}
+
+.basket-icon {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+}
+
+.basket-badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color: #ff6633;
+  color: white;
+  border-radius: 50%;
+  min-width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: bold;
+  padding: 2px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
 .basket-popover {
   min-width: fit-content !important;
   max-width: 400px !important;
@@ -656,5 +723,9 @@ export default {
   .logout-btn-confirm {
     width: 100%;
   }
+}
+
+.header-links.header-links-basket.d-md-flex.align-items-center.h-full.ml-lg-1.mr-lg-1.float-left.hide-mobile {
+  width: 100% !important;
 }
 </style>

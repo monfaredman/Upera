@@ -341,6 +341,8 @@ export default {
       } catch (error) {
         window.dispatchEvent(new Event('storage'))
       }
+      // Emit Vue event for same-window updates
+      this.$root.$emit('cart-updated')
     },
   },
 }
