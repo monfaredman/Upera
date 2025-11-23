@@ -317,6 +317,7 @@ export default {
 
   .btn-main-section {
     max-width: 220px !important;
+    width: unset !important;
   }
 
   .showcase-theme-m-tn

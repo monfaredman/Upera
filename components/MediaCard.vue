@@ -766,6 +766,13 @@ export default {
     gap: 2rem !important;
     margin: 0 !important;
   }
+
+  .media-card.offer .media-image {
+    width: 100%;
+    height: 9rem !important;
+    object-fit: cover;
+    transition: transform 0.3s ease, filter 0.3s ease;
+  }
 }
 
 /* Teaser Play Icon Overlay */

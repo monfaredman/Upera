@@ -81,7 +81,10 @@
                   type="backdrops"
                   fluid-grow
                 />
-                <div v-if="$auth.loggedIn" class="progress">
+                <div
+                  v-if="$auth.loggedIn && episode.current_time > 0"
+                  class="progress"
+                >
                   <div
                     class="progress-bar"
                     :style="

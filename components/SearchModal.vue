@@ -520,6 +520,10 @@ export default {
 }
 </script>
 <style scoped>
+div#actor {
+  padding-top: 0 !important;
+}
+
 .title {
   border-radius: 12px;
   padding: 0.3rem !important;

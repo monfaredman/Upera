@@ -72,13 +72,13 @@ export default {
 .container-fluid {
   padding-right: 0 !important;
 }
-section {
+/* section {
   margin-top: 0 !important;
-}
+} */
 
 @media (max-width: 768px) {
   section {
-    margin-top: -1rem !important;
+    margin-top: 2rem !important;
   }
 }
 </style>

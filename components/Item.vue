@@ -955,6 +955,10 @@ export default {
 </script>
 
 <style scoped>
+::v-deep .content-section#about {
+  min-height: 251px !important;
+}
+
 .loading-overlay {
   position: fixed;
   top: 0;
@@ -979,6 +983,10 @@ export default {
 }
 
 .content-body {
+  margin-top: 4rem;
+}
+
+.theme-dark .content-body {
   margin-top: 2rem;
 }
 
@@ -1081,6 +1089,9 @@ section#content {
 
   nav.nav.nav-pills {
     gap: 0 !important;
+  }
+  ::v-deep .content-section#about {
+    margin: 3rem 2rem 0 2rem;
   }
 }
 

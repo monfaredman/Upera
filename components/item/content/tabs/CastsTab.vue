@@ -61,6 +61,12 @@ export default {
 
 .casts-tab-container {
   padding: 20px 0;
+  background: white;
+  border-radius: 8px;
+  margin-top: -1rem !important;
+}
+.theme-dark .casts-tab-container {
+  padding: 20px 0;
   background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.02));
   border-radius: 8px;
   margin-top: -1rem !important;
@@ -107,7 +113,7 @@ export default {
 
   .casts-tab-container {
     padding: 12px 0;
-    margin-top: -3rem !important;
+    margin-top: 0 !important;
   }
 
   .section-title {

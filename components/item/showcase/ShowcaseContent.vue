@@ -420,7 +420,6 @@ export default {
     width: 100%;
     max-width: 100%;
     padding: 4px 8px;
-    gap: 65px;
   }
 
   .stat-value {

@@ -111,7 +111,6 @@ export default {
 .movie-title {
   font-size: 1.75rem;
   font-weight: 700;
-  color: #ffffff;
   line-height: 1.3;
   margin-bottom: 1rem;
 }
@@ -119,7 +118,6 @@ export default {
 .movie-description {
   font-size: 1rem;
   line-height: 1.7;
-  color: rgba(255, 255, 255, 0.85);
   margin-bottom: 1.5rem;
   overflow-y: auto;
 }

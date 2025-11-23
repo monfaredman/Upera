@@ -27,6 +27,7 @@
             رده سنی {{ data.item.age }}
           </span>
           <span v-if="showSubtitle" class="chip subtitle-chip"> زیرنویس </span>
+          <span v-if="showDubbed" class="chip dubbed-chip"> دوبله </span>
         </div>
 
         <!-- Description -->
@@ -71,6 +72,10 @@ export default {
     },
     showSubtitle() {
       return !this.data.item?.ir && !this.data.item?.persian
+    },
+
+    showDubbed() {
+      return this.data.item?.dubbed
     },
   },
   methods: {
@@ -164,6 +169,12 @@ export default {
   background: rgba(33, 150, 243, 0.2);
   color: #2196f3;
   border: 1px solid rgba(33, 150, 243, 0.4);
+}
+
+.dubbed-chip {
+  background: rgba(76, 175, 80, 0.2);
+  color: #4caf50;
+  border: 1px solid rgba(76, 175, 80, 0.4);
 }
 
 .content-description {
@@ -304,7 +315,13 @@ export default {
 
   .backdrop-container {
     height: 180px;
+    text-align: center;
     border-radius: 6px;
+  }
+
+  .backdrop-container img {
+    width: 80%;
+    object-fit: fill;
   }
 
   .content-title {

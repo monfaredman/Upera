@@ -1506,7 +1506,7 @@
 }
 @media (min-width: 768px) {
   .theme-dark body .header-links .header-link {
-    color: #cacaca;
+    color: white;
   }
   .theme-dark
     body

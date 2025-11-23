@@ -173,7 +173,6 @@ export default {
   font-weight: 600 !important;
   font-size: 24px !important;
   text-align: right;
-  color: #ffffff;
   text-align: right !important;
 }
 
