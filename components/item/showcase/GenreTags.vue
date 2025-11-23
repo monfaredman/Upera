@@ -31,6 +31,7 @@ export default {
   display: flex;
   font-size: 17px !important;
   font-weight: 500 !important;
+  text-shadow: 2px 2px 1px rgb(0 0 0 / 69%);
 }
 
 @media (max-width: 576px) {

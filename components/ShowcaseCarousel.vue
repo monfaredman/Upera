@@ -368,11 +368,13 @@ export default {
 .detail-paragraph {
   font-size: 17px !important;
   font-weight: 500 !important;
+  text-shadow: 2px 2px 1px rgb(0 0 0 / 69%);
 }
 .detail-title {
   font-size: 44px !important;
   font-weight: 700 !important;
   white-space: nowrap;
+  text-shadow: 2px 2px 1px rgb(0 0 0 / 69%);
 }
 
 .showcases-desc-wrapper {

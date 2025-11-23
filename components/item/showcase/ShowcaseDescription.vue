@@ -78,6 +78,7 @@ export default {
   font-weight: 700 !important;
   white-space: nowrap;
   line-height: 4rem;
+  text-shadow: 2px 2px 1px rgb(0 0 0 / 69%);
 }
 
 /* Keep same size on mobile as per requirements */

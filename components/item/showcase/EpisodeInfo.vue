@@ -43,5 +43,6 @@ export default {
 .title-item-episode {
   font-size: 18px !important;
   font-weight: 600 !important;
+  text-shadow: 2px 2px 1px rgb(0 0 0 / 69%);
 }
 </style>
