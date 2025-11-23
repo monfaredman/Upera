@@ -250,7 +250,7 @@
                   :to="{ name: item.type + '-id', params: { id: item.id } }"
                   class="btn btn-download ml-md-2 text-white showcase-about-btn"
                 >
-                  <i class="fa fa-chevron-right fa-xs mr-2 ml-0" />
+                  <i class="fa fa-info-circle fa-xs mr-2 ml-0" />
                   <span> درباره </span>
                   <span>
                     <span v-if="item.type == 'movie'">فیلم</span>

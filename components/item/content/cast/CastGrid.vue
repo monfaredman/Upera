@@ -74,6 +74,20 @@ export default {
   margin: 0 auto;
 }
 
+.cast-image {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  border-radius: 50% !important;
+}
+
+::v-deep .cast-image img {
+  border-radius: 50% !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+}
+
 @media (min-width: 576px) {
   .cast-grid-container {
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -122,10 +136,10 @@ export default {
   margin-bottom: 12px;
   overflow: hidden;
   border-radius: 50%;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   transition: box-shadow 0.3s ease, transform 0.3s ease;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 3px;
+  padding: 0;
+  border: 3px solid #fff;
+  background-color: #f8f9fa;
 }
 
 @media (min-width: 576px) {
@@ -142,20 +156,6 @@ export default {
     height: 150px;
     margin-bottom: 16px;
   }
-}
-
-.cast-card-link:hover .cast-image-wrapper {
-  box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
-  transform: scale(1.05);
-}
-
-.cast-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 50%;
-  border: 3px solid #fff;
-  background-color: #f8f9fa;
 }
 
 .cast-info {
@@ -203,14 +203,6 @@ export default {
 }
 
 :global(.theme-dark) .cast-image-wrapper {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-}
-
-:global(.theme-dark) .cast-card-link:hover .cast-image-wrapper {
-  box-shadow: 0 8px 24px rgba(102, 126, 234, 0.6);
-}
-
-:global(.theme-dark) .cast-image {
   border-color: #2c3e50;
   background-color: #1a1a1a;
 }
