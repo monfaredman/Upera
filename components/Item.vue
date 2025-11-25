@@ -214,13 +214,15 @@
     </div>
 
     <!-- Modal Components -->
-    <DownloadNew
+    <Download
       :id="data.item.id"
       :show="showDownloadModal"
       :ftb="ftb"
+      :staticmodal="false"
       :season="type !== 'movie' && season ? season : null"
       :owned="owned"
       :traffic="data.item.traffic"
+      :ir="data.item.ir || 0"
       :trafficoo="data.item.traffic_oo"
       :vod="data.item.vod"
       :free="data.item.free"
@@ -271,7 +273,7 @@ import SimilarContent from '@/components/item/SimilarContent'
 import MovieContentTab from '@/components/item/MovieContentTab'
 import CastsTab from '@/components/item/content/tabs/CastsTab'
 import CommentsTab from '@/components/item/content/tabs/CommentsTab'
-import DownloadNew from '@/components/Download-New.vue'
+import Download from '@/components/Download.vue'
 import File from '@/components/item/File'
 
 // Skeleton Components
@@ -297,7 +299,7 @@ export default {
     MovieContentTab,
     CastsTab,
     CommentsTab,
-    DownloadNew,
+    Download,
     File,
     Socialsharing,
     ContentStatistics,
