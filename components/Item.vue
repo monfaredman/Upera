@@ -214,10 +214,32 @@
     </div>
 
     <!-- Modal Components -->
+    <!-- Download-New modal for Buy action -->
+    <DownloadNew
+      v-if="showDownloadModalBuy"
+      :id="data.item.id"
+      :show="showDownloadModalBuy"
+      :ftb="ftb"
+      :season="type !== 'movie' && season ? season : null"
+      :owned="owned"
+      :traffic="data.item.traffic"
+      :trafficoo="data.item.traffic_oo"
+      :vod="data.item.vod"
+      :free="data.item.free"
+      :name="data.item.name"
+      :namefa="data.item.name_fa"
+      :posterf="data.item.poster"
+      :backdrop="data.item.backdrop"
+      :itemdata="data.item"
+      :type="type"
+      @hide-modal="HIDE_MODAL_BUY"
+    />
+
+    <!-- Download modal for Download button -->
     <Download
       :id="data.item.id"
-      :show="showDownloadModal"
-      :ftb="ftb"
+      :show="showDownloadModalDownload"
+      :ftb="false"
       :staticmodal="false"
       :season="type !== 'movie' && season ? season : null"
       :owned="owned"
@@ -232,7 +254,7 @@
       :backdrop="data.item.backdrop"
       :itemdata="data.item"
       :type="type"
-      @hide-modal="HIDE_MODAL2"
+      @hide-modal="HIDE_MODAL_DOWNLOAD"
     />
 
     <client-only>
@@ -274,6 +296,7 @@ import MovieContentTab from '@/components/item/MovieContentTab'
 import CastsTab from '@/components/item/content/tabs/CastsTab'
 import CommentsTab from '@/components/item/content/tabs/CommentsTab'
 import Download from '@/components/Download.vue'
+import DownloadNew from '@/components/Download-New.vue'
 import File from '@/components/item/File'
 
 // Skeleton Components
@@ -300,6 +323,7 @@ export default {
     CastsTab,
     CommentsTab,
     Download,
+    DownloadNew,
     File,
     Socialsharing,
     ContentStatistics,
@@ -383,11 +407,14 @@ export default {
       // Add missing reactive properties
       owned: 0,
       owned_period_end: null,
+
+      // Modal visibility states
+      showDownloadModalBuy: false,
+      showDownloadModalDownload: false,
     }
   },
   computed: {
     ...mapGetters({ showplyrmodal: 'showplyrmodal' }),
-    ...mapGetters({ showDownloadModal: 'showDownloadModal' }),
     ...mapGetters({ commentsloading: 'comments/commentsloading' }),
 
     // Cleaner computed properties
@@ -484,14 +511,14 @@ export default {
       }
     },
     handleBuy() {
-      this.PLAY('buy')
+      this.ftb = true
+      this.showDownloadModalBuy = true
     },
     handleSubscription() {
       this.PLAY('subscription')
     },
     handleDownloadClick() {
-      this.ftb = false
-      this.DOWNLOAD_MODAL_LOAD()
+      this.showDownloadModalDownload = true
     },
 
     async loadAdditionalData() {
@@ -731,6 +758,12 @@ export default {
     HIDE_MODAL2() {
       this.$router.push({ path: this.$route.path })
       this.$store.dispatch('DOWNLOAD_MODAL_CLEAN')
+    },
+    HIDE_MODAL_BUY() {
+      this.showDownloadModalBuy = false
+    },
+    HIDE_MODAL_DOWNLOAD() {
+      this.showDownloadModalDownload = false
     },
     HIDE_MODAL3() {
       this.$store.dispatch('PLAYER_MODAL_CLEAN')
