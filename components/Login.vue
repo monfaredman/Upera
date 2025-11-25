@@ -758,7 +758,7 @@ export default {
         ) {
           this.$refs[`otp-${lastIndex}`][0].focus()
         }
-        
+
         // Auto-login if 4 digits pasted
         if (numbers.length === 4 && !this.loading.login) {
           this.login()
