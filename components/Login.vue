@@ -685,13 +685,13 @@ export default {
 
       // Only allow numbers
       if (!/^\d*$/.test(value)) {
-        this.otp[index] = ''
+        this.$set(this.otp, index, '')
         event.target.value = ''
         return
       }
 
-      // Update the model with Latin digit
-      this.otp[index] = value
+      // Update the model with Latin digit using Vue.set for reactivity
+      this.$set(this.otp, index, value)
 
       // If a number is entered, move to next input
       if (value && index < 3) {
@@ -701,6 +701,14 @@ export default {
             this.$refs[`otp-${index + 1}`][0]
           ) {
             this.$refs[`otp-${index + 1}`][0].focus()
+          }
+        })
+      } else if (value && index === 3) {
+        // When last digit is entered, trigger auto-login
+        this.$nextTick(() => {
+          const otpString = this.otp.join('')
+          if (otpString.length === 4 && !this.loading.login) {
+            this.login()
           }
         })
       }
@@ -722,7 +730,7 @@ export default {
             }
           })
         }
-        this.otp[index] = ''
+        this.$set(this.otp, index, '')
       }
     },
 
@@ -738,10 +746,10 @@ export default {
       const numbers = pasteData.replace(/\D/g, '')
 
       for (let i = 0; i < Math.min(numbers.length, 4); i++) {
-        this.otp[i] = numbers[i]
+        this.$set(this.otp, i, numbers[i])
       }
 
-      // Focus on the last input
+      // Focus on the last input and trigger auto-login if complete
       this.$nextTick(() => {
         const lastIndex = Math.min(numbers.length - 1, 3)
         if (
@@ -749,6 +757,11 @@ export default {
           this.$refs[`otp-${lastIndex}`][0]
         ) {
           this.$refs[`otp-${lastIndex}`][0].focus()
+        }
+        
+        // Auto-login if 4 digits pasted
+        if (numbers.length === 4 && !this.loading.login) {
+          this.login()
         }
       })
     },
