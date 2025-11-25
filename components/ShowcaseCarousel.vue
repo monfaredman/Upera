@@ -428,10 +428,8 @@ export default {
   justify-content: flex-end;
 }
 .showcase-logo >>> img {
-  width: auto;
-  height: auto;
-  max-width: 100%;
-  max-height: 100%;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
   object-position: bottom right;
 }
@@ -580,6 +578,34 @@ export default {
 
   .swiper-wrapper >>> .slick-dots li.slick-active button {
     width: 20px;
+  }
+}
+
+@media (max-width: 768px) and (min-width: 577px) {
+  .showcase-logo {
+    width: 190px;
+    height: 110px;
+  }
+}
+
+@media (max-width: 1024px) and (min-width: 769px) {
+  .showcase-logo {
+    width: 230px;
+    height: 135px;
+  }
+}
+
+@media (max-width: 1299px) and (min-width: 1025px) {
+  .showcase-logo {
+    width: 280px;
+    height: 160px;
+  }
+}
+
+@media (min-width: 1300px) and (max-width: 1500px) {
+  .showcase-logo {
+    width: 320px;
+    height: 185px;
   }
 }
 

@@ -24,22 +24,17 @@
         <div class="col-6 col-md-auto">
           <b-dropdown class="sort-dropdown" variant="text" size="md" right>
             <template #button-content>
-              <i class="fa fa-sort-alpha-down ml-2"></i>
-              مرتب سازی
+              <i :class="sortButtonIcon"></i>
+              {{ sortButtonLabel }}
             </template>
             <b-dropdown-item
-              :active="sortOrder === 'asc'"
-              @click="setSortOrder('asc')"
+              v-for="option in sortOptions"
+              :key="option.value"
+              :active="sortOrder === option.value"
+              @click="setSortOrder(option.value)"
             >
-              <i class="fa fa-sort-numeric-asc ml-2"></i>
-              قدیمی‌ترین
-            </b-dropdown-item>
-            <b-dropdown-item
-              :active="sortOrder === 'desc'"
-              @click="setSortOrder('desc')"
-            >
-              <i class="fa fa-sort-numeric-desc ml-2"></i>
-              جدیدترین
+              <i :class="option.icon"></i>
+              {{ option.label }}
             </b-dropdown-item>
           </b-dropdown>
         </div>
@@ -163,6 +158,21 @@
 <script>
 import OptimizedImage from '@/components/item/common/OptimizedImage'
 
+const SORT_OPTIONS = [
+  {
+    value: 'desc',
+    label: 'جدیدترین',
+    icon: 'fa fa-sort-numeric-desc ml-2',
+  },
+  {
+    value: 'asc',
+    label: 'قدیمی‌ترین',
+    icon: 'fa fa-sort-numeric-asc ml-2',
+  },
+]
+
+const SORT_PREFERENCE_KEY = 'seasonEpisodesSortOrder'
+
 export default {
   name: 'SeasonEpisodes',
   components: {
@@ -179,11 +189,27 @@ export default {
     return {
       showAll: false,
       itemsPerRow: 4,
-      sortOrder: 'asc', // 'asc' for oldest first, 'desc' for newest first
+      sortOrder: SORT_OPTIONS[0].value,
       cartItemIds: [],
     }
   },
   computed: {
+    sortOptions() {
+      return SORT_OPTIONS
+    },
+    currentSortOption() {
+      return (
+        this.sortOptions.find((option) => option.value === this.sortOrder) ||
+        this.sortOptions[0]
+      )
+    },
+    sortButtonIcon() {
+      return this.currentSortOption?.icon || 'fa fa-sort-alpha-down ml-2'
+    },
+    sortButtonLabel() {
+      const label = this.currentSortOption?.label
+      return label ? `مرتب سازی · ${label}` : 'مرتب سازی'
+    },
     isBasketActive() {
       if (!this.$store) return true
       const state = this.$store.state?.basketActive
@@ -193,7 +219,6 @@ export default {
       if (!this.season || !this.selectseriesid) return []
       const episodes = this.season[this.selectseriesid] || []
 
-      // Apply sorting
       const sortedEpisodes = [...episodes]
       if (this.sortOrder === 'desc') {
         sortedEpisodes.reverse()
@@ -228,6 +253,7 @@ export default {
   },
   mounted() {
     if (!process.client) return
+    this.loadSortPreference()
     if (this.isBasketActive) {
       this.syncCartItems()
       this.attachCartListener()
@@ -249,7 +275,41 @@ export default {
       this.showAll = !this.showAll
     },
     setSortOrder(order) {
+      if (!this.isValidSortOrder(order) || this.sortOrder === order) {
+        return
+      }
       this.sortOrder = order
+      this.persistSortPreference(order)
+    },
+    loadSortPreference() {
+      if (!process.client) return
+      try {
+        const stored = localStorage.getItem(SORT_PREFERENCE_KEY)
+        if (this.isValidSortOrder(stored)) {
+          this.sortOrder = stored
+        }
+      } catch (error) {
+        console.warn('Failed to load episode sort preference:', error)
+      }
+    },
+    persistSortPreference(order) {
+      if (!process.client) return
+      try {
+        localStorage.setItem(SORT_PREFERENCE_KEY, order)
+      } catch (error) {
+        console.warn('Failed to save episode sort preference:', error)
+      }
+    },
+    isValidSortOrder(order) {
+      return this.sortOptions.some((option) => option.value === order)
+    },
+    getEpisodeSortTitle(episode) {
+      if (!episode) return ''
+      const locale = this.$i18n?.locale
+      if (locale === 'fa') {
+        return episode.name_fa || episode.name || ''
+      }
+      return episode.name || episode.name_fa || ''
     },
     getMainButton(episode) {
       return episode?.actions?.mainButton || { exist: false }
