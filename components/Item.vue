@@ -474,7 +474,12 @@ export default {
     },
 
     handlePlay() {
-      this.PLAY('play')
+      // For series type with seasons but no specific episode, scroll to seasons section
+      if (this.type === 'series' && this.season) {
+        this.scrollToSection('episodes')
+      } else {
+        this.PLAY('play')
+      }
     },
     handleBuy() {
       this.PLAY('buy')
