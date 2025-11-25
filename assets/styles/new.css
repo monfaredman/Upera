@@ -11536,3 +11536,61 @@ background-color: #f6f6f6 !important;
 .popover {
   font-family: 'dana VF', serif !important;
 }
+
+/* Force dark header on specific pages */
+.force-dark-header {
+  background: #121212 !important;
+}
+
+.force-dark-header::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(0deg, transparent 0%, #171717 90%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Ensure header content appears above the gradient overlay */
+.force-dark-header .trigger-menu {
+  position: relative;
+  z-index: 2;
+}
+
+/* Override scroll-based background changes for forced dark header pages */
+.scroll-up .force-dark-header,
+.scroll-down .force-dark-header,
+.header-fixed .force-dark-header,
+.header-fixed-collapsed .force-dark-header {
+  background: #121212 !important;
+}
+
+/* Apply to light theme as well */
+.theme-light .force-dark-header {
+  background: #121212 !important;
+}
+
+.theme-light .scroll-up .force-dark-header,
+.theme-light .scroll-down .force-dark-header,
+.theme-light .header-fixed .force-dark-header,
+.theme-light .header-fixed-collapsed .force-dark-header {
+  background: #121212 !important;
+}
+
+/* Override any other potential background states */
+body.hfixed .force-dark-header,
+body.home .force-dark-header,
+body.s-h .force-dark-header,
+body.s-c .force-dark-header {
+  background: #121212 !important;
+}
+
+.theme-light body.hfixed .force-dark-header,
+.theme-light body.home .force-dark-header,
+.theme-light body.s-h .force-dark-header,
+.theme-light body.s-c .force-dark-header {
+  background: #121212 !important;
+}

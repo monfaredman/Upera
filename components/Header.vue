@@ -11,7 +11,10 @@
       <div
         id="trigger-menu-wrapper"
         class="container-fluid trigger-menu-wrapper"
-        :class="{ 'trigger-menu-wrapper2': bannerNav }"
+        :class="{
+          'trigger-menu-wrapper2': bannerNav,
+          'force-dark-header': forceDarkHeader,
+        }"
       >
         <div
           class="d-flex justify-content-between align-items-center header trigger-menu w-full"
@@ -189,6 +192,35 @@ export default {
         this.categories.includes(this.$route.path) ||
         this.profile.includes(this.$route.path)
       )
+    },
+
+    // Check if current page should force dark header
+    forceDarkHeader() {
+      const darkHeaderPages = [
+        '/genres',
+        '/profile',
+        '/payments',
+        '/profile/faq',
+        '/profile/terms',
+        '/profile/about-contact',
+      ]
+
+      // Check exact path match
+      if (darkHeaderPages.includes(this.$route.path)) {
+        return true
+      }
+
+      // Check if path starts with /casts/ (for all cast pages)
+      if (this.$route.path.startsWith('/casts/')) {
+        return true
+      }
+
+      // Check for 404 error pages
+      if (this.$route.name === 'error' || this.$route.name === null) {
+        return true
+      }
+
+      return false
     },
 
     categoriesMainLink() {
