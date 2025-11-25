@@ -381,9 +381,7 @@ export default {
         if (this.kids) queries.kids = 1
 
         try {
-          const apiurl = this.$auth.loggedIn
-            ? '/get/search'
-            : '/ghost/get/search'
+          const apiurl = '/ghost/get/search'
           const response = await this.$axios.post(
             apiurl + this.filtercontents,
             queries
@@ -419,7 +417,7 @@ export default {
         const queries = { query: this.query }
         if (this.imdb) queries.imdb = 1
 
-        const apiurl = this.$auth.loggedIn ? '/get/search' : '/ghost/get/search'
+        const apiurl = '/ghost/get/search'
 
         this.$axios
           .post(apiurl + this.filtercontents, queries)

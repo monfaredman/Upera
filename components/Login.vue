@@ -450,11 +450,14 @@ export default {
 
       this.loading.login = true
 
+      // Ensure password is the OTP joined together (with Latin digits)
+      const otpPassword = this.otp.join('')
+
       try {
         let response = await this.$auth.loginWith('local', {
           data: {
             mobile: this.mobile.replace(/\s/g, ''),
-            password: this.password,
+            password: otpPassword,
           },
         })
 
@@ -660,6 +663,9 @@ export default {
       } else if (input.length > 0) {
         target.value = `${zip}`
       }
+
+      // Update the mobile model with the formatted value
+      this.mobile = target.value
     },
 
     // OTP Input Methods

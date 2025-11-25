@@ -1000,7 +1000,7 @@ section#content {
   position: sticky;
   top: 3.5rem;
   z-index: 10;
-  margin-top: -5rem;
+  margin-top: -3rem;
 }
 
 .content-nav-header .nav {
@@ -1048,6 +1048,12 @@ section#content {
   transform: none;
 }
 
+/* Responsive styles */
+@media (min-width: 1500px) {
+  .content-nav-header {
+    margin-top: -3rem;
+  }
+}
 /* Responsive styles */
 @media (max-width: 1300px) {
   .content-nav-header {

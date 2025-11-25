@@ -61,7 +61,10 @@ import VideoPlayer from '~/components/VideoPlayer.vue'
 export default {
   components: { VideoPlayer },
   beforeRouteLeave(to, from, next) {
-    // در هنگام ترک صفحه، می‌توانید تنظیمات یا کلاس‌های اضافه شده را پاک کنید
+    // Close any open SweetAlert modal when route changes
+    if (this.$swal) {
+      this.$swal.close()
+    }
     next()
   },
   layout: 'empty',
@@ -91,8 +94,28 @@ export default {
       this.guest = false
     }
     this.loadVideo()
+
+    // Handle browser back button
+    window.addEventListener('popstate', this.handlePopState)
   },
+
+  beforeDestroy() {
+    // Close any open SweetAlert modal
+    if (this.$swal) {
+      this.$swal.close()
+    }
+
+    // Remove event listener
+    window.removeEventListener('popstate', this.handlePopState)
+  },
+
   methods: {
+    handlePopState() {
+      // Close any open SweetAlert modal when back button is pressed
+      if (this.$swal) {
+        this.$swal.close()
+      }
+    },
     showErrorAlert(data) {
       let dlsmtitle =
         this.$i18n.locale === 'fa' ? data.message_fa : data.message
