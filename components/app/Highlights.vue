@@ -7,7 +7,7 @@
         cols="6"
         md="3"
         style="border: 0.8px solid #525252; border-bottom: none"
-        class="p-4 text-white d-flex flex-column align-items-start"
+        class="p-4 app-highlight-col d-flex flex-column align-items-start"
         :style="{ backgroundColor: index % 2 === 0 ? '#404040' : '#373737' }"
       >
         <div class="icon-title-wrapper">
@@ -83,7 +83,7 @@ export default {
     border: none;
     align-content: center;
     justify-content: center;
-    background-color: #000;
+    background-color: var(--background-color);
     gap: 1.2rem;
     padding: 0rem 0.6rem;
     font-size: 0.7rem;
@@ -115,5 +115,9 @@ export default {
   .app-footer-row img {
     height: 28px !important;
   }
+}
+
+.app-highlight-col {
+  color: var(--text-color);
 }
 </style>

@@ -10,7 +10,7 @@
   justify-content: center;
   align-items: center;
   width: 100%;
-  background-color: #000;
+  background-color: var(--background-color);
   margin-bottom: 2rem;
   padding: 0 1rem;
 }

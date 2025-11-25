@@ -1,5 +1,5 @@
 <template>
-  <div style="background-color: black" class="pb-4 pb-md-0 mb-md-0">
+  <div class="app-page pb-4 pb-md-0 mb-md-0">
     <Banner />
     <AppLinks />
     <NewMoviesSlider :ugc-movies="ugcs ? ugcs : []" />
@@ -191,3 +191,9 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+.app-page {
+  background-color: var(--background-color);
+}
+</style>

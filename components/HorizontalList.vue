@@ -13,25 +13,14 @@
           height="30"
           class="ml-2"
         />
-        <h4
-          class="font-weight-bold"
-          style="z-index: 4"
-          :class="{
-            'text-white': localizedTitle === 'پیشنهادی',
-            '': localizedTitle !== 'پیشنهادی',
-          }"
-        >
+        <h4 class="font-weight-bold horizontal-list-title" style="z-index: 4">
           {{ localizedTitle }}
         </h4>
       </div>
       <nuxt-link
         v-if="showAllRoute"
         :to="showAllRoute"
-        class="mb-1 d-flex justify-content-center align-items-center"
-        :class="{
-          'text-white': localizedTitle === 'پیشنهادی',
-          '': localizedTitle !== 'پیشنهادی',
-        }"
+        class="mb-1 d-flex justify-content-center align-items-center horizontal-list-link"
         style="z-index: 4"
       >
         <span class="watch-more-text ml-1"> {{ $t('new.show_all') }} </span>
@@ -1032,5 +1021,13 @@ export default {
     object-fit: cover;
     border-radius: 8px !important;
   }
+}
+
+.horizontal-list-title {
+  color: var(--text-color);
+}
+
+.horizontal-list-link {
+  color: var(--text-color);
 }
 </style>

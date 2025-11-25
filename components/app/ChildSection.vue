@@ -26,35 +26,14 @@
       </b-col>
 
       <b-col md="6" class="text-right mid-col">
-        <div
-          class="mb-4 feature-box first-section"
-          style="
-            background-color: #1c2163;
-            padding: 1rem;
-            border-radius: 8px;
-            display: inline-block;
-            width: fit-content;
-          "
-        >
+        <div class="mb-4 feature-box first-section kids-section-box">
           <h4>🎈 بخش اختصاصی کودکان</h4>
           <p style="text-align: right; margin-bottom: 0">
             آپرا یک بخش ویژه برای کودکان دارد که محیطی امن، سرگرم‌کننده و
             آموزنده را برای فرزندان شما فراهم می‌کند.
           </p>
         </div>
-        <div
-          class="mb-4 feature-box profile-box"
-          style="
-            background-color: #0f161f;
-            padding: 1rem;
-            border-radius: 8px;
-            display: inline-block;
-            width: 100%;
-            box-shadow: -4px -4px 10px #0e264a, 4px 4px 10px #0e264a,
-              -4px 4px 10px #0e264a, 4px -4px 10px #0e264a;
-            margin-right: 12rem;
-          "
-        >
+        <div class="mb-4 feature-box profile-box kids-profile-box">
           <h4 style="text-align: right">👶 پروفایل مخصوص کودک شما</h4>
           <p style="text-align: right; margin-bottom: 0">
             🔒 امنیت و کنترل والدین
@@ -236,5 +215,26 @@
   .first-section.feature-box {
     margin-left: 8rem !important;
   }
+}
+
+.kids-section-box {
+  background-color: #1c2163;
+  padding: 1rem;
+  border-radius: 8px;
+  display: inline-block;
+  width: fit-content;
+  color: white;
+}
+
+.kids-profile-box {
+  background-color: #0f161f;
+  padding: 1rem;
+  border-radius: 8px;
+  display: inline-block;
+  width: 100%;
+  box-shadow: -4px -4px 10px #0e264a, 4px 4px 10px #0e264a,
+    -4px 4px 10px #0e264a, 4px -4px 10px #0e264a;
+  margin-right: 12rem;
+  color: white;
 }
 </style>

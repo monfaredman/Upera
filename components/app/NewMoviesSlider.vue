@@ -179,12 +179,17 @@ export default {
 
 h5 {
   font-family: 'dana-700';
+  color: var(--text-color);
+}
+
+a {
+  color: var(--text-color);
 }
 
 .new-movies-slider {
   position: relative;
   direction: rtl;
-  background-color: black;
+  background-color: var(--background-color);
   width: 100%;
   max-width: 95%;
   margin: 0 auto;
@@ -192,7 +197,7 @@ h5 {
 
 .slider-wrapper {
   position: relative;
-  background-color: black;
+  background-color: var(--background-color);
 }
 
 .new-movies-nav {
@@ -238,7 +243,7 @@ h5 {
 }
 
 .loading-state {
-  background: black;
+  background: var(--background-color);
   border-radius: 8px;
 }
 

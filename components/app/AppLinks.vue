@@ -14,7 +14,7 @@
 
           <!-- App Links -->
           <div class="col-12 col-lg-8 app-links-content">
-            <h2 class="title text-left mb-4 mt-4 mt-lg-0">
+            <h2 class="title text-left mb-4 mt-4 mt-lg-0 app-title">
               هر لحظه و هرجا با آپرا فیلم ببین!
             </h2>
 
@@ -224,7 +224,7 @@ const getAppLinksByType = (type) => {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  color: white;
+  color: var(--text-color);
   flex-shrink: 0;
   padding: 0.5rem 0;
   width: 100%;
@@ -362,7 +362,7 @@ const getAppLinksByType = (type) => {
   border: none;
   border-radius: 4px;
   transition: background-color 0.2s ease;
-  text-wrap: nowrap;
+  white-space: nowrap;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -404,14 +404,13 @@ const getAppLinksByType = (type) => {
   }
 }
 
-.title {
-  font-weight: bold;
-  text-align: right;
-}
-
 @media (max-width: 576px) {
   .app-links-section {
     margin: 1rem 0;
   }
+}
+
+.app-title {
+  color: var(--text-color) !important;
 }
 </style>
