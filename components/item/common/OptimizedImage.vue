@@ -112,6 +112,9 @@ export default {
           `https://cdn.upera.shop/s3/${this.type}/${this.imageSrc}`
         )
       }
+      if (this.type === 'backstage') {
+        return `https://thumb.upera.shop/thumb?w=382&h=220&q=100&a=t&src=https://cdn.upera.shop/s3/${this.imageSrc}`
+      }
       return baseUrl + params.toString()
     },
   },

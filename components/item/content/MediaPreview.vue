@@ -11,7 +11,7 @@
       class="img-fluid"
       fluid-grow
       :thumb-options="{ w: 1920, h: 1200, q: 100, a: 'c' }"
-      type="backdrops"
+      :type="mediaType"
     />
   </a>
 </template>

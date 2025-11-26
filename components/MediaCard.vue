@@ -176,7 +176,7 @@
                   v-if="variant === 'backdrop'"
                   blank
                   blank-color="#bbb"
-                  :src="backdropSrc(item.backdrop, item.cdnType ?? 1)"
+                  :src="backdropSrc(item.backdrop, item.cdnType ?? 1, true)"
                   :alt="altText"
                   :width="size.w"
                   :height="size.h"
@@ -509,7 +509,7 @@ export default {
       const { w, h } = isMobile ? { w: 142, h: 212 } : this.size
       return `${THUMB_BASE}?w=${w}&h=${h}&q=100&a=c&src=${CDN_POSTERS}/${filename}`
     },
-    backdropSrc(filename, cdnType = 1) {
+    backdropSrc(filename, cdnType = 1, isTeaser = false) {
       if (!filename) return ''
       let { w, h } = this.size
 
@@ -524,6 +524,10 @@ export default {
       if (this.item?.mobileSrc && this.layout === 'slide') {
         w = 375
         h = 300
+      }
+
+      if (isTeaser) {
+        return `https://thumb.upera.shop/thumb?w=382&h=220&q=100&a=t&src=https://cdn.upera.shop/s3/${filename}`
       }
       const base = cdnType === 1 ? CDN_BACKDROPS_1 : CDN_BACKDROPS_2
       if (this.isOffer) {
