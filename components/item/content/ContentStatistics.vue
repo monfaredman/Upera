@@ -35,12 +35,40 @@
           {{ data.item.overview_fa || data.item.overview }}
         </p>
 
-        <!-- Director -->
-        <div v-if="directors && directors.length > 0" class="director-info">
-          <span class="director-label">کارگردان:</span>
-          <span class="director-name">{{
-            directors.map((d) => d.name_fa || d.name).join('، ')
-          }}</span>
+        <!-- Crew Section (replacing Director) -->
+        <div v-if="hasAnyCrew" class="crew-info">
+          <span v-if="directors && directors.length > 0" class="crew-item">
+            <span class="crew-label">کارگردان:</span>
+            <span class="crew-names">{{
+              directors.map((d) => d.name_fa || d.name).join('، ')
+            }}</span>
+          </span>
+          <span v-if="producers && producers.length > 0" class="crew-item">
+            <span class="crew-label">تهیه کننده:</span>
+            <span class="crew-names">{{
+              producers.map((p) => p.name_fa || p.name).join('، ')
+            }}</span>
+          </span>
+          <span v-if="writers && writers.length > 0" class="crew-item">
+            <span class="crew-label">نویسنده:</span>
+            <span class="crew-names">{{
+              writers.map((w) => w.name_fa || w.name).join('، ')
+            }}</span>
+          </span>
+          <span v-if="investors && investors.length > 0" class="crew-item">
+            <span class="crew-label">سرمایه گذار:</span>
+            <span class="crew-names">{{
+              investors.map((i) => i.name_fa || i.name).join('، ')
+            }}</span>
+          </span>
+        </div>
+
+        <!-- Teaser Button Row at End -->
+        <div v-if="hasTeaser" class="teaser-button-row">
+          <button class="teaser-button" @click="$emit('play-teaser')">
+            <i class="far fa-play-circle"></i>
+            <span>تماشای تیزر و تریلر</span>
+          </button>
         </div>
       </div>
     </div>
@@ -57,7 +85,12 @@ export default {
     episodeNum: { type: Number, default: 0 },
     seasonNum: { type: Number, default: 0 },
     directors: { type: Array, default: () => [] },
+    producers: { type: Array, default: () => [] },
+    writers: { type: Array, default: () => [] },
+    investors: { type: Array, default: () => [] },
+    medias: { type: Object, default: () => ({}) },
   },
+  emits: ['play-teaser'],
   computed: {
     contentTypeText() {
       const types = {
@@ -73,9 +106,19 @@ export default {
     showSubtitle() {
       return !this.data.item?.ir && !this.data.item?.persian
     },
-
     showDubbed() {
       return this.data.item?.dubbed
+    },
+    hasTeaser() {
+      return this.medias && this.medias.teaser === 1
+    },
+    hasAnyCrew() {
+      return (
+        (this.directors && this.directors.length > 0) ||
+        (this.producers && this.producers.length > 0) ||
+        (this.writers && this.writers.length > 0) ||
+        (this.investors && this.investors.length > 0)
+      )
     },
   },
   methods: {
@@ -190,19 +233,65 @@ export default {
   text-overflow: ellipsis;
 }
 
-.director-info {
+.crew-info {
   font-size: 14px;
   color: #ffffff;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: center;
 }
 
-.director-label {
+.crew-item {
+  display: inline-flex;
+  gap: 4px;
+}
+
+.crew-label {
   font-weight: 600;
-  margin-left: 8px;
   color: rgba(255, 255, 255, 0.7);
 }
 
-.director-name {
+.crew-names {
   color: #ffffff;
+}
+
+.teaser-button-row {
+  width: 100%;
+  display: flex;
+  justify-content: start;
+  margin-top: 8px;
+}
+
+.teaser-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 12px 32px;
+  background: linear-gradient(135deg, #1b6be5 0%, #0d4fa3 100%);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(27, 107, 229, 0.3);
+}
+
+.teaser-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(27, 107, 229, 0.5);
+  background: linear-gradient(135deg, #2575ed 0%, #1558b8 100%);
+}
+
+.teaser-button:active {
+  transform: translateY(0);
+}
+
+.teaser-button i {
+  font-size: 20px;
 }
 
 .backdrop-container {
@@ -247,6 +336,20 @@ export default {
     font-size: 13px;
     -webkit-line-clamp: 3;
     line-clamp: 3;
+  }
+
+  .crew-info {
+    font-size: 13px;
+    gap: 12px;
+  }
+
+  .teaser-button {
+    font-size: 14px;
+    padding: 10px 28px;
+  }
+
+  .teaser-button i {
+    font-size: 18px;
   }
 }
 
@@ -295,8 +398,23 @@ export default {
     line-clamp: 5;
   }
 
-  .director-info {
+  .crew-info {
     font-size: 13px;
+    gap: 10px;
+  }
+
+  .teaser-button-row {
+    margin-top: 12px;
+  }
+
+  .teaser-button {
+    width: 100%;
+    font-size: 14px;
+    padding: 12px 24px;
+  }
+
+  .teaser-button i {
+    font-size: 18px;
   }
 }
 

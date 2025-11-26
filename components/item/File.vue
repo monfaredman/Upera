@@ -417,7 +417,7 @@ export default {
 .media-title-badge {
   position: absolute;
   top: 20px;
-  left: 20px;
+  right: 20px;
   z-index: 99;
   animation: slideInLeft 0.5s ease-out;
 }
@@ -525,7 +525,7 @@ export default {
 
   .media-title-badge {
     top: 15px;
-    left: 15px;
+    right: 15px;
   }
 
   .title-badge-content {
@@ -566,7 +566,7 @@ export default {
 
   .media-title-badge {
     top: 12px;
-    left: 12px;
+    right: 12px;
   }
 
   .title-badge-content {
@@ -639,6 +639,14 @@ export default {
   .enhanced-file-modal .modal-dialog {
     max-width: 95vw;
     margin: 1rem auto;
+  }
+
+  .player-wrapper {
+    height: 60vh !important;
+  }
+
+  .media-title-badge {
+    width: fit-content !important;
   }
 }
 

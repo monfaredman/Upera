@@ -1,79 +1,34 @@
 <template>
-  <section class="horizontal-list-container mt-4">
-    <div class="swiper-container horizontal-list">
-      <div id="movie-tabs">
-        <div class="nav mt-3" role="tablist">
-          <b-tabs
-            v-model="activeTab"
-            content-class="mt-4"
-            nav-class="item-tabs-nav"
-            class="w-full"
-          >
-            <!-- Teaser Tab (First Tab) -->
-            <b-tab v-if="medias.teaser === 1" title="تیزر و تریلر">
-              <div class="row">
-                <div class="col-12">
-                  <TeaserPreview
-                    :data="data"
-                    :medias="medias"
-                    @play-teaser="GET_FILE(1)"
-                  />
-                </div>
-              </div>
-            </b-tab>
+  <section class="media-tabs-section">
+    <MediaSwiper
+      :data="data"
+      :medias="medias"
+      :light-images="lightImages"
+      :images-loading="imagesLoading"
+      @play-backstage="GET_FILE(2)"
+      @play-musicvideo="GET_FILE(4)"
+      @play-next="GET_FILE(3)"
+      @open-gallery="openGallery"
+    />
 
-            <!-- Backstage Tab -->
-            <MediaTab
-              v-if="medias.backstage === 1"
-              title="پشت صحنه"
-              :data="data"
-              media-type="backstage"
-              @play-media="GET_FILE(2)"
-            />
-
-            <!-- Gallery Tab -->
-            <GalleryTab
-              v-if="medias.image === 1"
-              :data="data"
-              :light-images="lightImages"
-              :images-loading="imagesLoading"
-              @load-images="$emit('load-images')"
-            />
-
-            <!-- Music Video Tab -->
-            <MediaTab
-              v-if="medias.musicvideo === 1"
-              title="موزیک ویدئو"
-              :data="data"
-              media-type="musicvideo"
-              @play-media="GET_FILE(4)"
-            />
-
-            <!-- Next Episode Preview Tab -->
-            <MediaTab
-              v-if="medias.next === 1"
-              title="آنچه در قسمت بعد خواهید دید"
-              :data="data"
-              media-type="next"
-              @play-media="GET_FILE(3)"
-            />
-          </b-tabs>
-        </div>
-      </div>
-    </div>
+    <!-- Light Gallery Modal -->
+    <LightGallery
+      v-if="medias.image === 1"
+      :index="galleryIndex"
+      :images="lightImages"
+      @close="galleryIndex = null"
+    />
   </section>
 </template>
 <script>
-import GalleryTab from '@/components/item/content/tabs/GalleryTab'
-import MediaTab from '@/components/item/content/tabs/MediaTab'
-import TeaserPreview from '@/components/item/content/TeaserPreview'
+import MediaSwiper from '@/components/item/content/MediaSwiper'
+import LightGallery from '@/components/item/content/gallery/LightGallery'
 
 export default {
   name: 'MediaTabs',
   components: {
-    GalleryTab,
-    MediaTab,
-    TeaserPreview,
+    MediaSwiper,
+    LightGallery,
   },
   props: {
     data: { type: Object, default: () => ({ item: {} }) },
@@ -88,13 +43,12 @@ export default {
   emits: ['get-file', 'load-images'],
   data() {
     return {
-      activeTab: 0,
+      galleryIndex: null,
     }
   },
   computed: {
     hasAnyMedia() {
       return (
-        this.medias.teaser === 1 ||
         this.medias.backstage === 1 ||
         this.medias.image === 1 ||
         this.medias.musicvideo === 1 ||
@@ -106,15 +60,19 @@ export default {
     GET_FILE(content) {
       this.$emit('get-file', content)
     },
+    openGallery(index) {
+      // Load images if not already loaded
+      if (this.lightImages.length === 0) {
+        this.$emit('load-images')
+      }
+      this.galleryIndex = index
+    },
   },
 }
 </script>
 <style scoped>
-::v-deep .item-tabs-nav .nav-link.active,
-::v-deep .item-tabs-nav .nav-link:active {
-  color: #1b6be5 !important;
-  box-shadow: 0 8px 22px rgba(175, 0, 45, 0.22) !important;
-  border-radius: 10px !important;
-  transform: none !important;
+.media-tabs-section {
+  width: 100%;
+  padding: 20px 0;
 }
 </style>

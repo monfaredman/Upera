@@ -6,27 +6,17 @@
         <h5 class="section-title">{{ $t('show.cast') }}</h5>
         <CastGrid :casts="casts" title="" />
       </div>
-      <!-- Crew Sections -->
-      <CrewSection
-        :directors="directors"
-        :producers="producers"
-        :writers="writers"
-        :investors="investors"
-        :show-title="casts && casts.length > 0"
-      />
     </div>
   </div>
 </template>
 
 <script>
 import CastGrid from '@/components/item/content/cast/CastGrid'
-import CrewSection from '@/components/item/content/cast/CrewSection'
 
 export default {
   name: 'CastsTab',
   components: {
     CastGrid,
-    CrewSection,
   },
   props: {
     casts: {

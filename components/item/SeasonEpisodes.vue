@@ -2,7 +2,7 @@
   <section id="watching" class="horizontal-list-container item mt-lg-2 pt-3">
     <!-- Season Dropdown and Sort Button -->
     <div class="container-fluid mb-3">
-      <div class="row align-items-center">
+      <div class="row align-items-center container-fluid-header">
         <div class="col-6 col-md-auto">
           <b-dropdown
             class="season-dropdown"
@@ -839,6 +839,16 @@ section#watching {
 
   .episode-content {
     gap: 2px;
+  }
+
+  .sort-dropdown {
+    min-width: 100px;
+    width: 100px;
+    padding: 0;
+  }
+
+  .container-fluid-header .col-6 {
+    padding: 0 !important;
   }
 }
 </style>

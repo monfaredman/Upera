@@ -171,6 +171,11 @@
           :episode-num="episode_num"
           :season-num="season_num"
           :directors="directors"
+          :producers="producers"
+          :writers="writers"
+          :investors="investors"
+          :medias="medias"
+          @play-teaser="GET_FILE(1)"
         />
       </section>
 
@@ -437,7 +442,6 @@ export default {
 
     hasMediaTabs() {
       return (
-        this.medias.teaser === 1 ||
         this.medias.backstage === 1 ||
         this.medias.image === 1 ||
         this.medias.musicvideo === 1 ||
