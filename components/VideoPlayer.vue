@@ -28,7 +28,7 @@
 
     <!-- Skip Credits Button -->
     <button
-      v-if="showSkipCredits && stream"
+      v-if="showSkipCredits && stream && showSkipCreditsButton"
       :id="`${playerid}-skip-credits`"
       class="skip-credits-btn"
       @click="skipCredits"
@@ -510,6 +510,10 @@ export default {
         final_credits: 5550,
       }),
     },
+    showSkipCreditsButton: {
+      type: Boolean,
+      default: true,
+    },
   },
 
   data() {
@@ -721,8 +725,15 @@ export default {
 
               // If no audio param exists and we have audio options,
               // assume the first option in audioOptions is the default
-              if (!hasAudioParam && this.audioOptions && this.audioOptions.length > 0) {
-                console.log('[VideoPlayer] No audio param in URL, assuming first option as default:', this.audioOptions[0].lang)
+              if (
+                !hasAudioParam &&
+                this.audioOptions &&
+                this.audioOptions.length > 0
+              ) {
+                console.log(
+                  '[VideoPlayer] No audio param in URL, assuming first option as default:',
+                  this.audioOptions[0].lang
+                )
                 this.currentAudioLang = this.audioOptions[0].lang
               }
             }
@@ -834,7 +845,10 @@ export default {
       if (!this.tracks?.length) return
       if (this.subtitleTracksInitialized && !force) return
 
-      console.log('[VideoPlayer] Setting up text tracks. Current audio lang:', this.currentAudioLang)
+      console.log(
+        '[VideoPlayer] Setting up text tracks. Current audio lang:',
+        this.currentAudioLang
+      )
 
       // Clear any existing tracks first
       const existingTracks = this.player.remoteTextTracks()
@@ -895,14 +909,19 @@ export default {
       ) {
         // audio is EN, enable FA subtitle if available
         if (faSubtitleIndex !== -1) {
-          console.log('[VideoPlayer] EN audio detected, enabling FA subtitle at index:', faSubtitleIndex)
+          console.log(
+            '[VideoPlayer] EN audio detected, enabling FA subtitle at index:',
+            faSubtitleIndex
+          )
           for (let i = 0; i < textTracks.length; i++) {
             textTracks[i].mode = i === faSubtitleIndex ? 'showing' : 'disabled'
           }
           this.currentSubtitle = faSubtitleIndex
         } else {
           // no FA subtitle, leave all disabled
-          console.log('[VideoPlayer] EN audio but no FA subtitle found, disabling all')
+          console.log(
+            '[VideoPlayer] EN audio but no FA subtitle found, disabling all'
+          )
           for (let i = 0; i < textTracks.length; i++) {
             textTracks[i].mode = 'disabled'
           }
@@ -911,10 +930,15 @@ export default {
       } else {
         // audio language not determined or other language
         // Try to detect from stream or honor defaults
-        console.log('[VideoPlayer] Audio language unknown, applying fallback logic')
+        console.log(
+          '[VideoPlayer] Audio language unknown, applying fallback logic'
+        )
         if (faSubtitleIndex !== -1) {
           // enable FA subtitle as fallback
-          console.log('[VideoPlayer] Enabling FA subtitle as fallback at index:', faSubtitleIndex)
+          console.log(
+            '[VideoPlayer] Enabling FA subtitle as fallback at index:',
+            faSubtitleIndex
+          )
           for (let i = 0; i < textTracks.length; i++) {
             textTracks[i].mode = i === faSubtitleIndex ? 'showing' : 'disabled'
           }
@@ -2047,20 +2071,32 @@ export default {
               for (let i = 0; i < audioTracks.length; i++) {
                 if (audioTracks[i].enabled) {
                   // Found the active audio track
-                  const trackLabel = audioTracks[i].label || audioTracks[i].language || ''
+                  const trackLabel =
+                    audioTracks[i].label || audioTracks[i].language || ''
                   const trackLang = trackLabel.toLowerCase()
 
                   // Try to determine language from track info
                   let detectedLang = null
 
-                  if (trackLang.includes('fa') || trackLang.includes('farsi') || trackLang.includes('persian')) {
+                  if (
+                    trackLang.includes('fa') ||
+                    trackLang.includes('farsi') ||
+                    trackLang.includes('persian')
+                  ) {
                     detectedLang = 'FA'
-                  } else if (trackLang.includes('en') || trackLang.includes('english')) {
+                  } else if (
+                    trackLang.includes('en') ||
+                    trackLang.includes('english')
+                  ) {
                     detectedLang = 'EN'
                   }
 
                   // If we detected a language and it differs from current state, update
-                  if (detectedLang && (!this.currentAudioLang || this.currentAudioLang !== detectedLang)) {
+                  if (
+                    detectedLang &&
+                    (!this.currentAudioLang ||
+                      this.currentAudioLang !== detectedLang)
+                  ) {
                     console.log('Detected actual audio track:', detectedLang)
                     this.currentAudioLang = detectedLang
 
@@ -2096,7 +2132,10 @@ export default {
       }
 
       // Apply subtitle logic based on audio
-      if (this.currentAudioLang && this.currentAudioLang.toString().toLowerCase() === 'fa') {
+      if (
+        this.currentAudioLang &&
+        this.currentAudioLang.toString().toLowerCase() === 'fa'
+      ) {
         // FA audio -> subtitles OFF
         for (let i = 0; i < textTracks.length; i++) {
           textTracks[i].mode = 'disabled'

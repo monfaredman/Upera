@@ -262,7 +262,7 @@
         :id="data.item.id"
         :show="showplyrmodal"
         :content="modalcontent"
-        :name="data.item.name"
+        :name="data.item.name_fa"
         :namefa="data.item.name_fa"
         :backdrop="data.item.backdrop"
         :backdropteaser="data.item.backdrop_teaser"
@@ -275,6 +275,7 @@
         v-model="modalsharing"
         centered
         hide-footer
+        modal-class="enhanced-sharing-modal"
         :title="'اشتراک گذاری'"
       >
         <Socialsharing
@@ -1172,5 +1173,88 @@ section#content {
 
 a.nav-link {
   margin-right: 0 !important;
+}
+
+/* Enhanced Modal Styles */
+::v-deep .enhanced-sharing-modal .modal-dialog {
+  max-width: 600px;
+}
+
+::v-deep .enhanced-sharing-modal .modal-content {
+  border-radius: 20px;
+  border: none;
+  box-shadow: 0 20px 80px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+}
+
+::v-deep .enhanced-sharing-modal .modal-header {
+  background: linear-gradient(90deg, #ff7a18 0%, #af002d 100%);
+  border: none;
+  padding: 20px 24px;
+  border-radius: 20px 20px 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+::v-deep .enhanced-sharing-modal .modal-title {
+  color: #ffffff;
+  font-family: 'dana-700', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  letter-spacing: 0.3px;
+  margin: 0;
+  line-height: 1.4;
+}
+
+::v-deep .enhanced-sharing-modal .close {
+  color: #ffffff;
+  opacity: 1;
+  text-shadow: none;
+  transition: all 0.3s ease;
+  font-size: 1.5rem;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.1);
+  margin: 0;
+  padding: 0;
+  line-height: 1;
+}
+
+::v-deep .enhanced-sharing-modal .close:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: rotate(90deg);
+}
+
+::v-deep .enhanced-sharing-modal .modal-body {
+  padding: 0;
+  background: transparent;
+}
+
+@media (prefers-color-scheme: dark) {
+  ::v-deep .enhanced-sharing-modal .modal-content {
+    background: linear-gradient(145deg, #1a1a2e 0%, #16213e 100%);
+  }
+}
+
+@media (max-width: 768px) {
+  ::v-deep .enhanced-sharing-modal .modal-dialog {
+    max-width: 95%;
+    margin: 1rem auto;
+  }
+
+  ::v-deep .enhanced-sharing-modal .modal-header {
+    padding: 16px 20px;
+  }
+
+  ::v-deep .enhanced-sharing-modal .modal-title {
+    font-size: 1.1rem;
+  }
 }
 </style>
