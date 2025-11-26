@@ -4,10 +4,10 @@
       <h5 class="mb-0">پیشنهادی</h5>
       <nuxt-link
         :to="{ name: 'lists-list', params: { list: 'offer' } }"
-        class="mb-1"
+        class="mb-1 d-inline-flex align-items-center show-all-link"
       >
-        {{ $t('new.show_all') }}
-        <img src="@/assets/img/more.svg" height="3" alt="" />
+        <span class="show-all-text ml-1">{{ $t('new.show_all') }}</span>
+        <i class="fa fa-ellipsis-h show-all-icon" aria-hidden="true"></i>
       </nuxt-link>
     </div>
     <div class="slider-wrapper">

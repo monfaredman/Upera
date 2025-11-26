@@ -164,10 +164,10 @@
           </h4>
           <nuxt-link
             :to="{ name: 'profile-list-list', params: { list: 'downloads' } }"
-            class="mb-1"
+            class="mb-1 d-inline-flex align-items-center show-all-link"
           >
-            {{ $t('new.show_all') }}
-            <img src="@/assets/img/more.svg" height="3" alt="" />
+            <span class="show-all-text ml-1">{{ $t('new.show_all') }}</span>
+            <i class="fa fa-ellipsis-h show-all-icon" aria-hidden="true"></i>
           </nuxt-link>
         </div>
         <div v-swiper:downloadsSwiper="swiperOption" class="newset-slider">
@@ -273,10 +273,10 @@
           </h4>
           <nuxt-link
             :to="{ name: 'profile-list-list', params: { list: 'watchlist' } }"
-            class="mb-1"
+            class="mb-1 d-inline-flex align-items-center show-all-link"
           >
-            {{ $t('new.show_all') }}
-            <img src="@/assets/img/more.svg" height="3" alt="" />
+            <span class="show-all-text ml-1">{{ $t('new.show_all') }}</span>
+            <i class="fa fa-ellipsis-h show-all-icon" aria-hidden="true"></i>
           </nuxt-link>
         </div>
         <div v-swiper:watchlistSwiper="swiperOption" class="newset-slider">
@@ -381,10 +381,10 @@
           </h4>
           <nuxt-link
             :to="{ name: 'profile-list-list', params: { list: 'likes' } }"
-            class="mb-1"
+            class="mb-1 d-inline-flex align-items-center show-all-link"
           >
-            {{ $t('new.show_all') }}
-            <img src="@/assets/img/more.svg" height="3" alt="" />
+            <span class="show-all-text ml-1">{{ $t('new.show_all') }}</span>
+            <i class="fa fa-ellipsis-h show-all-icon" aria-hidden="true"></i>
           </nuxt-link>
         </div>
         <div v-swiper:likesSwiper="swiperOption" class="newset-slider">
@@ -489,10 +489,10 @@
           </h4>
           <nuxt-link
             :to="{ name: 'profile-list-list', params: { list: 'offer' } }"
-            class="mb-1"
+            class="mb-1 d-inline-flex align-items-center show-all-link"
           >
-            {{ $t('new.show_all') }}
-            <img src="@/assets/img/more.svg" height="3" alt="" />
+            <span class="show-all-text ml-1">{{ $t('new.show_all') }}</span>
+            <i class="fa fa-ellipsis-h show-all-icon" aria-hidden="true"></i>
           </nuxt-link>
         </div>
         <div v-swiper:offerSwiper="swiperOption" class="newset-slider">
@@ -597,10 +597,10 @@
           </h4>
           <nuxt-link
             :to="{ name: 'profile-list-list', params: { list: 'watched' } }"
-            class="mb-1"
+            class="mb-1 d-inline-flex align-items-center show-all-link"
           >
-            {{ $t('new.show_all') }}
-            <img src="@/assets/img/more.svg" height="3" alt="" />
+            <span class="show-all-text ml-1">{{ $t('new.show_all') }}</span>
+            <i class="fa fa-ellipsis-h show-all-icon" aria-hidden="true"></i>
           </nuxt-link>
         </div>
         <div v-swiper:watchedSwiper="swiperOption" class="newset-slider">

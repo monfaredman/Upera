@@ -335,14 +335,16 @@
                                   name: 'lists-list',
                                   params: { list: list.occasion },
                                 }"
+                                class="d-inline-flex align-items-center show-all-link"
                               >
-                                {{ $t('new.show_all') }}
+                                <span class="show-all-text ml-1">
+                                  {{ $t('new.show_all') }}
+                                </span>
+                                <i
+                                  class="fa fa-ellipsis-h show-all-icon"
+                                  aria-hidden="true"
+                                ></i>
                               </nuxt-link>
-                              <img
-                                src="@/assets/img/more.svg"
-                                height="3"
-                                alt=""
-                              />
                             </div>
                           </div>
                           <div class="d-flex justify-content-between w-full">

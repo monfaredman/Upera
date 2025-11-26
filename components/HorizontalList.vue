@@ -20,12 +20,13 @@
       <nuxt-link
         v-if="showAllRoute"
         :to="showAllRoute"
-        class="mb-1 d-flex justify-content-center align-items-center horizontal-list-link"
+        class="mb-1 d-flex justify-content-center align-items-center horizontal-list-link show-all-link"
         style="z-index: 4"
       >
-        <span class="watch-more-text ml-1"> {{ $t('new.show_all') }} </span>
-        <i v-if="localizedTitle === 'پیشنهادی'" class="fa fa-ellipsis-h" />
-        <img v-else src="@/assets/img/more.svg" class="text-white" height="3" />
+        <span class="watch-more-text ml-1 show-all-text">
+          {{ $t('new.show_all') }}
+        </span>
+        <i class="fa fa-ellipsis-h show-all-icon" aria-hidden="true" />
       </nuxt-link>
     </div>
     <!-- Type 1: Normal swiper layout (default + lives + ugcs + offer) -->
@@ -435,7 +436,7 @@ export default {
 .watch-more-text {
   font-size: 12px !important;
   font-weight: 600 !important;
-  color: #d4d4d4;
+  color: inherit;
 }
 
 /* ==================== TYPE 2: Single Item Simple Card ==================== */
@@ -1028,6 +1029,11 @@ export default {
 }
 
 .horizontal-list-link {
-  color: var(--text-color);
+  color: var(--show-all-color);
+  transition: color 0.3s ease;
+}
+
+.horizontal-list-link:hover {
+  color: var(--show-all-color);
 }
 </style>

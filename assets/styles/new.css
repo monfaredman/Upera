@@ -6,6 +6,8 @@
   --primary-2: #ff4000;
   --primary-3: #e63900;
 
+  --show-all-color: #121212;
+
   --primary-dark: #ec2927;
   --secondary: #4b4bf9;
 
@@ -83,6 +85,28 @@ a:not([href]):not([class]) {
 a:not([href]):not([class]):hover {
   color: inherit;
   text-decoration: none;
+}
+
+.show-all-link {
+  display: inline-flex;
+  align-items: center;
+  color: var(--show-all-color);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.show-all-link:hover {
+  color: var(--show-all-color);
+}
+
+.show-all-text {
+  color: inherit;
+}
+
+.show-all-icon {
+  color: inherit;
+  font-size: 0.875rem;
+  line-height: 1;
 }
 
 .header-menu a.active {

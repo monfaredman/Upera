@@ -1,3 +1,7 @@
+.theme-dark {
+  --show-all-color: #f6f6f6;
+}
+
 .theme-dark body {
   background: black;
   color: #f6f6f6;
