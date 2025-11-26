@@ -51,7 +51,7 @@ export default {
       type: String,
       default: 'posters', // 'posters', 'backdrops', 'casts', 'files'
       validator: (value) =>
-        ['posters', 'backdrops', 'casts', 'files'].includes(value),
+        ['posters', 'backdrops', 'casts', 'files', 'backstage'].includes(value),
     },
     fluidGrow: {
       type: Boolean,

@@ -6,13 +6,11 @@
     </template>
 
     <div v-if="lightImages.length >= 1">
-      <client-only>
-        <LightGallery
-          :index="galleryIndex"
-          :images="lightImages"
-          @close="galleryIndex = null"
-        />
-      </client-only>
+      <LightGallery
+        :index="galleryIndex"
+        :images="lightImages"
+        @close="galleryIndex = null"
+      />
 
       <ImageGrid
         :images="lightImages"
@@ -32,11 +30,13 @@
 
 <script>
 import ImageGrid from '@/components/item/content/gallery/ImageGrid'
+import LightGallery from '@/components/item/content/gallery/LightGallery'
 
 export default {
   name: 'GalleryTab',
   components: {
     ImageGrid,
+    LightGallery,
   },
   props: {
     data: { type: Object, default: () => ({ item: {} }) },

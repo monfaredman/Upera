@@ -24,7 +24,8 @@
       </div>
     </section>
 
-    <OfferSection :offer="offer" />
+    <OfferSectionSkeleton v-if="isLoadingOffer" />
+    <OfferSection v-else :offer="offer" />
 
     <!-- Filter Section with Skeleton -->
     <FilterSkeleton v-show="isLoadingFilters" />
@@ -562,6 +563,8 @@ export default {
     OccasionSectionSkeleton: () =>
       import('@/components/home/OccasionSectionSkeleton.vue'),
     FilterSkeleton: () => import('@/components/home/FilterSkeleton.vue'),
+    OfferSectionSkeleton: () =>
+      import('@/components/home/OfferSectionSkeleton.vue'),
   },
   asyncData() {
     // Return empty data, all fetching will happen in mounted()
@@ -654,6 +657,7 @@ export default {
       isLoadingUgcs: false,
       isLoadingDiscover: true,
       isLoadingFilters: true,
+      isLoadingOffer: true,
       startFetchingFilters: false,
       // Clap and watchlist state
       clapinterval: false,
@@ -703,6 +707,7 @@ export default {
 
     // After slider is loaded, fetch other content in parallel
     // Fetch offer
+    this.isLoadingOffer = true
     this.$axios
       .get('/get/offer' + this.filtercontents)
       .then((offerRes) => {
@@ -710,6 +715,9 @@ export default {
       })
       .catch((error) => {
         console.error('Error fetching offer:', error)
+      })
+      .finally(() => {
+        this.isLoadingOffer = false
       })
 
     // Fetch recently watched
@@ -844,6 +852,7 @@ export default {
       this.isLoadingSlider = true
       this.isLoadingRecently = true
       this.isLoadingDiscover = true
+      this.isLoadingOffer = true
       this.$store.dispatch('filter/FILTER_LOADING')
 
       const requests = []
@@ -860,9 +869,14 @@ export default {
       )
 
       requests.push(
-        this.$axios.get('/get/offer' + this.filtercontents).then((response) => {
-          if (response.status === 200) this.offer = response.data
-        })
+        this.$axios
+          .get('/get/offer' + this.filtercontents)
+          .then((response) => {
+            if (response.status === 200) this.offer = response.data
+          })
+          .finally(() => {
+            this.isLoadingOffer = false
+          })
       )
 
       if (this.$auth.loggedIn) {

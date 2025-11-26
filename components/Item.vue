@@ -1039,7 +1039,7 @@ section#content {
 .content-nav-header {
   position: sticky;
   top: 3.5rem;
-  z-index: 10;
+  z-index: 3;
   margin-top: -3rem;
 }
 
