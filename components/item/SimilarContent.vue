@@ -9,7 +9,7 @@
       :link-builder="linkBuilder"
       :card-variant="'poster'"
       :size="{ w: 183, h: 273 }"
-      :show-badges="false"
+      :show-badges="true"
       :show-title="true"
     />
 
