@@ -52,14 +52,14 @@
           قسمت‌ها
         </a>
 
-        <!-- فیلم : MovieContentTab -->
+        <!-- درباره سریال/فیلم : ContentStatistics -->
         <a
-          v-if="shouldShowMovieTab"
-          href="#episodes"
+          v-if="shouldShowStatisticsTab"
+          href="#about"
           class="nav-link"
-          @click.prevent="scrollToSection('episodes')"
+          @click.prevent="scrollToSection('about')"
         >
-          فیلم
+          {{ type === 'movie' ? 'درباره فیلم' : 'درباره سریال' }}
         </a>
 
         <!-- محتوا : ContentDetails -->
@@ -70,16 +70,6 @@
           @click.prevent="scrollToSection('content')"
         >
           محتوا
-        </a>
-
-        <!-- درباره سریال/فیلم : ContentStatistics -->
-        <a
-          v-if="shouldShowStatisticsTab"
-          href="#about"
-          class="nav-link"
-          @click.prevent="scrollToSection('about')"
-        >
-          {{ type === 'movie' ? 'درباره فیلم' : 'درباره سریال' }}
         </a>
 
         <!-- بازیگران : CastsTab -->
@@ -140,40 +130,6 @@
             @select-season="selectseries"
           />
         </div>
-
-        <!-- فیلم : MovieContentTab -->
-        <div v-if="shouldShowMovieContent">
-          <MovieContentTabSkeleton v-if="isLoadingMovie" />
-          <MovieContentTab
-            v-else-if="hasMovieData"
-            :data="data"
-            @play="handlePlay"
-          />
-        </div>
-      </section>
-      <!-- محتوا : ContentDetails -->
-      <section
-        v-if="shouldShowContentSection"
-        id="content"
-        class="content-section"
-      >
-        <ContentDetailsSkeleton v-if="isLoadingContent" />
-        <ContentDetails
-          v-else-if="hasMediaTabs"
-          :data="data"
-          :type="type"
-          :medias="medias"
-          :total-claps="total_claps"
-          :episode-num="episode_num"
-          :season-num="season_num"
-          :writers="writers"
-          :investors="investors"
-          :comm-num="comm_num"
-          :light-images="lightimages"
-          :images-loading="imagesloading"
-          @get-file="GET_FILE"
-          @load-images="LoadImages"
-        />
       </section>
 
       <!-- درباره سریال/فیلم : ContentStatistics -->
@@ -196,6 +152,31 @@
           :investors="investors"
           :medias="medias"
           @play-teaser="GET_FILE(1)"
+        />
+      </section>
+
+      <!-- محتوا : ContentDetails -->
+      <section
+        v-if="shouldShowContentSection"
+        id="content"
+        class="content-section"
+      >
+        <ContentDetailsSkeleton v-if="isLoadingContent" />
+        <ContentDetails
+          v-else-if="hasMediaTabs"
+          :data="data"
+          :type="type"
+          :medias="medias"
+          :total-claps="total_claps"
+          :episode-num="episode_num"
+          :season-num="season_num"
+          :writers="writers"
+          :investors="investors"
+          :comm-num="comm_num"
+          :light-images="lightimages"
+          :images-loading="imagesloading"
+          @get-file="GET_FILE"
+          @load-images="LoadImages"
         />
       </section>
 
@@ -323,7 +304,6 @@ import MediaShowcase from '@/components/item/showcase/MediaShowcase'
 import ContentDetails from '@/components/item/showcase/ContentDetails'
 import SeasonEpisodes from '@/components/item/SeasonEpisodes'
 import SimilarContent from '@/components/item/SimilarContent'
-import MovieContentTab from '@/components/item/MovieContentTab'
 import CastsTab from '@/components/item/content/tabs/CastsTab'
 import CommentsTab from '@/components/item/content/tabs/CommentsTab'
 import Download from '@/components/Download.vue'
@@ -338,7 +318,6 @@ import SimilarContentSkeleton from '@/components/item/skeletons/SimilarContentSk
 import CastsTabSkeleton from '@/components/item/skeletons/CastsTabSkeleton'
 import CommentsTabSkeleton from '@/components/item/skeletons/CommentsTabSkeleton'
 import ContentStatisticsSkeleton from '@/components/item/skeletons/ContentStatisticsSkeleton'
-import MovieContentTabSkeleton from '@/components/item/skeletons/MovieContentTabSkeleton'
 
 import Socialsharing from '@/components/Socialsharing'
 import ContentStatistics from '@/components/item/content/ContentStatistics'
@@ -350,7 +329,6 @@ export default {
     ContentDetails,
     SeasonEpisodes,
     SimilarContent,
-    MovieContentTab,
     CastsTab,
     CommentsTab,
     Download,
@@ -366,7 +344,6 @@ export default {
     CastsTabSkeleton,
     CommentsTabSkeleton,
     ContentStatisticsSkeleton,
-    MovieContentTabSkeleton,
   },
   props: {
     data: {
@@ -384,7 +361,6 @@ export default {
       isLoading: false,
       isLoadingShowcase: true,
       isLoadingSeasons: true,
-      isLoadingMovie: true,
       isLoadingContent: true,
       isLoadingCasts: true,
       isLoadingStatistics: true,
@@ -507,17 +483,8 @@ export default {
     shouldShowSeasonTab() {
       return this.shouldShowSeasonContent
     },
-    hasMovieData() {
-      return this.type === 'movie' && Boolean(this.data && this.data.item)
-    },
-    shouldShowMovieContent() {
-      return this.type === 'movie' && (this.isLoadingMovie || this.hasMovieData)
-    },
-    shouldShowMovieTab() {
-      return this.shouldShowMovieContent
-    },
     shouldShowEpisodesSection() {
-      return this.shouldShowSeasonContent || this.shouldShowMovieContent
+      return this.shouldShowSeasonContent
     },
     shouldShowContentSection() {
       return this.isLoadingContent || this.hasMediaTabs
@@ -629,7 +596,6 @@ export default {
       // Set loading states
       this.isLoadingShowcase = true
       this.isLoadingSeasons = true
-      this.isLoadingMovie = true
       this.isLoadingContent = true
       this.isLoadingCasts = true
       this.isLoadingStatistics = true
@@ -703,7 +669,6 @@ export default {
           this.is_watchlist = statisticsRes.data.data.is_watchlist || 0
           this.comm_num = statisticsRes.data.data.comm_num || 0
           this.isLoadingStatistics = false
-          this.isLoadingMovie = false
         } else {
           const seasonEndpoint = this.$auth.loggedIn
             ? '/get/season/'
@@ -816,7 +781,6 @@ export default {
         // Reset loading states on error
         this.isLoadingShowcase = false
         this.isLoadingSeasons = false
-        this.isLoadingMovie = false
         this.isLoadingContent = false
         this.isLoadingCasts = false
         this.isLoadingStatistics = false

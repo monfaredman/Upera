@@ -131,10 +131,6 @@ export default {
   font-size: 1.1rem;
 }
 
-section#movie {
-  margin-top: -2rem !important;
-}
-
 @media (max-width: 768px) {
   section#movie {
     margin-top: 1rem !important;

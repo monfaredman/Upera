@@ -488,7 +488,7 @@ export default {
 
 <style scoped>
 .comments-container {
-  margin: 0 41px;
+  margin: 3rem 41px;
 }
 
 /* Comment count header */
