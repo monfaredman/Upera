@@ -1,6 +1,11 @@
-//import fs from 'fs'
+import fs from 'fs'
+import path from 'path'
+
 require('dotenv').config({ path: __dirname + '/.env.' + process.env.ENV })
-const isGhPages = true
+
+const isGhPages = process.env.DEPLOY_ENV === 'GH_PAGES'
+const routerBase = isGhPages ? '/dist/' : '/'
+const nuxtPublicPath = isGhPages ? '/dist/_nuxt/' : '/_nuxt/'
 
 export default {
   publicRuntimeConfig: {
@@ -36,12 +41,12 @@ export default {
    ** Nuxt target
    ** See https://nuxtjs.org/api/configuration-target
    */
-  target:isGhPages ? 'static' : 'server',
+  target: isGhPages ? 'static' : 'server',
   router: {
-    base: isGhPages ? '/dist/' : '/',
+    base: routerBase,
   },
   build: {
-    publicPath: isGhPages ? 'https://monfaredman.github.io/dist/_nuxt/' : {
+    publicPath: nuxtPublicPath,
     /**ßßß
      * add external plugins
      */
@@ -59,7 +64,6 @@ export default {
         })
       }
     },
-  },
   },
   server: {
     host: '0.0.0.0',
@@ -83,7 +87,7 @@ export default {
       {
         rel: 'icon',
         type: 'image/x-icon',
-        href: '/favicon-' + process.env.ENV + '.ico',
+        href: routerBase + 'favicon-' + process.env.ENV + '.ico',
       },
     ],
   },
@@ -287,5 +291,18 @@ export default {
   generate: {
     fallback: '404.html',
     subFolders: false,
+  },
+  hooks: {
+    'generate:done': async (generator) => {
+      if (!isGhPages) return
+
+      const noJekyllPath = path.join(generator.distPath, '.nojekyll')
+      try {
+        await fs.promises.writeFile(noJekyllPath, '')
+      } catch (err) {
+        // eslint-disable-next-line no-console
+        console.warn('Failed to create .nojekyll file:', err.message)
+      }
+    },
   },
 }
