@@ -4,8 +4,8 @@ import path from 'path'
 require('dotenv').config({ path: __dirname + '/.env.' + process.env.ENV })
 
 const isGhPages = process.env.DEPLOY_ENV === 'GH_PAGES'
-const routerBase = isGhPages ? '/dist/' : '/'
-const nuxtPublicPath = isGhPages ? '/dist/_nuxt/' : '/_nuxt/'
+const routerBase = isGhPages ? '/Upera/' : '/'
+const nuxtPublicPath = isGhPages ? '/Upera/_nuxt/' : '/_nuxt/'
 
 export default {
   publicRuntimeConfig: {
