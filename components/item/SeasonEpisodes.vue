@@ -487,7 +487,10 @@ export default {
     },
     async handleAction(episode, action) {
       if (action === 'play') {
-        this.$router.push({ name: 'episode-id', params: { id: episode.id } })
+        this.$router.push({
+          name: 'episode-show-id',
+          params: { id: episode.id },
+        })
       } else if (action === 'buy') {
         if (this.$store?.state?.basketActive === false) {
           this.$store.dispatch('SET_BASKET_ACTIVE', true)
