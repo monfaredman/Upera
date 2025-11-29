@@ -495,7 +495,6 @@ export default {
 .comments-count-header {
   font-size: 20px;
   font-weight: 600;
-  color: #ffffff;
   margin-bottom: 24px;
   opacity: 1;
 }
@@ -554,7 +553,6 @@ export default {
   background: transparent;
   border: none;
   outline: none;
-  color: #ffffff;
   font-size: 16px;
   padding: 0;
 }
@@ -573,7 +571,6 @@ export default {
   gap: 8px;
   background: #1b6be5;
   border: none;
-  color: #ffffff;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
@@ -593,7 +590,6 @@ export default {
   gap: 8px;
   background: #1b6be5;
   border: none;
-  color: #ffffff;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;

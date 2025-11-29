@@ -152,9 +152,11 @@ export default {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: stretch;
   max-width: 100%;
   min-height: 232px;
+  max-height: 232px;
+  height: 232px;
   padding: 12px;
   gap: 12px;
   background: #525252;
@@ -168,7 +170,29 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  overflow: hidden;
+  min-height: 0;
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.35) transparent;
+}
+
+.content-info::-webkit-scrollbar {
+  width: 6px;
+}
+
+.content-info::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.content-info::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.35);
+  border-radius: 6px;
+}
+
+.content-info::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
 }
 
 .content-title {
@@ -225,12 +249,7 @@ export default {
   font-size: 14px;
   line-height: 1.6;
   color: rgba(255, 255, 255, 0.85);
-  display: -webkit-box;
-  -webkit-line-clamp: 4;
-  line-clamp: 4;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  overflow: visible;
 }
 
 .crew-info {
@@ -318,7 +337,9 @@ export default {
 
   .content-statistics {
     margin: -4rem auto 0;
-    min-height: auto;
+    min-height: 200px;
+    max-height: 200px;
+    height: 200px;
     padding: 10px;
     gap: 10px;
   }
@@ -332,10 +353,14 @@ export default {
     height: 180px;
   }
 
+  .content-info {
+    min-height: 0;
+    height: 100%;
+  }
+
   .content-description {
     font-size: 13px;
-    -webkit-line-clamp: 3;
-    line-clamp: 3;
+    overflow: visible;
   }
 
   .crew-info {
@@ -365,6 +390,8 @@ export default {
     padding: 12px;
     gap: 12px;
     min-height: auto;
+    max-height: none;
+    height: auto;
   }
 
   .backdrop-container {
@@ -376,6 +403,8 @@ export default {
   .content-info {
     width: 100%;
     gap: 10px;
+    height: auto;
+    overflow-y: visible;
   }
 
   .content-title {
@@ -394,8 +423,7 @@ export default {
   .content-description {
     font-size: 13px;
     line-height: 1.5;
-    -webkit-line-clamp: 5;
-    line-clamp: 5;
+    overflow: visible;
   }
 
   .crew-info {
@@ -454,8 +482,7 @@ export default {
 
   .content-description {
     font-size: 12px;
-    -webkit-line-clamp: 4;
-    line-clamp: 4;
+    overflow: visible;
   }
 
   .director-info {
