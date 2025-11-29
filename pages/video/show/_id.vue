@@ -36,10 +36,14 @@
         :tracks="tracks"
         :player-auto-play="true"
         :credits-data="creditsData"
+        :fullrate-data="fullrateData"
+        :content-id="$route.params.id"
+        :content-type="'video'"
         class="full-screen-player vjs-fluid"
         @ready="handlePlayerReady"
         @timeupdate="handleTimeUpdate"
         @ended="handleEnded"
+        @subscription-purchase="handleSubscriptionPurchase"
       />
     </div>
     <div
@@ -62,8 +66,12 @@ export default {
   components: { VideoPlayer },
   beforeRouteLeave(to, from, next) {
     // Close any open SweetAlert modal when route changes
-    if (this.$swal) {
-      this.$swal.close()
+    if (this.$swal && this.$swal.close) {
+      try {
+        this.$swal.close()
+      } catch (e) {
+        // Ignore errors when closing swal
+      }
     }
     next()
   },
@@ -86,6 +94,8 @@ export default {
       suggestionBackdrop: '',
       // اگر زمان شروع پخش از قبل وجود داشته باشد
       startTime: 0,
+      // داده‌های نرخ کامل برای دکمه اشتراک
+      fullrateData: null,
     }
   },
   mounted() {
@@ -101,8 +111,12 @@ export default {
 
   beforeDestroy() {
     // Close any open SweetAlert modal
-    if (this.$swal) {
-      this.$swal.close()
+    if (this.$swal && this.$swal.close) {
+      try {
+        this.$swal.close()
+      } catch (e) {
+        // Ignore errors when closing swal
+      }
     }
 
     // Remove event listener
@@ -112,8 +126,12 @@ export default {
   methods: {
     handlePopState() {
       // Close any open SweetAlert modal when back button is pressed
-      if (this.$swal) {
-        this.$swal.close()
+      if (this.$swal && this.$swal.close) {
+        try {
+          this.$swal.close()
+        } catch (e) {
+          // Ignore errors when closing swal
+        }
       }
     },
     showErrorAlert(data) {
@@ -204,6 +222,11 @@ export default {
         const response = await this.$axios.get(apiUrl)
         if (response.status === 200) {
           const data = response.data.data
+
+          // ذخیره داده‌های fullrate برای دکمه اشتراک
+          if (data.fullrate_data) {
+            this.fullrateData = data.fullrate_data
+          }
 
           this.creditsData = {
             first_credits: data.first_credits || null,
@@ -322,6 +345,10 @@ export default {
           params: { id: this.$route.params.id },
         })
       }
+    },
+    handleSubscriptionPurchase() {
+      // پردازش خرید اشتراک
+      console.log('Subscription purchase triggered from video player')
     },
   },
 }

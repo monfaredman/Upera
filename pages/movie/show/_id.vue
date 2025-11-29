@@ -41,6 +41,9 @@
         :tracks="tracks"
         :player-auto-play="true"
         class="full-screen-player vjs-fluid"
+        :fullrate-data="fullrateData"
+        :content-id="$route.params.id"
+        :content-type="contentType"
         :credits-data="creditsData"
         @credits-skipped="handleEnded"
         @ready="handlePlayerReady"
@@ -104,6 +107,9 @@ export default {
       suggestionBackdrop: '',
       // اگر زمان شروع پخش از قبل وجود داشته باشد
       startTime: 0,
+      // Fullrate data for subscription button
+      fullrateData: null,
+      contentType: 'video',
     }
   },
   mounted() {
@@ -261,6 +267,12 @@ export default {
             after_credits: data.after_credits || null,
             final_credits: data.final_credits || null,
           }
+          console.log(1111, data)
+          // Store fullrate_data for subscription button
+          if (data.fullrate_data) {
+            this.fullrateData = data.fullrate_data
+          }
+
           const streamResponse = await fetch(streamUrl, { method: 'HEAD' })
 
           if (streamResponse.ok) {

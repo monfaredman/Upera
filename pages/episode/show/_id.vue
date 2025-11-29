@@ -47,11 +47,15 @@
           )
         "
         :credits-data="creditsData"
+        :fullrate-data="fullrateData"
+        :content-id="$route.params.id"
+        :content-type="'series'"
         class="full-screen-player vjs-fluid"
         @ready="handlePlayerReady"
         @timeupdate="handleTimeUpdate"
         @ended="handleEnded"
         @playlistButtonClick="togglePlaylistMenu"
+        @subscription-purchase="handleSubscriptionPurchase"
       />
     </div>
     <!--     <div v-if="season && seasonList.length" class="playlist-container">
@@ -173,8 +177,12 @@ export default {
 
   beforeRouteLeave(to, from, next) {
     // Close any open SweetAlert modal when route changes
-    if (this.$swal) {
-      this.$swal.close()
+    if (this.$swal && this.$swal.close) {
+      try {
+        this.$swal.close()
+      } catch (e) {
+        // Ignore errors when closing swal
+      }
     }
     next()
   },
@@ -216,6 +224,8 @@ export default {
       seasonOpened: null,
       // زمان شروع پخش در صورت وجود
       startTime: 0,
+      // داده‌های نرخ کامل برای دکمه اشتراک
+      fullrateData: null,
     }
   },
   computed: {
@@ -245,8 +255,12 @@ export default {
 
   beforeDestroy() {
     // Close any open SweetAlert modal
-    if (this.$swal) {
-      this.$swal.close()
+    if (this.$swal && this.$swal.close) {
+      try {
+        this.$swal.close()
+      } catch (e) {
+        // Ignore errors when closing swal
+      }
     }
 
     // Remove event listener
@@ -256,8 +270,12 @@ export default {
   methods: {
     handlePopState() {
       // Close any open SweetAlert modal when back button is pressed
-      if (this.$swal) {
-        this.$swal.close()
+      if (this.$swal && this.$swal.close) {
+        try {
+          this.$swal.close()
+        } catch (e) {
+          // Ignore errors when closing swal
+        }
       }
     },
 
@@ -377,6 +395,12 @@ export default {
         })
         if (response.data.status === 'success') {
           const data = response.data.data
+
+          // ذخیره داده‌های fullrate برای دکمه اشتراک
+          if (data.fullrate_data) {
+            this.fullrateData = data.fullrate_data
+          }
+
           // تنظیم اطلاعات اصلی قسمت
           const ep = data.episode[0]
           this.episodeTitle =
@@ -515,6 +539,10 @@ export default {
           params: { id: this.$route.params.id },
         })
       }
+    },
+    handleSubscriptionPurchase() {
+      // پردازش خرید اشتراک
+      console.log('Subscription purchase triggered from episode player')
     },
     reloadPage() {
       location.reload()

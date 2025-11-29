@@ -56,37 +56,49 @@
 
       <div v-if="localAutoRenewal" class="subscription-options">
         <b-form-group label="اشتراک خودرا انتخاب کنید">
-          <div class="subscription-plans">
+          <div v-if="plansLoading" class="text-center py-3">
+            <b-spinner small></b-spinner>
+            <span class="ml-2">در حال بارگذاری...</span>
+          </div>
+          <div v-else class="subscription-plans">
             <div
+              v-for="plan in plans"
+              :key="plan.id"
               class="subscription-plan"
-              :class="{ active: selectedPlan === 'monthly' }"
-              @click="selectPlan('monthly')"
+              :class="{ active: selectedPlan === plan.id }"
+              @click="selectPlan(plan.id)"
             >
-              <div class="plan-title">اشتراک ماهانه</div>
+              <div class="plan-title">
+                اشتراک {{ plan.name_fa }}
+                <span v-if="plan.discount" class="badge badge-success ml-2">
+                  {{ plan.discount.discount_percent }}% تخفیف
+                </span>
+              </div>
               <div class="plan-price">
-                {{ localFormData.subscribe_fee }} تومان
+                <span
+                  v-if="plan.discount"
+                  class="text-muted text-line-through mr-2"
+                >
+                  {{ plan.toman.toLocaleString() }}
+                </span>
+                <span v-if="plan.discount">
+                  {{
+                    (plan.toman - plan.discount.discount_price).toLocaleString()
+                  }}
+                </span>
+                <span v-else>{{ plan.toman.toLocaleString() }}</span>
+                تومان
+              </div>
+              <div v-if="plan.description" class="plan-description">
+                {{
+                  $i18n.locale === 'fa' ? plan.description : plan.description_en
+                }}
               </div>
             </div>
-            <!-- <div
-              class="subscription-plan"
-              :class="{ active: selectedPlan === 'quarterly' }"
-              @click="selectPlan('quarterly')"
-            >
-              <div class="plan-title">۳ ماهه</div>
-              <div class="plan-price">۹۰,۰۰۰ تومان</div>
-            </div>
-            <div
-              class="subscription-plan"
-              :class="{ active: selectedPlan === 'semiannual' }"
-              @click="selectPlan('semiannual')"
-            >
-              <div class="plan-title">۶ ماهه</div>
-              <div class="plan-price">۱۲۰,۰۰۰ تومان</div>
-            </div> -->
           </div>
-          <!-- <small class="text-muted d-block mt-3">{{
-            subscriptionDescription
-          }}</small> -->
+          <small v-if="plansDescription" class="text-muted d-block mt-3">{{
+            plansDescription
+          }}</small>
 
           <div v-if="localFormData.days_period_to_end" class="text-danger mt-2">
             مدت زمان باقیمانده تا پایان اشتراک:
@@ -141,8 +153,11 @@ export default {
   data() {
     return {
       localFormData: JSON.parse(JSON.stringify(this.formData)),
-      selectedPlan: 'monthly',
+      selectedPlan: null,
       localAutoRenewal: this.autoRenewal,
+      plans: [],
+      plansLoading: false,
+      plansDescription: '',
     }
   },
   watch: {
@@ -156,7 +171,36 @@ export default {
       this.localAutoRenewal = newVal
     },
   },
+  mounted() {
+    this.fetchPlans()
+  },
   methods: {
+    async fetchPlans() {
+      try {
+        this.plansLoading = true
+        const response = await this.$axios.get('/get/app/plans')
+        if (response.status === 200 && response.data.data) {
+          // Convert object to array
+          this.plans = Object.keys(response.data.data).map((key) => ({
+            id: key,
+            ...response.data.data[key],
+          }))
+          this.plansDescription =
+            this.$i18n.locale === 'fa'
+              ? response.data.description
+              : response.data.description_en
+
+          // Set first plan as default
+          if (this.plans.length > 0 && !this.selectedPlan) {
+            this.selectedPlan = this.plans[0].id
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching plans:', error)
+      } finally {
+        this.plansLoading = false
+      }
+    },
     getSeriesImage(poster) {
       if (!poster) return ''
       return `https://thumb.upera.shop/thumb?w=225&h=146&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/${poster}`
@@ -169,9 +213,20 @@ export default {
       this.$emit('update:autoRenewal', this.localAutoRenewal)
       this.handleChange()
     },
-    selectPlan(plan) {
-      this.selectedPlan = plan
+    selectPlan(planId) {
+      this.selectedPlan = planId
       this.localFormData.subscription = true
+      // Store selected plan details
+      const plan = this.plans.find((p) => p.id === planId)
+      if (plan) {
+        this.localFormData.selected_plan = {
+          id: planId,
+          name: plan.name,
+          name_fa: plan.name_fa,
+          price: plan.toman,
+          days: plan.days,
+        }
+      }
       this.handleChange()
     },
   },
@@ -295,12 +350,27 @@ export default {
   font-size: 1rem;
   margin-bottom: 0.5rem;
   color: black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
 .plan-price {
   font-size: 0.9rem;
   color: black;
   font-weight: 500;
+}
+
+.plan-description {
+  font-size: 0.75rem;
+  color: #6c757d;
+  margin-top: 0.5rem;
+  line-height: 1.3;
+}
+
+.text-line-through {
+  text-decoration: line-through;
 }
 
 /* Information Notice */

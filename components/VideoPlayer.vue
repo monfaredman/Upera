@@ -68,6 +68,15 @@
     <!-- VAST CTA Button -->
     <button id="vast-cta-btn">اطلاعات بیشتر</button>
 
+    <!-- Subscription Button -->
+    <SubscriptionButton
+      v-if="fullrateData && contentId && contentType"
+      :fullrate-data="fullrateData"
+      :content-id="contentId"
+      :content-type="contentType"
+      @subscription-click="handleSubscriptionClick"
+    />
+
     <!-- Settings Drawer -->
     <div
       v-if="showSettingsDrawer"
@@ -448,7 +457,12 @@ const QUALITY_MAP = {
   Auto: 'خودکار',
 }
 
+import SubscriptionButton from '@/components/player/SubscriptionButton'
+
 export default {
+  components: {
+    SubscriptionButton,
+  },
   props: {
     stream: {
       type: String,
@@ -513,6 +527,18 @@ export default {
     showSkipCreditsButton: {
       type: Boolean,
       default: true,
+    },
+    fullrateData: {
+      type: Object,
+      default: null,
+    },
+    contentId: {
+      type: [String, Number],
+      default: null,
+    },
+    contentType: {
+      type: String,
+      default: '',
     },
   },
 
@@ -661,6 +687,23 @@ export default {
 
   methods: {
     ...mapActions(['SET_AUTOPLAY']),
+
+    // ============================================
+    // Subscription Handler
+    // ============================================
+
+    handleSubscriptionClick(data) {
+      // Emit to parent or call UPERAPLUS method
+      this.$emit('subscription-purchase', data)
+
+      // If you want to call UPERAPLUS directly, you can dispatch the store action
+      if (this.$store && this.$store.dispatch) {
+        this.$store.dispatch('subscription/SHOW_MODAL', {
+          content_type: data.type,
+          content_id: data.id,
+        })
+      }
+    },
 
     // ============================================
     // Lifecycle & Setup Methods
