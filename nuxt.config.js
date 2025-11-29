@@ -38,13 +38,10 @@ export default {
    */
   target:isGhPages ? 'static' : 'server',
   router: {
-    base: isGhPages ? '/dish/' :{
-    linkActiveClass: 'active',
-    middleware: ['clearValidationErrors'],
-  },
+    base: isGhPages ? '/dist/' : '/',
   },
   build: {
-    publicPath: isGhPages ? 'https://monfaredman.github.io/dish/_nuxt/' : {
+    publicPath: isGhPages ? 'https://monfaredman.github.io/dist/_nuxt/' : {
     /**ßßß
      * add external plugins
      */
@@ -287,5 +284,8 @@ export default {
     ],
     directives: ['VBTooltip', 'VBToggle'],
   },
-
+  generate: {
+    fallback: '404.html',
+    subFolders: false,
+  },
 }
