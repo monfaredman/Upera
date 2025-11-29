@@ -1,5 +1,6 @@
 //import fs from 'fs'
 require('dotenv').config({ path: __dirname + '/.env.' + process.env.ENV })
+const isGhPages = true
 
 export default {
   publicRuntimeConfig: {
@@ -35,7 +36,34 @@ export default {
    ** Nuxt target
    ** See https://nuxtjs.org/api/configuration-target
    */
-  target: 'server',
+  target:isGhPages ? 'static' : 'server',
+  router: {
+    base: isGhPages ? '/dish/' :{
+    linkActiveClass: 'active',
+    middleware: ['clearValidationErrors'],
+  },
+  },
+  build: {
+    publicPath: isGhPages ? 'https://monfaredman.github.io/dish/_nuxt/' : {
+    /**ßßß
+     * add external plugins
+     */
+    extractCSS: true,
+    /*
+     ** Run ESLint on save
+     */
+    extend(config, { isDev, isClient }) {
+      if (isDev && isClient) {
+        config.module.rules.push({
+          enforce: 'pre',
+          test: /\.(js|vue)$/,
+          loader: 'eslint-loader',
+          exclude: /(node_modules)/,
+        })
+      }
+    },
+  },
+  },
   server: {
     host: '0.0.0.0',
   },
@@ -88,10 +116,7 @@ export default {
     'video.js/dist/video-js.css', // Video.js styles
     'videojs-contrib-ads/dist/videojs.ads.css', // Ads styles
   ],
-  router: {
-    linkActiveClass: 'active',
-    middleware: ['clearValidationErrors'],
-  },
+
   /*
    ** Plugins to load before mounting the App
    ** https://nuxtjs.org/guide/plugins
@@ -262,23 +287,5 @@ export default {
     ],
     directives: ['VBTooltip', 'VBToggle'],
   },
-  build: {
-    /**ßßß
-     * add external plugins
-     */
-    extractCSS: true,
-    /*
-     ** Run ESLint on save
-     */
-    extend(config, { isDev, isClient }) {
-      if (isDev && isClient) {
-        config.module.rules.push({
-          enforce: 'pre',
-          test: /\.(js|vue)$/,
-          loader: 'eslint-loader',
-          exclude: /(node_modules)/,
-        })
-      }
-    },
-  },
+
 }
