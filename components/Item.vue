@@ -44,7 +44,7 @@
       <nav class="nav nav-pills">
         <!-- قسمت‌ها : SeasonEpisodes -->
         <a
-          v-if="type === 'series' || type === 'episode'"
+          v-if="shouldShowSeasonTab"
           href="#episodes"
           class="nav-link"
           @click.prevent="scrollToSection('episodes')"
@@ -54,7 +54,7 @@
 
         <!-- فیلم : MovieContentTab -->
         <a
-          v-if="type === 'movie'"
+          v-if="shouldShowMovieTab"
           href="#episodes"
           class="nav-link"
           @click.prevent="scrollToSection('episodes')"
@@ -64,7 +64,7 @@
 
         <!-- محتوا : ContentDetails -->
         <a
-          v-if="hasMediaTabs"
+          v-if="shouldShowContentTab"
           href="#content"
           class="nav-link"
           @click.prevent="scrollToSection('content')"
@@ -74,6 +74,7 @@
 
         <!-- درباره سریال/فیلم : ContentStatistics -->
         <a
+          v-if="shouldShowStatisticsTab"
           href="#about"
           class="nav-link"
           @click.prevent="scrollToSection('about')"
@@ -83,6 +84,7 @@
 
         <!-- بازیگران : CastsTab -->
         <a
+          v-if="shouldShowCastsTab"
           href="#casts"
           class="nav-link"
           @click.prevent="scrollToSection('casts')"
@@ -92,6 +94,7 @@
 
         <!-- فیلم های مشابه : SimilarContent -->
         <a
+          v-if="shouldShowSimilarTab"
           href="#similar"
           class="nav-link"
           @click.prevent="scrollToSection('similar')"
@@ -101,6 +104,7 @@
 
         <!-- دیدگاه‌ها : CommentsTab -->
         <a
+          v-if="shouldShowCommentsTab"
           href="#comments"
           class="nav-link"
           @click.prevent="scrollToSection('comments')"
@@ -120,11 +124,15 @@
       <!-- All content sections displayed in order -->
 
       <!-- قسمت‌ها : SeasonEpisodes -->
-      <section id="episodes" class="content-section">
-        <div v-if="type === 'series' || type === 'episode'">
+      <section
+        v-if="shouldShowEpisodesSection"
+        id="episodes"
+        class="content-section"
+      >
+        <div v-if="shouldShowSeasonContent">
           <SeasonEpisodesSkeleton v-if="isLoadingSeasons" />
           <SeasonEpisodes
-            v-else-if="season"
+            v-else-if="hasSeasonData"
             :season="season"
             :selectseriesid="selectseriesid"
             :seasontitle="seasontitle"
@@ -134,16 +142,24 @@
         </div>
 
         <!-- فیلم : MovieContentTab -->
-        <div v-if="type === 'movie'">
+        <div v-if="shouldShowMovieContent">
           <MovieContentTabSkeleton v-if="isLoadingMovie" />
-          <MovieContentTab v-else :data="data" @play="handlePlay" />
+          <MovieContentTab
+            v-else-if="hasMovieData"
+            :data="data"
+            @play="handlePlay"
+          />
         </div>
       </section>
       <!-- محتوا : ContentDetails -->
-      <section v-if="hasMediaTabs" id="content" class="content-section">
+      <section
+        v-if="shouldShowContentSection"
+        id="content"
+        class="content-section"
+      >
         <ContentDetailsSkeleton v-if="isLoadingContent" />
         <ContentDetails
-          v-else
+          v-else-if="hasMediaTabs"
           :data="data"
           :type="type"
           :medias="medias"
@@ -161,10 +177,14 @@
       </section>
 
       <!-- درباره سریال/فیلم : ContentStatistics -->
-      <section id="about" class="content-section">
+      <section
+        v-if="shouldShowStatisticsSection"
+        id="about"
+        class="content-section"
+      >
         <ContentStatisticsSkeleton v-if="isLoadingStatistics" />
         <ContentStatistics
-          v-else
+          v-else-if="hasStatisticsData"
           :data="data"
           :type="type"
           :total-claps="total_claps"
@@ -180,10 +200,10 @@
       </section>
 
       <!-- بازیگران : CastsTab -->
-      <section id="casts" class="content-section">
+      <section v-if="shouldShowCastsSection" id="casts" class="content-section">
         <CastsTabSkeleton v-if="isLoadingCasts" />
         <CastsTab
-          v-else-if="casts && casts.length"
+          v-else-if="hasCastsData"
           :casts="casts"
           :directors="directors"
           :producers="producers"
@@ -193,16 +213,21 @@
       </section>
 
       <!-- فیلم های مشابه : SimilarContent -->
-      <section id="similar" class="content-section">
+      <section
+        v-if="shouldShowSimilarSection"
+        id="similar"
+        class="content-section"
+      >
         <SimilarContentSkeleton v-if="isLoadingSimilar" />
-        <SimilarContent
-          v-else-if="similar && similar.length"
-          :similar="similar"
-        />
+        <SimilarContent v-else-if="hasSimilarData" :similar="similar" />
       </section>
 
       <!-- دیدگاه‌ها : CommentsTab -->
-      <section id="comments" class="content-section">
+      <section
+        v-if="shouldShowCommentsSection"
+        id="comments"
+        class="content-section"
+      >
         <div v-show="commentsloading">
           <CommentsTabSkeleton />
         </div>
@@ -458,6 +483,80 @@ export default {
         return this.data.item
       }
       return this.episode || {}
+    },
+
+    hasSeasonData() {
+      if (
+        !(this.type === 'series' || this.type === 'episode') ||
+        !this.season ||
+        typeof this.season !== 'object'
+      ) {
+        return false
+      }
+
+      return Object.values(this.season).some(
+        (episodes) => Array.isArray(episodes) && episodes.length > 0
+      )
+    },
+    shouldShowSeasonContent() {
+      return (
+        (this.type === 'series' || this.type === 'episode') &&
+        (this.isLoadingSeasons || this.hasSeasonData)
+      )
+    },
+    shouldShowSeasonTab() {
+      return this.shouldShowSeasonContent
+    },
+    hasMovieData() {
+      return this.type === 'movie' && Boolean(this.data && this.data.item)
+    },
+    shouldShowMovieContent() {
+      return this.type === 'movie' && (this.isLoadingMovie || this.hasMovieData)
+    },
+    shouldShowMovieTab() {
+      return this.shouldShowMovieContent
+    },
+    shouldShowEpisodesSection() {
+      return this.shouldShowSeasonContent || this.shouldShowMovieContent
+    },
+    shouldShowContentSection() {
+      return this.isLoadingContent || this.hasMediaTabs
+    },
+    shouldShowContentTab() {
+      return this.shouldShowContentSection
+    },
+    hasStatisticsData() {
+      return Boolean(this.data && this.data.item)
+    },
+    shouldShowStatisticsSection() {
+      return this.isLoadingStatistics || this.hasStatisticsData
+    },
+    shouldShowStatisticsTab() {
+      return this.shouldShowStatisticsSection
+    },
+    hasCastsData() {
+      return Array.isArray(this.casts) && this.casts.length > 0
+    },
+    shouldShowCastsSection() {
+      return this.isLoadingCasts || this.hasCastsData
+    },
+    shouldShowCastsTab() {
+      return this.shouldShowCastsSection
+    },
+    hasSimilarData() {
+      return Array.isArray(this.similar) && this.similar.length > 0
+    },
+    shouldShowSimilarSection() {
+      return this.isLoadingSimilar || this.hasSimilarData
+    },
+    shouldShowSimilarTab() {
+      return this.shouldShowSimilarSection
+    },
+    shouldShowCommentsSection() {
+      return Boolean(this.data && this.data.item)
+    },
+    shouldShowCommentsTab() {
+      return this.shouldShowCommentsSection
     },
   },
 
