@@ -26,6 +26,10 @@ import HorizontalList from '@/components/HorizontalList'
 const SWIPER_OPTION_OFFER = {
   slidesPerView: 5.5,
   spaceBetween: 10,
+  slidesPerGroup: 2,
+  watchSlidesProgress: true,
+  resistanceRatio: 0,
+  freeMode: false,
   breakpoints: {
     320: { slidesPerView: 1.5 },
     768: { slidesPerView: 3.5 },

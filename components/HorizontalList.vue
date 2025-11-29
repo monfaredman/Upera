@@ -296,6 +296,18 @@ export default {
         observeParents: true,
         watchOverflow: true,
       }
+
+      // For offer sections, add additional constraints to prevent over-scrolling
+      if (this.isOffer) {
+        return {
+          ...defaults,
+          ...(this.options || {}),
+          resistanceRatio: 0,
+          watchSlidesProgress: true,
+          freeMode: false,
+        }
+      }
+
       return { ...defaults, ...(this.options || {}) }
     },
 
@@ -352,6 +364,11 @@ export default {
     this.$nextTick(() => {
       setTimeout(() => {
         this.updateSwiper()
+
+        // For offer sliders, add boundary check
+        if (this.isOffer) {
+          this.setupOfferSwiperBoundary()
+        }
       }, 100)
     })
   },
@@ -375,6 +392,50 @@ export default {
       if (container && container.swiper) {
         container.swiper.update()
       }
+    },
+
+    setupOfferSwiperBoundary() {
+      if (window.innerWidth < 640) return
+      const container = this.$refs.swiperContainer
+      if (!container || !container.swiper) return
+
+      const swiper = container.swiper
+
+      // Calculate offset based on viewport width
+      const getOffsetForViewport = () => {
+        const width = window.innerWidth
+        if (width < 640) return 0 // xs
+        if (width < 768) return 6 // sm
+        if (width < 1024) return 8 // md
+        if (width < 1280) return 9 // lg
+        if (width < 1400) return 6 // xl
+        if (width < 1580) return 6 // xl
+        if (width < 1690) return 3 // xl
+        return 5 // 2xl and above
+      }
+
+      // Set max translate to prevent scrolling past last item
+      swiper.on('slideChange', () => {
+        const slides = swiper.slides.length
+        const slidesPerView = swiper.params.slidesPerView
+        const maxIndex = Math.max(0, slides - Math.ceil(slidesPerView))
+
+        if (swiper.activeIndex > maxIndex) {
+          swiper.slideTo(maxIndex)
+        }
+      })
+
+      // Prevent momentum scrolling past the last slide
+      swiper.on('touchEnd', () => {
+        const slides = swiper.slides.length
+        const slidesPerView = swiper.params.slidesPerView
+        const offset = getOffsetForViewport()
+        const maxIndex = Math.max(0, slides - Math.ceil(slidesPerView) - offset)
+
+        if (swiper.activeIndex > maxIndex) {
+          swiper.slideTo(maxIndex)
+        }
+      })
     },
 
     // Poster image helper
@@ -1035,5 +1096,14 @@ export default {
 
 .horizontal-list-link:hover {
   color: var(--show-all-color);
+}
+
+/* Prevent over-scrolling in offer slider */
+.offer-slider {
+  overflow: hidden;
+}
+
+.offer-slider .swiper-wrapper {
+  will-change: transform;
 }
 </style>
