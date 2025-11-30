@@ -1,11 +1,5 @@
-import fs from 'fs'
-import path from 'path'
-
+//import fs from 'fs'
 require('dotenv').config({ path: __dirname + '/.env.' + process.env.ENV })
-
-const isGhPages = process.env.DEPLOY_ENV === 'GH_PAGES'
-const routerBase = isGhPages ? '/Upera/' : '/'
-const nuxtPublicPath = isGhPages ? '/Upera/_nuxt/' : '/_nuxt/'
 
 export default {
   publicRuntimeConfig: {
@@ -41,30 +35,7 @@ export default {
    ** Nuxt target
    ** See https://nuxtjs.org/api/configuration-target
    */
-  target: isGhPages ? 'static' : 'server',
-  router: {
-    base: routerBase,
-  },
-  build: {
-    publicPath: nuxtPublicPath,
-    /**ßßß
-     * add external plugins
-     */
-    extractCSS: true,
-    /*
-     ** Run ESLint on save
-     */
-    extend(config, { isDev, isClient }) {
-      if (isDev && isClient) {
-        config.module.rules.push({
-          enforce: 'pre',
-          test: /\.(js|vue)$/,
-          loader: 'eslint-loader',
-          exclude: /(node_modules)/,
-        })
-      }
-    },
-  },
+  target: 'server',
   server: {
     host: '0.0.0.0',
   },
@@ -87,7 +58,7 @@ export default {
       {
         rel: 'icon',
         type: 'image/x-icon',
-        href: routerBase + 'favicon-' + process.env.ENV + '.ico',
+        href: '/favicon-' + process.env.ENV + '.ico',
       },
     ],
   },
@@ -117,7 +88,10 @@ export default {
     'video.js/dist/video-js.css', // Video.js styles
     'videojs-contrib-ads/dist/videojs.ads.css', // Ads styles
   ],
-
+  router: {
+    linkActiveClass: 'active',
+    middleware: ['clearValidationErrors'],
+  },
   /*
    ** Plugins to load before mounting the App
    ** https://nuxtjs.org/guide/plugins
@@ -129,6 +103,7 @@ export default {
     './plugins/axios',
     './plugins/mixins/validation',
     '~/plugins/persianDigits.client',
+    '~/plugins/lightGallery.client',
     '~/plugins/awesomeCountdown.client',
   ],
   /*
@@ -288,20 +263,22 @@ export default {
     ],
     directives: ['VBTooltip', 'VBToggle'],
   },
-  generate: {
-    fallback: '404.html',
-    subFolders: false,
-  },
-  hooks: {
-    'generate:done': async (generator) => {
-      if (!isGhPages) return
-
-      const noJekyllPath = path.join(generator.distPath, '.nojekyll')
-      try {
-        await fs.promises.writeFile(noJekyllPath, '')
-      } catch (err) {
-        // eslint-disable-next-line no-console
-        console.warn('Failed to create .nojekyll file:', err.message)
+  build: {
+    /**ßßß
+     * add external plugins
+     */
+    extractCSS: true,
+    /*
+     ** Run ESLint on save
+     */
+    extend(config, { isDev, isClient }) {
+      if (isDev && isClient) {
+        config.module.rules.push({
+          enforce: 'pre',
+          test: /\.(js|vue)$/,
+          loader: 'eslint-loader',
+          exclude: /(node_modules)/,
+        })
       }
     },
   },
