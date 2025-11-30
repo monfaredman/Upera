@@ -306,7 +306,7 @@ import SeasonEpisodes from '@/components/item/SeasonEpisodes'
 import SimilarContent from '@/components/item/SimilarContent'
 import CastsTab from '@/components/item/content/tabs/CastsTab'
 import CommentsTab from '@/components/item/content/tabs/CommentsTab'
-import Download from '@/components/Download.vue'
+import Download from '@/components/ItemDownload.vue'
 import DownloadNew from '@/components/Download-New.vue'
 import File from '@/components/item/File'
 

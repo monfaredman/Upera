@@ -555,6 +555,7 @@ export default {
   outline: none;
   font-size: 16px;
   padding: 0;
+  color: #ffffff;
 }
 
 .comment-input::placeholder {
@@ -570,6 +571,7 @@ export default {
   padding: 10px 24px;
   gap: 8px;
   background: #1b6be5;
+  color: #ffffff;
   border: none;
   font-size: 14px;
   font-weight: 600;

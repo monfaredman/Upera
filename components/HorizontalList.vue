@@ -13,7 +13,11 @@
           height="30"
           class="ml-2"
         />
-        <h4 class="font-weight-bold horizontal-list-title" style="z-index: 4">
+        <h4
+          class="font-weight-bold horizontal-list-title"
+          :class="isOffer ? 'text-white' : ''"
+          style="z-index: 4"
+        >
           {{ localizedTitle }}
         </h4>
       </div>
