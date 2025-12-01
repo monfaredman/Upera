@@ -27,10 +27,17 @@
         class="mb-1 d-flex justify-content-center align-items-center horizontal-list-link show-all-link"
         style="z-index: 4"
       >
-        <span class="watch-more-text ml-1 show-all-text">
+        <span
+          class="watch-more-text ml-1 show-all-text"
+          :class="isOffer && 'text-white'"
+        >
           {{ $t('new.show_all') }}
         </span>
-        <i class="fa fa-ellipsis-h show-all-icon" aria-hidden="true" />
+        <i
+          class="fa fa-ellipsis-h show-all-icon"
+          aria-hidden="true"
+          :class="isOffer && 'text-white'"
+        />
       </nuxt-link>
     </div>
     <!-- Type 1: Normal swiper layout (default + lives + ugcs + offer) -->
