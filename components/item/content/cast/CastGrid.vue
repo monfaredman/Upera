@@ -1,19 +1,19 @@
 <template>
-  <div v-if="casts && casts.length" class="cast-grid-container">
+  <div v-if="mergedList && mergedList.length" class="cast-grid-container">
     <div
-      v-for="(actor, index) in casts"
-      :key="actor.id || index"
+      v-for="(person, index) in mergedList"
+      :key="person.id || `${person._role}-${index}`"
       class="cast-card"
     >
       <nuxt-link
-        v-if="actor && actor.id"
-        :to="{ name: 'cast-id', params: { id: actor.id } }"
+        v-if="person && person.id"
+        :to="{ name: 'cast-id', params: { id: person.id } }"
         class="cast-card-link"
       >
         <div class="cast-image-wrapper">
           <OptimizedImage
-            :image-src="actor.image"
-            :alt="actor.name"
+            :image-src="person.image"
+            :alt="person.name"
             :width="150"
             :height="150"
             :thumb-options="{ w: 150, h: 150, q: 100, a: 't' }"
@@ -23,11 +23,19 @@
         </div>
         <div class="cast-info">
           <span class="actor-name">
-            {{ ChooseLang(actor.name, actor.name_fa) }}
+            {{ ChooseLang(person.name, person.name_fa) }}
           </span>
-          <span v-if="actor.character" class="character-name">
-            {{ ChooseLang(actor.character, actor.character_fa) }}
+          <span
+            v-if="
+              person._role === 'casts' && showCharacters && person.character
+            "
+            class="character-name"
+          >
+            {{ ChooseLang(person.character, person.character_fa) }}
           </span>
+
+          <!-- Role label shown at the bottom -->
+          <span class="person-role">{{ roleLabel(person._role) }}</span>
         </div>
       </nuxt-link>
     </div>
@@ -47,6 +55,22 @@ export default {
       type: Array,
       default: () => [],
     },
+    directors: {
+      type: Array,
+      default: () => [],
+    },
+    producers: {
+      type: Array,
+      default: () => [],
+    },
+    writers: {
+      type: Array,
+      default: () => [],
+    },
+    investors: {
+      type: Array,
+      default: () => [],
+    },
     title: {
       type: String,
       default: '',
@@ -56,10 +80,46 @@ export default {
       default: true,
     },
   },
+  computed: {
+    // priority: directors, producers, writers, investors, casts
+    mergedList() {
+      const mapWithRole = (arr, role) =>
+        (arr || []).map((p) => ({ ...p, _role: role }))
+
+      return [
+        ...mapWithRole(this.directors, 'directors'),
+        ...mapWithRole(this.producers, 'producers'),
+        ...mapWithRole(this.writers, 'writers'),
+        ...mapWithRole(this.investors, 'investors'),
+        ...mapWithRole(this.casts, 'casts'),
+      ]
+    },
+  },
   methods: {
     ChooseLang(en, fa) {
       if (fa && this.$i18n.locale === 'fa') return fa
       return en || ''
+    },
+    // return localized role label
+    roleLabel(role) {
+      const isFa = this.$i18n && this.$i18n.locale === 'fa'
+      const labelsEn = {
+        directors: 'Director',
+        producers: 'Producer',
+        writers: 'Writer',
+        investors: 'Investor',
+        casts: 'Cast',
+      }
+      const labelsFa = {
+        directors: 'کارگردان',
+        producers: 'تهیه‌کننده',
+        writers: 'نویسنده',
+        investors: 'سرمایه‌گذار',
+        casts: 'بازیگر',
+      }
+      const base = isFa ? labelsFa[role] || '' : labelsEn[role] || ''
+      // Optionally show character role for casts in same locale (e.g. "بازیگر" or "Cast")
+      return base
     },
   },
 }
@@ -113,6 +173,7 @@ export default {
 .cast-card {
   display: flex;
   justify-content: center;
+  margin-top: 1rem;
 }
 
 .cast-card-link {
@@ -122,6 +183,11 @@ export default {
   text-decoration: none;
   transition: transform 0.3s ease, opacity 0.3s ease;
   width: 100%;
+  color: black;
+}
+
+.theme-dark .cast-card-link {
+  color: #f2f2f2;
 }
 
 .cast-card-link:hover {
@@ -192,6 +258,14 @@ export default {
   font-style: italic;
 }
 
+.person-role {
+  display: block;
+  margin-top: 6px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-align: center;
+}
+
 /* Dark theme support */
 :global(.theme-dark) .actor-name {
   color: #f2f2f2;
@@ -204,5 +278,9 @@ export default {
 :global(.theme-dark) .cast-image-wrapper {
   border-color: #2c3e50;
   background-color: #1a1a1a;
+}
+
+:global(.theme-dark) .person-role {
+  color: #adb5bd;
 }
 </style>

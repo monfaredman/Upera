@@ -4,7 +4,14 @@
       <!-- Main Cast -->
       <div v-if="casts && casts.length" class="cast-section">
         <h5 class="section-title">{{ $t('show.cast') }}</h5>
-        <CastGrid :casts="casts" title="" />
+        <CastGrid
+          :casts="casts"
+          :directors="directors"
+          :producers="producers"
+          :writers="writers"
+          :investors="investors"
+          title=""
+        />
       </div>
     </div>
   </div>
