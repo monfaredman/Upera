@@ -3,7 +3,7 @@
     v-show="show"
     :class="{ 'container-fluid pt-4 pb-1 bg-filtermenu': !setting }"
   >
-    <div :class="{ 'mt-5 pt-lg-2 pt-md-2 pt-1': noTop }">
+    <div class="w-100" :class="{ 'mt-5 pt-lg-2 pt-md-2 pt-1': noTop }">
       <b-button
         class="btn btn-block mb-1 filter-btn"
         :class="{

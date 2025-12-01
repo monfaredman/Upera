@@ -17,16 +17,51 @@
         <div class="search-input-container">
           <b-form-input
             v-model="query"
+            ref="searchInput"
             autofocus
             :placeholder="$t('new.search')"
             type="text"
             class="search-input"
-            @keyup.enter="performSearch"
-            @input="updateURL"
+            @input="onInput"
+            @keydown.down.prevent="moveSelection(1)"
+            @keydown.up.prevent="moveSelection(-1)"
+            @keydown.enter.prevent="handleEnter"
+            @focus="onFocus"
+            @blur="onBlur"
           />
           <button class="btn btn-search" @click="performSearch">
             <i class="icon-search" />
           </button>
+
+          <!-- Autocomplete dropdown -->
+          <div v-if="showAutocomplete" class="autocomplete-dropdown">
+            <div v-if="autocompleteLoading" class="autocomplete-item loading">
+              ...
+            </div>
+            <div
+              v-for="(item, idx) in suggestions"
+              :key="item.id + '-' + idx"
+              :class="[
+                'autocomplete-item',
+                { active: idx === selectedSuggestion },
+              ]"
+              @mousedown.prevent="selectSuggestion(item)"
+            >
+              <div class="title">
+                {{ ChooseLang(item.title_en || item.title, item.title_fa) }}
+              </div>
+              <div class="meta" v-if="item.type">
+                {{ item.type }}
+              </div>
+            </div>
+            <div
+              v-if="!autocompleteLoading && suggestions.length === 0"
+              class="autocomplete-item empty"
+            >
+              هیچ موردی یافت نشد
+            </div>
+          </div>
+          <!-- /Autocomplete dropdown -->
         </div>
       </div>
 
@@ -257,6 +292,13 @@ export default {
       isVisible: false,
       isHandlingHashChange: false, // Prevent recursive calls
       isLoading: false, // 👈 new
+      // Autocomplete state
+      suggestions: [],
+      showAutocomplete: false,
+      autocompleteTimer: null,
+      autocompleteLoading: false,
+      autocompleteLimit: 8,
+      selectedSuggestion: -1,
     }
   },
   computed: {
@@ -282,6 +324,107 @@ export default {
     window.removeEventListener('hashchange', this.handleWindowHashChange)
   },
   methods: {
+    // Called on each user input: update URL and trigger debounced autocomplete
+    onInput() {
+      this.updateURL()
+
+      // Debounce autocomplete
+      if (this.autocompleteTimer) clearTimeout(this.autocompleteTimer)
+      if (this.query && this.query.length > 1) {
+        this.autocompleteTimer = setTimeout(() => {
+          this.fetchAutocomplete()
+        }, 300)
+      } else {
+        this.suggestions = []
+        this.showAutocomplete = false
+        this.selectedSuggestion = -1
+      }
+    },
+
+    async fetchAutocomplete() {
+      this.autocompleteLoading = true
+      try {
+        const response = await this.$axios.post(
+          '/ghost/get/search/autocomplete',
+          null,
+          {
+            params: { q: this.query, limit: this.autocompleteLimit },
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+            },
+          }
+        )
+        console.log(response)
+        // API shape: { status, data: [ ...items ] } or response.data.data
+        const payload =
+          response && response.data ? response.data.data || response.data : []
+        this.suggestions = payload ? payload : []
+        console.log('sugg', this.suggestions)
+        this.showAutocomplete = this.suggestions.length > 0
+        this.selectedSuggestion = -1
+      } catch (e) {
+        console.error('Autocomplete error:', e)
+        this.suggestions = []
+        this.showAutocomplete = false
+      } finally {
+        this.autocompleteLoading = false
+      }
+    },
+
+    moveSelection(delta) {
+      if (!this.showAutocomplete || this.suggestions.length === 0) return
+      const max = this.suggestions.length - 1
+      let next = this.selectedSuggestion + delta
+      if (next < 0) next = 0
+      if (next > max) next = max
+      this.selectedSuggestion = next
+      // reflect in input for better feedback (optional)
+      const sel = this.suggestions[this.selectedSuggestion]
+      if (sel) {
+        // show but do not commit into search input yet (optional UX). We keep query unchanged.
+      }
+    },
+
+    handleEnter() {
+      if (this.showAutocomplete && this.selectedSuggestion >= 0) {
+        const item = this.suggestions[this.selectedSuggestion]
+        if (item) this.selectSuggestion(item)
+      } else {
+        this.performSearch()
+      }
+    },
+
+    selectSuggestion(item) {
+      // set query using language helper and perform full search
+      const title = this.ChooseLang(item.title_en || item.title, item.title_fa)
+      this.query = title
+      this.showAutocomplete = false
+      this.suggestions = []
+      this.selectedSuggestion = -1
+      // update URL right away then search
+      this.updateURL()
+      this.performSearch()
+    },
+
+    onBlur() {
+      // delay hiding to allow click on suggestion (mousedown handler handles select)
+      setTimeout(() => {
+        this.showAutocomplete = false
+      }, 150)
+    },
+
+    onFocus() {
+      if (
+        this.suggestions &&
+        this.suggestions.length > 0 &&
+        this.query &&
+        this.query.length > 1
+      ) {
+        this.showAutocomplete = true
+      }
+    },
+
     handleWindowHashChange() {
       if (!this.isHandlingHashChange) {
         this.handleHashChange(window.location.hash)
@@ -517,6 +660,7 @@ export default {
   },
 }
 </script>
+
 <style scoped>
 div#actor {
   padding-top: 0 !important;
@@ -526,6 +670,7 @@ div#actor {
   border-radius: 12px;
   padding: 0.3rem !important;
   font-size: 0.8rem !important;
+  color: black !important;
 }
 
 .search-modal-container {
@@ -688,6 +833,44 @@ div#actor {
   color: white;
 }
 
+/* Autocomplete dropdown styles */
+.autocomplete-dropdown {
+  position: absolute;
+  top: 4rem;
+  right: 1rem;
+  width: 360px;
+  max-height: 320px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #e6e6e6;
+  border-radius: 6px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  z-index: 2000;
+  direction: rtl;
+}
+.autocomplete-item {
+  padding: 0.5rem 0.75rem;
+  cursor: pointer;
+  border-bottom: 1px solid #f1f1f1;
+  font-size: 0.9rem;
+}
+.autocomplete-item.active {
+  background: #f0f8ff;
+}
+.autocomplete-item .title {
+  font-weight: 500;
+}
+.autocomplete-item .meta {
+  font-size: 0.75rem;
+  color: #6c757d;
+}
+.autocomplete-item.loading,
+.autocomplete-item.empty {
+  color: #6c757d;
+  text-align: center;
+}
+/* end autocomplete styles */
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .search-modal-container {
@@ -727,19 +910,19 @@ span.label.label-rounded.label-red.label-1 {
 }
 
 .search-modal-content::-webkit-scrollbar,
-.search-modal-content::-webkit-scrollbar {
+search-modal-content::-webkit-scrollbar {
   width: 8px;
 }
 
 .search-modal-content::-webkit-scrollbar-thumb,
-.search-modal-content::-webkit-scrollbar-thumb {
+search-modal-content::-webkit-scrollbar-thumb {
   background: #888;
 
   border-radius: 8px;
 }
 
 .search-modal-content::-webkit-scrollbar-track,
-.search-modal-content::-webkit-scrollbar-track {
+search-modal-content::-webkit-scrollbar-track {
   background: #f0f0f0;
   border-radius: 8px;
 }
