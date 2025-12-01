@@ -170,7 +170,6 @@ export default {
 .actor-name {
   font-size: 0.95rem;
   font-weight: 600;
-  color: white;
   margin-bottom: 4px;
   line-height: 1.3;
   display: block;
