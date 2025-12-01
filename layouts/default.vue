@@ -4,6 +4,7 @@
       <Header />
       <Nuxt />
       <GlobalSearchModal />
+
       <Footer />
     </div>
   </div>
@@ -35,27 +36,44 @@ export default {
   },
 
   mounted() {
-    this.$i18n.locale = this.locale
+    if (process.server) return
 
-    !(function () {
-      var a = window,
-        d = document
-      function g() {
-        var g = d.createElement('script'),
-          s = 'https://www.goftino.com/widget/gLKqpv',
-          l = localStorage.getItem('goftino')
-        ;(g.type = 'text/javascript'),
-          (g.async = !0),
-          (g.referrerPolicy = 'no-referrer-when-downgrade'),
-          (g.src = l ? s + '?o=' + l : s)
-        d.getElementsByTagName('head')[0].appendChild(g)
+    const widgetId = 'gLKqpv'
+
+    // --- Load script only once ---
+    if (!document.getElementById('goftino-widget-script')) {
+      const script = document.createElement('script')
+      const base = `https://www.goftino.com/widget/${widgetId}`
+      const opt = localStorage.getItem('goftino_' + widgetId)
+
+      script.id = 'goftino-widget-script'
+      script.async = true
+      script.src = opt ? `${base}?o=${opt}` : base
+
+      document.head.appendChild(script)
+    }
+
+    // --- Wait for widget to become ready ---
+    window.addEventListener('goftino_ready', () => {
+      console.warn('Goftino Ready:', window.Goftino)
+
+      if (!window.Goftino) return
+
+      window.Goftino.setWidget({
+        iconUrl: `${window.location.origin}/message-icon.png`,
+        hasIcon: true,
+        marginRight: 320,
+        counter: '#unread_counter',
+        filterWords: 'word1,word2,word3',
+      })
+
+      const btn = document.getElementById('new_widget_button')
+      if (btn) {
+        btn.addEventListener('click', () => {
+          window.Goftino.toggle()
+        })
       }
-      'complete' === d.readyState
-        ? g()
-        : a.attachEvent
-        ? a.attachEvent('onload', g)
-        : a.addEventListener('load', g, !1)
-    })()
+    })
   },
 }
 </script>
