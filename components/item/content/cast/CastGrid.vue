@@ -67,6 +67,10 @@ export default {
       type: Array,
       default: () => [],
     },
+    characters: {
+      type: Array,
+      default: () => [],
+    },
     writers: {
       type: Array,
       default: () => [],
@@ -89,7 +93,7 @@ export default {
     },
   },
   computed: {
-    // priority: directors, producers, writers, investors, casts
+    // priority: directors, producers, writers, investors, casts, characters
     mergedList() {
       const mapWithRole = (arr, role) =>
         (arr || []).map((p) => ({ ...p, _role: role }))
@@ -100,6 +104,7 @@ export default {
         ...mapWithRole(this.writers, 'writers'),
         ...mapWithRole(this.investors, 'investors'),
         ...mapWithRole(this.casts, 'casts'),
+        ...mapWithRole(this.characters, 'characters'),
       ]
     },
   },
@@ -117,6 +122,7 @@ export default {
         writers: 'Writer',
         investors: 'Investor',
         casts: 'Cast',
+        characters: 'Character',
       }
       const labelsFa = {
         directors: 'کارگردان',
@@ -124,6 +130,7 @@ export default {
         writers: 'نویسنده',
         investors: 'سرمایه‌گذار',
         casts: 'بازیگر',
+        characters: 'شخصیت',
       }
       const base = isFa ? labelsFa[role] || '' : labelsEn[role] || ''
       // Optionally show character role for casts in same locale (e.g. "بازیگر" or "Cast")

@@ -190,6 +190,7 @@
           :producers="producers"
           :writers="writers"
           :investors="investors"
+          :characters="characters"
           :is-animation="isAnimation"
         />
       </section>

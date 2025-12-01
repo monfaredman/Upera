@@ -10,6 +10,7 @@
           :producers="producers"
           :writers="writers"
           :investors="investors"
+          :characters="characters"
           :is-animation="isAnimation"
           title=""
         />
@@ -44,6 +45,10 @@ export default {
       default: () => [],
     },
     investors: {
+      type: Array,
+      default: () => [],
+    },
+    characters: {
       type: Array,
       default: () => [],
     },
