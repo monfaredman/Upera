@@ -249,8 +249,8 @@ export default {
   colorMode: {
     classPrefix: 'theme-',
     classSuffix: '',
-    preference: 'system',
-    fallback: 'light',
+    preference: 'dark',
+    fallback: 'dark',
   },
 
   pageTransition: {
