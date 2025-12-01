@@ -33,9 +33,13 @@
           >
             {{ ChooseLang(person.character, person.character_fa) }}
           </span>
-
           <!-- Role label shown at the bottom -->
-          <span class="person-role">{{ roleLabel(person._role) }}</span>
+          <span
+            v-if="person._role === 'casts' && isAnimation"
+            class="person-role"
+            >صداپیشه</span
+          >
+          <span v-else class="person-role">{{ roleLabel(person._role) }}</span>
         </div>
       </nuxt-link>
     </div>
@@ -78,6 +82,10 @@ export default {
     showCharacters: {
       type: Boolean,
       default: true,
+    },
+    isAnimation: {
+      type: Boolean,
+      default: false,
     },
   },
   computed: {

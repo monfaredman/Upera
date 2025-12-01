@@ -190,6 +190,7 @@
           :producers="producers"
           :writers="writers"
           :investors="investors"
+          :is-animation="isAnimation"
         />
       </section>
 
@@ -524,6 +525,12 @@ export default {
     },
     shouldShowCommentsTab() {
       return this.shouldShowCommentsSection
+    },
+    isAnimation() {
+      const genres = this.data?.item?.new_genres || {}
+      return Object.keys(genres).some((key) =>
+        ['animation', 'انیمیشن'].includes(key.toLowerCase())
+      )
     },
   },
 

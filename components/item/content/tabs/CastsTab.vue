@@ -10,6 +10,7 @@
           :producers="producers"
           :writers="writers"
           :investors="investors"
+          :is-animation="isAnimation"
           title=""
         />
       </div>
@@ -45,6 +46,10 @@ export default {
     investors: {
       type: Array,
       default: () => [],
+    },
+    isAnimation: {
+      type: Boolean,
+      default: false,
     },
   },
 }
