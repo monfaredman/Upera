@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+    <defs>
+        <style>
+            .prefix__cls-1{fill:#3737b6}
+        </style>
+    </defs>
+    <g id="prefix__watch-list" transform="translate(-102 -339)">
+        <path id="prefix__Subtraction_5" d="M6.489 9.1C2.168 8.866.1 4.844.075 4.8A.446.446 0 0 1 0 4.553a.453.453 0 0 1 .1-.283C.126 4.228 2.777 0 6.871 0a7.165 7.165 0 0 1 4.639 1.879 11.476 11.476 0 0 1 2.082 2.314 1.351 1.351 0 0 0-.232-.02h-3.305a3.205 3.205 0 1 0-3.566 3.545V9.1zm0-3.231a1.367 1.367 0 1 1 1.7-1.691h-.173A1.652 1.652 0 0 0 6.49 5.864z" class="prefix__cls-1" data-name="Subtraction 5" transform="translate(106 343)"/>
+        <path id="prefix__Path_421" d="M4.08 2A1.208 1.208 0 0 0 3 3.3v9.5l3.6-3.17 3.6 3.17V3.3A1.208 1.208 0 0 0 9.12 2z" class="prefix__cls-1" data-name="Path 421" transform="translate(110.3 346.2)"/>
+        <path id="prefix__Rectangle_1051" d="M0 0H24V24H0z" data-name="Rectangle 1051" transform="translate(102 339)" style="fill:none"/>
+    </g>
+</svg>

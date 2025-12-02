@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+    <g id="prefix__Layer_2" data-name="Layer 2" transform="translate(-.186 .317)">
+        <g id="prefix__info">
+            <path id="prefix__Rectangle_165" d="M0 0H64V64H0z" data-name="Rectangle 165" transform="rotate(180 32.093 31.842)" style="opacity:0;fill:#ec2927"/>
+            <path id="prefix__Path_41" d="M23.256 2a21.256 21.256 0 1 0 21.255 21.256A21.256 21.256 0 0 0 23.256 2zm2.126 29.758a2.126 2.126 0 1 1-4.251 0V21.13a2.126 2.126 0 1 1 4.251 0zm-2.126-14.879a2.126 2.126 0 1 1 2.126-2.126 2.126 2.126 0 0 1-2.126 2.126z" data-name="Path 41" transform="translate(7.639 7.639)" style="fill:#ec2927"/>
+        </g>
+    </g>
+</svg>

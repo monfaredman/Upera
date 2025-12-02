@@ -7,6 +7,60 @@ const isGhPages = process.env.DEPLOY_ENV === 'GH_PAGES'
 const routerBase = isGhPages ? '/Upera/' : '/'
 const nuxtPublicPath = isGhPages ? '/Upera/_nuxt/' : '/_nuxt/'
 
+// Function to copy assets/img and assets/images to static folders
+const copyAssetsToStatic = async () => {
+  const copyRecursive = async (src, dest) => {
+    const entries = await fs.promises.readdir(src, { withFileTypes: true })
+    for (const entry of entries) {
+      const srcPath = path.join(src, entry.name)
+      const destPath = path.join(dest, entry.name)
+
+      if (entry.isDirectory()) {
+        await fs.promises.mkdir(destPath, { recursive: true })
+        await copyRecursive(srcPath, destPath)
+      } else {
+        await fs.promises.copyFile(srcPath, destPath)
+      }
+    }
+  }
+
+  // Copy assets/img to static/img
+  const assetsImgPath = path.join(__dirname, 'assets', 'img')
+  const staticImgPath = path.join(__dirname, 'static', 'img')
+
+  try {
+    if (fs.existsSync(assetsImgPath)) {
+      if (!fs.existsSync(staticImgPath)) {
+        await fs.promises.mkdir(staticImgPath, { recursive: true })
+      }
+      await copyRecursive(assetsImgPath, staticImgPath)
+      // eslint-disable-next-line no-console
+      console.log('✓ Copied assets/img to static/img')
+    }
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.warn('Failed to copy assets/img to static/img:', err.message)
+  }
+
+  // Copy assets/images to static/images
+  const assetsImagesPath = path.join(__dirname, 'assets', 'images')
+  const staticImagesPath = path.join(__dirname, 'static', 'images')
+
+  try {
+    if (fs.existsSync(assetsImagesPath)) {
+      if (!fs.existsSync(staticImagesPath)) {
+        await fs.promises.mkdir(staticImagesPath, { recursive: true })
+      }
+      await copyRecursive(assetsImagesPath, staticImagesPath)
+      // eslint-disable-next-line no-console
+      console.log('✓ Copied assets/images to static/images')
+    }
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.warn('Failed to copy assets/images to static/images:', err.message)
+  }
+}
+
 export default {
   publicRuntimeConfig: {
     envname: process.env.ENV,
@@ -298,6 +352,14 @@ export default {
     subFolders: false,
   },
   hooks: {
+    'build:before': async () => {
+      // Copy assets/img and assets/images to static folders so images are available in dist folder
+      await copyAssetsToStatic()
+    },
+    'generate:before': async () => {
+      // Copy assets/img and assets/images to static folders so images are available in dist folder
+      await copyAssetsToStatic()
+    },
     'generate:done': async (generator) => {
       if (!isGhPages) return
 
