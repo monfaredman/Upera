@@ -576,8 +576,12 @@ export default {
           behavior: 'smooth',
         })
 
-        // Update URL hash without scrolling
-        history.replaceState(null, null, `#${sectionId}`)
+        // Update URL hash without scrolling, preserving current path and query params
+        history.replaceState(
+          null,
+          null,
+          `${window.location.pathname}${window.location.search}#${sectionId}`
+        )
       }
     },
 
