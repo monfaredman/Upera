@@ -170,6 +170,7 @@
                 <nuxt-link
                   class="nav-link d-flex align-items-center flex-wrap"
                   to="/payments"
+                  style="color: inherit"
                   @click.native="close"
                 >
                   <i class="fa fa-money-bill-wave" />
@@ -236,7 +237,7 @@
                       کنید.
                     </div>
                   </div>
-                  <div class="custom-control custom-switch mr-2">
+                  <div class="custom-control custom-switch">
                     <input
                       id="basketActiveMobile"
                       type="checkbox"
@@ -256,6 +257,7 @@
                 <nuxt-link
                   class="nav-link d-flex align-items-center flex-wrap"
                   to="/app"
+                  style="color: inherit"
                   @click.native="close"
                 >
                   <i class="icon-download" />
@@ -267,6 +269,7 @@
               <li class="nav-item">
                 <b-link
                   class="nav-link d-flex align-items-center flex-wrap"
+                  style="color: inherit"
                   @click="handleLogout"
                 >
                   <i class="fa fa-sign-out-alt" />
@@ -565,37 +568,42 @@ export default {
   margin-left: 2rem;
 }
 
-/* Dark Mode Support */
-@media (prefers-color-scheme: dark) {
-  .mobile-drawer {
-    background-color: black;
-  }
-
-  .mobile-drawer-header {
-    border-bottom-color: rgba(255, 255, 255, 0.1);
-  }
-  #header i {
-    color: white;
-  }
-
-  .close-button {
-    color: #fff;
-  }
-
-  .nested-mobile-list {
-    background-color: rgba(255, 255, 255, 0.05);
-  }
-
-  .nested-mobile-item {
-    border-bottom-color: rgba(255, 255, 255, 0.1);
-  }
-
-  .nested-mobile-item:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-  }
+.nav-item {
+  color: black !important;
 }
 
-.nav-item {
+/* Dark Mode Support */
+.theme-dark .mobile-drawer {
+  background-color: black;
+}
+
+.theme-dark .mobile-drawer-header {
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+#header i {
+  color: black;
+}
+.theme-dark #header i {
+  color: white;
+}
+
+.theme-dark .close-button {
+  color: #fff;
+}
+
+.theme-dark .nested-mobile-list {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.theme-dark .nested-mobile-item {
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+.theme-dark .nested-mobile-item:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.theme-dark .nav-item {
   color: white !important;
 }
 </style>

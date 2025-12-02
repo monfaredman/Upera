@@ -292,6 +292,7 @@ export default {
   object-fit: contain;
   object-position: bottom right;
 }
+
 @media (max-width: 767.98px) {
   .showcase-logo {
     width: 220px !important;
@@ -320,6 +321,15 @@ export default {
 
   .showcase-theme-m-tn .showcase-bottom {
     margin-top: 0 !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .showcase-logo {
+    width: 150px !important;
+    height: 100px !important;
+    margin: auto auto 4rem auto !important;
+    text-align: center;
   }
 }
 

@@ -15,7 +15,7 @@
         />
         <h4
           class="font-weight-bold horizontal-list-title"
-          :class="isOffer ? 'text-white' : ''"
+          :class="isOffer ? 'text-handle-offer-title' : ''"
           style="z-index: 4"
         >
           {{ localizedTitle }}
@@ -505,6 +505,14 @@ export default {
 }
 </script>
 <style>
+.text-handle-offer-title {
+  color: white !important;
+}
+
+.theme-dark .text-handle-offer-title {
+  color: white !important;
+}
+
 .watch-more-text {
   font-size: 12px !important;
   font-weight: 600 !important;
@@ -911,6 +919,14 @@ export default {
     width: 100%;
     justify-content: center;
     gap: 0.75rem;
+  }
+
+  .text-handle-offer-title {
+    color: black !important;
+  }
+
+  .theme-dark .text-handle-offer-title {
+    color: white !important;
   }
 }
 

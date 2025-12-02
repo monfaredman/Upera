@@ -526,61 +526,6 @@ export default {
   }
 }
 
-@media (max-width: 576px) {
-  .detail-paragraph {
-    font-size: 0.875rem !important;
-    font-weight: 500 !important;
-  }
-  .detail-title {
-    font-size: 1.125rem !important;
-    font-weight: 700 !important;
-  }
-
-  /* keep dots horizontally centered but on the shared controls baseline */
-  .swiper-wrapper {
-    --controls-bottom: 6rem;
-  }
-  .swiper-wrapper >>> .slick-dots {
-    justify-content: center;
-  }
-  .showcase-button-wrapper {
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
-  .showcase-button-wrapper .btn {
-    flex: 1 1 calc(50% - 0.25rem);
-    text-align: center;
-    margin: 0;
-  }
-  .showcase-logo {
-    width: 150px !important;
-    height: 90px !important;
-    margin-bottom: 0.5rem;
-  }
-
-  .showcase-logo >>> img {
-    width: auto;
-    height: auto;
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
-    object-position: bottom right;
-  }
-
-  .showcase-thumbnail-wrapper {
-    padding: 0 1rem !important;
-    margin-top: 4rem !important;
-  }
-
-  .showcase .showcase-img {
-    height: 100% !important;
-  }
-
-  .swiper-wrapper >>> .slick-dots li.slick-active button {
-    width: 20px;
-  }
-}
-
 @media (max-width: 768px) and (min-width: 577px) {
   .showcase-logo {
     width: 190px;
@@ -789,6 +734,101 @@ export default {
   }
   .showcase-button-wrapper {
     bottom: calc(var(--controls-bottom) - 2rem);
+  }
+}
+
+@media (max-width: 576px) {
+  .detail-paragraph {
+    font-size: 0.875rem !important;
+    font-weight: 500 !important;
+  }
+  .detail-title {
+    font-size: 1.125rem !important;
+    font-weight: 700 !important;
+  }
+
+  /* keep dots horizontally centered but on the shared controls baseline */
+  .swiper-wrapper {
+    --controls-bottom: 6rem;
+  }
+  .swiper-wrapper >>> .slick-dots {
+    justify-content: center;
+    bottom: 1rem !important;
+    left: 49% !important;
+  }
+  .theme-dark .swiper-wrapper >>> .slick-dots {
+    justify-content: center;
+    bottom: 0 !important;
+  }
+  ::v-deep .slick-slide {
+    background-color: black !important;
+    min-height: fit-content !important;
+    padding-bottom: 3rem;
+  }
+
+  .showcase-button-wrapper {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    flex-direction: column;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+  }
+  .showcase .showcase-thumbnail-wrapper .showcase-button-wrapper {
+    align-items: center;
+    justify-content: center;
+    width: 80%;
+  }
+
+  .showcase-button-wrapper .btn {
+    width: 100% !important;
+    text-align: center;
+    margin: 0;
+  }
+  .showcase-logo {
+    width: 150px !important;
+    height: 90px !important;
+    margin-bottom: 0.5rem;
+  }
+
+  .showcase-logo >>> img {
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    object-position: bottom right;
+  }
+
+  .showcase-thumbnail-wrapper {
+    padding: 0 1rem !important;
+    margin-top: 0 !important;
+    top: 5rem !important;
+  }
+
+  .showcase .showcase-img {
+    height: 100% !important;
+  }
+
+  .main-slideshow .showcase-desc-wrapper .showcase-desc {
+    width: 80%;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+  }
+  .swiper-wrapper >>> .slick-dots li button {
+    width: 10px;
+    height: 10px;
+  }
+  .swiper-wrapper >>> .slick-dots li.slick-active button {
+    width: 20px;
+    height: 10px;
+  }
+
+  .showcase-details {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 }
 

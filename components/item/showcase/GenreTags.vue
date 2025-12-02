@@ -38,6 +38,33 @@ export default {
   .genre-tags {
     font-size: 0.875rem !important;
     font-weight: 500 !important;
+    justify-content: center !important;
+  }
+  .tag {
+    color: black !important;
+    text-shadow: none !important;
+  }
+
+  .showcase-theme-m-tn
+    .showcase-thumbnail-wrapper-outter
+    .text-invert:not(.title)
+    .tag
+    + .tag::before {
+    background-color: black !important;
+  }
+
+  .theme-dark
+    .showcase-theme-m-tn
+    .showcase-thumbnail-wrapper-outter
+    .text-invert:not(.title)
+    .tag
+    + .tag::before {
+    background-color: white !important;
+  }
+
+  .theme-dark .tag {
+    color: white !important;
+    text-shadow: none !important;
   }
 }
 

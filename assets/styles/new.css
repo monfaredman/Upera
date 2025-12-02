@@ -2921,7 +2921,7 @@ a.thumbnail-wrapper {
     width: calc(100% - 200px);
   }
   .showcase-theme-m-tn .showcase-thumbnail-wrapper-outter {
-    padding-top: 37% !important;
+    padding-top: 57% !important;
   }
   .showcase-theme-m-tn .showcase-thumbnail-wrapper-outter .thumbnail {
     width: 200px;
@@ -2948,7 +2948,7 @@ a.thumbnail-wrapper {
     width: calc(100% - 165px);
   }
   .showcase-theme-m-tn .showcase-thumbnail-wrapper-outter {
-    padding-top: 38% !important;
+    padding-top: 68% !important;
   }
   .showcase-theme-m-tn .showcase-thumbnail-wrapper-outter .thumbnail {
     width: 165px;
@@ -2977,7 +2977,7 @@ a.thumbnail-wrapper {
     width: calc(100% - 150px);
   }
   .showcase-theme-m-tn .showcase-thumbnail-wrapper-outter {
-    padding-top: 38% !important;
+    padding-top: 68% !important;
   }
   .showcase-theme-m-tn .showcase-thumbnail-wrapper-outter .thumbnail {
     width: 150px;
@@ -3011,7 +3011,7 @@ a.thumbnail-wrapper {
     width: calc(100% - 140px);
   }
   .showcase-theme-m-tn .showcase-thumbnail-wrapper-outter {
-    padding-top: 38% !important;
+    padding-top: 68% !important;
   }
   .showcase-theme-m-tn .showcase-thumbnail-wrapper-outter .thumbnail {
     width: 140px;
@@ -9621,7 +9621,7 @@ small,
   .series-ads__bg--desk {
     display: none;
   }
-    div#actor {
+  div#actor {
     padding: 6rem 0 3rem 0 !important;
   }
 }

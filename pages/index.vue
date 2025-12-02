@@ -42,14 +42,62 @@
     </div>
 
     <!-- New Types Section with Skeleton -->
-    <!-- <HorizontalListSkeleton v-if="isLoadingLives" variant="backdrop" />
-    <div v-else-if="data" class="mt-4">
+    <!-- Type 1 Section - Full Width Carousel -->
+    <HorizontalListSkeleton v-if="isLoadingType1" variant="backdrop" />
+    <section
+      v-else-if="type1Sliders && type1Sliders.length"
+      class="type1-carousel-section mt-4"
+    >
+      <div
+        v-swiper:type1Carousel="swiperOptionType1"
+        class="swiper-container type1-carousel-container"
+      >
+        <div class="swiper-wrapper">
+          <div
+            v-for="(item, index) in type1Sliders"
+            :key="index"
+            class="swiper-slide type1-carousel-slide"
+          >
+            <nuxt-link :to="buildIdRoute(item)" class="type1-carousel-link">
+              <b-img
+                blank
+                blank-color="#bbb"
+                show
+                class="type1-carousel-image"
+                :src="getType1ImageSrc(item)"
+                :alt="ChooseLang(item.name, item.name_fa)"
+              />
+            </nuxt-link>
+          </div>
+        </div>
+        <!-- Navigation Buttons - Left Bottom -->
+        <div v-if="type1Sliders.length > 1" class="type1-carousel-navigation">
+          <button
+            aria-label="Previous"
+            class="type1-carousel-btn type1-carousel-prev"
+            @click="type1CarouselPrev"
+          >
+            <i class="fa fa-chevron-right" />
+          </button>
+          <button
+            aria-label="Next"
+            class="type1-carousel-btn type1-carousel-next"
+            @click="type1CarouselNext"
+          >
+            <i class="fa fa-chevron-left" />
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Type 2 Section -->
+    <HorizontalListSkeleton v-if="isLoadingType2" variant="backdrop" />
+    <div v-else-if="type2Sliders && type2Sliders.length" class="mt-4">
       <HorizontalList
-        :title-en="lives.list_en"
-        :title-fa="lives.list_fa"
-        :show-all-route="{ name: 'lists-list', params: { list: lives.list } }"
-        :items="[simpleData]"
-        instance-name="livesSwip"
+        :title-en="'Type 2'"
+        :title-fa="'نوع ۲'"
+        :items="type2Sliders"
+        instance-name="type2Swip"
         :options="SWIPER_OPTION_BACKDROP"
         card-variant="backdrop"
         :size="{ w: 364, h: 190 }"
@@ -58,21 +106,17 @@
         :add-series-class="false"
         :hoverable="true"
         :type="'slider'"
-        :single-item-type="'detailed'"
-        :actions-buttons="actionsButtons"
-        :show-icon-actions="true"
-        @toggle-watchlist="handleToggleWatchlist"
-        @share="handleShare"
-        @clap-start="handleClapStart"
-        @clap-stop="handleClapStop"
-        @openDownloadModal="handleOpenDownloadModal"
       />
+    </div>
+
+    <!-- Type 3 Section -->
+    <HorizontalListSkeleton v-if="isLoadingType3" variant="backdrop" />
+    <div v-else-if="type3Sliders && type3Sliders.length" class="mt-4">
       <HorizontalList
-        :title-en="lives.list_en"
-        :title-fa="lives.list_fa"
-        :show-all-route="{ name: 'lists-list', params: { list: lives.list } }"
-        :items="[simpleData]"
-        instance-name="livesSwip"
+        :title-en="'Type 3'"
+        :title-fa="'نوع ۳'"
+        :items="type3Sliders"
+        instance-name="type3Swip"
         :options="SWIPER_OPTION_BACKDROP"
         card-variant="backdrop"
         :size="{ w: 364, h: 190 }"
@@ -81,9 +125,8 @@
         :add-series-class="false"
         :hoverable="true"
         :type="'slider'"
-        :single-item-type="'simple'"
       />
-    </div> -->
+    </div>
 
     <!-- Lives Section with Skeleton -->
     <HorizontalListSkeleton v-if="isLoadingLives" variant="backdrop" />
@@ -650,6 +693,17 @@ export default {
       SWIPER_OPTION_OFFER,
       swiperOption3: SLICK_MAIN_OPTIONS,
       swiperOption2: SWIPER_OPTION_RECENTLY,
+      swiperOptionType1: {
+        slidesPerView: 1,
+        spaceBetween: 0,
+        loop: true,
+        autoplay: {
+          delay: 5000,
+          disableOnInteraction: false,
+        },
+        effect: 'slide',
+        speed: 500,
+      },
       // Loading states
       isLoadingSlider: true,
       isLoadingRecently: true,
@@ -658,6 +712,9 @@ export default {
       isLoadingDiscover: true,
       isLoadingFilters: true,
       isLoadingOffer: true,
+      isLoadingType1: true,
+      isLoadingType2: true,
+      isLoadingType3: true,
       startFetchingFilters: false,
       // Clap and watchlist state
       clapinterval: false,
@@ -672,6 +729,24 @@ export default {
       const sliders = this.$store.state.slider.sliders
       return Array.isArray(sliders) && sliders.length > 0
         ? sliders.slice().sort((a, b) => (a.index ?? 0) - (b.index ?? 0))
+        : []
+    },
+    type1Sliders() {
+      const sliders = this.$store.state.slider.type1Sliders
+      return Array.isArray(sliders) && sliders.length > 0
+        ? this.transformSliderData(sliders)
+        : []
+    },
+    type2Sliders() {
+      const sliders = this.$store.state.slider.type2Sliders
+      return Array.isArray(sliders) && sliders.length > 0
+        ? this.transformSliderData(sliders)
+        : []
+    },
+    type3Sliders() {
+      const sliders = this.$store.state.slider.type3Sliders
+      return Array.isArray(sliders) && sliders.length > 0
+        ? this.transformSliderData(sliders)
         : []
     },
   },
@@ -740,6 +815,34 @@ export default {
         this.isLoadingLives = false
       })
 
+    // Fetch New Types Section (Type 1, 2, 3)
+    this.isLoadingType1 = true
+    this.$store
+      .dispatch('slider/fetchType1Slider', {
+        filtercontents: this.filtercontents,
+      })
+      .finally(() => {
+        this.isLoadingType1 = false
+      })
+
+    this.isLoadingType2 = true
+    this.$store
+      .dispatch('slider/fetchType2Slider', {
+        filtercontents: this.filtercontents,
+      })
+      .finally(() => {
+        this.isLoadingType2 = false
+      })
+
+    this.isLoadingType3 = true
+    this.$store
+      .dispatch('slider/fetchType3Slider', {
+        filtercontents: this.filtercontents,
+      })
+      .finally(() => {
+        this.isLoadingType3 = false
+      })
+
     // Fetch UGCs
     // this.isLoadingUgcs = true
     // this.$axios
@@ -760,6 +863,48 @@ export default {
       if (fa && this.$i18n.locale === 'fa') return fa
       if (!en) return fa || ''
       return en.charAt(0).toUpperCase() + en.slice(1)
+    },
+    transformSliderData(sliders) {
+      return sliders.map((item) => {
+        // Extract backdrop filename from image_src URL if available
+        let backdrop = item.backdrop
+        if (!backdrop && item.image_src) {
+          try {
+            const url = new URL(item.image_src)
+            const srcParam = url.searchParams.get('src')
+            if (srcParam) {
+              // Extract filename from src URL (e.g., "https://thumb.upera.shop/s3/backdrops/xzVIX3yB1ZK0n4uuoI8z.jpg")
+              const srcUrl = new URL(srcParam)
+              const pathParts = srcUrl.pathname.split('/')
+              backdrop = pathParts[pathParts.length - 1]
+            }
+          } catch (e) {
+            // If URL parsing fails, try to extract from the src parameter directly
+            const match = item.image_src.match(/src=([^&]+)/)
+            if (match) {
+              try {
+                const decoded = decodeURIComponent(match[1])
+                const srcUrl = new URL(decoded)
+                const pathParts = srcUrl.pathname.split('/')
+                backdrop = pathParts[pathParts.length - 1]
+              } catch (e2) {
+                console.warn(
+                  'Could not extract backdrop from image_src:',
+                  item.image_src
+                )
+              }
+            }
+          }
+        }
+
+        return {
+          ...item,
+          backdrop: backdrop || item.backdrop || '',
+          // Keep original image_src for reference if needed
+          image_src: item.image_src,
+          image_mobile_src: item.image_mobile_src,
+        }
+      })
     },
     transformUgcsData(ugcsData) {
       if (!ugcsData || !ugcsData.data) return { data: [] }
@@ -853,6 +998,9 @@ export default {
       this.isLoadingRecently = true
       this.isLoadingDiscover = true
       this.isLoadingOffer = true
+      this.isLoadingType1 = true
+      this.isLoadingType2 = true
+      this.isLoadingType3 = true
       this.$store.dispatch('filter/FILTER_LOADING')
 
       const requests = []
@@ -921,6 +1069,40 @@ export default {
           })
           .finally(() => {
             this.isLoadingDiscover = false
+          })
+      )
+
+      // Fetch New Types Section
+      requests.push(
+        this.$store
+          .dispatch('slider/fetchType1Slider', {
+            filtercontents: this.filtercontents,
+            loadagain: 1,
+          })
+          .finally(() => {
+            this.isLoadingType1 = false
+          })
+      )
+
+      requests.push(
+        this.$store
+          .dispatch('slider/fetchType2Slider', {
+            filtercontents: this.filtercontents,
+            loadagain: 1,
+          })
+          .finally(() => {
+            this.isLoadingType2 = false
+          })
+      )
+
+      requests.push(
+        this.$store
+          .dispatch('slider/fetchType3Slider', {
+            filtercontents: this.filtercontents,
+            loadagain: 1,
+          })
+          .finally(() => {
+            this.isLoadingType3 = false
           })
       )
 
@@ -1070,6 +1252,47 @@ export default {
         query: { force_download: 1 },
       })
     },
+    getType1ImageSrc(item) {
+      // Transform image_src URL to match carousel dimensions
+      if (item.image_src) {
+        try {
+          const urlObj = new URL(item.image_src)
+          const src = urlObj.searchParams.get('src')
+          if (src) {
+            // Build new URL with carousel dimensions (full width, 324px height)
+            return `https://thumb.upera.shop/thumb?w=1920&h=324&q=100&a=t&src=${encodeURIComponent(
+              src
+            )}`
+          }
+        } catch (e) {
+          // If URL parsing fails, try to extract src parameter directly
+          const match = item.image_src.match(/src=([^&]+)/)
+          if (match) {
+            const decoded = decodeURIComponent(match[1])
+            return `https://thumb.upera.shop/thumb?w=1920&h=324&q=100&a=t&src=${encodeURIComponent(
+              decoded
+            )}`
+          }
+        }
+        // Fallback to original if transformation fails
+        return item.image_src
+      }
+      // Fallback to backdrop if image_src is not available
+      if (item.backdrop) {
+        return `https://thumb.upera.shop/thumb?w=1920&h=324&q=100&a=t&src=https://cdn.upera.shop/s3/backdrops/${item.backdrop}`
+      }
+      return ''
+    },
+    type1CarouselPrev() {
+      if (this.type1Carousel) {
+        this.type1Carousel.slidePrev()
+      }
+    },
+    type1CarouselNext() {
+      if (this.type1Carousel) {
+        this.type1Carousel.slideNext()
+      }
+    },
   },
 }
 </script>
@@ -1117,7 +1340,7 @@ export default {
 }
 @media (max-width: 576px) {
   .offer-section {
-    margin-top: 2rem;
+    margin-top: 3rem !important;
   }
 }
 
@@ -1127,5 +1350,96 @@ export default {
   justify-content: center;
   align-items: center;
   height: 80vh !important;
+}
+
+/* Type 1 Carousel Styles */
+.type1-carousel-section {
+  width: 100%;
+  margin-bottom: 1rem;
+  padding-right: 2.6rem;
+  padding-left: 2.6rem;
+}
+
+.type1-carousel-container {
+  width: 100%;
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.type1-carousel-slide {
+  width: 100%;
+  height: 324px;
+}
+
+.type1-carousel-link {
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.type1-carousel-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.type1-carousel-navigation {
+  position: absolute;
+  left: 20px;
+  bottom: 20px;
+  z-index: 10;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.type1-carousel-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.6);
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 18px;
+  outline: none;
+}
+
+.type1-carousel-btn:hover {
+  background-color: rgba(0, 0, 0, 0.8);
+  border-color: rgba(255, 255, 255, 1);
+  transform: scale(1.1);
+}
+
+.type1-carousel-btn:active {
+  transform: scale(0.95);
+}
+
+.type1-carousel-btn i {
+  font-size: 16px;
+}
+
+@media (max-width: 768px) {
+  .type1-carousel-slide {
+    height: 200px;
+  }
+
+  .type1-carousel-navigation {
+    left: 15px;
+    bottom: 15px;
+  }
+
+  .type1-carousel-btn {
+    width: 40px;
+    height: 40px;
+    font-size: 14px;
+  }
 }
 </style>

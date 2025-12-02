@@ -339,4 +339,23 @@ export default {
     margin-top: 0 !important;
   }
 }
+
+@media (max-width: 576px) {
+  .showcase-button-wrapper {
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 12px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 1rem !important;
+    margin: 0 auto !important;
+    border-radius: 8px !important;
+  }
+
+  .btn-main-section {
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+}
 </style>
