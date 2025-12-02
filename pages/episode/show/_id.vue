@@ -240,6 +240,12 @@ export default {
     showPlaylistMenu(val) {
       document.body.style.overflow = val ? 'hidden' : ''
     },
+    '$route.params.id'(newId, oldId) {
+      // Reload episode when route params change (e.g., browser back/forward)
+      if (newId && newId !== oldId) {
+        this.loadEpisode()
+      }
+    },
   },
 
   mounted() {
@@ -248,9 +254,6 @@ export default {
       this.guest = false
     }
     this.loadEpisode()
-
-    // Handle browser back button
-    window.addEventListener('popstate', this.handlePopState)
   },
 
   beforeDestroy() {
@@ -262,22 +265,9 @@ export default {
         // Ignore errors when closing swal
       }
     }
-
-    // Remove event listener
-    window.removeEventListener('popstate', this.handlePopState)
   },
 
   methods: {
-    handlePopState() {
-      // Close any open SweetAlert modal when back button is pressed
-      if (this.$swal && this.$swal.close) {
-        try {
-          this.$swal.close()
-        } catch (e) {
-          // Ignore errors when closing swal
-        }
-      }
-    },
 
     showErrorAlert(data) {
       let dlsmtitle =
@@ -379,6 +369,13 @@ export default {
       try {
         const episode_id = this.$route.params.id
         if (!episode_id) return
+
+        // Reset loading state when loading new episode
+        this.loading = true
+        this.videoUrl = ''
+        this.soon = false
+        this.showNextMovie = false
+        this.suggestion = null
 
         const ref = this.$cookiz.get('ref') || ''
         // انتخاب API مناسب بر اساس وضعیت guest
