@@ -94,6 +94,9 @@ export const mutations = {
       loaded: true,
     }
   },
+  SET_LOCALE(state, locale) {
+    state.locale = locale
+  },
 }
 
 export const actions = {
@@ -257,6 +260,66 @@ export const actions = {
       userAvatar: null,
       cdnUser: null,
       loaded: false,
+    })
+  },
+
+  /**
+   * Gets and sets the user's preferred language
+   * Defaults to 'fa' (Persian) if no preference exists
+   */
+  GET_LANG(store) {
+    if (!process.client) {
+      return Promise.resolve('fa')
+    }
+
+    return new Promise((resolve) => {
+      let locale = 'fa' // Always default to Persian
+
+      // Check for existing language preference
+      const i18nCookie =
+        this.$cookiz.get('i18n_redirected') ||
+        this.$cookiz.get('vi18n_redirected')
+      const storedLang = localStorage.getItem('lang')
+
+      if (i18nCookie) {
+        const cookieLocale = i18nCookie.replace(':', '').toLowerCase()
+        if (cookieLocale === 'fa' || cookieLocale === 'en') {
+          locale = cookieLocale
+        }
+      } else if (storedLang && (storedLang === 'fa' || storedLang === 'en')) {
+        locale = storedLang
+        // Sync cookie with localStorage
+        this.$cookiz.set('i18n_redirected', `:${locale}`, {
+          maxAge: 60 * 60 * 24 * 365,
+          sameSite: 'lax',
+          path: '/',
+        })
+      } else {
+        // No preference - default to 'fa' and set cookie
+        this.$cookiz.set('i18n_redirected', ':fa', {
+          maxAge: 60 * 60 * 24 * 365,
+          sameSite: 'lax',
+          path: '/',
+        })
+        localStorage.setItem('lang', 'fa')
+      }
+
+      // Update store
+      store.commit('SET_LOCALE', locale)
+
+      // Update i18n if available
+      if (this.app && this.app.i18n) {
+        this.app.i18n.setLocale(locale)
+      }
+
+      // Update HTML attributes
+      const html = document.querySelector('html')
+      if (html) {
+        html.setAttribute('lang', locale)
+        html.setAttribute('dir', locale === 'fa' ? 'rtl' : 'ltr')
+      }
+
+      resolve(locale)
     })
   },
 }

@@ -851,7 +851,20 @@ export default {
       this.$i18n.setLocale(newLocale)
 
       if (process.client) {
+        // Update store
+        this.$store.commit('SET_LOCALE', newLocale)
+
+        // Update localStorage
         localStorage.setItem('lang', newLocale)
+
+        // Update cookie
+        this.$cookiz.set('i18n_redirected', `:${newLocale}`, {
+          maxAge: 60 * 60 * 24 * 365,
+          sameSite: 'lax',
+          path: '/',
+        })
+
+        // Update HTML attributes
         const html = document.querySelector('html')
         html.setAttribute('lang', newLocale)
         html.setAttribute('dir', newLocale === 'fa' ? 'rtl' : 'ltr')

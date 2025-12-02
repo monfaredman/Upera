@@ -123,6 +123,8 @@ export default {
    ** https://nuxtjs.org/guide/plugins
    */
   plugins: [
+    // Language detection must run first, before i18n initializes
+    '~/plugins/i18n-detection.client',
     '~plugins/slick',
     '~plugins/swiper',
     '~/plugins/swal',
@@ -182,6 +184,9 @@ export default {
     vueI18n: {
       fallbackLocale: 'fa',
     },
+    // Disable automatic browser language detection
+    // We handle language detection manually in GET_LANG action to prefer Persian/Farsi
+    detectBrowserLanguage: false,
   },
   auth: {
     redirect: {
