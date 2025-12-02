@@ -93,8 +93,26 @@ const copyStaticToDist = async (distPath) => {
       // Always copy to root of dist (Nuxt should handle this, but we ensure it)
       await copyRecursiveSkipReadme(staticPath, distPath)
 
-      // For GH_PAGES with routerBase, verify critical files are accessible at root
-      // Static files should be at root of dist, not under /Upera/
+      // For GH_PAGES with routerBase, also copy static files to /Upera/ subdirectory
+      // This ensures files are accessible both at root and under /Upera/
+      if (isGhPages && routerBase !== '/') {
+        const uperaPath = path.join(
+          distPath,
+          routerBase.replace(/^\//, '').replace(/\/$/, '')
+        )
+
+        // Ensure /Upera directory exists
+        if (!fs.existsSync(uperaPath)) {
+          await fs.promises.mkdir(uperaPath, { recursive: true })
+        }
+
+        // Copy static files to /Upera/ subdirectory as well
+        await copyRecursiveSkipReadme(staticPath, uperaPath)
+        // eslint-disable-next-line no-console
+        console.log(`✓ Copied static files to ${routerBase} subdirectory`)
+      }
+
+      // For GH_PAGES, verify critical files are accessible at root
       if (isGhPages) {
         // Critical files that must be at root of dist
         const criticalFiles = [
