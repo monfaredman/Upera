@@ -59,8 +59,11 @@ export default {
 
       if (!window.Goftino) return
 
+      // Get router base (e.g., '/Upera/' or '/')
+      const routerBase = this.$router.options.base || '/'
+
       window.Goftino.setWidget({
-        iconUrl: `${window.location.origin}/message-icon.png`,
+        iconUrl: `${window.location.origin}${routerBase}message-icon.png`,
         hasIcon: true,
         marginRight: 320,
         counter: '#unread_counter',

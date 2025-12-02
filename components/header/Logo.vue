@@ -17,7 +17,7 @@
       <!-- Mobile Logo for Upera -->
       <img
         v-if="bannerNav"
-        src="/images/logo-mobile.svg"
+        :src="routerBase + 'images/logo-mobile.svg'"
         class="d-md-none"
         :alt="$config.name_fa"
       />
@@ -91,6 +91,9 @@ export default {
         return 'https://cdn.upera.shop/s3/vods/' + this.checkuser.logo_dark
       }
       return '@/assets/images/mobile.png'
+    },
+    routerBase() {
+      return this.$router.options.base || '/'
     },
   },
 }

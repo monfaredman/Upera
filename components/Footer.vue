@@ -185,32 +185,38 @@
                 <div class="namad pr-2">
                   <div class="namad-box-2">
                     <a href="https://satra.ir/" target="_blank">
-                      <img src="/images/satra.png" width="80" />
+                      <img :src="routerBase + 'images/satra.png'" width="80" />
                     </a>
                   </div>
                   <div class="namad-box-2">
                     <a href="https://sapra.ir/" target="_blank">
-                      <img src="/images/sapra.png" width="80" />
+                      <img :src="routerBase + 'images/sapra.png'" width="80" />
                     </a>
                   </div>
                 </div>
                 <div class="namad pr-2">
                   <div class="namad-box-2" @click="samandehi">
-                    <img src="/images/samandehi.png" width="80" />
+                    <img
+                      :src="routerBase + 'images/samandehi.png'"
+                      width="80"
+                    />
                   </div>
                   <div class="namad-box-2">
                     <a
                       href="https://tehran.irannsr.org/fa/page/104366-%D9%85%D8%B4%D8%A7%D9%87%D8%AF%D9%87-%D8%A7%D8%B9%D8%B6%D8%A7.html?ctp_id=1086&id=25122"
                       target="_blank"
                     >
-                      <img src="/images/irannsr.png" width="80" />
+                      <img
+                        :src="routerBase + 'images/irannsr.png'"
+                        width="80"
+                      />
                     </a>
                   </div>
                 </div>
                 <div class="namad pr-2">
                   <div class="namad-box">
                     <a @click="enamad">
-                      <img src="/images/enamad.png" width="80" />
+                      <img :src="routerBase + 'images/enamad.png'" width="80" />
                     </a>
                   </div>
                 </div>
@@ -219,32 +225,38 @@
                 <div class="namad pr-2">
                   <div class="namad-box-2">
                     <a href="https://satra.ir/" target="_blank">
-                      <img src="/images/satra.png" width="80" />
+                      <img :src="routerBase + 'images/satra.png'" width="80" />
                     </a>
                   </div>
                   <div class="namad-box-2">
                     <a href="https://sapra.ir/" target="_blank">
-                      <img src="/images/sapra.png" width="80" />
+                      <img :src="routerBase + 'images/sapra.png'" width="80" />
                     </a>
                   </div>
                 </div>
                 <div v-show="checkuser.samandehi_id" class="namad pr-2">
                   <div class="namad-box-2" @click="samandehi">
-                    <img src="/images/samandehi.png" width="80" />
+                    <img
+                      :src="routerBase + 'images/samandehi.png'"
+                      width="80"
+                    />
                   </div>
                   <div v-if="checkuser.ref <= 5" class="namad-box-2">
                     <a
                       href="https://tehran.irannsr.org/fa/page/104366-%D9%85%D8%B4%D8%A7%D9%87%D8%AF%D9%87-%D8%A7%D8%B9%D8%B6%D8%A7.html?ctp_id=1086&id=25122"
                       target="_blank"
                     >
-                      <img src="/images/irannsr.png" width="80" />
+                      <img
+                        :src="routerBase + 'images/irannsr.png'"
+                        width="80"
+                      />
                     </a>
                   </div>
                 </div>
                 <div v-show="checkuser.enamad_id" class="namad pr-2">
                   <div class="namad-box">
                     <a @click="enamad">
-                      <img src="/images/enamad.png" width="80" />
+                      <img :src="routerBase + 'images/enamad.png'" width="80" />
                     </a>
                   </div>
                 </div>
@@ -564,6 +576,11 @@ export default {
     return {
       shownotification: false,
     }
+  },
+  computed: {
+    routerBase() {
+      return this.$router.options.base || '/'
+    },
   },
   watch: {
     '$route.path': function () {
