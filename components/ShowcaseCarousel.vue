@@ -741,6 +741,11 @@ export default {
   .detail-paragraph {
     font-size: 0.875rem !important;
     font-weight: 500 !important;
+    text-align: center !important;
+  }
+
+  .title2 {
+    text-align: center !important;
   }
   .detail-title {
     font-size: 1.125rem !important;

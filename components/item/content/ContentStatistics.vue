@@ -39,27 +39,95 @@
         <div v-if="hasAnyCrew" class="crew-info">
           <span v-if="directors && directors.length > 0" class="crew-item">
             <span class="crew-label">کارگردان:</span>
-            <span class="crew-names">{{
-              directors.map((d) => d.name_fa || d.name).join('، ')
-            }}</span>
+            <span class="crew-names">
+              <template v-for="(director, index) in directors">
+                <nuxt-link
+                  v-if="director && director.id"
+                  :key="`director-${director.id}`"
+                  :to="{ name: 'cast-id', params: { id: director.id } }"
+                  class="crew-link"
+                >
+                  {{ director.name_fa || director.name }}
+                </nuxt-link>
+                <span v-else :key="`director-${index}`">{{
+                  director.name_fa || director.name
+                }}</span>
+                <span
+                  v-if="index < directors.length - 1"
+                  :key="`director-sep-${index}`"
+                  >،
+                </span>
+              </template>
+            </span>
           </span>
           <span v-if="producers && producers.length > 0" class="crew-item">
             <span class="crew-label">تهیه کننده:</span>
-            <span class="crew-names">{{
-              producers.map((p) => p.name_fa || p.name).join('، ')
-            }}</span>
+            <span class="crew-names">
+              <template v-for="(producer, index) in producers">
+                <nuxt-link
+                  v-if="producer && producer.id"
+                  :key="`producer-${producer.id}`"
+                  :to="{ name: 'cast-id', params: { id: producer.id } }"
+                  class="crew-link"
+                >
+                  {{ producer.name_fa || producer.name }}
+                </nuxt-link>
+                <span v-else :key="`producer-${index}`">{{
+                  producer.name_fa || producer.name
+                }}</span>
+                <span
+                  v-if="index < producers.length - 1"
+                  :key="`producer-sep-${index}`"
+                  >،
+                </span>
+              </template>
+            </span>
           </span>
           <span v-if="writers && writers.length > 0" class="crew-item">
             <span class="crew-label">نویسنده:</span>
-            <span class="crew-names">{{
-              writers.map((w) => w.name_fa || w.name).join('، ')
-            }}</span>
+            <span class="crew-names">
+              <template v-for="(writer, index) in writers">
+                <nuxt-link
+                  v-if="writer && writer.id"
+                  :key="`writer-${writer.id}`"
+                  :to="{ name: 'cast-id', params: { id: writer.id } }"
+                  class="crew-link"
+                >
+                  {{ writer.name_fa || writer.name }}
+                </nuxt-link>
+                <span v-else :key="`writer-${index}`">{{
+                  writer.name_fa || writer.name
+                }}</span>
+                <span
+                  v-if="index < writers.length - 1"
+                  :key="`writer-sep-${index}`"
+                  >،
+                </span>
+              </template>
+            </span>
           </span>
           <span v-if="investors && investors.length > 0" class="crew-item">
             <span class="crew-label">سرمایه گذار:</span>
-            <span class="crew-names">{{
-              investors.map((i) => i.name_fa || i.name).join('، ')
-            }}</span>
+            <span class="crew-names">
+              <template v-for="(investor, index) in investors">
+                <nuxt-link
+                  v-if="investor && investor.id"
+                  :key="`investor-${investor.id}`"
+                  :to="{ name: 'cast-id', params: { id: investor.id } }"
+                  class="crew-link"
+                >
+                  {{ investor.name_fa || investor.name }}
+                </nuxt-link>
+                <span v-else :key="`investor-${index}`">{{
+                  investor.name_fa || investor.name
+                }}</span>
+                <span
+                  v-if="index < investors.length - 1"
+                  :key="`investor-sep-${index}`"
+                  >،
+                </span>
+              </template>
+            </span>
           </span>
         </div>
 
@@ -197,8 +265,8 @@ export default {
 
 .content-title {
   margin: 0;
-  font-size: 24px;
-  font-weight: bold;
+  font-size: 20px;
+  font-weight: 600;
   color: #ffffff;
   line-height: 2.2;
 }
@@ -273,6 +341,17 @@ export default {
 
 .crew-names {
   color: #ffffff;
+}
+
+.crew-link {
+  color: #ffffff;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.crew-link:hover {
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: underline;
 }
 
 .teaser-button-row {
@@ -408,7 +487,7 @@ export default {
   }
 
   .content-title {
-    font-size: 18px;
+    font-size: 20px;
   }
 
   .chips-container {
@@ -466,12 +545,12 @@ export default {
   }
 
   .backdrop-container img {
-    width: 80%;
-    object-fit: fill;
+    width: 100%;
+    object-fit: none;
   }
 
   .content-title {
-    font-size: 16px;
+    font-size: 20px;
   }
 
   .chip {

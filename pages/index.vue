@@ -1297,6 +1297,14 @@ export default {
 }
 </script>
 <style scoped>
+/* Type 1 Carousel Styles */
+.type1-carousel-section {
+  width: 100%;
+  margin-bottom: 1rem;
+  padding-right: 2.6rem;
+  padding-left: 2.6rem;
+}
+
 .offer-section {
   margin-top: -17rem;
 }
@@ -1322,6 +1330,12 @@ export default {
   .offer-section {
     margin-top: -14rem;
   }
+
+  .type1-carousel-section {
+    width: 100%;
+    padding-right: 1rem;
+    padding-left: 1rem;
+  }
 }
 @media (max-width: 1200px) {
   .offer-section {
@@ -1337,10 +1351,22 @@ export default {
   .offer-section {
     margin-top: -4rem;
   }
+
+  .type1-carousel-section {
+    width: 100%;
+    padding-right: 1rem;
+    padding-left: 1rem;
+  }
 }
 @media (max-width: 576px) {
   .offer-section {
     margin-top: 3rem !important;
+  }
+  .type1-carousel-section {
+    width: 100%;
+    margin-bottom: 1rem;
+    padding-right: 1rem;
+    padding-left: 1rem;
   }
 }
 
@@ -1352,19 +1378,30 @@ export default {
   height: 80vh !important;
 }
 
-/* Type 1 Carousel Styles */
-.type1-carousel-section {
-  width: 100%;
-  margin-bottom: 1rem;
-  padding-right: 2.6rem;
-  padding-left: 2.6rem;
-}
-
 .type1-carousel-container {
   width: 100%;
   position: relative;
   border-radius: 16px;
   overflow: hidden;
+  box-shadow: 0px 6px 12px 0px #00000033;
+}
+
+.type1-carousel-container::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.4) 0%,
+    rgba(0, 0, 0, 0.2) 30%,
+    transparent 100%
+  );
+  pointer-events: none;
+  z-index: 1;
+  border-radius: 16px;
 }
 
 .type1-carousel-slide {

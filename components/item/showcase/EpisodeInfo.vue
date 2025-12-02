@@ -45,4 +45,10 @@ export default {
   font-weight: 600 !important;
   text-shadow: 2px 2px 1px rgb(0 0 0 / 69%);
 }
+
+@media (max-width: 576px) {
+  .title-item-episode {
+    text-align: center !important;
+  }
+}
 </style>

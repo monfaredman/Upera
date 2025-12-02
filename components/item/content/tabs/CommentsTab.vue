@@ -36,4 +36,10 @@ export default {
     margin-top: -2rem;
   }
 }
+
+@media (max-width: 576px) {
+  .comments-tab-container {
+    margin-top: 1rem;
+  }
+}
 </style>

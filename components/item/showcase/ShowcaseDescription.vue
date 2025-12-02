@@ -94,4 +94,10 @@ export default {
     margin-top: 0 !important;
   }
 }
+
+@media (max-width: 576px) {
+  .title-item {
+    text-align: center !important;
+  }
+}
 </style>

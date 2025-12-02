@@ -998,8 +998,8 @@ export default {
 }
 
 @media (max-width: 640px) {
-  h4 {
-    font-size: 14px !important;
+  .horizontal-list-title {
+    font-size: 20px !important;
   }
 }
 
@@ -1114,6 +1114,8 @@ export default {
 
 .horizontal-list-title {
   color: var(--text-color);
+  font-size: 20px;
+  font-weight: 600;
 }
 
 .horizontal-list-link {

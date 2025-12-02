@@ -1218,6 +1218,10 @@ section#content {
 }
 
 @media (max-width: 575.98px) {
+  ::v-deep .content-section#about {
+    margin: 3rem 1rem 0 1rem;
+  }
+
   .content-nav-header {
     margin-top: 1rem;
   }
