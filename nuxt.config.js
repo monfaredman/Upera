@@ -7,23 +7,24 @@ const isGhPages = process.env.DEPLOY_ENV === 'GH_PAGES'
 const routerBase = isGhPages ? '/Upera/' : '/'
 const nuxtPublicPath = isGhPages ? '/Upera/_nuxt/' : '/_nuxt/'
 
-// Function to copy assets/img and assets/images to static folders
-const copyAssetsToStatic = async () => {
-  const copyRecursive = async (src, dest) => {
-    const entries = await fs.promises.readdir(src, { withFileTypes: true })
-    for (const entry of entries) {
-      const srcPath = path.join(src, entry.name)
-      const destPath = path.join(dest, entry.name)
+// Helper function to recursively copy files
+const copyRecursive = async (src, dest) => {
+  const entries = await fs.promises.readdir(src, { withFileTypes: true })
+  for (const entry of entries) {
+    const srcPath = path.join(src, entry.name)
+    const destPath = path.join(dest, entry.name)
 
-      if (entry.isDirectory()) {
-        await fs.promises.mkdir(destPath, { recursive: true })
-        await copyRecursive(srcPath, destPath)
-      } else {
-        await fs.promises.copyFile(srcPath, destPath)
-      }
+    if (entry.isDirectory()) {
+      await fs.promises.mkdir(destPath, { recursive: true })
+      await copyRecursive(srcPath, destPath)
+    } else {
+      await fs.promises.copyFile(srcPath, destPath)
     }
   }
+}
 
+// Function to copy assets/img and assets/images to static folders
+const copyAssetsToStatic = async () => {
   // Copy assets/img to static/img
   const assetsImgPath = path.join(__dirname, 'assets', 'img')
   const staticImgPath = path.join(__dirname, 'static', 'img')
@@ -58,6 +59,43 @@ const copyAssetsToStatic = async () => {
   } catch (err) {
     // eslint-disable-next-line no-console
     console.warn('Failed to copy assets/images to static/images:', err.message)
+  }
+}
+
+// Function to ensure all static files are copied to dist folder
+const copyStaticToDist = async (distPath) => {
+  const staticPath = path.join(__dirname, 'static')
+
+  try {
+    if (fs.existsSync(staticPath)) {
+      // Skip README.md files
+      const copyRecursiveSkipReadme = async (src, dest) => {
+        const entries = await fs.promises.readdir(src, { withFileTypes: true })
+        for (const entry of entries) {
+          const srcPath = path.join(src, entry.name)
+          const destPath = path.join(dest, entry.name)
+
+          // Skip README.md files
+          if (entry.name === 'README.md') {
+            continue
+          }
+
+          if (entry.isDirectory()) {
+            await fs.promises.mkdir(destPath, { recursive: true })
+            await copyRecursiveSkipReadme(srcPath, destPath)
+          } else {
+            await fs.promises.copyFile(srcPath, destPath)
+          }
+        }
+      }
+
+      await copyRecursiveSkipReadme(staticPath, distPath)
+      // eslint-disable-next-line no-console
+      console.log('✓ Copied all static files to dist folder')
+    }
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.warn('Failed to copy static files to dist:', err.message)
   }
 }
 
@@ -361,6 +399,9 @@ export default {
       await copyAssetsToStatic()
     },
     'generate:done': async (generator) => {
+      // Ensure all static files are copied to dist
+      await copyStaticToDist(generator.distPath)
+
       if (!isGhPages) return
 
       const noJekyllPath = path.join(generator.distPath, '.nojekyll')
