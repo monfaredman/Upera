@@ -71,8 +71,12 @@ export default {
   components: { VideoPlayer },
   beforeRouteLeave(to, from, next) {
     // Close any open SweetAlert modal when route changes
-    if (this.$swal) {
-      this.$swal.close()
+    if (this.$swal && this.$swal.close) {
+      try {
+        this.$swal.close()
+      } catch (e) {
+        // Ignore errors when closing swal
+      }
     }
     next()
   },
@@ -112,30 +116,42 @@ export default {
       contentType: 'video',
     }
   },
-  watch: {
-    '$route.params.id'(newId, oldId) {
-      // Reload movie when route params change (e.g., browser back/forward)
-      if (newId && newId !== oldId) {
-        this.loadMovie()
-      }
-    },
-  },
   mounted() {
     // حذف کلاس‌های احتمالی قبلی
     if (this.$auth && this.$auth.loggedIn) {
       this.guest = false
     }
     this.loadMovie()
+
+    // Handle browser back button
+    window.addEventListener('popstate', this.handlePopState)
   },
 
   beforeDestroy() {
     // Close any open SweetAlert modal
-    if (this.$swal) {
-      this.$swal.close()
+    if (this.$swal && this.$swal.close) {
+      try {
+        this.$swal.close()
+      } catch (e) {
+        // Ignore errors when closing swal
+      }
     }
+
+    // Remove event listener
+    window.removeEventListener('popstate', this.handlePopState)
   },
 
   methods: {
+    handlePopState() {
+      // Close any open SweetAlert modal when back button is pressed
+      if (this.$swal && this.$swal.close) {
+        try {
+          this.$swal.close()
+        } catch (e) {
+          // Ignore errors when closing swal
+        }
+      }
+    },
 
     showErrorAlert(data) {
       let dlsmtitle =
@@ -236,13 +252,6 @@ export default {
       try {
         const id = this.$route.params.id
         if (!id) return
-
-        // Reset loading state when loading new movie
-        this.loading = true
-        this.videoUrl = ''
-        this.soon = false
-        this.showNextMovie = false
-        this.suggestion = null
 
         const ref = this.$cookiz.get('ref') || ''
         // انتخاب API مناسب بر اساس وضعیت guest
@@ -412,9 +421,6 @@ export default {
         this.report_button = false
         console.error('Report Error:', error)
       }
-    },
-    reloadPage() {
-      location.reload()
     },
   },
 }

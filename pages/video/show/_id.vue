@@ -98,20 +98,15 @@ export default {
       fullrateData: null,
     }
   },
-  watch: {
-    '$route.params.id'(newId, oldId) {
-      // Reload video when route params change (e.g., browser back/forward)
-      if (newId && newId !== oldId) {
-        this.loadVideo()
-      }
-    },
-  },
   mounted() {
     // حذف کلاس‌های احتمالی قبلی
     if (this.$auth && this.$auth.loggedIn) {
       this.guest = false
     }
     this.loadVideo()
+
+    // Handle browser back button
+    window.addEventListener('popstate', this.handlePopState)
   },
 
   beforeDestroy() {
@@ -123,9 +118,22 @@ export default {
         // Ignore errors when closing swal
       }
     }
+
+    // Remove event listener
+    window.removeEventListener('popstate', this.handlePopState)
   },
 
   methods: {
+    handlePopState() {
+      // Close any open SweetAlert modal when back button is pressed
+      if (this.$swal && this.$swal.close) {
+        try {
+          this.$swal.close()
+        } catch (e) {
+          // Ignore errors when closing swal
+        }
+      }
+    },
     showErrorAlert(data) {
       let dlsmtitle =
         this.$i18n.locale === 'fa' ? data.message_fa : data.message
@@ -204,13 +212,6 @@ export default {
       try {
         const id = this.$route.params.id
         if (!id) return
-
-        // Reset loading state when loading new video
-        this.loading = true
-        this.videoUrl = ''
-        this.soon = false
-        this.showNextVideo = false
-        this.suggestion = null
 
         const ref = this.$cookiz.get('ref') || ''
         // انتخاب API مناسب بر اساس وضعیت guest
@@ -348,9 +349,6 @@ export default {
     handleSubscriptionPurchase() {
       // پردازش خرید اشتراک
       console.log('Subscription purchase triggered from video player')
-    },
-    reloadPage() {
-      location.reload()
     },
   },
 }
