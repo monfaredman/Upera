@@ -93,10 +93,10 @@ const copyStaticToDist = async (distPath) => {
       // Always copy to root of dist (Nuxt should handle this, but we ensure it)
       await copyRecursiveSkipReadme(staticPath, distPath)
 
-      // For GH_PAGES with routerBase, also ensure critical files are accessible
-      // Static files should be at root, which Nuxt handles, but we verify
+      // For GH_PAGES with routerBase, verify critical files are accessible at root
+      // Static files should be at root of dist, not under /Upera/
       if (isGhPages) {
-        // Verify critical files exist
+        // Critical files that must be at root of dist
         const criticalFiles = [
           'message-icon.png',
           'images/satra.png',
@@ -109,12 +109,25 @@ const copyStaticToDist = async (distPath) => {
         for (const file of criticalFiles) {
           const srcFile = path.join(staticPath, file)
           const destFile = path.join(distPath, file)
+
           if (fs.existsSync(srcFile)) {
             const destDir = path.dirname(destFile)
             await fs.promises.mkdir(destDir, { recursive: true })
             await fs.promises.copyFile(srcFile, destFile)
+
+            // Verify the file was copied successfully
+            if (fs.existsSync(destFile)) {
+              // eslint-disable-next-line no-console
+              console.log(
+                `✓ Verified ${file} is in dist folder at: ${destFile}`
+              )
+            } else {
+              // eslint-disable-next-line no-console
+              console.error(`✗ Failed to copy ${file} to dist folder`)
+            }
+          } else {
             // eslint-disable-next-line no-console
-            console.log(`✓ Ensured ${file} is in dist folder`)
+            console.warn(`⚠ Source file not found: ${srcFile}`)
           }
         }
       }
@@ -427,9 +440,16 @@ export default {
       // Copy assets/img and assets/images to static folders so images are available in dist folder
       await copyAssetsToStatic()
     },
+    'generate:distRemoved': async () => {
+      // This hook runs after dist is cleaned but before generation starts
+      // Ensure static files are ready in static folder so Nuxt can copy them
+      await copyAssetsToStatic()
+    },
     'generate:done': async (generator) => {
-      // Ensure all static files are copied to dist
-      await copyStaticToDist(generator.distPath)
+      // Ensure all static files are copied to dist after generation completes
+      // This is critical - we copy ALL static files to ensure nothing is missing
+      const distPath = generator.distPath || path.join(__dirname, 'dist')
+      await copyStaticToDist(distPath)
 
       if (!isGhPages) return
 
