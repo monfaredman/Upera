@@ -518,7 +518,80 @@ export default {
 section#watching {
   margin: -1rem 50px 0 50px !important;
 }
+@media (max-width: 575.98px) {
+  .episode-remove-btn {
+    font-size: 12px !important;
+  }
 
+  .col-lg-3.col-md-6.col-6.mb-3 {
+    padding: 0 !important;
+    max-width: 46% !important;
+  }
+  .row {
+    flex-direction: row !important;
+    gap: 0 26px !important;
+  }
+  .row.align-items-center.container-fluid-header {
+    flex-direction: row !important;
+    gap: 0 0px !important;
+  }
+
+  .row.align-items-center.container-fluid-header .col-6.col-md-auto {
+    max-width: 43% !important;
+  }
+
+  section#watching {
+    margin-top: -1rem !important;
+    margin-bottom: 1rem !important;
+    width: 84%;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  .episode-title {
+    font-weight: 400;
+    font-style: normal;
+    font-size: 14px;
+    line-height: 32px;
+    text-align: right;
+    color: #ffffff;
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-clamp: 2;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+
+  .episode-card {
+    border-radius: 8px;
+    padding: 0;
+    gap: 8px;
+    background: #373737;
+    display: flex;
+    flex-direction: column;
+    opacity: 1;
+    transition: all 0.3s ease;
+  }
+
+  .episode-content {
+    gap: 2px;
+  }
+
+  .sort-dropdown {
+    min-width: 100px;
+    width: 100px;
+    padding: 0;
+  }
+
+  .container-fluid-header .col-6 {
+    padding: 0 !important;
+  }
+}
 .container-fluid {
   padding: 0 !important;
 }
@@ -805,53 +878,6 @@ section#watching {
 @media (max-width: 767.98px) {
   .season-dropdown {
     width: fit-content;
-  }
-}
-
-@media (max-width: 575.98px) {
-  section#watching {
-    margin: -1rem unset 1rem unset !important;
-  }
-
-  .episode-title {
-    font-weight: 400;
-    font-style: normal;
-    font-size: 14px;
-    line-height: 32px;
-    text-align: right;
-    color: #ffffff;
-    margin: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    line-clamp: 2;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-  }
-
-  .episode-card {
-    border-radius: 8px;
-    padding: 0;
-    gap: 8px;
-    background: #373737;
-    display: flex;
-    flex-direction: column;
-    opacity: 1;
-    transition: all 0.3s ease;
-  }
-
-  .episode-content {
-    gap: 2px;
-  }
-
-  .sort-dropdown {
-    min-width: 100px;
-    width: 100px;
-    padding: 0;
-  }
-
-  .container-fluid-header .col-6 {
-    padding: 0 !important;
   }
 }
 </style>
