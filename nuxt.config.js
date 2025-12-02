@@ -84,12 +84,41 @@ const copyStaticToDist = async (distPath) => {
             await fs.promises.mkdir(destPath, { recursive: true })
             await copyRecursiveSkipReadme(srcPath, destPath)
           } else {
+            // Copy file, overwriting if it exists
             await fs.promises.copyFile(srcPath, destPath)
           }
         }
       }
 
+      // Always copy to root of dist (Nuxt should handle this, but we ensure it)
       await copyRecursiveSkipReadme(staticPath, distPath)
+
+      // For GH_PAGES with routerBase, also ensure critical files are accessible
+      // Static files should be at root, which Nuxt handles, but we verify
+      if (isGhPages) {
+        // Verify critical files exist
+        const criticalFiles = [
+          'message-icon.png',
+          'images/satra.png',
+          'images/sapra.png',
+          'images/samandehi.png',
+          'images/irannsr.png',
+          'images/enamad.png',
+        ]
+
+        for (const file of criticalFiles) {
+          const srcFile = path.join(staticPath, file)
+          const destFile = path.join(distPath, file)
+          if (fs.existsSync(srcFile)) {
+            const destDir = path.dirname(destFile)
+            await fs.promises.mkdir(destDir, { recursive: true })
+            await fs.promises.copyFile(srcFile, destFile)
+            // eslint-disable-next-line no-console
+            console.log(`✓ Ensured ${file} is in dist folder`)
+          }
+        }
+      }
+
       // eslint-disable-next-line no-console
       console.log('✓ Copied all static files to dist folder')
     }
