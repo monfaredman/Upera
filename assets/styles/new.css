@@ -3618,7 +3618,7 @@ a.thumbnail-wrapper {
   position: absolute;
   top: 0;
   bottom: 0;
-  background-image: url('/images/footer-bg.svg');
+  background-image: var(--footer-bg-url, url('/images/footer-bg.svg'));
   background-position: 0 0;
   background-repeat: no-repeat;
   width: 3.5rem;

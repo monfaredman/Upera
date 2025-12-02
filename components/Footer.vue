@@ -1,7 +1,12 @@
 <template>
   <div>
     <section class="footer-sticky hide-mobile hide-tablet d-none">
-      <div class="footer-sticky-wrapper-inner">
+      <div
+        class="footer-sticky-wrapper-inner"
+        :style="{
+          '--footer-bg-url': `url('${routerBase}images/footer-bg.svg')`,
+        }"
+      >
         <div class="container-fluid px-0">
           <div class="d-flex align-items-center justify-content-between">
             <ul class="nav nav-separator">
