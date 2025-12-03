@@ -2652,6 +2652,16 @@ a.thumbnail-wrapper {
     ) !important;
   }
 }
+
+@media (max-width: 768px) {
+  .showcase .showcase-pic::before {
+    background: linear-gradient(
+      180deg,
+      rgba(217, 217, 217, 0) 0%,
+      #000000 90.21%
+    ) !important;
+  }
+}
 .showcase .showcase-thumbnail-wrapper-outter,
 .showcase .count-down-wrapper {
   position: absolute;

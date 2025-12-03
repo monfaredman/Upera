@@ -13,7 +13,7 @@
               :alt="data.item.name"
               :width="1120"
               :height="'full'"
-              :thumb-options="{ w: 1120, h: 576, q: 95, a: 't', zc: 1 }"
+              :thumb-options="{ w: 1920, h: 960, q: 95, a: 't', zc: 1 }"
               type="backdrops"
               class="showcase-img d-none d-lg-block"
             />

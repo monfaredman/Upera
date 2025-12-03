@@ -1317,6 +1317,7 @@ export default {
           this.addClass('vjs-custom-rtl-volume')
           this.volumeLevel = player.volume()
           this.isDragging = false
+          this.touchHandled = false // Flag to prevent double-firing on mobile
           this.createVolumeElements()
           this.attachEventHandlers()
           this.updateVolumeDisplay()
@@ -1372,9 +1373,12 @@ export default {
 
           const volumeBar = this.el().querySelector('.vjs-rtl-volume-bar')
 
-          // Mute/unmute on button click
-          button.addEventListener('click', (e) => {
-            e.stopPropagation()
+          // Toggle volume function
+          const toggleVolume = (e) => {
+            if (e) {
+              e.stopPropagation()
+              e.preventDefault()
+            }
             if (this.player().volume() > 0) {
               this.lastVolume = this.player().volume()
               this.player().volume(0)
@@ -1382,6 +1386,59 @@ export default {
               this.player().volume(this.lastVolume || 0.5)
             }
             this.saveVolumeState()
+          }
+
+          // Mobile touch handling for volume button
+          let touchStartTime = 0
+          let touchStartX = 0
+          let touchStartY = 0
+
+          button.addEventListener(
+            'touchstart',
+            (e) => {
+              touchStartTime = Date.now()
+              const touch = e.touches[0]
+              touchStartX = touch.clientX
+              touchStartY = touch.clientY
+              this.touchHandled = false
+              // Prevent default to avoid double-tap zoom and other browser behaviors
+              e.preventDefault()
+            },
+            { passive: false }
+          )
+
+          button.addEventListener(
+            'touchend',
+            (e) => {
+              // Only handle if touch was quick and didn't move much (tap, not swipe)
+              const touchEndTime = Date.now()
+              const touchDuration = touchEndTime - touchStartTime
+              const touch = e.changedTouches[0]
+              const touchEndX = touch.clientX
+              const touchEndY = touch.clientY
+              const deltaX = Math.abs(touchEndX - touchStartX)
+              const deltaY = Math.abs(touchEndY - touchStartY)
+
+              // Consider it a tap if duration < 300ms and movement < 10px
+              if (touchDuration < 300 && deltaX < 10 && deltaY < 10) {
+                this.touchHandled = true
+                toggleVolume(e)
+                // Prevent click event from firing after touchend
+                e.preventDefault()
+                e.stopPropagation()
+              }
+            },
+            { passive: false }
+          )
+
+          // Desktop click handling
+          button.addEventListener('click', (e) => {
+            // Only handle click if touch wasn't already handled (prevents double-firing on mobile)
+            if (!this.touchHandled) {
+              toggleVolume(e)
+            }
+            // Reset flag for next interaction
+            this.touchHandled = false
           })
 
           // Show/hide volume bar on hover
@@ -4542,6 +4599,22 @@ video#episode-player_html5_api {
   ::v-deep .video-js .vjs-menu-button {
     touch-action: manipulation !important;
     cursor: pointer !important;
+  }
+
+  /* Ensure volume button is properly touchable on mobile */
+  ::v-deep .vjs-rtl-volume-button {
+    touch-action: manipulation !important;
+    -webkit-tap-highlight-color: transparent !important;
+    -webkit-touch-callout: none !important;
+    pointer-events: auto !important;
+    user-select: none !important;
+    -webkit-user-select: none !important;
+  }
+
+  /* Ensure the entire volume control container is touchable */
+  ::v-deep .vjs-custom-rtl-volume {
+    touch-action: manipulation !important;
+    pointer-events: auto !important;
   }
 }
 </style>
