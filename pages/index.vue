@@ -537,7 +537,7 @@ const SWIPER_OPTION_POSTER = {
   threshold: 2,
   countdown: {},
   breakpoints: {
-    200: { slidesPerView: 2.5 },
+    200: { slidesPerView: 2.8 },
     420: { slidesPerView: 3.5 },
     768: { slidesPerView: 4.5 },
     992: { slidesPerView: 5.5 },
