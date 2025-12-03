@@ -4230,6 +4230,15 @@ video#episode-player_html5_api {
   animation: slideUpFull 0.3s ease-out;
 }
 
+@media (max-width: 576px) {
+  .settings-drawer {
+    width: 100vw;
+    height: 50vh !important;
+    max-width: none;
+    border-radius: 0;
+  }
+}
+
 @keyframes slideUp {
   from {
     transform: translateY(100%);
