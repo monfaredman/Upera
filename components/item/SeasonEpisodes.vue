@@ -518,6 +518,7 @@ export default {
 section#watching {
   margin: -1rem 50px 0 50px !important;
 }
+
 @media (max-width: 575.98px) {
   .episode-remove-btn {
     font-size: 12px !important;
@@ -554,7 +555,7 @@ section#watching {
   .episode-title {
     font-weight: 400;
     font-style: normal;
-    font-size: 14px;
+    font-size: 14px !important;
     line-height: 32px;
     text-align: right;
     color: #ffffff;
@@ -592,6 +593,13 @@ section#watching {
     padding: 0 !important;
   }
 }
+@media (max-width: 400px) {
+  .col-lg-3.col-md-6.col-6.mb-3 {
+    padding: 0 !important;
+    max-width: 45% !important;
+  }
+}
+
 .container-fluid {
   padding: 0 !important;
 }

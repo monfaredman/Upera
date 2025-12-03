@@ -942,4 +942,14 @@ search-modal-content::-webkit-scrollbar-track {
   flex-direction: column;
   align-items: start;
 }
+
+@media (max-width: 576px) {
+  .actor {
+    width: 28% !important;
+  }
+
+  .actor2 {
+    width: 20% !important;
+  }
+}
 </style>
