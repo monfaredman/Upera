@@ -1,6 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-    <g id="prefix__backward" transform="translate(0 .469)">
-        <path id="prefix__Path_43" d="M11 3a7.973 7.973 0 0 0-5.307 2.026l-1.36-1.359v4h4l-1.7-1.7A6.661 6.661 0 1 1 4.333 11 .667.667 0 1 0 3 11a8 8 0 1 0 8-8zm1.792 5.565c-1.211 0-1.971.909-1.971 2.466s.75 2.484 1.971 2.487 1.971-.935 1.971-2.484S14 8.565 12.792 8.565zm-4.367.128l-1.2.815v1.026l1.133-.763h.062v3.62h1.197v-4.7zm4.367.792c.456 0 .76.513.76 1.547s-.3 1.568-.76 1.568-.76-.531-.76-1.568.304-1.548.76-1.548z" data-name="Path 43" transform="translate(1 1)" style="fill:#3737b6"/>
-        <path id="prefix__Rectangle_203" d="M0 0H24V24H0z" data-name="Rectangle 203" transform="translate(0 -.469)" style="fill:none"/>
-    </g>
-</svg>

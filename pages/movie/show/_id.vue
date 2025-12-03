@@ -117,6 +117,12 @@ export default {
     }
   },
   mounted() {
+    // Prevent scrolling on mobile
+    if (process.client && window.innerWidth <= 767.98) {
+      document.documentElement.classList.add('video-page-mobile')
+      document.body.classList.add('video-page-mobile')
+    }
+
     // حذف کلاس‌های احتمالی قبلی
     if (this.$auth && this.$auth.loggedIn) {
       this.guest = false
@@ -128,6 +134,12 @@ export default {
   },
 
   beforeDestroy() {
+    // Restore scrolling when leaving page
+    if (process.client) {
+      document.documentElement.classList.remove('video-page-mobile')
+      document.body.classList.remove('video-page-mobile')
+    }
+
     // Close any open SweetAlert modal
     if (this.$swal && this.$swal.close) {
       try {
@@ -482,6 +494,14 @@ export default {
   align-items: flex-start;
 }
 
+/* Fixed header on mobile */
+@media (max-width: 767.98px) {
+  .hamshahri {
+    position: fixed !important;
+    z-index: 1000;
+  }
+}
+
 /* لوگوی سایت */
 .site-logo {
   position: absolute;
@@ -578,5 +598,70 @@ export default {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+}
+
+/* Prevent vertical scrolling on mobile */
+@media (max-width: 767.98px) {
+  html.video-page-mobile,
+  body.video-page-mobile {
+    overflow: hidden !important;
+    position: fixed !important;
+    width: 100% !important;
+    height: 100% !important;
+    touch-action: none !important;
+    -webkit-overflow-scrolling: none !important;
+    overscroll-behavior: none !important;
+  }
+
+  /* Prevent scrolling on video container and all parents */
+  html.video-page-mobile #srm,
+  html.video-page-mobile #srmrtl,
+  body.video-page-mobile #srm,
+  body.video-page-mobile #srmrtl {
+    overflow: hidden !important;
+    height: 100vh !important;
+    max-height: 100vh !important;
+  }
+
+  /* Prevent scrolling on video container */
+  .video-container {
+    overflow: hidden !important;
+    height: 100vh !important;
+    max-height: 100vh !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+  }
+
+  /* Hide default header on mobile */
+  .video-container #header,
+  .video-container .page-header {
+    display: none !important;
+  }
+
+  /* Ensure hamshahri stays fixed */
+  .video-container .hamshahri {
+    position: fixed !important;
+    z-index: 1000 !important;
+  }
+
+  /* Chrome-specific: Allow touch interactions on video player */
+  .video-container .video-js,
+  .video-container .video-js video,
+  .video-container .video-js .vjs-control-bar,
+  .video-container .video-js .vjs-control-bar * {
+    touch-action: manipulation !important;
+  }
+
+  .video-container .video-js video {
+    touch-action: pan-x pan-y !important;
+  }
+
+  .video-container .video-js .vjs-progress-control {
+    touch-action: pan-x !important;
+  }
 }
 </style>

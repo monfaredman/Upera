@@ -1,5 +1,19 @@
 <template>
   <div class="hamshahri">
+    <!-- Fixed header overlay for mobile -->
+    <div class="video-header-overlay d-md-none">
+      <!-- لوگوی سایت -->
+      <div class="site-logo">
+        <img :src="routerBase + 'images/logo-mobile.svg'" alt="Logo" />
+      </div>
+
+      <!-- دکمه بازگشت -->
+      <button class="back-button" @click="goBack">
+        <i class="fa fa-chevron-left" style="color: white" />
+        <p class="back-text">بازگشت</p>
+      </button>
+    </div>
+
     <div v-if="loadingPage" class="text-center p-5">
       <img :src="routerBase + 'images/loading-white.gif'" alt="Loading..." />
     </div>
@@ -608,6 +622,12 @@ export default {
     },
   },
   async mounted() {
+    // Add mobile class for styling
+    if (process.client && window.innerWidth <= 767.98) {
+      document.documentElement.classList.add('video-page-mobile')
+      document.body.classList.add('video-page-mobile')
+    }
+
     try {
       const { data } = await this.$axios.get(
         '/ghost/getVideoDetails/' + this.$route.params.id
@@ -625,7 +645,21 @@ export default {
       this.watchedVideos = JSON.parse(storedVideos)
     }
   },
+  beforeDestroy() {
+    // Restore scrolling when leaving page
+    if (process.client) {
+      document.documentElement.classList.remove('video-page-mobile')
+      document.body.classList.remove('video-page-mobile')
+    }
+  },
   methods: {
+    goBack() {
+      if (window.history.length > 2) {
+        this.$router.go(-1)
+      } else {
+        this.$router.push('/')
+      }
+    },
     toggleExpand() {
       this.isExpanded = !this.isExpanded // تغییر وضعیت نمایش
     },
@@ -776,3 +810,131 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+/* Fixed header overlay for mobile video page */
+.video-header-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  pointer-events: none;
+}
+
+.video-header-overlay > * {
+  pointer-events: auto;
+}
+
+/* لوگوی سایت */
+.video-header-overlay .site-logo {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 1001;
+}
+
+.video-header-overlay .site-logo img {
+  height: 40px;
+  width: auto;
+  opacity: 0.9;
+}
+
+/* دکمه بازگشت */
+.video-header-overlay .back-button {
+  width: 131px;
+  height: 40px;
+  border-radius: 8px;
+  gap: 8px;
+  padding: 12px 28px;
+  background: #525252;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s;
+  z-index: 1001;
+}
+
+.video-header-overlay .back-button:hover {
+  background: #6a6a6a;
+}
+
+.video-header-overlay .back-text {
+  font-weight: 600;
+  font-size: 16px;
+  text-align: right;
+  color: #f5f5f5;
+  margin: 0 0 0 8px;
+  height: 3rem;
+  line-height: 3.1rem;
+}
+
+/* Mobile video page styles - prevent vertical scrolling */
+@media (max-width: 767.98px) {
+  /* Hide default header on mobile for video page */
+  .hamshahri #header,
+  .hamshahri .page-header {
+    display: none !important;
+  }
+
+  /* Prevent vertical scrolling on mobile */
+  html.video-page-mobile,
+  body.video-page-mobile {
+    overflow: hidden !important;
+    position: fixed !important;
+    width: 100% !important;
+    height: 100% !important;
+    touch-action: none !important;
+    -webkit-overflow-scrolling: none !important;
+    overscroll-behavior: none !important;
+  }
+
+  /* Prevent scrolling on video container and all parents */
+  html.video-page-mobile #srm,
+  html.video-page-mobile #srmrtl,
+  body.video-page-mobile #srm,
+  body.video-page-mobile #srmrtl {
+    overflow: hidden !important;
+    height: 100vh !important;
+    max-height: 100vh !important;
+  }
+
+  /* Ensure video content is properly positioned */
+  .hamshahri .video-detail {
+    padding-top: 0;
+  }
+
+  /* Ensure fixed header stays on top */
+  .video-header-overlay {
+    position: fixed !important;
+  }
+
+  /* Prevent any scrolling on the main container */
+  .hamshahri {
+    overflow: hidden !important;
+    max-height: 100vh !important;
+  }
+
+  /* Chrome-specific: Allow touch interactions on video player */
+  .hamshahri .video-js,
+  .hamshahri .video-js video,
+  .hamshahri .video-js .vjs-control-bar,
+  .hamshahri .video-js .vjs-control-bar * {
+    touch-action: manipulation !important;
+  }
+
+  .hamshahri .video-js video {
+    touch-action: pan-x pan-y !important;
+  }
+
+  .hamshahri .video-js .vjs-progress-control {
+    touch-action: pan-x !important;
+  }
+}
+</style>

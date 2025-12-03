@@ -1,6 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-    <g id="prefix__fullscreen" transform="translate(-408 -3695)">
-        <path id="prefix__Path_400" d="M5.636 4A1.648 1.648 0 0 0 4 5.636v3.273a.818.818 0 1 0 1.636 0V5.636h3.273a.818.818 0 1 0 0-1.636zm11.455 0a.818.818 0 1 0 0 1.636h3.273v3.273a.818.818 0 1 0 1.636 0V5.636A1.648 1.648 0 0 0 20.364 4zM4.805 16.26a.822.822 0 0 0-.805.831v3.273A1.648 1.648 0 0 0 5.636 22h3.273a.818.818 0 1 0 0-1.636H5.636v-3.273a.819.819 0 0 0-.831-.831zm16.364 0a.822.822 0 0 0-.805.831v3.273h-3.273a.818.818 0 1 0 0 1.636h3.273A1.648 1.648 0 0 0 22 20.364v-3.273a.819.819 0 0 0-.831-.831z" data-name="Path 400" transform="translate(407 3694)" style="fill:#3737b6"/>
-        <path id="prefix__Rectangle_1015" d="M0 0H24V24H0z" data-name="Rectangle 1015" transform="translate(408 3695)" style="fill:none"/>
-    </g>
-</svg>

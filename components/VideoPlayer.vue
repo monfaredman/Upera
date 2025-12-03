@@ -1898,8 +1898,31 @@ export default {
       const playerEl = this.player.el()
 
       playerEl.addEventListener('mousemove', resetInactivityTimer)
-      playerEl.addEventListener('touchstart', resetInactivityTimer)
+      // Chrome-specific: Use non-passive touch events for proper control interaction
+      playerEl.addEventListener('touchstart', resetInactivityTimer, {
+        passive: false,
+      })
+      playerEl.addEventListener('touchmove', resetInactivityTimer, {
+        passive: false,
+      })
+      playerEl.addEventListener('touchend', resetInactivityTimer, {
+        passive: false,
+      })
       playerEl.addEventListener('click', resetInactivityTimer)
+
+      // Chrome-specific: Ensure control bar elements handle touch properly
+      const controlBar = playerEl.querySelector('.vjs-control-bar')
+      if (controlBar) {
+        controlBar.addEventListener('touchstart', resetInactivityTimer, {
+          passive: false,
+        })
+        controlBar.addEventListener('touchmove', resetInactivityTimer, {
+          passive: false,
+        })
+        controlBar.addEventListener('touchend', resetInactivityTimer, {
+          passive: false,
+        })
+      }
 
       // Show controls when paused
       this.player.on('pause', () => {
@@ -4227,5 +4250,50 @@ video#episode-player_html5_api {
   .vjs-progress-control
   .vjs-time-tooltip {
   display: none !important;
+}
+
+/* Chrome-specific fixes for touch interactions */
+@media (max-width: 767.98px) {
+  /* Allow touch interactions on video player and controls in Chrome */
+  ::v-deep .video-js,
+  ::v-deep .video-js video,
+  ::v-deep .video-js .vjs-control-bar,
+  ::v-deep .video-js .vjs-control-bar *,
+  ::v-deep .video-js .vjs-progress-control,
+  ::v-deep .video-js .vjs-progress-holder,
+  ::v-deep .video-js .vjs-play-control,
+  ::v-deep .video-js .vjs-button,
+  ::v-deep .video-js .vjs-menu-button,
+  ::v-deep .video-js .vjs-volume-panel,
+  ::v-deep .video-js .vjs-fullscreen-control {
+    touch-action: manipulation !important;
+    -webkit-tap-highlight-color: transparent !important;
+    -webkit-touch-callout: none !important;
+  }
+
+  /* Ensure video element allows native touch handling */
+  ::v-deep .video-js video {
+    touch-action: pan-x pan-y !important;
+    pointer-events: auto !important;
+  }
+
+  /* Prevent Chrome from treating controls as passive */
+  ::v-deep .video-js .vjs-control-bar {
+    touch-action: manipulation !important;
+    -webkit-user-select: none !important;
+    user-select: none !important;
+  }
+
+  /* Chrome-specific: Allow proper touch handling on progress bar */
+  ::v-deep .video-js .vjs-progress-control {
+    touch-action: pan-x !important;
+  }
+
+  /* Chrome-specific: Ensure buttons are clickable */
+  ::v-deep .video-js .vjs-button,
+  ::v-deep .video-js .vjs-menu-button {
+    touch-action: manipulation !important;
+    cursor: pointer !important;
+  }
 }
 </style>

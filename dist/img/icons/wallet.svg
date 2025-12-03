@@ -1,6 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-    <g id="prefix__wallet" transform="translate(-560 -3624)">
-        <path id="prefix__Path_416" d="M14.009 3.031a3.667 3.667 0 0 0-.916.153c-.98.258-6.726 1.848-6.812 1.873A4.368 4.368 0 0 0 4.55 6.065a2.483 2.483 0 0 1 1.405-.438h9.123V4.538c0-.527-.004-1.507-1.069-1.507zM5.955 6.279A2.038 2.038 0 0 0 4 8.234V15.2a1.836 1.836 0 0 0 1.833 1.833h10.019a1.836 1.836 0 0 0 1.832-1.833V8.183a2.006 2.006 0 0 0-1.955-1.9zm9.286 4.561a.815.815 0 1 1-.815.815.814.814 0 0 1 .815-.814z" data-name="Path 416" transform="translate(561 3625.969)" style="fill:#3737b6"/>
-        <path id="prefix__Rectangle_1023" d="M0 0H24V24H0z" data-name="Rectangle 1023" transform="translate(560 3624)" style="fill:none"/>
-    </g>
-</svg>
