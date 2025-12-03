@@ -3042,7 +3042,9 @@ export default {
   );
   backdrop-filter: blur(20px);
   box-shadow: -0.73px 0.73px 0.73px -1.46px #ffffff59 inset;
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   object-fit: contain;
   padding: 6px;
   cursor: pointer;
@@ -3063,7 +3065,9 @@ export default {
   );
   backdrop-filter: blur(20px);
   box-shadow: -0.73px 0.73px 0.73px -1.46px #ffffff59 inset;
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   object-fit: contain;
   padding: 6px;
   cursor: pointer;
@@ -3084,7 +3088,9 @@ export default {
   );
   backdrop-filter: blur(20px);
   box-shadow: -0.73px 0.73px 0.73px -1.46px #ffffff59 inset;
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   object-fit: contain;
   padding: 6px;
   cursor: pointer;
@@ -3105,16 +3111,13 @@ export default {
   );
   backdrop-filter: blur(20px);
   box-shadow: -0.73px 0.73px 0.73px -1.46px #ffffff59 inset;
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   object-fit: contain;
   padding: 6px;
   cursor: pointer;
   transition: transform 0.2s ease, opacity 0.3s ease;
-}
-
-::v-deep .vjs-button-icon:hover {
-  transform: scale(1.1);
-  opacity: 0.9;
 }
 
 /* Progress Bar Bullet (Handle) Styles */
@@ -3153,10 +3156,9 @@ export default {
   background-color: transparent !important;
 }
 
-::v-deep .vjs-play-control .vjs-icon-placeholder::before,
 ::v-deep .vjs-fullscreen-control .vjs-icon-placeholder::before {
   width: 36px !important;
-  height: 36px !important;
+  height: 29px !important;
   border-radius: 32px !important;
   opacity: 1 !important;
   background-color: #00000040 !important;
@@ -3174,10 +3176,24 @@ export default {
   transition: transform 0.2s ease, opacity 0.3s ease !important;
 }
 
-::v-deep .vjs-play-control:hover .vjs-icon-placeholder::before,
-::v-deep .vjs-fullscreen-control:hover .vjs-icon-placeholder::before {
-  transform: scale(1.1) !important;
-  opacity: 0.9 !important;
+::v-deep .vjs-play-control .vjs-icon-placeholder::before {
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: 32px !important;
+  opacity: 1 !important;
+  background-color: #00000040 !important;
+  border: 1px solid !important;
+  border-image-source: linear-gradient(
+    202.36deg,
+    rgba(255, 255, 255, 0.2) 8.26%,
+    rgba(255, 255, 255, 0) 85.43%
+  ) !important;
+  backdrop-filter: blur(20px) !important;
+  box-shadow: -0.73px 0.73px 0.73px -1.46px #ffffff59 inset !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: transform 0.2s ease, opacity 0.3s ease !important;
 }
 
 .vjs-vast-click-container {
@@ -3253,7 +3269,6 @@ export default {
 .vjs-quality-selector:hover,
 .vjs-autoplay-toggle:hover {
   background-color: rgba(255, 255, 255, 0.1);
-  transform: scale(1.1);
 }
 
 .vjs-control-bar {
@@ -3268,6 +3283,30 @@ export default {
 
 .vjs-control {
   margin: 0 5px;
+}
+
+/* Ensure all Video.js buttons have proper vertical alignment */
+::v-deep .video-js .vjs-control-bar .vjs-button,
+::v-deep .video-js .vjs-control-bar .vjs-menu-button {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* Ensure all control bar children are vertically aligned */
+::v-deep .video-js .vjs-control-bar > .vjs-control {
+  display: flex !important;
+  align-items: center !important;
+}
+
+/* Ensure icons inside buttons are vertically centered */
+::v-deep .video-js .vjs-button .vjs-icon-placeholder,
+::v-deep .video-js .vjs-button .vjs-icon,
+::v-deep .video-js .vjs-menu-button .vjs-icon-placeholder,
+::v-deep .video-js .vjs-menu-button .vjs-icon {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
 }
 
 :deep(.video-js.vjs-rtl) {
@@ -3295,7 +3334,6 @@ export default {
 .vjs-prev10-button:hover,
 .vjs-next10-button:hover {
   transform: scale(1.2);
-  color: #00a8ff;
 }
 
 .vjs-next10-button {
@@ -3565,7 +3603,6 @@ video#episode-player_html5_api {
 
 ::v-deep .vjs-next-button:hover {
   color: #00a8ff;
-  transform: scale(1.1);
 }
 
 ::v-deep .vjs-icon-next {
@@ -3586,11 +3623,6 @@ video#episode-player_html5_api {
   align-items: center;
   justify-content: center;
   transition: transform 0.2s ease, color 0.2s ease;
-}
-
-::v-deep .vjs-pip-button:hover {
-  color: #00a8ff;
-  transform: scale(1.1);
 }
 
 ::v-deep .vjs-icon-pip {
@@ -3615,7 +3647,6 @@ video#episode-player_html5_api {
 
 ::v-deep .vjs-subtitle-settings-button:hover {
   color: #00a8ff;
-  transform: scale(1.1);
 }
 
 ::v-deep .vjs-icon-subtitles {
@@ -3802,7 +3833,6 @@ video#episode-player_html5_api {
 
 ::v-deep .vjs-playback-rate-button:hover {
   color: #00a8ff;
-  transform: scale(1.1);
 }
 
 ::v-deep .vjs-icon-playback-rate {
@@ -4119,7 +4149,7 @@ video#episode-player_html5_api {
 }
 
 ::v-deep .vjs-rtl-volume-bar:hover .vjs-rtl-volume-handle {
-  transform: scale(1.1);
+  columns: #00a8ff;
 }
 
 /* Position for custom RTL volume in control bar */
@@ -4432,7 +4462,6 @@ video#episode-player_html5_api {
 
 ::v-deep .vjs-settings-button:hover {
   color: #00a8ff;
-  transform: scale(1.1);
 }
 
 /* Add these styles to your CSS */
