@@ -297,7 +297,7 @@ export default {
   .showcase-logo {
     width: 220px !important;
     height: 100px !important;
-    margin-bottom: 4rem !important;
+    margin-bottom: 11rem !important;
   }
 
   .showcase-logo >>> img {
@@ -323,13 +323,42 @@ export default {
     margin-top: 0 !important;
   }
 }
-
-@media (max-width: 576px) {
+@media (max-width: 575px) {
   .showcase-logo {
     width: 150px !important;
     height: 100px !important;
-    margin: auto auto 4rem auto !important;
+    margin: auto auto 12rem auto !important;
     text-align: center;
+  }
+
+  div#showcase-thumbnail-wrapper-outter {
+    margin-top: 14rem !important;
+  }
+
+  .showcase-desc-wrapper {
+    margin-bottom: 5rem !important;
+  }
+}
+@media (max-width: 499.98px) {
+  .showcase-logo {
+    width: 150px !important;
+    height: 100px !important;
+    margin: auto auto 8rem auto !important;
+    text-align: center;
+  }
+  .showcase-desc-wrapper {
+    margin-bottom: 5rem !important;
+  }
+}
+@media (max-width: 430px) {
+  .showcase-logo {
+    width: 150px !important;
+    height: 100px !important;
+    margin: auto auto 3rem auto !important;
+    text-align: center;
+  }
+  .showcase-desc-wrapper {
+    margin-bottom: 5rem !important;
   }
 }
 

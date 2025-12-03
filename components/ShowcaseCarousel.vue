@@ -739,7 +739,7 @@ export default {
 
 @media (max-width: 576px) {
   .detail-paragraph {
-    font-size: 0.875rem !important;
+    font-size: 1rem !important;
     font-weight: 500 !important;
     text-align: center !important;
   }

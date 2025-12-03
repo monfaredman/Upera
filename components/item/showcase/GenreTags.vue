@@ -36,12 +36,12 @@ export default {
 
 @media (max-width: 576px) {
   .genre-tags {
-    font-size: 0.875rem !important;
+    font-size: 1rem !important;
     font-weight: 500 !important;
     justify-content: center !important;
   }
   .tag {
-    color: black !important;
+    color: white !important;
     text-shadow: none !important;
   }
 
@@ -50,7 +50,7 @@ export default {
     .text-invert:not(.title)
     .tag
     + .tag::before {
-    background-color: black !important;
+    background-color: white !important;
   }
 
   .theme-dark

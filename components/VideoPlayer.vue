@@ -603,6 +603,10 @@ export default {
       currentAudioLang: null,
       // the actual stream currently loaded into the player
       currentStream: null,
+      // Volume restoration state
+      volumeRestoreInterval: null,
+      savedVolumeState: null,
+      volumeSaveInterval: null,
     }
   },
 
@@ -663,9 +667,21 @@ export default {
       this.initPlayer()
     }
     window.addEventListener('keydown', this.handleKeydown)
+
+    // Save volume state before page unload/refresh
+    window.addEventListener('beforeunload', this.saveVolumeState)
   },
 
   beforeDestroy() {
+    // Save volume state before component is destroyed
+    this.saveVolumeState()
+
+    // Stop volume restoration monitoring
+    this.stopVolumeRestoreMonitoring()
+
+    // Stop volume save monitoring
+    this.stopVolumeSaveMonitoring()
+
     if (this.player) {
       this.player.dispose()
     }
@@ -683,6 +699,7 @@ export default {
     }
     window.removeEventListener('keydown', this.handleKeydown)
     window.removeEventListener('resize', this.handleResize)
+    window.removeEventListener('beforeunload', this.saveVolumeState)
   },
 
   methods: {
@@ -1313,6 +1330,25 @@ export default {
           })
         }
 
+        saveVolumeState() {
+          try {
+            const playerId = this.player().id()
+            const volumeState = {
+              volume: this.player().volume(),
+              muted: this.player().muted(),
+            }
+            localStorage.setItem(
+              `${playerId}-volumeState`,
+              JSON.stringify(volumeState)
+            )
+          } catch (e) {
+            console.warn(
+              '[VideoPlayer] Error saving volume state in control:',
+              e
+            )
+          }
+        }
+
         createVolumeElements() {
           this.el().innerHTML = `
         <button class="vjs-rtl-volume-button vjs-control vjs-button vjs-custom-icon-button" type="button">
@@ -1345,6 +1381,7 @@ export default {
             } else {
               this.player().volume(this.lastVolume || 0.5)
             }
+            this.saveVolumeState()
           })
 
           // Show/hide volume bar on hover
@@ -1396,6 +1433,7 @@ export default {
 
           this.volumeLevel = position
           this.player().volume(position)
+          this.saveVolumeState()
         }
 
         updateVolumeDisplay() {
@@ -1695,14 +1733,171 @@ export default {
       this.player.currentTime(newTime)
     },
 
+    // ============================================
+    // Volume Persistence Methods
+    // ============================================
+
+    saveVolumeState() {
+      if (!this.player) return
+      try {
+        const volumeState = {
+          volume: this.player.volume(),
+          muted: this.player.muted(),
+        }
+        localStorage.setItem(
+          `${this.playerid}-volumeState`,
+          JSON.stringify(volumeState)
+        )
+      } catch (e) {
+        console.warn('[VideoPlayer] Error saving volume state:', e)
+      }
+    },
+
+    restoreVolumeState(force = false) {
+      if (!this.player) return false
+      try {
+        const saved = localStorage.getItem(`${this.playerid}-volumeState`)
+        if (!saved) return false
+
+        const volumeState = JSON.parse(saved)
+        this.savedVolumeState = volumeState
+
+        // Get the actual video element - try multiple methods for compatibility
+        let videoEl = null
+        try {
+          // Method 1: Direct querySelector
+          videoEl = this.player.el().querySelector('video')
+          // Method 2: Via tech if querySelector fails
+          if (!videoEl) {
+            const tech = this.player.tech({ IWillNotUseThisInPlugins: true })
+            if (tech && tech.el_) {
+              videoEl = tech.el_
+            }
+          }
+          // Method 3: Via player's element directly
+          if (!videoEl && this.player.el_) {
+            videoEl = this.player.el_
+          }
+        } catch (e) {
+          // Silently fail - video element might not be ready yet
+        }
+
+        let restored = false
+
+        // Restore volume (0-1 range)
+        if (
+          typeof volumeState.volume === 'number' &&
+          volumeState.volume >= 0 &&
+          volumeState.volume <= 1
+        ) {
+          const currentVolume = this.player.volume()
+          // Only restore if different or forced
+          if (force || Math.abs(currentVolume - volumeState.volume) > 0.01) {
+            // Set on Video.js player first
+            this.player.volume(volumeState.volume)
+            // Also set directly on the video element for Chrome/Safari compatibility
+            if (videoEl && videoEl.tagName === 'VIDEO') {
+              videoEl.volume = volumeState.volume
+            }
+            restored = true
+          }
+        }
+
+        // Restore muted state
+        if (typeof volumeState.muted === 'boolean') {
+          const currentMuted = this.player.muted()
+          // Only restore if different or forced
+          if (force || currentMuted !== volumeState.muted) {
+            // Set on Video.js player first
+            this.player.muted(volumeState.muted)
+            // Also set directly on the video element for Chrome/Safari compatibility
+            if (videoEl && videoEl.tagName === 'VIDEO') {
+              videoEl.muted = volumeState.muted
+            }
+            restored = true
+          }
+        }
+
+        return restored
+      } catch (e) {
+        console.warn('[VideoPlayer] Error restoring volume state:', e)
+        return false
+      }
+    },
+
+    startVolumeRestoreMonitoring() {
+      // Clear any existing interval
+      if (this.volumeRestoreInterval) {
+        clearInterval(this.volumeRestoreInterval)
+      }
+
+      // Check and restore volume state every 200ms for the first 5 seconds
+      let attempts = 0
+      const maxAttempts = 25 // 25 * 200ms = 5 seconds
+
+      this.volumeRestoreInterval = setInterval(() => {
+        if (!this.player || attempts >= maxAttempts) {
+          clearInterval(this.volumeRestoreInterval)
+          this.volumeRestoreInterval = null
+          return
+        }
+
+        attempts++
+        const restored = this.restoreVolumeState()
+
+        // If we successfully restored and video is playing, we can stop early
+        if (restored && !this.player.paused()) {
+          // Continue for a bit more to ensure it sticks
+          if (attempts > 5) {
+            clearInterval(this.volumeRestoreInterval)
+            this.volumeRestoreInterval = null
+          }
+        }
+      }, 200)
+    },
+
+    stopVolumeRestoreMonitoring() {
+      if (this.volumeRestoreInterval) {
+        clearInterval(this.volumeRestoreInterval)
+        this.volumeRestoreInterval = null
+      }
+    },
+
+    startVolumeSaveMonitoring() {
+      // Clear any existing interval
+      if (this.volumeSaveInterval) {
+        clearInterval(this.volumeSaveInterval)
+      }
+
+      // Save volume state every 2 seconds to catch any changes
+      // This ensures we capture state even if volumechange event doesn't fire
+      this.volumeSaveInterval = setInterval(() => {
+        if (!this.player) {
+          clearInterval(this.volumeSaveInterval)
+          this.volumeSaveInterval = null
+          return
+        }
+        this.saveVolumeState()
+      }, 2000)
+    },
+
+    stopVolumeSaveMonitoring() {
+      if (this.volumeSaveInterval) {
+        clearInterval(this.volumeSaveInterval)
+        this.volumeSaveInterval = null
+      }
+    },
+
     volumeUp() {
       const newVolume = Math.min(this.player.volume() + VOLUME_STEP, 1)
       this.player.volume(newVolume)
+      this.saveVolumeState()
     },
 
     volumeDown() {
       const newVolume = Math.max(this.player.volume() - VOLUME_STEP, 0)
       this.player.volume(newVolume)
+      this.saveVolumeState()
     },
 
     togglePlayPause(event) {
@@ -1948,6 +2143,9 @@ export default {
     // Call this in setupPlayerEvents
     setupPlayerEvents() {
       this.player.ready(() => {
+        // Restore volume and muted state from localStorage BEFORE creating controls
+        this.restoreVolumeState(true) // Force initial restore
+
         this.setupAdEvents()
         this.setupTextTracks()
         this.setupCustomButtons()
@@ -1961,6 +2159,34 @@ export default {
         this.initializeSubtitleState()
         // apply persisted audio selection if available
         this.initializeAudioState()
+
+        // Persist volume and muted state on changes
+        this.player.on('volumechange', () => {
+          this.saveVolumeState()
+        })
+
+        // Start monitoring to continuously restore volume state
+        // This handles Chrome/Safari resetting volume during load/playback
+        this.startVolumeRestoreMonitoring()
+
+        // Also start periodic saving to catch any state changes
+        this.startVolumeSaveMonitoring()
+
+        // Restore volume state again after metadata loads (browsers may reset it)
+        this.player.on('loadedmetadata', () => {
+          // Force restore after metadata loads
+          setTimeout(() => {
+            this.restoreVolumeState(true)
+          }, 100)
+        })
+
+        // Also restore on playing event - Chrome/Safari may reset volume when playback starts
+        this.player.on('playing', () => {
+          // Force restore when playback starts
+          setTimeout(() => {
+            this.restoreVolumeState(true)
+          }, 50)
+        })
 
         // Detect actual audio track after loadedmetadata
         this.detectActualAudioTrack()
@@ -2000,19 +2226,41 @@ export default {
         // Attempt autoplay when player becomes ready if requested.
         // Some browsers block autoplay unless muted — try to play, and if blocked
         // mute and retry to provide a silent autoplay fallback.
+        // BUT: Only mute if user doesn't have a saved preference (or if they had it muted)
         const shouldAutoplay = !!(
           this.playerAutoPlay && this.autoPlay !== false
         )
         if (shouldAutoplay) {
+          // Check if user has a saved muted preference
+          let savedMutedState = null
+          try {
+            const saved = localStorage.getItem(`${this.playerid}-volumeState`)
+            if (saved) {
+              const volumeState = JSON.parse(saved)
+              savedMutedState = volumeState.muted
+            }
+          } catch (e) {
+            // ignore
+          }
+
           const playResult = this.player.play()
           if (playResult && typeof playResult.then === 'function') {
             playResult.catch(() => {
-              // Try muted autoplay as a fallback
-              try {
-                this.player.muted(true)
-                this.player.play().catch(() => {})
-              } catch (e) {
-                // ignore
+              // Try muted autoplay as a fallback, but only if:
+              // 1. User doesn't have a saved preference (savedMutedState === null), OR
+              // 2. User had it muted (savedMutedState === true)
+              // This preserves user's unmuted preference
+              if (savedMutedState === null || savedMutedState === true) {
+                try {
+                  this.player.muted(true)
+                  this.player.play().catch(() => {})
+                  // Save the muted state if we had to mute for autoplay
+                  if (savedMutedState === null) {
+                    this.saveVolumeState()
+                  }
+                } catch (e) {
+                  // ignore
+                }
               }
             })
           }
