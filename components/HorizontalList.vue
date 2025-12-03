@@ -979,7 +979,7 @@ export default {
 
 .offer-slider .offer-slide-large {
   grid-row: auto;
-  width: 260px !important;
+  width: 290px !important;
   height: 150px !important;
   margin-left: 0 !important;
 }
@@ -1009,7 +1009,7 @@ export default {
     gap: 8px;
   }
   .offer-slider .offer-slide-large {
-    width: 320px !important;
+    width: 290px !important;
     height: 200px !important;
   }
   .offer-slider .offer-slide-small {
@@ -1071,6 +1071,7 @@ export default {
   }
   .offer-slider .offer-slide-small {
     height: 110px !important;
+    width: 200px !important;
     object-fit: cover;
     margin-left: 0 !important;
   }
@@ -1102,6 +1103,7 @@ export default {
   }
   .offer-slider .offer-slide-small {
     height: 170px !important;
+    width: 240px !important;
     object-fit: cover;
     margin-left: 0 !important;
   }
