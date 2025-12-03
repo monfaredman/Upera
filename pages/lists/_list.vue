@@ -347,4 +347,13 @@ export default {
   align-items: center;
   height: 80vh !important;
 }
+
+@media (max-width: 576px) {
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    margin-right: 0;
+    margin-left: 0;
+  }
+}
 </style>

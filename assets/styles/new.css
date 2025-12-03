@@ -5648,6 +5648,10 @@ nav a:hover {
   .modal-body {
     max-height: calc(95vh - 100px);
   }
+
+  .container-fluid-notfound h2 {
+    font-size: 1rem !important;
+  }
 }
 
 @media (min-width: 576px) {
@@ -8420,8 +8424,8 @@ body widget .-bold {
   }
 
   .actor > img {
-    width: 107% !important;
     max-width: 280px;
+    height: 168px;
     box-shadow: 0 0 4px rgba(204, 204, 204, 0.87);
     border-radius: 5px;
     margin: 0 0 1px 0 !important;
