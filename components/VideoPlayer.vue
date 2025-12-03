@@ -1373,59 +1373,67 @@ export default {
 
           const volumeBar = this.el().querySelector('.vjs-rtl-volume-bar')
 
-          // Toggle volume function
-          const toggleVolume = (e) => {
+          // Safety check: ensure button exists
+          if (!button) {
+            console.warn('[VideoPlayer] Volume button not found')
+            return
+          }
+
+          // Toggle mute/unmute function - uses muted() for proper toggle
+          const toggleMute = (e) => {
             if (e) {
               e.stopPropagation()
               e.preventDefault()
             }
-            if (this.player().volume() > 0) {
-              this.lastVolume = this.player().volume()
-              this.player().volume(0)
+            const player = this.player()
+            if (player.muted()) {
+              // Unmute: restore previous volume or default to 0.5
+              player.muted(false)
+              if (this.lastVolume && this.lastVolume > 0) {
+                player.volume(this.lastVolume)
+              } else if (player.volume() === 0) {
+                player.volume(0.5)
+              }
             } else {
-              this.player().volume(this.lastVolume || 0.5)
+              // Mute: save current volume and mute
+              this.lastVolume = player.volume()
+              player.muted(true)
             }
             this.saveVolumeState()
+            // Update icon immediately for instant visual feedback
+            this.updateMuteIcon()
           }
 
-          // Mobile touch handling for volume button
+          // Simple and reliable mobile touch handling
+          // Direct touch event handling for mobile devices
           let touchStartTime = 0
-          let touchStartX = 0
-          let touchStartY = 0
 
+          // Touch start - capture timestamp
           button.addEventListener(
             'touchstart',
-            (e) => {
+            () => {
               touchStartTime = Date.now()
-              const touch = e.touches[0]
-              touchStartX = touch.clientX
-              touchStartY = touch.clientY
               this.touchHandled = false
-              // Prevent default to avoid double-tap zoom and other browser behaviors
-              e.preventDefault()
             },
-            { passive: false }
+            { passive: true }
           )
 
+          // Touch end - handle toggle directly
           button.addEventListener(
             'touchend',
             (e) => {
-              // Only handle if touch was quick and didn't move much (tap, not swipe)
-              const touchEndTime = Date.now()
-              const touchDuration = touchEndTime - touchStartTime
-              const touch = e.changedTouches[0]
-              const touchEndX = touch.clientX
-              const touchEndY = touch.clientY
-              const deltaX = Math.abs(touchEndX - touchStartX)
-              const deltaY = Math.abs(touchEndY - touchStartY)
-
-              // Consider it a tap if duration < 300ms and movement < 10px
-              if (touchDuration < 300 && deltaX < 10 && deltaY < 10) {
+              const touchDuration = Date.now() - touchStartTime
+              // Simple tap: any touch under 500ms is considered a tap
+              if (touchDuration < 500) {
                 this.touchHandled = true
-                toggleVolume(e)
-                // Prevent click event from firing after touchend
+                toggleMute(e)
                 e.preventDefault()
                 e.stopPropagation()
+
+                // Prevent click event from firing on mobile
+                setTimeout(() => {
+                  this.touchHandled = false
+                }, 300)
               }
             },
             { passive: false }
@@ -1435,7 +1443,7 @@ export default {
           button.addEventListener('click', (e) => {
             // Only handle click if touch wasn't already handled (prevents double-firing on mobile)
             if (!this.touchHandled) {
-              toggleVolume(e)
+              toggleMute(e)
             }
             // Reset flag for next interaction
             this.touchHandled = false
@@ -1506,18 +1514,23 @@ export default {
           const img = this.el().querySelector('.vjs-button-icon')
 
           if (button && img) {
-            const volume = this.player().volume()
+            const player = this.player()
+            const isMuted = player.muted()
 
-            if (volume === 0) {
+            // Show mute/unmute icon based on muted state
+            if (isMuted) {
               img.src = volumeOffIcon
-            } else if (volume < 0.5) {
-              img.src = volumeDownIcon
+              img.alt = 'Unmute'
             } else {
-              img.src = volumeIcon
+              // When unmuted, show volume icon based on level
+              const volume = player.volume()
+              if (volume < 0.5) {
+                img.src = volumeDownIcon
+              } else {
+                img.src = volumeIcon
+              }
+              img.alt = 'Mute'
             }
-
-            // Set alt text for accessibility
-            img.alt = volume === 0 ? 'Unmute' : 'Mute'
           }
         }
 
@@ -4114,12 +4127,19 @@ video#episode-player_html5_api {
   order: 22;
 }
 
-/* Mobile - hide slider, only show mute button */
+/* Mobile - hide slider completely, only show mute button */
 @media (max-width: 768px) {
+  ::v-deep .vjs-rtl-volume-control {
+    display: none !important;
+    width: 0 !important;
+    opacity: 0 !important;
+  }
+
   ::v-deep .vjs-custom-rtl-volume:hover .vjs-rtl-volume-control,
   ::v-deep .vjs-rtl-volume-control.vjs-slider-active {
-    width: 0;
-    opacity: 0;
+    display: none !important;
+    width: 0 !important;
+    opacity: 0 !important;
   }
 }
 
@@ -4609,12 +4629,34 @@ video#episode-player_html5_api {
     pointer-events: auto !important;
     user-select: none !important;
     -webkit-user-select: none !important;
+    min-width: 44px !important; /* Minimum touch target size */
+    min-height: 44px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    position: relative !important;
+    z-index: 10 !important;
+  }
+
+  /* Add active state for visual feedback on touch */
+  ::v-deep .vjs-rtl-volume-button:active {
+    opacity: 0.7 !important;
+    transform: scale(0.95) !important;
+  }
+
+  /* Ensure button icon doesn't block touch events */
+  ::v-deep .vjs-rtl-volume-button .vjs-button-icon {
+    pointer-events: none !important;
+    user-select: none !important;
+    -webkit-user-select: none !important;
   }
 
   /* Ensure the entire volume control container is touchable */
   ::v-deep .vjs-custom-rtl-volume {
     touch-action: manipulation !important;
     pointer-events: auto !important;
+    display: flex !important;
+    align-items: center !important;
   }
 }
 </style>

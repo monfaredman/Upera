@@ -106,78 +106,78 @@ export const actions = {
       console.error('خطا در دریافت type1 slider:', err)
     }
   },
-  async fetchType2Slider(
-    { commit, state },
-    { filtercontents = '', loadagain = 0 } = {}
-  ) {
-    if (!loadagain && state.type2Sliders.length) {
-      return
-    }
+  // async fetchType2Slider(
+  //   { commit, state },
+  //   { filtercontents = '', loadagain = 0 } = {}
+  // ) {
+  //   if (!loadagain && state.type2Sliders.length) {
+  //     return
+  //   }
 
-    try {
-      let apiUrl = '/get/slider'
+  //   try {
+  //     let apiUrl = '/get/slider'
 
-      const params = new URLSearchParams()
+  //     const params = new URLSearchParams()
 
-      if (filtercontents) {
-        const urlParams = new URLSearchParams(filtercontents.replace('?', ''))
-        urlParams.forEach((value, key) => {
-          params.append(key, value)
-        })
-      }
+  //     if (filtercontents) {
+  //       const urlParams = new URLSearchParams(filtercontents.replace('?', ''))
+  //       urlParams.forEach((value, key) => {
+  //         params.append(key, value)
+  //       })
+  //     }
 
-      params.set('location', '3')
+  //     params.set('location', '3')
 
-      const queryString = params.toString()
-      if (queryString) {
-        apiUrl += '?' + queryString
-      }
+  //     const queryString = params.toString()
+  //     if (queryString) {
+  //       apiUrl += '?' + queryString
+  //     }
 
-      const { status, data } = await this.$axios.get(apiUrl)
-      if (status === 200 && data.data) {
-        commit('setType2Sliders', data.data.sliders || [])
-      } else {
-        console.warn('پاسخ نامعتبر برای type2 slider دریافت شد:', data)
-      }
-    } catch (err) {
-      console.error('خطا در دریافت type2 slider:', err)
-    }
-  },
-  async fetchType3Slider(
-    { commit, state },
-    { filtercontents = '', loadagain = 0 } = {}
-  ) {
-    if (!loadagain && state.type3Sliders.length) {
-      return
-    }
+  //     const { status, data } = await this.$axios.get(apiUrl)
+  //     if (status === 200 && data.data) {
+  //       commit('setType2Sliders', data.data.sliders || [])
+  //     } else {
+  //       console.warn('پاسخ نامعتبر برای type2 slider دریافت شد:', data)
+  //     }
+  //   } catch (err) {
+  //     console.error('خطا در دریافت type2 slider:', err)
+  //   }
+  // },
+  // async fetchType3Slider(
+  //   { commit, state },
+  //   { filtercontents = '', loadagain = 0 } = {}
+  // ) {
+  //   if (!loadagain && state.type3Sliders.length) {
+  //     return
+  //   }
 
-    try {
-      let apiUrl = '/get/slider'
+  //   try {
+  //     let apiUrl = '/get/slider'
 
-      const params = new URLSearchParams()
+  //     const params = new URLSearchParams()
 
-      if (filtercontents) {
-        const urlParams = new URLSearchParams(filtercontents.replace('?', ''))
-        urlParams.forEach((value, key) => {
-          params.append(key, value)
-        })
-      }
+  //     if (filtercontents) {
+  //       const urlParams = new URLSearchParams(filtercontents.replace('?', ''))
+  //       urlParams.forEach((value, key) => {
+  //         params.append(key, value)
+  //       })
+  //     }
 
-      params.set('location', '4')
+  //     params.set('location', '4')
 
-      const queryString = params.toString()
-      if (queryString) {
-        apiUrl += '?' + queryString
-      }
+  //     const queryString = params.toString()
+  //     if (queryString) {
+  //       apiUrl += '?' + queryString
+  //     }
 
-      const { status, data } = await this.$axios.get(apiUrl)
-      if (status === 200 && data.data) {
-        commit('setType3Sliders', data.data.sliders || [])
-      } else {
-        console.warn('پاسخ نامعتبر برای type3 slider دریافت شد:', data)
-      }
-    } catch (err) {
-      console.error('خطا در دریافت type3 slider:', err)
-    }
-  },
+  //     const { status, data } = await this.$axios.get(apiUrl)
+  //     if (status === 200 && data.data) {
+  //       commit('setType3Sliders', data.data.sliders || [])
+  //     } else {
+  //       console.warn('پاسخ نامعتبر برای type3 slider دریافت شد:', data)
+  //     }
+  //   } catch (err) {
+  //     console.error('خطا در دریافت type3 slider:', err)
+  //   }
+  // },
 }

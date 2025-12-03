@@ -91,7 +91,7 @@
     </section>
 
     <!-- Type 2 Section -->
-    <HorizontalListSkeleton v-if="isLoadingType2" variant="backdrop" />
+    <!-- <HorizontalListSkeleton v-if="isLoadingType2" variant="backdrop" />
     <div v-else-if="type2Sliders && type2Sliders.length" class="mt-4">
       <HorizontalList
         :title-en="'Type 2'"
@@ -107,10 +107,10 @@
         :hoverable="true"
         :type="'slider'"
       />
-    </div>
+    </div> -->
 
     <!-- Type 3 Section -->
-    <HorizontalListSkeleton v-if="isLoadingType3" variant="backdrop" />
+    <!-- <HorizontalListSkeleton v-if="isLoadingType3" variant="backdrop" />
     <div v-else-if="type3Sliders && type3Sliders.length" class="mt-4">
       <HorizontalList
         :title-en="'Type 3'"
@@ -126,7 +126,7 @@
         :hoverable="true"
         :type="'slider'"
       />
-    </div>
+    </div> -->
 
     <!-- Lives Section with Skeleton -->
     <HorizontalListSkeleton v-if="isLoadingLives" variant="backdrop" />
@@ -825,23 +825,23 @@ export default {
         this.isLoadingType1 = false
       })
 
-    this.isLoadingType2 = true
-    this.$store
-      .dispatch('slider/fetchType2Slider', {
-        filtercontents: this.filtercontents,
-      })
-      .finally(() => {
-        this.isLoadingType2 = false
-      })
+    // this.isLoadingType2 = true
+    // this.$store
+    //   .dispatch('slider/fetchType2Slider', {
+    //     filtercontents: this.filtercontents,
+    //   })
+    //   .finally(() => {
+    //     this.isLoadingType2 = false
+    //   })
 
-    this.isLoadingType3 = true
-    this.$store
-      .dispatch('slider/fetchType3Slider', {
-        filtercontents: this.filtercontents,
-      })
-      .finally(() => {
-        this.isLoadingType3 = false
-      })
+    // this.isLoadingType3 = true
+    // this.$store
+    //   .dispatch('slider/fetchType3Slider', {
+    //     filtercontents: this.filtercontents,
+    //   })
+    //   .finally(() => {
+    //     this.isLoadingType3 = false
+    //   })
 
     // Fetch UGCs
     // this.isLoadingUgcs = true
@@ -1084,27 +1084,27 @@ export default {
           })
       )
 
-      requests.push(
-        this.$store
-          .dispatch('slider/fetchType2Slider', {
-            filtercontents: this.filtercontents,
-            loadagain: 1,
-          })
-          .finally(() => {
-            this.isLoadingType2 = false
-          })
-      )
+      // requests.push(
+      //   this.$store
+      //     .dispatch('slider/fetchType2Slider', {
+      //       filtercontents: this.filtercontents,
+      //       loadagain: 1,
+      //     })
+      //     .finally(() => {
+      //       this.isLoadingType2 = false
+      //     })
+      // )
 
-      requests.push(
-        this.$store
-          .dispatch('slider/fetchType3Slider', {
-            filtercontents: this.filtercontents,
-            loadagain: 1,
-          })
-          .finally(() => {
-            this.isLoadingType3 = false
-          })
-      )
+      // requests.push(
+      //   this.$store
+      //     .dispatch('slider/fetchType3Slider', {
+      //       filtercontents: this.filtercontents,
+      //       loadagain: 1,
+      //     })
+      //     .finally(() => {
+      //       this.isLoadingType3 = false
+      //     })
+      // )
 
       try {
         await Promise.all(requests)
