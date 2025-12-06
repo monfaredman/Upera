@@ -9619,7 +9619,7 @@ small,
     display: none;
   }
   div#actor {
-    padding: 3rem 0 0 0 !important;
+    padding: 0 0 0 0 !important;
   }
 }
 

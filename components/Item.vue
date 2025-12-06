@@ -1255,6 +1255,9 @@ section#content {
   .content-nav-header .nav-link:hover {
     transform: none;
   }
+  ::v-deep .content-section#about {
+    min-height: 200px !important;
+  }
 }
 
 a.nav-link {
