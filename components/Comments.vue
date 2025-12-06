@@ -638,6 +638,11 @@ export default {
   margin-top: 16px;
 }
 
+@media (max-width: 1300px) {
+  .comments-container {
+    margin: 3rem 16px;
+  }
+}
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .comments-container {

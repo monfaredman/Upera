@@ -1194,6 +1194,9 @@ section#content {
     top: 0;
     margin-right: 15px;
   }
+  ::v-deep .content-section#about {
+    margin: 6rem 2rem 0 2rem;
+  }
 }
 
 @media (max-width: 767.98px) {
@@ -1217,7 +1220,7 @@ section#content {
     gap: 0 !important;
   }
   ::v-deep .content-section#about {
-    margin: 3rem 2rem 0 2rem;
+    margin: 6rem 2rem 0 2rem;
   }
 }
 

@@ -297,7 +297,11 @@ export default {
   .showcase-logo {
     width: 220px !important;
     height: 100px !important;
-    margin-bottom: 11rem !important;
+    margin-bottom: 15rem !important;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
   }
 
   .showcase-logo >>> img {

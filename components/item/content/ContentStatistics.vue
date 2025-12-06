@@ -474,9 +474,7 @@ export default {
   }
 
   .backdrop-container {
-    width: 100%;
-    height: 200px;
-    order: -1;
+    display: none !important;
   }
 
   .content-info {
@@ -539,14 +537,7 @@ export default {
   }
 
   .backdrop-container {
-    height: 180px;
-    text-align: center;
-    border-radius: 6px;
-  }
-
-  .backdrop-container img {
-    width: 100%;
-    object-fit: none;
+    display: none !important;
   }
 
   .content-title {

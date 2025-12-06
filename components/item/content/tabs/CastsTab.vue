@@ -127,5 +127,9 @@ export default {
     font-size: 20px;
     margin-bottom: 16px;
   }
+
+  .cast-section {
+    margin-top: 32px;
+  }
 }
 </style>

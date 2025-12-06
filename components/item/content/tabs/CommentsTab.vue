@@ -33,7 +33,7 @@ export default {
     padding: 16px;
   }
   .comments-tab-container {
-    margin-top: -2rem;
+    margin-top: 1rem;
   }
 }
 
