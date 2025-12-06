@@ -105,6 +105,7 @@
                   :alt="altText"
                   rounded
                 />
+                <!-- Extra posters for series effect -->
                 <b-img
                   v-if="item.type != 'movie'"
                   v-bind="{
@@ -139,6 +140,7 @@
                   "
                   :alt="item.name"
                 />
+                <!-- End of Extra posters for series effect -->
                 <!-- Badges -->
                 <template v-if="showBadges">
                   <span
