@@ -1,6 +1,7 @@
 <template>
   <div
     v-show="show"
+    class="filter-section-wrapper"
     :class="{ 'container-fluid pt-4 pb-1 bg-filtermenu': !setting }"
   >
     <div class="w-100" :class="{ 'mt-5 pt-lg-2 pt-md-2 pt-1': noTop }">
@@ -365,6 +366,12 @@ export default {
   .filter-item {
     flex: 1 1 20%;
     max-width: 19%;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 992px) {
+  .filter-section-wrapper {
+    padding-top: 10rem !important;
   }
 }
 </style>
