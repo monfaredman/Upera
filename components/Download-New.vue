@@ -183,7 +183,8 @@
                   <label for="mobile-input">شماره موبایل</label>
                   <input
                     id="mobile-input"
-                    v-model="mobile"
+                    ref="mobileInput"
+                    v-model="mobileDisplay"
                     type="tel"
                     placeholder="شماره موبایل خود را وارد کنید"
                     class="form-control"
@@ -397,7 +398,7 @@ export default {
       }
       // For guest users (state 3)
       if (this.userState === 3) {
-        return this.subtotalAmount > 0 && this.mobile && !this.mobileError
+        return this.subtotalAmount > 0
       }
       return false
     },
@@ -412,6 +413,16 @@ export default {
       // Remove non-digit characters
       const num = this.my_credit.replace(/[^\d.]/g, '')
       return Number(num) || 0
+    },
+
+    mobileDisplay: {
+      get() {
+        return this.convertDigitsToPersian(this.mobile || '')
+      },
+      set(value) {
+        const englishDigits = this.convertDigitsToEnglish(value || '')
+        this.mobile = englishDigits.replace(/\s+/g, '')
+      },
     },
   },
   watch: {
@@ -708,18 +719,64 @@ export default {
       this.removeFromCart(itemId)
     },
 
+    convertDigitsToPersian(value) {
+      if (!value) return ''
+      const persianDigits = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹']
+      return value.replace(/\d/g, (digit) => persianDigits[Number(digit)])
+    },
+
+    convertDigitsToEnglish(value) {
+      if (!value) return ''
+      const persianDigitMap = {
+        '۰': '0',
+        '۱': '1',
+        '۲': '2',
+        '۳': '3',
+        '۴': '4',
+        '۵': '5',
+        '۶': '6',
+        '۷': '7',
+        '۸': '8',
+        '۹': '9',
+      }
+      return value.replace(/[۰-۹]/g, (char) => persianDigitMap[char] || char)
+    },
+
     validateMobile() {
       const mobileRegex = /^09[0-9]{9}$/
-      if (!this.mobile) {
+      const normalizedMobile = (this.mobile || '').replace(/\s+/g, '')
+      this.mobile = normalizedMobile
+
+      if (!normalizedMobile) {
         this.mobileError = 'شماره موبایل الزامی است'
-      } else if (!mobileRegex.test(this.mobile)) {
+      } else if (!mobileRegex.test(normalizedMobile)) {
         this.mobileError = 'شماره موبایل معتبر نیست'
       } else {
         this.mobileError = ''
       }
     },
 
+    ensureGuestMobile() {
+      if (this.userState !== 3) {
+        return true
+      }
+
+      this.validateMobile()
+      if (this.mobileError) {
+        this.$nextTick(() => {
+          this.$refs.mobileInput?.focus()
+        })
+        return false
+      }
+
+      return true
+    },
+
     async handlePurchase() {
+      if (!this.ensureGuestMobile()) {
+        return
+      }
+
       if (!this.canPurchase) return
 
       // Check if payment method is 'directdebit' (پرداخت خودکار)

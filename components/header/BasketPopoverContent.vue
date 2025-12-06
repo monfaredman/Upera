@@ -85,7 +85,8 @@
       <!-- Mobile Input for Guests -->
       <div v-if="!userLogin" class="mobile-section-compact">
         <input
-          v-model="mobile"
+          ref="mobileInput"
+          v-model="mobileDisplay"
           type="tel"
           placeholder="شماره موبایل"
           class="form-control form-control-sm"
@@ -181,7 +182,7 @@ export default {
       if (this.userLogin) {
         return this.subtotalAmount > 0
       }
-      return this.subtotalAmount > 0 && this.mobile && !this.mobileError
+      return this.subtotalAmount > 0
     },
     hasEnoughWalletBalance() {
       return this.myCreditValue >= this.totalAmount
@@ -190,6 +191,16 @@ export default {
       if (!this.my_credit) return 0
       const num = this.my_credit.replace(/[^\d.]/g, '')
       return Number(num) || 0
+    },
+
+    mobileDisplay: {
+      get() {
+        return this.convertDigitsToPersian(this.mobile || '')
+      },
+      set(value) {
+        const englishDigits = this.convertDigitsToEnglish(value || '')
+        this.mobile = englishDigits.replace(/\s+/g, '')
+      },
     },
   },
   watch: {
@@ -247,6 +258,10 @@ export default {
       }
     },
     async handlePurchase() {
+      if (!this.ensureGuestMobile()) {
+        return
+      }
+
       if (!this.canPurchase) return
 
       if (this.paymentMethod === 'directdebit') {
@@ -297,15 +312,58 @@ export default {
         this.processing = false
       }
     },
+    convertDigitsToPersian(value) {
+      if (!value) return ''
+      const persianDigits = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹']
+      return value.replace(/\d/g, (digit) => persianDigits[Number(digit)])
+    },
+
+    convertDigitsToEnglish(value) {
+      if (!value) return ''
+      const persianDigitMap = {
+        '۰': '0',
+        '۱': '1',
+        '۲': '2',
+        '۳': '3',
+        '۴': '4',
+        '۵': '5',
+        '۶': '6',
+        '۷': '7',
+        '۸': '8',
+        '۹': '9',
+      }
+      return value.replace(/[۰-۹]/g, (char) => persianDigitMap[char] || char)
+    },
+
     validateMobile() {
       const mobileRegex = /^09[0-9]{9}$/
-      if (!this.mobile) {
+      const normalizedMobile = (this.mobile || '').replace(/\s+/g, '')
+      this.mobile = normalizedMobile
+
+      if (!normalizedMobile) {
         this.mobileError = 'شماره موبایل الزامی است'
-      } else if (!mobileRegex.test(this.mobile)) {
+      } else if (!mobileRegex.test(normalizedMobile)) {
         this.mobileError = 'شماره موبایل معتبر نیست'
       } else {
         this.mobileError = ''
       }
+    },
+
+    ensureGuestMobile() {
+      if (this.userLogin) {
+        return true
+      }
+
+      this.validateMobile()
+
+      if (this.mobileError) {
+        this.$nextTick(() => {
+          this.$refs.mobileInput?.focus()
+        })
+        return false
+      }
+
+      return true
     },
     getContentTitle(item) {
       const en = item.name || item.title
