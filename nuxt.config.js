@@ -328,7 +328,7 @@ export default {
   i18n: {
     locales: [
       { code: 'fa', iso: 'fa-IR', file: 'fa.json' },
-      { code: 'en', iso: 'en-US', file: 'en.json' },
+      // { code: 'en', iso: 'en-US', file: 'en.json' }, // Temporarily disabled per single-locale requirement
     ],
     defaultLocale: 'fa',
     strategy: 'no_prefix',

@@ -200,28 +200,6 @@
                 </div>
               </li>
 
-              <!-- Language Toggle -->
-              <li class="nav-item">
-                <div
-                  class="nav-link d-flex align-items-center justify-content-between"
-                >
-                  <div class="d-flex align-items-center">
-                    <i class="fa fa-globe" />
-                    <span class="pr-2">زبان فارسی</span>
-                  </div>
-                  <div class="custom-control custom-switch">
-                    <input
-                      id="languageMobile"
-                      type="checkbox"
-                      class="custom-control-input"
-                      :checked="$i18n.locale === 'fa'"
-                      @change="toggleLanguage()"
-                    />
-                    <label class="custom-control-label" for="languageMobile" />
-                  </div>
-                </div>
-              </li>
-
               <!-- Shopping Basket Toggle -->
               <li class="nav-item">
                 <div
@@ -397,34 +375,6 @@ export default {
     },
     toggleNightMode(value) {
       this.$colorMode.preference = value ? 'dark' : 'light'
-    },
-    toggleLanguage() {
-      const newLocale = this.$i18n.locale === 'fa' ? 'en' : 'fa'
-      this.$i18n.setLocale(newLocale)
-
-      if (process.client) {
-        // Update store
-        this.$store.commit('SET_LOCALE', newLocale)
-
-        // Update localStorage
-        localStorage.setItem('lang', newLocale)
-
-        // Update cookie
-        this.$cookiz.set('i18n_redirected', `:${newLocale}`, {
-          maxAge: 60 * 60 * 24 * 365,
-          sameSite: 'lax',
-          path: '/',
-        })
-
-        // Update HTML attributes
-        const html = document.querySelector('html')
-        html.setAttribute('lang', newLocale)
-        html.setAttribute('dir', newLocale === 'fa' ? 'rtl' : 'ltr')
-
-        setTimeout(() => {
-          window.location.reload()
-        }, 100)
-      }
     },
     async fetchAvatars() {
       try {
