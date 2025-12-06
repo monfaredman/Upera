@@ -72,7 +72,7 @@
                   :width="size.w"
                   :height="size.h"
                   show
-                  class="d-none d-lg-block d-xl-none d-xxl-none"
+                  class="d-none d-lg-block d-xl-none d-xxl-none non-hover-media-image-lg"
                   style="min-height: fit-content"
                   :src="
                     variant === 'poster'
@@ -116,7 +116,7 @@
                     height: 212,
                     show: true,
                   }"
-                  class="d-none d-lg-none d-xl-block d-xxl-none non-hover-media-image-xxl"
+                  class="d-none d-lg-block d-xl-block d-xxl-none non-hover-media-image-xxl"
                   :src="
                     'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/' +
                     item.poster
@@ -133,7 +133,7 @@
                     height: 212,
                     show: true,
                   }"
-                  class="d-none d-lg-none d-xl-block d-xxl-none non-hover-media-image-xxl"
+                  class="d-none d-lg-block d-xl-block d-xxl-none non-hover-media-image-xxl"
                   :src="
                     'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/' +
                     item.poster
@@ -160,7 +160,7 @@
               </template>
             </nuxt-link>
 
-            <div v-if="!hoverable" class="mt-2 d-none d-md-inline">
+            <div v-if="!hoverable" class="mt-2 d-none d-lg-inline">
               <h6 class="mt-2 small font-weight-normal">
                 {{ ChooseLang(item.name, item.name_fa) }}
               </h6>
@@ -343,7 +343,7 @@
           <nuxt-link
             v-if="!isOffer && !hoverable"
             :to="resolvedLink"
-            :class="computedLinkClass"
+            :class="(computedLinkClass, { 'is-series': item.type != 'movie' })"
           >
             <b-img
               blank
@@ -351,7 +351,7 @@
               width="142"
               height="159"
               show
-              class="d-sm-none"
+              class="d-sm-none non-hover-media-image-lg"
               :src="
                 variant === 'poster'
                   ? posterSrc(item.poster, true)
@@ -365,11 +365,11 @@
             />
             <b-img
               blank
+              blank-color="#bbb"
               width="142"
               height="232"
-              blank-color="#bbb"
               show
-              class="d-none d-sm-block d-lg-none"
+              class="d-none d-sm-block d-md-block d-lg-none non-hover-media-image-lg"
               :src="
                 variant === 'poster'
                   ? posterSrc(item.poster)
@@ -381,10 +381,46 @@
               :alt="altText"
               rounded
             />
+            <!-- Extra posters for series effect -->
+            <b-img
+              v-if="item.type != 'movie'"
+              v-bind="{
+                fluidGrow: true,
+                blank: true,
+                blankColor: '#bbb',
+                width: 142,
+                height: 212,
+                show: true,
+              }"
+              class="d-block d-lg-none non-hover-media-image-xxl"
+              :src="
+                'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/' +
+                item.poster
+              "
+              :alt="item.name"
+            />
+            <b-img
+              v-if="item.type != 'movie'"
+              v-bind="{
+                fluidGrow: true,
+                blank: true,
+                blankColor: '#bbb',
+                width: 142,
+                height: 212,
+                show: true,
+              }"
+              class="d-block d-lg-none non-hover-media-image-xxl"
+              :src="
+                'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/' +
+                item.poster
+              "
+              :alt="item.name"
+            />
+            <!-- End of Extra posters for series effect -->
           </nuxt-link>
           <div
             v-if="variant === 'poster' || item.type === 'video'"
-            class="mt-2 d-block d-md-none"
+            class="mt-2 d-block d-lg-none"
           >
             <h6 class="mt-2 small font-weight-normal">
               {{ ChooseLang(item.name, item.name_fa) }}
@@ -845,9 +881,61 @@ export default {
   }
 }
 
-@media (max-width: 1500px) {
+@media (max-width: 1800px) {
   .non-hover-media-image-xxl {
-    height: auto !important;
+    height: 16rem !important;
+    min-height: 16rem !important;
+    width: 100% !important;
+  }
+}
+@media (max-width: 1600px) {
+  .non-hover-media-image-xxl {
+    height: 16rem !important;
+    min-height: 16rem !important;
+    width: 100% !important;
+  }
+}
+
+@media (max-width: 1300px) {
+  .non-hover-media-image-xxl {
+    height: 15.5rem !important;
+    min-height: 15.5rem !important;
+    width: 100% !important;
+  }
+}
+@media (max-width: 1200px) {
+  .non-hover-media-image-xxl {
+    height: 13.5rem !important;
+    min-height: 13.5rem !important;
+    width: 100% !important;
+  }
+  .non-hover-media-image-lg {
+    height: 13.5rem !important;
+    min-height: 13.5rem !important;
+    width: 100% !important;
+  }
+}
+@media (max-width: 1000px) {
+  .non-hover-media-image-xxl {
+    height: 17.5rem !important;
+    min-height: 17.5rem !important;
+    width: 100% !important;
+  }
+  .non-hover-media-image-lg {
+    height: 17.5rem !important;
+    min-height: 17.5rem !important;
+    width: 100% !important;
+  }
+}
+@media (max-width: 900px) {
+  .non-hover-media-image-xxl {
+    height: fit-content !important;
+    min-height: fit-content !important;
+    width: 100% !important;
+  }
+  .non-hover-media-image-lg {
+    height: fit-content !important;
+    min-height: fit-content !important;
     width: 100% !important;
   }
 }
