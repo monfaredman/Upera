@@ -1040,7 +1040,7 @@ export default {
     margin-left: 0 !important;
   }
   .offer-slider .offer-slide-large img {
-    height: 220px !important;
+    height: 230px !important;
     object-fit: cover;
     border-radius: 8px !important;
   }
@@ -1065,7 +1065,7 @@ export default {
     margin-left: 0 !important;
   }
   .offer-slider .offer-slide-large img {
-    height: 220px !important;
+    height: 230px !important;
     object-fit: cover;
     border-radius: 8px !important;
   }
