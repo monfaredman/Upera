@@ -41,93 +41,6 @@
       />
     </div>
 
-    <!-- New Types Section with Skeleton -->
-    <!-- Type 1 Section - Full Width Carousel -->
-    <HorizontalListSkeleton v-if="isLoadingType1" variant="backdrop" />
-    <section
-      v-else-if="type1Sliders && type1Sliders.length"
-      class="type1-carousel-section mt-4"
-    >
-      <div
-        v-swiper:type1Carousel="swiperOptionType1"
-        class="swiper-container type1-carousel-container"
-      >
-        <div class="swiper-wrapper">
-          <div
-            v-for="(item, index) in type1Sliders"
-            :key="index"
-            class="swiper-slide type1-carousel-slide"
-          >
-            <nuxt-link :to="buildIdRoute(item)" class="type1-carousel-link">
-              <b-img
-                blank
-                blank-color="#bbb"
-                show
-                class="type1-carousel-image"
-                :src="getType1ImageSrc(item)"
-                :alt="ChooseLang(item.name, item.name_fa)"
-              />
-            </nuxt-link>
-          </div>
-        </div>
-        <!-- Navigation Buttons - Left Bottom -->
-        <div v-if="type1Sliders.length > 1" class="type1-carousel-navigation">
-          <button
-            aria-label="Previous"
-            class="type1-carousel-btn type1-carousel-prev"
-            @click="type1CarouselPrev"
-          >
-            <i class="fa fa-chevron-right" />
-          </button>
-          <button
-            aria-label="Next"
-            class="type1-carousel-btn type1-carousel-next"
-            @click="type1CarouselNext"
-          >
-            <i class="fa fa-chevron-left" />
-          </button>
-        </div>
-      </div>
-    </section>
-
-    <!-- Type 2 Section -->
-    <!-- <HorizontalListSkeleton v-if="isLoadingType2" variant="backdrop" />
-    <div v-else-if="type2Sliders && type2Sliders.length" class="mt-4">
-      <HorizontalList
-        :title-en="'Type 2'"
-        :title-fa="'نوع ۲'"
-        :items="type2Sliders"
-        instance-name="type2Swip"
-        :options="SWIPER_OPTION_BACKDROP"
-        card-variant="backdrop"
-        :size="{ w: 364, h: 190 }"
-        :link-builder="buildIdRoute"
-        :show-badges="false"
-        :add-series-class="false"
-        :hoverable="true"
-        :type="'slider'"
-      />
-    </div> -->
-
-    <!-- Type 3 Section -->
-    <!-- <HorizontalListSkeleton v-if="isLoadingType3" variant="backdrop" />
-    <div v-else-if="type3Sliders && type3Sliders.length" class="mt-4">
-      <HorizontalList
-        :title-en="'Type 3'"
-        :title-fa="'نوع ۳'"
-        :items="type3Sliders"
-        instance-name="type3Swip"
-        :options="SWIPER_OPTION_BACKDROP"
-        card-variant="backdrop"
-        :size="{ w: 364, h: 190 }"
-        :link-builder="buildIdRoute"
-        :show-badges="false"
-        :add-series-class="false"
-        :hoverable="true"
-        :type="'slider'"
-      />
-    </div> -->
-
     <!-- Lives Section with Skeleton -->
     <HorizontalListSkeleton v-if="isLoadingLives" variant="backdrop" />
     <div v-else-if="lives && lives.data.length" class="mt-4">
@@ -302,178 +215,280 @@
       <HorizontalListSkeleton variant="poster" />
       <HorizontalListSkeleton variant="poster" />
     </template>
-    <div v-else-if="data.data">
-      <div v-for="(list, rootindex) in data.data" :key="rootindex">
-        <div v-if="list.style == 'occasion' && list.data.length > 0">
-          <section id="special" class="mb-5">
-            <div class="container-fluid">
-              <div
-                class="special d-flex flex-column justify-content-start align-items-start align-items-lg-center flex-lg-row"
-              >
-                <h4
-                  class="font-weight-bold text-nowrap mr-lg-5 mb-4 mb-lg-0 special-title"
+    <div v-else-if="discoverBlocks.length">
+      <template v-for="(block, blockIndex) in discoverBlocks">
+        <div
+          v-if="block.kind === 'discover'"
+          :key="block.key || `discover-${blockIndex}`"
+        >
+          <div
+            v-if="block.list.style == 'occasion' && block.list.data.length > 0"
+          >
+            <section id="special" class="mb-5">
+              <div class="container-fluid">
+                <div
+                  class="special d-flex flex-column justify-content-start align-items-start align-items-lg-center flex-lg-row"
                 >
-                  {{ ChooseLang(list.list_en, list.list_fa) }}
-                </h4>
-                <div class="position-relative w-full">
-                  <div id="special-slides" class="special-slides">
-                    <div
-                      v-for="(item, index) in list.data"
-                      :key="index"
-                      class="special-slide"
-                      :class="{ active: index == 0 }"
-                    >
-                      <div class="d-flex justify-content-start w-full special">
-                        <img
-                          class="special-image spec-1"
-                          :src="
-                            'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/' +
-                            item.poster
-                          "
-                          :alt="item.name"
-                        />
+                  <h4
+                    class="font-weight-bold text-nowrap mr-lg-5 mb-4 mb-lg-0 special-title"
+                  >
+                    {{ ChooseLang(block.list.list_en, block.list.list_fa) }}
+                  </h4>
+                  <div class="position-relative w-full">
+                    <div id="special-slides" class="special-slides">
+                      <div
+                        v-for="(item, index) in block.list.data"
+                        :key="index"
+                        class="special-slide"
+                        :class="{ active: index == 0 }"
+                      >
                         <div
-                          class="special-content d-flex flex-column justify-content-between justify-content-lg-around align-items-end w-full"
+                          class="d-flex justify-content-start w-full special"
                         >
-                          <div class="d-flex justify-content-between w-full">
-                            <div class="ml-2 ml-lg-5">
-                              <h6 class="font-weight-bold mb-0 d-lg-none">
+                          <img
+                            class="special-image spec-1"
+                            :src="
+                              'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/' +
+                              item.poster
+                            "
+                            :alt="item.name"
+                          />
+                          <div
+                            class="special-content d-flex flex-column justify-content-between justify-content-lg-around align-items-end w-full"
+                          >
+                            <div class="d-flex justify-content-between w-full">
+                              <div class="ml-2 ml-lg-5">
+                                <h6 class="font-weight-bold mb-0 d-lg-none">
+                                  {{
+                                    truncate(
+                                      ChooseLang(item.name, item.name_fa),
+                                      15
+                                    )
+                                  }}
+                                </h6>
+                                <h5
+                                  class="font-weight-bold mb-0 d-none d-lg-block"
+                                >
+                                  {{ ChooseLang(item.name, item.name_fa) }}
+                                </h5>
+                                <p class="mt-1 font-weight-normal">
+                                  <span
+                                    v-for="(genre, index2) in item.genre.split(
+                                      ','
+                                    )"
+                                    :key="index2"
+                                  >
+                                    {{
+                                      item.new_genres[genre.toLowerCase()] ||
+                                      genre
+                                    }}
+                                    <span
+                                      v-if="
+                                        index2 + 1 <
+                                        item.genre.split(',').length
+                                      "
+                                    >
+                                      |
+                                    </span>
+                                  </span>
+                                </p>
+                              </div>
+                              <div
+                                class="d-flex flex-column justify-content-center align-items-center small"
+                              >
+                                <nuxt-link
+                                  :to="{
+                                    name: 'lists-list',
+                                    params: { list: block.list.occasion },
+                                  }"
+                                  class="d-inline-flex align-items-center show-all-link"
+                                >
+                                  <span class="show-all-text ml-1">
+                                    {{ $t('new.show_all') }}
+                                  </span>
+                                  <i
+                                    class="fa fa-ellipsis-h show-all-icon"
+                                    aria-hidden="true"
+                                  ></i>
+                                </nuxt-link>
+                              </div>
+                            </div>
+                            <div class="d-flex justify-content-between w-full">
+                              <p class="d-lg-none">
                                 {{
                                   truncate(
-                                    ChooseLang(item.name, item.name_fa),
-                                    15
+                                    ChooseLang(item.overview, item.overview_fa),
+                                    60
                                   )
                                 }}
-                              </h6>
-                              <h5
-                                class="font-weight-bold mb-0 d-none d-lg-block"
+                              </p>
+                              <p
+                                class="d-none d-lg-block text-justify ml-2 ml-lg-5"
                               >
-                                {{ ChooseLang(item.name, item.name_fa) }}
-                              </h5>
-                              <p class="mt-1 font-weight-normal">
-                                <span
-                                  v-for="(genre, index2) in item.genre.split(
-                                    ','
-                                  )"
-                                  :key="index2"
-                                >
-                                  {{
-                                    item.new_genres[genre.toLowerCase()] ||
-                                    genre
-                                  }}
-                                  <span
-                                    v-if="
-                                      index2 + 1 < item.genre.split(',').length
-                                    "
-                                  >
-                                    |
-                                  </span>
-                                </span>
+                                {{
+                                  ChooseLang(item.overview, item.overview_fa)
+                                }}
                               </p>
                             </div>
-                            <div
-                              class="d-flex flex-column justify-content-center align-items-center small"
-                            >
-                              <nuxt-link
-                                :to="{
-                                  name: 'lists-list',
-                                  params: { list: list.occasion },
-                                }"
-                                class="d-inline-flex align-items-center show-all-link"
-                              >
-                                <span class="show-all-text ml-1">
-                                  {{ $t('new.show_all') }}
-                                </span>
-                                <i
-                                  class="fa fa-ellipsis-h show-all-icon"
-                                  aria-hidden="true"
-                                ></i>
-                              </nuxt-link>
-                            </div>
-                          </div>
-                          <div class="d-flex justify-content-between w-full">
-                            <p class="d-lg-none">
-                              {{
-                                truncate(
-                                  ChooseLang(item.overview, item.overview_fa),
-                                  60
-                                )
-                              }}
-                            </p>
-                            <p
-                              class="d-none d-lg-block text-justify ml-2 ml-lg-5"
-                            >
-                              {{ ChooseLang(item.overview, item.overview_fa) }}
-                            </p>
-                          </div>
 
-                          <nuxt-link
-                            v-if="item.type == 'movie'"
-                            :to="{ name: 'movie-id', params: { id: item.id } }"
-                            class="show-btn small"
-                          >
-                            <span>نمایش</span>
-                            <img
-                              class="ml-2"
-                              src="@/assets/img/play.svg"
-                              alt=""
-                            />
-                          </nuxt-link>
-                          <nuxt-link
-                            v-else-if="item.type == 'episode'"
-                            :to="{
-                              name: 'episode-id',
-                              params: { id: item.id },
-                            }"
-                            class="show-btn small"
-                          >
-                            <span>نمایش</span>
-                            <img
-                              class="ml-2"
-                              src="@/assets/img/play.svg"
-                              alt=""
-                            />
-                          </nuxt-link>
-                          <nuxt-link
-                            v-else
-                            :to="{ name: 'series-id', params: { id: item.id } }"
-                            class="show-btn small"
-                          >
-                            <span>نمایش</span>
-                            <img
-                              class="ml-2"
-                              src="@/assets/img/play.svg"
-                              alt=""
-                            />
-                          </nuxt-link>
+                            <nuxt-link
+                              v-if="item.type == 'movie'"
+                              :to="{
+                                name: 'movie-id',
+                                params: { id: item.id },
+                              }"
+                              class="show-btn small"
+                            >
+                              <span>نمایش</span>
+                              <img
+                                class="ml-2"
+                                src="@/assets/img/play.svg"
+                                alt=""
+                              />
+                            </nuxt-link>
+                            <nuxt-link
+                              v-else-if="item.type == 'episode'"
+                              :to="{
+                                name: 'episode-id',
+                                params: { id: item.id },
+                              }"
+                              class="show-btn small"
+                            >
+                              <span>نمایش</span>
+                              <img
+                                class="ml-2"
+                                src="@/assets/img/play.svg"
+                                alt=""
+                              />
+                            </nuxt-link>
+                            <nuxt-link
+                              v-else
+                              :to="{
+                                name: 'series-id',
+                                params: { id: item.id },
+                              }"
+                              class="show-btn small"
+                            >
+                              <span>نمایش</span>
+                              <img
+                                class="ml-2"
+                                src="@/assets/img/play.svg"
+                                alt=""
+                              />
+                            </nuxt-link>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
+            </section>
+          </div>
+          <div v-else-if="block.list.data.length > 0" class="mt-4">
+            <HorizontalList
+              :title-en="block.list.list_en"
+              :title-fa="block.list.list_fa"
+              :show-all-route="{
+                name: 'lists-list',
+                params: { list: block.list.list.toLowerCase() },
+              }"
+              :items="block.list.data"
+              :instance-name="String(block.originalIndex)"
+              :options="SWIPER_OPTION_POSTER"
+              card-variant="poster"
+              :size="{ w: 183, h: 273 }"
+              :link-builder="buildIdRoute"
+              :show-badges="true"
+              :type="'discover'"
+            />
+          </div>
+        </div>
+        <div v-else :key="block.key || `slider-${blockIndex}`" class="mt-4">
+          <section
+            v-if="block.sliderType === 'type1'"
+            class="type1-carousel-section"
+          >
+            <div
+              v-swiper:[block.swiperHandle]="swiperOptionType1"
+              class="swiper-container type1-carousel-container"
+            >
+              <div class="swiper-wrapper">
+                <div
+                  v-for="(item, index) in block.items"
+                  :key="index"
+                  class="swiper-slide type1-carousel-slide"
+                >
+                  <nuxt-link
+                    :to="buildIdRoute(item)"
+                    class="type1-carousel-link"
+                  >
+                    <b-img
+                      blank
+                      blank-color="#bbb"
+                      show
+                      class="type1-carousel-image"
+                      :src="getType1ImageSrc(item)"
+                      :alt="ChooseLang(item.name, item.name_fa)"
+                    />
+                  </nuxt-link>
+                </div>
+              </div>
+              <div
+                v-if="block.items.length > 1"
+                class="type1-carousel-navigation"
+              >
+                <button
+                  aria-label="Previous"
+                  class="type1-carousel-btn type1-carousel-prev"
+                  @click="type1CarouselPrev(block.swiperHandle)"
+                >
+                  <i class="fa fa-chevron-right" />
+                </button>
+                <button
+                  aria-label="Next"
+                  class="type1-carousel-btn type1-carousel-next"
+                  @click="type1CarouselNext(block.swiperHandle)"
+                >
+                  <i class="fa fa-chevron-left" />
+                </button>
+              </div>
             </div>
           </section>
+          <div v-else-if="block.sliderType === 'type2'">
+            <HorizontalList
+              :title-en="block.titleEn"
+              :title-fa="block.titleFa"
+              :items="block.items"
+              :instance-name="block.instanceName"
+              :options="block.swiperOptions || SWIPER_OPTION_BACKDROP"
+              card-variant="block.cardVariant || 'backdrop'"
+              :size="block.size || { w: 364, h: 190 }"
+              :link-builder="buildIdRoute"
+              :show-badges="false"
+              :add-series-class="false"
+              :hoverable="true"
+              :type="'slider'"
+            />
+          </div>
+          <div v-else-if="block.sliderType === 'type3'">
+            <HorizontalList
+              :title-en="block.titleEn"
+              :title-fa="block.titleFa"
+              :items="block.items"
+              :instance-name="block.instanceName"
+              :options="block.swiperOptions || SWIPER_OPTION_BACKDROP"
+              card-variant="block.cardVariant || 'backdrop'"
+              :size="block.size || { w: 364, h: 190 }"
+              :link-builder="buildIdRoute"
+              :show-badges="false"
+              :add-series-class="false"
+              :hoverable="true"
+              :type="'slider'"
+            />
+          </div>
         </div>
-        <div v-else-if="list.data.length > 0" class="mt-4">
-          <HorizontalList
-            :title-en="list.list_en"
-            :title-fa="list.list_fa"
-            :show-all-route="{
-              name: 'lists-list',
-              params: { list: list.list.toLowerCase() },
-            }"
-            :items="list.data"
-            :instance-name="String(rootindex)"
-            :options="SWIPER_OPTION_POSTER"
-            card-variant="poster"
-            :size="{ w: 183, h: 273 }"
-            :link-builder="buildIdRoute"
-            :show-badges="true"
-            :type="'discover'"
-          />
-        </div>
-      </div>
+      </template>
     </div>
 
     <div v-else-if="nocontent" class="container-fluid-notfound">
@@ -589,6 +604,28 @@ const SLICK_MAIN_OPTIONS = {
   slidesToScroll: 1,
   touchThreshold: 10,
   autoplay: true,
+}
+
+const SLIDER_PRESENTATION = {
+  type1: {
+    instancePrefix: 'type1Carousel',
+  },
+  type2: {
+    titleEn: 'Type 2',
+    titleFa: 'نوع ۲',
+    instancePrefix: 'type2Swip',
+    cardVariant: 'backdrop',
+    size: { w: 364, h: 190 },
+    swiperOptions: SWIPER_OPTION_BACKDROP,
+  },
+  type3: {
+    titleEn: 'Type 3',
+    titleFa: 'نوع ۳',
+    instancePrefix: 'type3Swip',
+    cardVariant: 'backdrop',
+    size: { w: 364, h: 190 },
+    swiperOptions: SWIPER_OPTION_BACKDROP,
+  },
 }
 
 export default {
@@ -712,9 +749,8 @@ export default {
       isLoadingDiscover: true,
       isLoadingFilters: true,
       isLoadingOffer: true,
-      isLoadingType1: true,
-      isLoadingType2: true,
-      isLoadingType3: true,
+      isLoadingDynamicSliders: false,
+      dynamicSliderInsertions: [],
       startFetchingFilters: false,
       // Clap and watchlist state
       clapinterval: false,
@@ -748,6 +784,66 @@ export default {
       return Array.isArray(sliders) && sliders.length > 0
         ? this.transformSliderData(sliders)
         : []
+    },
+    discoverLists() {
+      return Array.isArray(this.data?.data) ? this.data.data : []
+    },
+    discoverBlocks() {
+      const baseBlocks = this.discoverLists.map((list, index) => ({
+        kind: 'discover',
+        key: `discover-${list.list || index}`,
+        list,
+        originalIndex: index,
+      }))
+
+      if (!this.dynamicSliderInsertions.length) {
+        return baseBlocks
+      }
+
+      const sliderEntries = this.dynamicSliderInsertions
+        .slice()
+        .sort((a, b) => {
+          const indexDiff =
+            (a.index_on_list ?? Infinity) - (b.index_on_list ?? Infinity)
+          if (indexDiff !== 0) {
+            return indexDiff
+          }
+          return (a._sequence ?? 0) - (b._sequence ?? 0)
+        })
+
+      const merged = []
+      let sliderCursor = 0
+
+      baseBlocks.forEach((block, index) => {
+        merged.push(block)
+        const afterIndex = index + 1
+        while (
+          sliderCursor < sliderEntries.length &&
+          sliderEntries[sliderCursor].index_on_list === afterIndex
+        ) {
+          merged.push({
+            kind: 'slider',
+            ...sliderEntries[sliderCursor],
+            key:
+              sliderEntries[sliderCursor].key ||
+              `slider-${sliderEntries[sliderCursor].sliderType}-${sliderCursor}`,
+          })
+          sliderCursor += 1
+        }
+      })
+
+      while (sliderCursor < sliderEntries.length) {
+        merged.push({
+          kind: 'slider',
+          ...sliderEntries[sliderCursor],
+          key:
+            sliderEntries[sliderCursor].key ||
+            `slider-${sliderEntries[sliderCursor].sliderType}-${sliderCursor}`,
+        })
+        sliderCursor += 1
+      }
+
+      return merged
     },
   },
   destroyed() {
@@ -801,6 +897,9 @@ export default {
     // Fetch discover content
     this.fetchDiscoverData()
 
+    // Fetch dynamic sliders based on user request configuration
+    this.loadDynamicSliderLayout()
+
     // Fetch lives
     this.isLoadingLives = true
     this.$axios
@@ -814,34 +913,6 @@ export default {
       .finally(() => {
         this.isLoadingLives = false
       })
-
-    // Fetch New Types Section (Type 1, 2, 3)
-    this.isLoadingType1 = true
-    this.$store
-      .dispatch('slider/fetchType1Slider', {
-        filtercontents: this.filtercontents,
-      })
-      .finally(() => {
-        this.isLoadingType1 = false
-      })
-
-    // this.isLoadingType2 = true
-    // this.$store
-    //   .dispatch('slider/fetchType2Slider', {
-    //     filtercontents: this.filtercontents,
-    //   })
-    //   .finally(() => {
-    //     this.isLoadingType2 = false
-    //   })
-
-    // this.isLoadingType3 = true
-    // this.$store
-    //   .dispatch('slider/fetchType3Slider', {
-    //     filtercontents: this.filtercontents,
-    //   })
-    //   .finally(() => {
-    //     this.isLoadingType3 = false
-    //   })
 
     // Fetch UGCs
     // this.isLoadingUgcs = true
@@ -859,6 +930,163 @@ export default {
     //   })
   },
   methods: {
+    async loadDynamicSliderLayout({ force = false } = {}) {
+      this.isLoadingDynamicSliders = true
+      try {
+        const sliderRequests = this.getStoredUserSliderRequests()
+        if (!Array.isArray(sliderRequests) || !sliderRequests.length) {
+          this.dynamicSliderInsertions = []
+          return
+        }
+
+        const normalized = sliderRequests
+          .map((request, index) => {
+            const location = Number(request.location)
+            const sliderType = this.mapLocationToSliderType(location)
+            const indexOnList = this.normalizeSliderIndex(request.index_on_list)
+
+            if (!sliderType || !indexOnList) {
+              return null
+            }
+
+            return {
+              location,
+              sliderType,
+              index_on_list: indexOnList,
+              _sequence: index,
+            }
+          })
+          .filter(Boolean)
+
+        if (!normalized.length) {
+          this.dynamicSliderInsertions = []
+          return
+        }
+
+        const locationsToFetch = [
+          ...new Set(normalized.map((entry) => entry.location)),
+        ]
+
+        if (locationsToFetch.length) {
+          await this.ensureSliderDataForLocations(locationsToFetch, force)
+        }
+
+        const prepared = normalized
+          .map((entry, index) => {
+            const items = this.getSliderItemsByType(entry.sliderType)
+            if (!Array.isArray(items) || !items.length) {
+              return null
+            }
+
+            const presentation = this.getSliderPresentation(entry.sliderType)
+            const instanceBase = presentation.instancePrefix || entry.sliderType
+            const swiperHandle =
+              entry.sliderType === 'type1' ? `${instanceBase}-${index}` : null
+
+            return {
+              ...entry,
+              items,
+              key: `dynamic-${entry.sliderType}-${index}-${entry.index_on_list}`,
+              titleFa: presentation.titleFa,
+              titleEn: presentation.titleEn,
+              instanceName: `${instanceBase}-${index}`,
+              cardVariant: presentation.cardVariant,
+              size: presentation.size ? { ...presentation.size } : null,
+              swiperOptions: presentation.swiperOptions,
+              swiperHandle,
+            }
+          })
+          .filter(Boolean)
+
+        this.dynamicSliderInsertions = prepared
+      } catch (error) {
+        console.error('Failed to prepare sliders for discover:', error)
+        this.dynamicSliderInsertions = []
+      } finally {
+        this.isLoadingDynamicSliders = false
+      }
+    },
+    getStoredUserSliderRequests() {
+      const checkuser = this.$store?.state?.checkuser || {}
+      const authUser = this.$store?.state?.auth?.user || {}
+      const candidates = [
+        checkuser.sliders,
+        checkuser.slider_requests,
+        authUser.sliders,
+        authUser.slider_requests,
+      ]
+
+      const entry = candidates.find((value) => Array.isArray(value))
+      return entry || null
+    },
+    async ensureSliderDataForLocations(locations = [], force = false) {
+      const loaders = locations.map((location) => {
+        const sliderType = this.mapLocationToSliderType(location)
+        if (!sliderType) {
+          return Promise.resolve()
+        }
+
+        if (!force) {
+          const existing = this.getSliderItemsByType(sliderType)
+          if (Array.isArray(existing) && existing.length) {
+            return Promise.resolve()
+          }
+        }
+
+        switch (sliderType) {
+          case 'type1':
+            return this.$store.dispatch('slider/fetchType1Slider', {
+              filtercontents: this.filtercontents,
+              loadagain: force ? 1 : 0,
+            })
+          case 'type2':
+            return this.$store.dispatch('slider/fetchType2Slider', {
+              filtercontents: this.filtercontents,
+              loadagain: force ? 1 : 0,
+            })
+          case 'type3':
+            return this.$store.dispatch('slider/fetchType3Slider', {
+              filtercontents: this.filtercontents,
+              loadagain: force ? 1 : 0,
+            })
+          default:
+            return Promise.resolve()
+        }
+      })
+
+      await Promise.all(loaders)
+    },
+    mapLocationToSliderType(location) {
+      const numericLocation = Number(location)
+      if (numericLocation === 2) return 'type1'
+      if (numericLocation === 3) return 'type2'
+      if (numericLocation === 4) return 'type3'
+      return null
+    },
+    getSliderItemsByType(sliderType) {
+      if (sliderType === 'type1') return this.type1Sliders
+      if (sliderType === 'type2') return this.type2Sliders
+      if (sliderType === 'type3') return this.type3Sliders
+      return []
+    },
+    getSliderPresentation(sliderType) {
+      const preset = SLIDER_PRESENTATION[sliderType] || {}
+      return {
+        titleFa: preset.titleFa || '',
+        titleEn: preset.titleEn || '',
+        instancePrefix: preset.instancePrefix || sliderType,
+        cardVariant: preset.cardVariant || 'backdrop',
+        size: preset.size ? { ...preset.size } : null,
+        swiperOptions: preset.swiperOptions || this.SWIPER_OPTION_BACKDROP,
+      }
+    },
+    normalizeSliderIndex(value) {
+      const parsed = Number(value)
+      if (!Number.isFinite(parsed)) {
+        return null
+      }
+      return Math.max(1, Math.floor(parsed))
+    },
     ChooseLang(en, fa) {
       if (fa && this.$i18n.locale === 'fa') return fa
       if (!en) return fa || ''
@@ -998,9 +1226,6 @@ export default {
       this.isLoadingRecently = true
       this.isLoadingDiscover = true
       this.isLoadingOffer = true
-      this.isLoadingType1 = true
-      this.isLoadingType2 = true
-      this.isLoadingType3 = true
       this.$store.dispatch('filter/FILTER_LOADING')
 
       const requests = []
@@ -1072,39 +1297,8 @@ export default {
           })
       )
 
-      // Fetch New Types Section
-      requests.push(
-        this.$store
-          .dispatch('slider/fetchType1Slider', {
-            filtercontents: this.filtercontents,
-            loadagain: 1,
-          })
-          .finally(() => {
-            this.isLoadingType1 = false
-          })
-      )
-
-      // requests.push(
-      //   this.$store
-      //     .dispatch('slider/fetchType2Slider', {
-      //       filtercontents: this.filtercontents,
-      //       loadagain: 1,
-      //     })
-      //     .finally(() => {
-      //       this.isLoadingType2 = false
-      //     })
-      // )
-
-      // requests.push(
-      //   this.$store
-      //     .dispatch('slider/fetchType3Slider', {
-      //       filtercontents: this.filtercontents,
-      //       loadagain: 1,
-      //     })
-      //     .finally(() => {
-      //       this.isLoadingType3 = false
-      //     })
-      // )
+      // Refresh dynamic slider layout for the selected filters
+      requests.push(this.loadDynamicSliderLayout({ force: true }))
 
       try {
         await Promise.all(requests)
@@ -1283,14 +1477,16 @@ export default {
       }
       return ''
     },
-    type1CarouselPrev() {
-      if (this.type1Carousel) {
-        this.type1Carousel.slidePrev()
+    type1CarouselPrev(handle = 'type1Carousel') {
+      const swiperInstance = this[handle] || this.type1Carousel
+      if (swiperInstance && swiperInstance.slidePrev) {
+        swiperInstance.slidePrev()
       }
     },
-    type1CarouselNext() {
-      if (this.type1Carousel) {
-        this.type1Carousel.slideNext()
+    type1CarouselNext(handle = 'type1Carousel') {
+      const swiperInstance = this[handle] || this.type1Carousel
+      if (swiperInstance && swiperInstance.slideNext) {
+        swiperInstance.slideNext()
       }
     },
   },
