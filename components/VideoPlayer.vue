@@ -177,7 +177,38 @@
             <!-- Font Size -->
             <div class="subtitle-style-group">
               <label class="subtitle-style-label">اندازه فونت</label>
-              <div class="subtitle-style-options">
+              <div
+                v-if="isUltraWideScreen"
+                class="subtitle-font-custom-control"
+              >
+                <button
+                  type="button"
+                  class="subtitle-font-btn"
+                  :disabled="subtitleFontSizePx <= subtitleFontMin"
+                  @click="adjustSubtitleFontSize(-subtitleFontStep)"
+                >
+                  <i class="fa fa-minus"></i>
+                </button>
+                <input
+                  class="subtitle-font-input"
+                  type="number"
+                  :value="subtitleFontSizePx"
+                  :min="subtitleFontMin"
+                  :max="subtitleFontMax"
+                  :step="subtitleFontStep"
+                  @input="handleSubtitleFontInput($event)"
+                />
+                <span class="subtitle-font-unit">px</span>
+                <button
+                  type="button"
+                  class="subtitle-font-btn"
+                  :disabled="subtitleFontSizePx >= subtitleFontMax"
+                  @click="adjustSubtitleFontSize(subtitleFontStep)"
+                >
+                  <i class="fa fa-plus"></i>
+                </button>
+              </div>
+              <div v-else class="subtitle-style-options">
                 <div
                   v-for="size in FONT_SIZES"
                   :key="size.value"
@@ -428,6 +459,11 @@ const nextIcon = require('@/assets/images/player/next-icon.png')
 
 // Constants
 const MOBILE_BREAKPOINT = 768
+const ULTRA_WIDE_BREAKPOINT = 2000
+const DEFAULT_SUBTITLE_FONT_SIZE = 24
+const SUBTITLE_FONT_MIN = 18
+const SUBTITLE_FONT_MAX = 64
+const SUBTITLE_FONT_STEP = 2
 const SEEK_TIME = 10
 const VOLUME_STEP = 0.1
 const PLAYBACK_RATES = [
@@ -545,10 +581,10 @@ export default {
   data() {
     return {
       FONT_SIZES: [
-        { value: 'small', label: 'کوچک' },
-        { value: 'medium', label: 'متوسط' },
-        { value: 'large', label: 'بزرگ' },
-        { value: 'x-large', label: 'خیلی بزرگ' },
+        { value: 20, label: 'کوچک' },
+        { value: 24, label: 'متوسط' },
+        { value: 28, label: 'بزرگ' },
+        { value: 32, label: 'خیلی بزرگ' },
       ],
       TEXT_COLORS: [
         { value: '#ffffff', label: 'سفید', class: 'color-white' },
@@ -577,6 +613,7 @@ export default {
       currentCreditType: null,
       creditCheckInterval: null,
       isMobile: false,
+      isUltraWideScreen: false,
       currentTimeFormatted: '00:00',
       durationFormatted: '00:00',
       showSettingsDrawer: false,
@@ -587,11 +624,14 @@ export default {
       // Track subtitle state to prevent conflicts
       subtitleTracksInitialized: false,
       subtitleStyle: {
-        fontSize: 'medium',
+        fontSize: DEFAULT_SUBTITLE_FONT_SIZE,
         color: '#ffffff',
         background: 0.8,
         shadow: 'medium',
       },
+      subtitleFontMin: SUBTITLE_FONT_MIN,
+      subtitleFontMax: SUBTITLE_FONT_MAX,
+      subtitleFontStep: SUBTITLE_FONT_STEP,
       // Progress preview state
       showProgressPreview: false,
       previewPosition: { x: 0, y: 0 },
@@ -625,6 +665,10 @@ export default {
 
     PLAYBACK_RATES() {
       return PLAYBACK_RATES
+    },
+
+    subtitleFontSizePx() {
+      return this.resolveSubtitleFontPx(this.subtitleStyle.fontSize)
     },
   },
 
@@ -660,7 +704,7 @@ export default {
   },
 
   mounted() {
-    this.isMobile = window.innerWidth <= 768
+    this.updateResponsiveFlags()
     window.addEventListener('resize', this.handleResize)
 
     if (this.stream) {
@@ -727,7 +771,13 @@ export default {
     // ============================================
 
     handleResize() {
-      this.isMobile = window.innerWidth <= MOBILE_BREAKPOINT
+      this.updateResponsiveFlags()
+    },
+
+    updateResponsiveFlags() {
+      const width = window.innerWidth
+      this.isMobile = width <= MOBILE_BREAKPOINT
+      this.isUltraWideScreen = width > ULTRA_WIDE_BREAKPOINT
     },
 
     initPlayer() {
@@ -2694,6 +2744,50 @@ export default {
       this.applySubtitleStyles()
     },
 
+    handleSubtitleFontInput(event) {
+      const nextValue = Number(event?.target?.value)
+      if (Number.isNaN(nextValue)) return
+      const clamped = this.clampSubtitleFontSize(nextValue)
+      this.updateSubtitleFontSize(clamped)
+      if (event && event.target) {
+        event.target.value = clamped
+      }
+    },
+
+    adjustSubtitleFontSize(delta) {
+      if (typeof delta !== 'number') return
+      this.updateSubtitleFontSize(this.subtitleFontSizePx + delta)
+    },
+
+    updateSubtitleFontSize(value) {
+      const clamped = this.clampSubtitleFontSize(value)
+      this.updateSubtitleStyle('fontSize', clamped)
+    },
+
+    clampSubtitleFontSize(value) {
+      const numeric = Number(value)
+      if (Number.isNaN(numeric)) {
+        return DEFAULT_SUBTITLE_FONT_SIZE
+      }
+      return Math.min(
+        this.subtitleFontMax,
+        Math.max(this.subtitleFontMin, Math.round(numeric))
+      )
+    },
+
+    resolveSubtitleFontPx(fontSizeValue) {
+      if (typeof fontSizeValue === 'number') {
+        return fontSizeValue
+      }
+      const fontSizeMap = {
+        small: 20,
+        medium: 24,
+        large: 28,
+        'x-large': 32,
+      }
+      return fontSizeMap[fontSizeValue] || DEFAULT_SUBTITLE_FONT_SIZE
+    },
+
     applySubtitleStyles() {
       if (!this.player) return
 
@@ -2703,14 +2797,7 @@ export default {
       if (!textTrackDisplay) return
 
       // Apply font size to the display container with !important (using pixels)
-      const fontSizeMap = {
-        small: '20px',
-        medium: '24px',
-        large: '28px',
-        'x-large': '32px',
-      }
-
-      const fontSize = fontSizeMap[this.subtitleStyle.fontSize] || '24px'
+      const fontSize = `${this.subtitleFontSizePx}px`
       textTrackDisplay.style.cssText += `font-size: ${fontSize} !important;`
 
       // Apply styles to existing cues
@@ -2771,14 +2858,7 @@ export default {
       const innerDiv = cue.querySelector('div')
       if (!innerDiv) return
 
-      const fontSizeMap = {
-        small: '20px',
-        medium: '24px',
-        large: '28px',
-        'x-large': '32px',
-      }
-
-      const fontSize = fontSizeMap[this.subtitleStyle.fontSize] || '24px'
+      const fontSize = `${this.subtitleFontSizePx}px`
 
       // Apply styles with !important using CSSText to override inline styles
       const styles = `
@@ -2820,14 +2900,7 @@ export default {
       const style = document.createElement('style')
       style.id = 'custom-subtitle-styles'
 
-      const fontSizeMap = {
-        small: '20px',
-        medium: '24px',
-        large: '28px',
-        'x-large': '32px',
-      }
-
-      const fontSize = fontSizeMap[this.subtitleStyle.fontSize] || '24px'
+      const fontSize = `${this.subtitleFontSizePx}px`
       const shadowMap = {
         none: 'none',
         light: '0 1px 2px rgba(0,0,0,0.8)',
@@ -2865,7 +2938,7 @@ export default {
 
     resetSubtitleStyles() {
       this.subtitleStyle = {
-        fontSize: 'medium',
+        fontSize: DEFAULT_SUBTITLE_FONT_SIZE,
         color: '#ffffff',
         background: 0.8,
         shadow: 'medium',
@@ -4489,6 +4562,68 @@ video#episode-player_html5_api {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 8px;
+}
+
+.subtitle-font-custom-control {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #2d2d2d;
+  border: 1px solid #444;
+  border-radius: 6px;
+  padding: 10px 12px;
+}
+
+.subtitle-font-btn {
+  width: 36px;
+  height: 36px;
+  border: 1px solid #555;
+  border-radius: 6px;
+  background: #3a3a3a;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.subtitle-font-btn:not(:disabled):hover {
+  background: #ff5722;
+  border-color: #ff5722;
+}
+
+.subtitle-font-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.subtitle-font-input {
+  flex: 1;
+  min-width: 80px;
+  background: #1f1f1f;
+  border: 1px solid #444;
+  border-radius: 6px;
+  padding: 8px 10px;
+  color: #ffffff;
+  text-align: center;
+  font-size: 16px;
+}
+
+.subtitle-font-input::-webkit-outer-spin-button,
+.subtitle-font-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.subtitle-font-input {
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+.subtitle-font-unit {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 14px;
 }
 
 .subtitle-style-option {
