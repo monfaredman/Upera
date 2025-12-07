@@ -1003,6 +1003,17 @@ export default {
   }
 }
 
+@media (max-width: 575px) {
+  .watch-more-text,
+  .show-all-icon {
+    color: black !important;
+  }
+  .theme-dark .watch-more-text,
+  .theme-dark .show-all-icon {
+    color: white !important;
+  }
+}
+
 /* sm ≥640 */
 @media (min-width: 640px) {
   .offer-slider .swiper-wrapper {

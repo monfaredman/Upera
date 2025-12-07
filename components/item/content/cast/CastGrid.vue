@@ -1,12 +1,38 @@
 <template>
   <div v-if="mergedList && mergedList.length" class="cast-carousel">
-    <div class="cast-swiper-wrap">
-      <swiper
-        ref="castsSwiper"
-        class="cast-swiper"
-        :options="swiperOptions"
-        @slideChange="onSlideChange"
-      >
+    <!-- Previous Arrow (Right side for RTL) -->
+    <button
+      v-if="showArrows && !isAtStart"
+      class="carousel-arrow carousel-arrow-prev"
+      :disabled="isAtStart"
+      aria-label="Previous"
+      @click="slidePrev"
+    >
+      <i class="fa fa-chevron-right" />
+    </button>
+
+    <!-- Next Arrow (Left side for RTL) -->
+    <button
+      v-if="showArrows && !isAtEnd"
+      class="carousel-arrow carousel-arrow-next"
+      :disabled="isAtEnd"
+      aria-label="Next"
+      @click="slideNext"
+    >
+      <i class="fa fa-chevron-left" />
+    </button>
+
+    <!-- Gradient Shadows -->
+    <div
+      v-if="showArrows && !isAtStart"
+      class="carousel-shadow carousel-shadow-start"
+    ></div>
+    <div
+      v-if="showArrows && !isAtEnd"
+      class="carousel-shadow carousel-shadow-end"
+    ></div>
+
+    <swiper ref="castsSwiper" class="cast-swiper" :options="swiperOptions">
       <swiper-slide
         v-for="(person, index) in mergedList"
         :key="person.id || `${person._role}-${index}`"
@@ -86,28 +112,6 @@
         </div>
       </swiper-slide>
     </swiper>
-      <!-- Navigation buttons -->
-      <button
-        v-if="!isBeginning"
-        class="cast-nav cast-nav-prev"
-        aria-label="Previous"
-        @click.prevent="slidePrev"
-      >
-        <span class="chev chev-left" />
-      </button>
-      <button
-        v-if="!isEnd"
-        class="cast-nav cast-nav-next"
-        aria-label="Next"
-        @click.prevent="slideNext"
-      >
-        <span class="chev chev-right" />
-      </button>
-
-      <!-- Edge shadows to indicate overflow -->
-      <div v-if="!isBeginning" class="start-shadow" />
-      <div v-if="!isEnd" class="end-shadow" />
-    </div>
   </div>
 </template>
 
@@ -174,7 +178,7 @@ export default {
         freeMode: false,
         breakpoints: {
           1600: { slidesPerView: 9.5 },
-          1400: { slidesPerView: 7 },
+          1400: { slidesPerView: 7.5 },
           1200: { slidesPerView: 7.5 },
           1024: { slidesPerView: 8.5 },
           768: { slidesPerView: 6.5 },
@@ -183,10 +187,9 @@ export default {
           0: { slidesPerView: 2.6 },
         },
       },
-      // state-tracking for navigation buttons and shadows
-      isBeginning: true,
-      isEnd: false,
-      totalSlides: 0,
+      isAtStart: true,
+      isAtEnd: false,
+      showArrows: false,
     }
   },
   computed: {
@@ -215,6 +218,10 @@ export default {
   },
   mounted() {
     this.updateSwiper()
+    this.initSwiperEvents()
+  },
+  beforeDestroy() {
+    this.removeSwiperEvents()
   },
   methods: {
     updateSwiper() {
@@ -222,18 +229,61 @@ export default {
         const instance = this.$refs.castsSwiper?.$swiper
         if (instance && instance.update) {
           instance.update()
-          // update nav state
-          this.isBeginning = !!instance.isBeginning
-          this.isEnd = !!instance.isEnd
-          this.totalSlides = (instance.slides && instance.slides.length) || this.mergedList.length
+          this.checkArrowsVisibility()
         }
       })
     },
+    initSwiperEvents() {
+      this.$nextTick(() => {
+        const swiper = this.$refs.castsSwiper?.$swiper
+        if (swiper) {
+          swiper.on('slideChange', this.onSlideChange)
+          swiper.on('init', this.checkArrowsVisibility)
+          swiper.on('resize', this.checkArrowsVisibility)
+          this.checkArrowsVisibility()
+        }
+      })
+    },
+    removeSwiperEvents() {
+      const swiper = this.$refs.castsSwiper?.$swiper
+      if (swiper) {
+        swiper.off('slideChange', this.onSlideChange)
+        swiper.off('init', this.checkArrowsVisibility)
+        swiper.off('resize', this.checkArrowsVisibility)
+      }
+    },
     onSlideChange() {
-      const instance = this.$refs.castsSwiper?.$swiper
-      if (instance) {
-        this.isBeginning = !!instance.isBeginning
-        this.isEnd = !!instance.isEnd
+      this.updateArrowStates()
+    },
+    updateArrowStates() {
+      const swiper = this.$refs.castsSwiper?.$swiper
+      if (swiper) {
+        this.isAtStart = swiper.isBeginning
+        this.isAtEnd = swiper.isEnd
+      }
+    },
+    checkArrowsVisibility() {
+      this.$nextTick(() => {
+        const swiper = this.$refs.castsSwiper?.$swiper
+        if (swiper) {
+          // Show arrows if there are more slides than visible slides
+          const totalSlides = swiper.slides?.length || 0
+          const visibleSlides = Math.floor(swiper.params.slidesPerView || 1)
+          this.showArrows = totalSlides > visibleSlides
+          this.updateArrowStates()
+        }
+      })
+    },
+    slideNext() {
+      const swiper = this.$refs.castsSwiper?.$swiper
+      if (swiper && !this.isAtEnd) {
+        swiper.slideNext()
+      }
+    },
+    slidePrev() {
+      const swiper = this.$refs.castsSwiper?.$swiper
+      if (swiper && !this.isAtStart) {
+        swiper.slidePrev()
       }
     },
     ChooseLang(en, fa) {
@@ -271,6 +321,170 @@ export default {
 .cast-carousel {
   position: relative;
   padding: 8px 0;
+}
+
+/* Navigation Arrows */
+.carousel-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.95);
+  border: 2px solid rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.cast-carousel:hover .carousel-arrow {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.carousel-arrow:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 1);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.carousel-arrow:active:not(:disabled) {
+  transform: translateY(-50%) scale(0.95);
+}
+
+.carousel-arrow:disabled {
+  opacity: 0 !important;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.carousel-arrow-prev {
+  right: -16px;
+}
+
+.carousel-arrow-next {
+  left: 16px;
+}
+
+.arrow-icon {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  line-height: 1;
+}
+
+/* Dark theme arrows */
+:global(.theme-dark) .carousel-arrow {
+  background: rgba(44, 62, 80, 0.95);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+:global(.theme-dark) .carousel-arrow:hover:not(:disabled) {
+  background: rgba(52, 73, 94, 1);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+}
+
+:global(.theme-dark) .arrow-icon {
+  color: #f2f2f2;
+}
+
+/* Gradient Shadows */
+.carousel-shadow {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 120px;
+  z-index: 5;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.theme-dark .carousel-shadow-start {
+  right: -45px;
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0),
+    rgb(0 0 0 / 82%)
+  );
+}
+
+.theme-dark .carousel-shadow-end {
+  left: -4px;
+  background: linear-gradient(
+    to left,
+    rgba(255, 255, 255, 0),
+    rgb(0 0 0 / 82%)
+  );
+}
+
+:global(.theme-dark) .carousel-shadow-start {
+  background: linear-gradient(
+    to left,
+    rgba(26, 26, 26, 0),
+    rgba(26, 26, 26, 0.9)
+  );
+}
+
+:global(.theme-dark) .carousel-shadow-end {
+  background: linear-gradient(
+    to right,
+    rgba(26, 26, 26, 0),
+    rgba(26, 26, 26, 0.9)
+  );
+}
+
+/* Responsive adjustments for arrows */
+@media (max-width: 768px) {
+  .carousel-arrow {
+    width: 40px;
+    height: 40px;
+  }
+
+  .arrow-icon {
+    font-size: 20px;
+  }
+
+  .carousel-arrow-prev {
+    right: -15px;
+  }
+
+  .carousel-arrow-next {
+    left: -15px;
+  }
+
+  .carousel-shadow {
+    width: 80px;
+  }
+}
+
+@media (max-width: 576px) {
+  .carousel-arrow {
+    width: 36px;
+    height: 36px;
+  }
+
+  .arrow-icon {
+    font-size: 18px;
+  }
+
+  .carousel-arrow-prev {
+    right: -10px;
+  }
+
+  .carousel-arrow-next {
+    left: -10px;
+  }
+
+  .carousel-shadow {
+    width: 60px;
+  }
 }
 
 .cast-swiper {
@@ -360,77 +574,6 @@ export default {
   text-align: center;
   width: 100%;
   padding: 0 8px;
-}
-
-/* Navigation buttons */
-.cast-swiper-wrap {
-  position: relative;
-}
-
-.cast-nav {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 30;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  border: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(0, 0, 0, 0.6);
-  color: #fff;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
-  cursor: pointer;
-}
-
-.cast-nav:focus {
-  outline: none;
-}
-
-.cast-nav-prev {
-  left: 8px;
-}
-
-.cast-nav-next {
-  right: 8px;
-}
-
-.chev {
-  display: block;
-  width: 12px;
-  height: 12px;
-  background-size: contain;
-  background-repeat: no-repeat;
-}
-.chev-left {
-  transform: rotate(180deg);
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='2'><path d='M15 18l-6-6 6-6'/></svg>");
-}
-.chev-right {
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='2'><path d='M9 6l6 6-6 6'/></svg>");
-}
-
-/* Edge shadows to indicate more content */
-.start-shadow,
-.end-shadow {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 64px;
-  pointer-events: none;
-  z-index: 20;
-}
-
-.start-shadow {
-  left: 0;
-  background: linear-gradient(to left, rgba(0,0,0,0), rgba(0,0,0,0.12));
-}
-
-.end-shadow {
-  right: 0;
-  background: linear-gradient(to right, rgba(0,0,0,0), rgba(0,0,0,0.12));
 }
 
 .actor-name {
