@@ -1,6 +1,12 @@
 <template>
   <div v-if="mergedList && mergedList.length" class="cast-carousel">
-    <swiper ref="castsSwiper" class="cast-swiper" :options="swiperOptions">
+    <div class="cast-swiper-wrap">
+      <swiper
+        ref="castsSwiper"
+        class="cast-swiper"
+        :options="swiperOptions"
+        @slideChange="onSlideChange"
+      >
       <swiper-slide
         v-for="(person, index) in mergedList"
         :key="person.id || `${person._role}-${index}`"
@@ -80,6 +86,28 @@
         </div>
       </swiper-slide>
     </swiper>
+      <!-- Navigation buttons -->
+      <button
+        v-if="!isBeginning"
+        class="cast-nav cast-nav-prev"
+        aria-label="Previous"
+        @click.prevent="slidePrev"
+      >
+        <span class="chev chev-left" />
+      </button>
+      <button
+        v-if="!isEnd"
+        class="cast-nav cast-nav-next"
+        aria-label="Next"
+        @click.prevent="slideNext"
+      >
+        <span class="chev chev-right" />
+      </button>
+
+      <!-- Edge shadows to indicate overflow -->
+      <div v-if="!isBeginning" class="start-shadow" />
+      <div v-if="!isEnd" class="end-shadow" />
+    </div>
   </div>
 </template>
 
@@ -155,6 +183,10 @@ export default {
           0: { slidesPerView: 2.6 },
         },
       },
+      // state-tracking for navigation buttons and shadows
+      isBeginning: true,
+      isEnd: false,
+      totalSlides: 0,
     }
   },
   computed: {
@@ -190,8 +222,19 @@ export default {
         const instance = this.$refs.castsSwiper?.$swiper
         if (instance && instance.update) {
           instance.update()
+          // update nav state
+          this.isBeginning = !!instance.isBeginning
+          this.isEnd = !!instance.isEnd
+          this.totalSlides = (instance.slides && instance.slides.length) || this.mergedList.length
         }
       })
+    },
+    onSlideChange() {
+      const instance = this.$refs.castsSwiper?.$swiper
+      if (instance) {
+        this.isBeginning = !!instance.isBeginning
+        this.isEnd = !!instance.isEnd
+      }
     },
     ChooseLang(en, fa) {
       if (fa && this.$i18n.locale === 'fa') return fa
@@ -317,6 +360,77 @@ export default {
   text-align: center;
   width: 100%;
   padding: 0 8px;
+}
+
+/* Navigation buttons */
+.cast-swiper-wrap {
+  position: relative;
+}
+
+.cast-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 30;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+}
+
+.cast-nav:focus {
+  outline: none;
+}
+
+.cast-nav-prev {
+  left: 8px;
+}
+
+.cast-nav-next {
+  right: 8px;
+}
+
+.chev {
+  display: block;
+  width: 12px;
+  height: 12px;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+.chev-left {
+  transform: rotate(180deg);
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='2'><path d='M15 18l-6-6 6-6'/></svg>");
+}
+.chev-right {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='2'><path d='M9 6l6 6-6 6'/></svg>");
+}
+
+/* Edge shadows to indicate more content */
+.start-shadow,
+.end-shadow {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 64px;
+  pointer-events: none;
+  z-index: 20;
+}
+
+.start-shadow {
+  left: 0;
+  background: linear-gradient(to left, rgba(0,0,0,0), rgba(0,0,0,0.12));
+}
+
+.end-shadow {
+  right: 0;
+  background: linear-gradient(to right, rgba(0,0,0,0), rgba(0,0,0,0.12));
 }
 
 .actor-name {
