@@ -374,4 +374,8 @@ export default {
   align-items: center;
   height: 80vh !important;
 }
+
+div#actor {
+  padding: 1rem 0 1rem 0;
+}
 </style>

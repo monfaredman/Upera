@@ -432,17 +432,59 @@
 
     <!-- Grid layout -->
     <div v-else>
-      <nuxt-link :to="resolvedLink" :class="computedLinkClass">
-        <b-img
-          v-if="variant === 'poster'"
-          blank
-          blank-color="#bbb"
-          :width="size.w"
-          :height="size.h"
-          show
-          :src="posterSrc(item.poster)"
-          :alt="altText"
-        />
+      <nuxt-link
+        :to="resolvedLink"
+        :class="[computedLinkClass, { 'is-series-grid': item.type != 'movie' }]"
+      >
+        <template v-if="variant === 'poster'">
+          <b-img
+            blank
+            blank-color="#bbb"
+            :width="size.w"
+            :height="size.h"
+            class="isSeries"
+            show
+            :src="posterSrc(item.poster)"
+            :alt="altText"
+          />
+          <!-- Extra posters for series effect -->
+
+          <b-img
+            v-if="item.type != 'movie'"
+            v-bind="{
+              fluidGrow: true,
+              blank: true,
+              blankColor: '#bbb',
+              width: size.w,
+              height: size.h,
+              show: true,
+            }"
+            class="isSeries"
+            :src="
+              'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/' +
+              item.poster
+            "
+            :alt="item.name"
+          />
+          <b-img
+            v-if="item.type != 'movie'"
+            v-bind="{
+              fluidGrow: true,
+              blank: true,
+              blankColor: '#bbb',
+              width: size.w,
+              height: size.h,
+              show: true,
+            }"
+            class="isSeries"
+            :src="
+              'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/' +
+              item.poster
+            "
+            :alt="item.name"
+          />
+        </template>
+        <!-- End of Extra posters for series effect -->
         <b-img
           v-else
           blank
@@ -982,5 +1024,59 @@ export default {
   position: relative;
   z-index: 5;
   border-radius: 8px;
+}
+
+/* series for grid */
+
+.is-series-grid {
+  position: relative;
+  display: block;
+}
+.is-series-grid img.isSeries:nth-child(3) {
+  position: relative;
+  z-index: 5;
+  border-radius: 8px;
+}
+.is-series-grid img.isSeries:nth-child(1) {
+  -webkit-transform: scale(0.96);
+  transform: scale(0.96);
+  opacity: 0.3;
+  position: absolute;
+  top: -4%;
+  border-radius: 8px;
+  z-index: 3 !important;
+}
+
+.is-series-grid img.isSeries:nth-child(2) {
+  -webkit-transform: scale(0.91);
+  transform: scale(0.91);
+  opacity: 0.15;
+  position: absolute;
+  top: -8%;
+  border-radius: 8px;
+  z-index: 4 !important;
+}
+
+@media (min-width: 768px) and (max-width: 993px) {
+  img.isSeries {
+    height: fit-content !important;
+  }
+  .is-series-grid img.isSeries:nth-child(1) {
+    -webkit-transform: scale(0.96);
+    transform: scale(0.96);
+    opacity: 0.3;
+    position: absolute;
+    border-radius: 8px;
+    z-index: -4;
+  }
+
+  .is-series-grid img.isSeries:nth-child(2) {
+    -webkit-transform: scale(0.91);
+    transform: scale(0.91);
+    opacity: 0.15;
+    position: absolute;
+    border-radius: 8px;
+    z-index: -5;
+  }
 }
 </style>
