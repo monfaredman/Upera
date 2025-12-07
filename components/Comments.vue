@@ -593,6 +593,7 @@ export default {
   background: #1b6be5;
   border: none;
   font-size: 14px;
+  color: white;
   font-weight: 600;
   cursor: pointer;
   display: flex;
