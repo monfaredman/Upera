@@ -940,6 +940,19 @@ export default {
   }
 }
 
+@media (min-width: 380px) and (max-width: 576px) {
+  .non-hover-media-image-xxl {
+    height: 9.5rem !important;
+    min-height: 9.5rem !important;
+    width: 100% !important;
+  }
+  .non-hover-media-image-lg {
+    height: 9.5rem !important;
+    min-height: 9.5rem !important;
+    width: 100% !important;
+  }
+}
+
 .is-series {
   position: relative;
   display: block;

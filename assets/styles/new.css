@@ -3514,7 +3514,7 @@ a.thumbnail-wrapper {
 }
 @media (min-width: 1300px) {
   .footer-copyright .chat-wrapper {
-    padding-right: 0.5rem;
+    padding-right: 3rem;
   }
 }
 .footer-copyright .chat-caption {
