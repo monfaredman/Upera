@@ -1058,6 +1058,7 @@ export default {
   .offer-slider .offer-slide-small {
     height: 110px !important;
     object-fit: cover;
+    width: 200px !important;
     margin-left: 0 !important;
   }
   .offer-slider .offer-slide-small img {
@@ -1114,7 +1115,7 @@ export default {
   }
   .offer-slider .offer-slide-small {
     height: 170px !important;
-    width: 240px !important;
+    width: 280px !important;
     object-fit: cover;
     margin-left: 0 !important;
   }
