@@ -7,8 +7,38 @@
             <div class="row no-gutters">
               <div class="col-md-6 col-lg-9" />
               <div class="col-md-6 col-lg-3 showcase-pic">
-                <b-img class="showcase-img d-none d-lg-block" v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 800,height: 400,show:true}" :src="'https://thumb.upera.shop/thumb?w=800&h=600&q=90&fmt=webp&a=t&src=https://cdn.upera.shop/s3/casts/'+data.cast.image" :alt="data.cast.name_fa" />
-                <b-img class="showcase-img d-lg-none" v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 400,height: 300,show:true}" :src="'https://thumb.upera.shop/thumb?w=400&h=300&q=90&fmt=webp&a=c&src=https://cdn.upera.shop/s3/casts/'+data.cast.image" :alt="data.cast.name_fa" />
+                <b-img
+                  class="showcase-img d-none d-lg-block"
+                  v-bind="{
+                    fluidGrow: true,
+                    blank: true,
+                    blankColor: '#bbb',
+                    width: 800,
+                    height: 400,
+                    show: true,
+                  }"
+                  :src="
+                    'https://thumb.upera.shop/thumb?w=800&h=600&q=90&fmt=webp&a=t&src=https://cdn.upera.shop/s3/casts/' +
+                    data.cast.image
+                  "
+                  :alt="data.cast.name_fa"
+                />
+                <b-img
+                  class="showcase-img d-lg-none"
+                  v-bind="{
+                    fluidGrow: true,
+                    blank: true,
+                    blankColor: '#bbb',
+                    width: 400,
+                    height: 300,
+                    show: true,
+                  }"
+                  :src="
+                    'https://thumb.upera.shop/thumb?w=400&h=300&q=90&fmt=webp&a=c&src=https://cdn.upera.shop/s3/casts/' +
+                    data.cast.image
+                  "
+                  :alt="data.cast.name_fa"
+                />
 
                 <!--                <img class="showcase-img d-none d-lg-block" :src="'https://thumb.upera.shop/thumb?w=800&h=400&zc=3&q=100&a=t&src=https://cdn.upera.shop/s3/casts/'+data.cast.image" :alt="data.cast.name_fa">
                 <img class="showcase-img d-lg-none" :src="'https://thumb.upera.shop/thumb?w=400&h=300&zc=3&q=100&a=c&src=https://cdn.upera.shop/s3/casts/'+data.cast.image" :alt="data.cast.name_fa"> -->
@@ -22,7 +52,7 @@
                   <div class="pr-md-4 pr-md-2 showcase-desc-wrapper">
                     <div class="showcase-desc">
                       <div class="h2 text-invert mb-1 mb-md-3">
-                        {{ ChooseLang(data.cast.name,data.cast.name_fa) }}
+                        {{ ChooseLang(data.cast.name, data.cast.name_fa) }}
                       </div>
                     </div>
                   </div>
@@ -30,36 +60,116 @@
               </div>
             </div>
           </div>
-          <a href="#" class="back d-md-none" @click.prevent="hasHistory() ? $router.go(-1) : $router.push('/')">
-            <img src="@/assets/img/icons/arrow-back.svg" width="30" alt="">
+          <a
+            href="#"
+            class="back d-md-none"
+            @click.prevent="hasHistory() ? $router.go(-1) : $router.push('/')"
+          >
+            <img src="@/assets/img/icons/arrow-back.svg" width="30" alt="" />
           </a>
-          <a href="#" class="back2 d-none d-md-block" @click.prevent="hasHistory() ? $router.go(-1) : $router.push('/')">
-            <img src="@/assets/img/icons/arrow-back2.svg" width="30" alt="">
+          <a
+            href="#"
+            class="back2 d-none d-md-block"
+            @click.prevent="hasHistory() ? $router.go(-1) : $router.push('/')"
+          >
+            <img src="@/assets/img/icons/arrow-back2.svg" width="30" alt="" />
           </a>
         </div>
       </div>
     </section>
-    <FilterContents :show="true" :savedata="false" @execute_content_filtering="execute_content_filtering" />
+    <FilterContents
+      :show="true"
+      :savedata="false"
+      @execute_content_filtering="execute_content_filtering"
+    />
     <div id="episode">
-      <div v-if="data.filmography!==null" id="actor" class="episodes_collection">
-        <div class="container-fluid pl-md-4 pr-md-5 mt-3  ">
+      <div
+        v-if="data.filmography !== null"
+        id="actor"
+        class="episodes_collection"
+      >
+        <div class="container-fluid pl-md-4 pr-md-5 mt-3">
           <div class="row">
-            <div v-for="(item,index) in data.filmography" :key="index" class="col-4 col-xl-1 col-md-2 col-sm-3 mt-2 mt-lg-4">
-              <nuxt-link :to="{ name: item.type+'-id', params: { id: item.id }}" class="actor" :class="{'is-series': item.type!='movie'}">
-                <b-img v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 142,height: 212,show:true}" :src="'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name" />
-                <b-img v-if="item.type!='movie'" v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 142,height: 212,show:true}" :src="'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name" />
-                <b-img v-if="item.type!='movie'" v-bind="{fluidGrow: true,blank: true,blankColor: '#bbb',width: 142,height: 212,show:true}" :src="'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name" />
+            <div
+              v-for="(item, index) in data.filmography"
+              :key="index"
+              class="col-4 col-xl-1 col-md-2 col-sm-3 mt-2 mt-lg-4"
+            >
+              <nuxt-link
+                :to="{ name: item.type + '-id', params: { id: item.id } }"
+                class="actor"
+                :class="{ 'is-series': item.type != 'movie' }"
+              >
+                <b-img
+                  v-bind="{
+                    fluidGrow: true,
+                    blank: true,
+                    blankColor: '#bbb',
+                    width: 142,
+                    height: 212,
+                    show: true,
+                  }"
+                  :src="
+                    'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/' +
+                    item.poster
+                  "
+                  :alt="item.name"
+                />
+                <b-img
+                  v-if="item.type != 'movie'"
+                  v-bind="{
+                    fluidGrow: true,
+                    blank: true,
+                    blankColor: '#bbb',
+                    width: 142,
+                    height: 212,
+                    show: true,
+                  }"
+                  :src="
+                    'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/' +
+                    item.poster
+                  "
+                  :alt="item.name"
+                />
+                <b-img
+                  v-if="item.type != 'movie'"
+                  v-bind="{
+                    fluidGrow: true,
+                    blank: true,
+                    blankColor: '#bbb',
+                    width: 142,
+                    height: 212,
+                    show: true,
+                  }"
+                  :src="
+                    'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/' +
+                    item.poster
+                  "
+                  :alt="item.name"
+                />
 
                 <!--                 <img :src="'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
                 <img v-if="item.type!='movie'" :src="'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
                 <img v-if="item.type!='movie'" :src="'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name"> -->
-                <span v-if="!item.ir && item.persian" class="label label-rounded label-red label-1">دوبله</span>
-                <span v-if="!item.ir && !item.persian" class="label label-rounded label-warning label-1">زیرنویس</span>
-                <span v-if="item.free && $config.envname=='upera'" class="label label-blue label-2">رایگان</span>
+                <span
+                  v-if="!item.ir && item.persian"
+                  class="label label-rounded label-red label-1"
+                  >دوبله</span
+                >
+                <span
+                  v-if="!item.ir && !item.persian"
+                  class="label label-rounded label-warning label-1"
+                  >زیرنویس</span
+                >
+                <span
+                  v-if="item.free && $config.envname == 'upera'"
+                  class="label label-blue label-2"
+                  >رایگان</span
+                >
               </nuxt-link>
               <div class="mt-2">
                 <h6 class="mt-2 small font-weight-normal">
-                  {{ ChooseLang(item.name,item.name_fa) }}
+                  {{ ChooseLang(item.name, item.name_fa) }}
                 </h6>
               </div>
             </div>
@@ -67,7 +177,7 @@
         </div>
       </div>
       <div v-else class="container-fluid">
-        <div class="text-center my-5">
+        <div class="text-center py-5">
           <h2>محتوایی جهت نمایش وجود ندارد</h2>
         </div>
       </div>
@@ -77,7 +187,11 @@
         </button>
       </div>
       <client-only v-else-if="data.last_page > 1">
-        <infinite-loading ref="infiniteLoading" :identifier="infiniteId" @infinite="infiniteHandler">
+        <infinite-loading
+          ref="infiniteLoading"
+          :identifier="infiniteId"
+          @infinite="infiniteHandler"
+        >
           <span slot="no-more" />
           <span slot="no-results" />
         </infinite-loading>
@@ -88,97 +202,100 @@
 
 <script>
 import InfiniteLoading from 'vue-infinite-loading'
-import FilterContents from "@/components/FilterContents"
-  export default {
-
-        components: {
-            InfiniteLoading,
-            FilterContents
-        },
-  async asyncData (context) {
+import FilterContents from '@/components/FilterContents'
+export default {
+  components: {
+    InfiniteLoading,
+    FilterContents,
+  },
+  async asyncData(context) {
     let res
     // if (context.app.$auth.loggedIn) {
     //     res = await context.app.$axios.get('/get/cast/'+context.params.id+context.store.getters.filtercontents)
     //  }else{
-        res = await context.app.$axios.get('/ghost/get/cast/'+context.params.id+context.store.getters.filtercontents)
-     // }
-    return {data:res.data.data}
+    res = await context.app.$axios.get(
+      '/ghost/get/cast/' +
+        context.params.id +
+        context.store.getters.filtercontents
+    )
+    // }
+    return { data: res.data.data }
   },
-  data () {
+  data() {
     return {
-      data:{},
+      data: {},
       page: 1,
       infiniteId: +new Date(),
       distance: -Infinity,
       // userApi:'/get/cast/'+this.$route.params.id,
-      ghostApi:'/ghost/get/cast/'+this.$route.params.id
+      ghostApi: '/ghost/get/cast/' + this.$route.params.id,
     }
   },
   head() {
-
-    return { title:  this.ChooseLang(this.data.cast.name,this.data.cast.name_fa) }
+    return {
+      title: this.ChooseLang(this.data.cast.name, this.data.cast.name_fa),
+    }
   },
-    methods: {
-    ChooseLang(en,fa){
-        if(fa && this.$i18n.locale=="fa")
-            return fa
-        else
-            return en
+  methods: {
+    ChooseLang(en, fa) {
+      if (fa && this.$i18n.locale == 'fa') return fa
+      else return en
     },
-            infiniteHandler($state) {
-                var apiurl
-                // if (this.$auth.loggedIn) {
-                //         apiurl=this.userApi
-                // } else {
-                        apiurl=this.ghostApi
-                // }
-                    this.$axios.get(apiurl+this.filtercontents,{params: {page: this.page + 1}}).then(response => {
-                        if (response.status === 200) {
-                            if (response.data.data.filmography.length) {
-                              this.data.filmography = this.data.filmography.concat(response.data.data.filmography)
-                              if(response.data.data.last_page==this.page)
-                                $state.complete()
-                              else
-                                $state.loaded()
-                            } else {
-                              $state.complete()
-                            }
-                        }
-                    })
-                this.page = this.page + 1
-            },
-            manualLoad() {
-              this.distance = 100
-              this.$nextTick(() => {
-                this.$refs.infiniteLoading.attemptLoad()
-              })
-            },
-            hasHistory () { return window.history.length > 2 },
-
-            execute_content_filtering() {
-                this.$nuxt.$loading.start()
-                this.$store.dispatch('filter/FILTER_LOADING')
-                var apiurl
-                // if (this.$auth.loggedIn) {
-                //         apiurl=this.userApi
-                // } else {
-                        apiurl=this.ghostApi
-                // }
-                this.$axios.get(apiurl+this.filtercontents).then(response => {
-                    if (response.status === 200) {
-                        //if (response.data.data.filmography.length) {
-                          this.data.filmography = response.data.data.filmography
-                          this.page=1
-                          this.infiniteId += 1
-                        //}
-                    }
-                    this.$store.dispatch('filter/CLEAN_FILTER_LOADING')
-                    this.$nuxt.$loading.finish()
-                })
-
+    infiniteHandler($state) {
+      var apiurl
+      // if (this.$auth.loggedIn) {
+      //         apiurl=this.userApi
+      // } else {
+      apiurl = this.ghostApi
+      // }
+      this.$axios
+        .get(apiurl + this.filtercontents, { params: { page: this.page + 1 } })
+        .then((response) => {
+          if (response.status === 200) {
+            if (response.data.data.filmography.length) {
+              this.data.filmography = this.data.filmography.concat(
+                response.data.data.filmography
+              )
+              if (response.data.data.last_page == this.page) $state.complete()
+              else $state.loaded()
+            } else {
+              $state.complete()
             }
-  }
-  }
+          }
+        })
+      this.page = this.page + 1
+    },
+    manualLoad() {
+      this.distance = 100
+      this.$nextTick(() => {
+        this.$refs.infiniteLoading.attemptLoad()
+      })
+    },
+    hasHistory() {
+      return window.history.length > 2
+    },
+
+    execute_content_filtering() {
+      this.$nuxt.$loading.start()
+      this.$store.dispatch('filter/FILTER_LOADING')
+      var apiurl
+      // if (this.$auth.loggedIn) {
+      //         apiurl=this.userApi
+      // } else {
+      apiurl = this.ghostApi
+      // }
+      this.$axios.get(apiurl + this.filtercontents).then((response) => {
+        if (response.status === 200) {
+          //if (response.data.data.filmography.length) {
+          this.data.filmography = response.data.data.filmography
+          this.page = 1
+          this.infiniteId += 1
+          //}
+        }
+        this.$store.dispatch('filter/CLEAN_FILTER_LOADING')
+        this.$nuxt.$loading.finish()
+      })
+    },
+  },
+}
 </script>
-
-

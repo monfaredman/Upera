@@ -60,6 +60,15 @@ typings/
 .env
 .env.*
 *.env
+<<<<<<< HEAD
+=======
+
+
+# SSL certificates
+/ssl/
+ssl/**
+
+>>>>>>> task/refactor-currect-version
 
 
 # SSL certificates
@@ -74,8 +83,7 @@ ssl/**
 # nuxt.js build output
 .nuxt
 
-# Nuxt generate
-dist
+
 
 # vuepress build output
 .vuepress/dist
@@ -97,3 +105,5 @@ sw.*
 
 /cgi-bin
 /.well-known
+
+package-lock.json

@@ -1,23 +1,29 @@
 <template>
   <div class="video-container">
     <div class="hamshahri">
+      <!-- لوگوی سایت -->
+      <div class="site-logo">
+        <img src="@/assets/images/logo-mobile.svg" alt="Logo" />
+      </div>
+
       <!-- دکمه بازگشت -->
-      <a class="srmjs " @click="goBack">
-        <div id="flowplayer-back-button">
-          <div class="icon-back" />
-        </div>
-      </a>
+      <button class="back-button" @click="goBack">
+        <i class="fa fa-chevron-left" style="color: white" />
+        <p class="back-text">بازگشت</p>
+      </button>
 
       <!-- لودینگ -->
       <div v-if="loading" class="video-loading-spinner" />
 
       <!-- پیام "به زودی" -->
-      <p v-if="soon" class="soon">
-        به زودی...
-      </p>
+      <p v-if="soon" class="soon">به زودی...</p>
 
       <!-- دکمه رفرش -->
-      <button v-if="soon" class="btn btn-primary btn-lg fw-bold refresh-btn" @click="reloadPage">
+      <button
+        v-if="soon"
+        class="btn btn-primary btn-lg fw-bold refresh-btn"
+        @click="reloadPage"
+      >
         بارگذاری مجدد
       </button>
     </div>
@@ -34,13 +40,22 @@
         :vast-url="vastUrl || ''"
         :tracks="tracks"
         :player-auto-play="true"
-        :has-playlist="!!((seasonList && seasonList.length) || (currentEpisodeList && currentEpisodeList.length))"
-
+        :has-playlist="
+          !!(
+            (seasonList && seasonList.length) ||
+            (currentEpisodeList && currentEpisodeList.length)
+          )
+        "
+        :credits-data="creditsData"
+        :fullrate-data="fullrateData"
+        :content-id="$route.params.id"
+        :content-type="'series'"
         class="full-screen-player vjs-fluid"
         @ready="handlePlayerReady"
         @timeupdate="handleTimeUpdate"
         @ended="handleEnded"
         @playlistButtonClick="togglePlaylistMenu"
+        @subscription-purchase="handleSubscriptionPurchase"
       />
     </div>
     <!--     <div v-if="season && seasonList.length" class="playlist-container">
@@ -68,47 +83,87 @@
       </div>
     </div> -->
 
-    <div v-if="showPlaylistMenu" class="playlist-modal">
+    <div
+      v-if="showPlaylistMenu"
+      class="playlist-modal"
+      @click.self="closePlaylistMenu"
+    >
       <div class="playlist-modal-content">
         <!-- هدر منو -->
         <div class="playlist-modal-header">
-          <span class="modal-title">انتخاب فصل و قسمت</span>
           <button class="close-btn" @click="togglePlaylistMenu">
-            ×
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M18 6L6 18M6 6L18 18"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
           </button>
+          <span class="modal-title">انتخاب فصل و قسمت</span>
         </div>
+
+        <div class="divider"></div>
 
         <!-- انتخاب فصل -->
         <div class="season-selector">
-          <button
-            v-for="seasonNum in seasonList"
-            :key="seasonNum"
-            :class="['season-btn', { active: seasonOpened === seasonNum }]"
-            @click="setSeason(seasonNum)"
+          <select
+            v-model="seasonOpened"
+            class="season-dropdown"
+            @change="onSeasonChange"
           >
-            فصل {{ seasonNum }}
-          </button>
+            <option
+              v-for="seasonNum in seasonList"
+              :key="seasonNum"
+              :value="seasonNum"
+            >
+              فصل {{ seasonNum }}
+            </option>
+          </select>
         </div>
 
-        <!-- انتخاب قسمت -->
-        <div class="episode-selector">
-          <button
+        <!-- لیست قسمت‌ها -->
+        <div class="episode-list">
+          <div
             v-for="ep in currentEpisodeList"
             :key="ep.id"
-            class="episode-btn"
+            class="episode-card"
             @click="selectEpisode(ep.id)"
           >
-            قسمت {{ ep.episode_number }}
-          </button>
+            <img
+              :src="ep.still_path || posterUrl"
+              :alt="`قسمت ${ep.episode_number}`"
+              class="episode-image"
+            />
+            <div class="episode-info">
+              <div class="episode-title">
+                <span>فصل {{ ep.season_number }}</span>
+                <span class="separator">•</span>
+                <span>قسمت {{ ep.episode_number }}</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
     <!-- نمایش قسمت بعدی (Suggestion) -->
-    <div v-if="showNextEpisode && suggestion" class="next-episode-overlay" @click="playNextEpisode">
+    <div
+      v-if="showNextEpisode && suggestion"
+      class="next-episode-overlay"
+      @click="playNextEpisode"
+    >
       <div class="next-episode-content">
         <p>{{ $t('player.play_next_episode') }}: {{ suggestion.name_fa }}</p>
-        <img :src="suggestionBackdrop" alt="Next Episode Backdrop">
+        <img :src="suggestionBackdrop" alt="Next Episode Backdrop" />
       </div>
     </div>
   </div>
@@ -119,13 +174,28 @@ import VideoPlayer from '~/components/VideoPlayer.vue'
 
 export default {
   components: { VideoPlayer },
+
+  beforeRouteLeave(to, from, next) {
+    // Close any open SweetAlert modal when route changes
+    if (this.$swal && this.$swal.close) {
+      try {
+        this.$swal.close()
+      } catch (e) {
+        // Ignore errors when closing swal
+      }
+    }
+    next()
+  },
+
   layout: 'empty',
+
   data() {
     return {
       episodeTitle: '',
       posterUrl: '',
       videoUrl: '',
       vastUrl: '',
+      creditsData: {},
       tracks: [],
       loading: true,
       soon: false,
@@ -140,7 +210,7 @@ export default {
         { value: 1, label: 'report.labeling_problem' },
         { value: 2, label: 'report.video_problem' },
         { value: 3, label: 'report.sound_problem' },
-        { value: 4, label: 'report.caption_problem' }
+        { value: 4, label: 'report.caption_problem' },
       ],
       // پیشنهاد و تغییر قسمت
       suggestion: null,
@@ -149,105 +219,174 @@ export default {
       recentlyTime: 200,
       showPlaylistMenu: false,
       // مدیریت لیست پخش
-      season: null,      // داده‌های فصل‌ها (object به شکل: { seasonNumber: [episode, ...] })
-      seasonList: [],    // آرایه‌ای از شماره فصل‌ها
+      season: null, // داده‌های فصل‌ها (object به شکل: { seasonNumber: [episode, ...] })
+      seasonList: [], // آرایه‌ای از شماره فصل‌ها
       seasonOpened: null,
       // زمان شروع پخش در صورت وجود
-      startTime: 0
+      startTime: 0,
+      // داده‌های نرخ کامل برای دکمه اشتراک
+      fullrateData: null,
     }
   },
-computed: {
-  currentEpisodeList() {
-    // اگر داده‌های فصل وجود دارد و فصل باز شده معتبر است، لیست قسمت‌های آن را برگردانیم؛ در غیر این صورت آرایه خالی برگردانیم.
-    return this.season && this.season[this.seasonOpened]
-      ? this.season[this.seasonOpened]
-      : []
-  }
-},
+  computed: {
+    currentEpisodeList() {
+      // اگر داده‌های فصل وجود دارد و فصل باز شده معتبر است، لیست قسمت‌های آن را برگردانیم؛ در غیر این صورت آرایه خالی برگردانیم.
+      return this.season && this.season[this.seasonOpened]
+        ? this.season[this.seasonOpened]
+        : []
+    },
+  },
+  watch: {
+    showPlaylistMenu(val) {
+      document.body.style.overflow = val ? 'hidden' : ''
+    },
+  },
+
   mounted() {
+    // Prevent scrolling on mobile
+    if (process.client && window.innerWidth <= 767.98) {
+      document.documentElement.classList.add('video-page-mobile')
+      document.body.classList.add('video-page-mobile')
+    }
+
     // document.body.classList.remove('loaded')
     if (this.$auth && this.$auth.loggedIn) {
       this.guest = false
     }
     this.loadEpisode()
+
+    // Handle browser back button
+    window.addEventListener('popstate', this.handlePopState)
   },
+
+  beforeDestroy() {
+    // Restore scrolling when leaving page
+    if (process.client) {
+      document.documentElement.classList.remove('video-page-mobile')
+      document.body.classList.remove('video-page-mobile')
+    }
+
+    // Close any open SweetAlert modal
+    if (this.$swal && this.$swal.close) {
+      try {
+        this.$swal.close()
+      } catch (e) {
+        // Ignore errors when closing swal
+      }
+    }
+
+    // Remove event listener
+    window.removeEventListener('popstate', this.handlePopState)
+  },
+
   methods: {
+    handlePopState() {
+      // Close any open SweetAlert modal when back button is pressed
+      if (this.$swal && this.$swal.close) {
+        try {
+          this.$swal.close()
+        } catch (e) {
+          // Ignore errors when closing swal
+        }
+      }
+    },
 
     showErrorAlert(data) {
-    let dlsmtitle = this.$i18n.locale === 'fa' ? data.message_fa : data.message
-// let backtohome=false
+      let dlsmtitle =
+        this.$i18n.locale === 'fa' ? data.message_fa : data.message
+      // let backtohome=false
 
-    if(!dlsmtitle){
-      dlsmtitle=this.$t('player.error1')
-      // backtohome=true
-    }
-    let dlsmbuttons = {
-      back: {
-        text: this.$t('player.back'),
-        value: "back",
-        closeModal: true,
-        className: 'swal-back'
+      if (!dlsmtitle) {
+        dlsmtitle = this.$t('player.error1')
+        // backtohome=true
       }
-    }
-    if (data.show_download === 1) {
-      dlsmbuttons.download = {
-        text: this.$t('player.download'),
-        value: "download",
-        closeModal: true
+      let dlsmbuttons = {
+        back: {
+          text: this.$t('player.back'),
+          value: 'back',
+          closeModal: true,
+          className: 'swal-back',
+        },
       }
-    }
-    if (data.show_ekran === 1) {
-      dlsmbuttons.download = {
-        text: this.$t('show.buy_ticket'),
-        value: "download",
-        closeModal: true
+      if (data.show_download === 1) {
+        dlsmbuttons.download = {
+          text: this.$t('player.download'),
+          value: 'download',
+          closeModal: true,
+        }
       }
-    }
-    if (data.show_subscription === 1) {
-      dlsmbuttons.subscribe = {
-        text: this.$t('player.subscribe'),
-        value: "subscribe",
-        closeModal: true
+      if (data.show_ekran === 1) {
+        dlsmbuttons.download = {
+          text: this.$t('show.buy_ticket'),
+          value: 'download',
+          closeModal: true,
+        }
       }
-    }
-    if(!this.$auth.loggedIn && data.show_login === 1){
-      Object.assign(dlsmbuttons, {login: {
+      if (data.show_subscription === 1) {
+        dlsmbuttons.subscribe = {
+          text: this.$t('player.subscribe'),
+          value: 'subscribe',
+          closeModal: true,
+        }
+      }
+      if (!this.$auth.loggedIn && data.show_login === 1) {
+        Object.assign(dlsmbuttons, {
+          login: {
             text: this.$t('nav.login'),
-            value: "login",
-            closeModal: true
-      }})
-    }
-    this.$swal({
-      title: dlsmtitle,
-      icon: 'error',
-      dangerMode: true,
-      buttons: dlsmbuttons,
-    }).then((value) => {
-      switch (value) {
-        case "back":
-          (window.history.length > 2)
-            ? this.$router.go(-1)
-            : this.$router.push({ name: 'episode-id', params: { id: this.$route.params.id } })
-          break
-        case "subscribe":
-          this.$store.dispatch('subscription/SHOW_MODAL', { content_type: 'episode', content_id: this.$route.params.id })
-          break
-        case "download":
-          this.$router.push({ name: 'episode-download-id', params: { id: this.$route.params.id }, query: { force_to_buy: 1 } })
-          break
-
-                            case "login":
-                                  this.$store.dispatch('login/SHOW_MODAL',{premessage: null,premobile: null,preredirect: null,prerefresh: false})
-                                
-                              break
-        default:
-          (window.history.length > 2)
-            ? this.$router.go(-1)
-            : this.$router.push({ name: 'episode-id', params: { id: this.$route.params.id } })
-          break
+            value: 'login',
+            closeModal: true,
+          },
+        })
       }
-    })
-  },
+      this.$swal({
+        title: dlsmtitle,
+        icon: 'error',
+        dangerMode: true,
+        buttons: dlsmbuttons,
+      }).then((value) => {
+        switch (value) {
+          case 'back':
+            window.history.length > 2
+              ? this.$router.go(-1)
+              : this.$router.push({
+                  name: 'episode-id',
+                  params: { id: this.$route.params.id },
+                })
+            break
+          case 'subscribe':
+            this.$store.dispatch('subscription/SHOW_MODAL', {
+              content_type: 'episode',
+              content_id: this.$route.params.id,
+            })
+            break
+          case 'download':
+            this.$router.push({
+              name: 'episode-payment-id',
+              params: { id: this.$route.params.id },
+              query: { force_to_buy: 1 },
+            })
+            break
+
+          case 'login':
+            this.$store.dispatch('login/SHOW_MODAL', {
+              premessage: null,
+              premobile: null,
+              preredirect: null,
+              prerefresh: false,
+            })
+
+            break
+          default:
+            window.history.length > 2
+              ? this.$router.go(-1)
+              : this.$router.push({
+                  name: 'episode-id',
+                  params: { id: this.$route.params.id },
+                })
+            break
+        }
+      })
+    },
     async loadEpisode() {
       try {
         const episode_id = this.$route.params.id
@@ -264,13 +403,20 @@ computed: {
           type: 'sp',
           series_id: '',
           hls: 1,
-          ref: ref
+          ref: ref,
         })
         if (response.data.status === 'success') {
           const data = response.data.data
+
+          // ذخیره داده‌های fullrate برای دکمه اشتراک
+          if (data.fullrate_data) {
+            this.fullrateData = data.fullrate_data
+          }
+
           // تنظیم اطلاعات اصلی قسمت
           const ep = data.episode[0]
-          this.episodeTitle = (this.$i18n.locale === 'fa' && ep.name_fa) ? ep.name_fa : ep.name
+          this.episodeTitle =
+            this.$i18n.locale === 'fa' && ep.name_fa ? ep.name_fa : ep.name
           this.posterUrl = data.cdn.lg_backdrop + ep.backdrop
           // فرض بر این است که لینک ویدیو دارای پارامتر nosub است
           this.videoUrl = ep.video.includes('?')
@@ -287,14 +433,19 @@ computed: {
               label: track.language,
               src: track.url,
               default: index === 0,
-              language: track.language
+              language: track.language,
             }))
           }
-
+          this.creditsData = {
+            first_credits: data.first_credits || null,
+            after_credits: data.after_credits || null,
+            final_credits: data.final_credits || null,
+          }
           // تنظیم پیشنهاد (قسمت بعدی یا فصل بعدی)
           if (data.suggestion) {
             this.suggestion = data.suggestion
-            this.suggestionBackdrop = data.cdn.md_backdrop + data.suggestion.backdrop
+            this.suggestionBackdrop =
+              data.cdn.md_backdrop + data.suggestion.backdrop
           }
 
           // تنظیم لیست فصل‌ها و قسمت‌های هر فصل
@@ -308,19 +459,19 @@ computed: {
           // (در صورت نیاز می‌توانید وضعیت "soon" را هم مدیریت کنید)
           this.soon = false
         } else {
-            this.showErrorAlert(response.data.data)
+          this.showErrorAlert(response.data.data)
         }
       } catch (error) {
-              this.showErrorAlert(error.response.data)
+        this.showErrorAlert(error.response.data)
       } finally {
         this.loading = false
         // document.body.classList.add('loaded', 'playerback')
       }
     },
     togglePlaylistMenu() {
-    // منطق باز و بسته کردن منوی انتخاب فصل و قسمت
-    this.showPlaylistMenu = !this.showPlaylistMenu
-  },
+      // منطق باز و بسته کردن منوی انتخاب فصل و قسمت
+      this.showPlaylistMenu = !this.showPlaylistMenu
+    },
     handlePlayerReady(playerInstance) {
       if (this.startTime && playerInstance.currentTime) {
         playerInstance.currentTime(this.startTime)
@@ -347,10 +498,20 @@ computed: {
         }
       }
 
-      if (duration - currentTime <= 100 && this.suggestion) {
-        this.showNextEpisode = true
+      if (
+        this.creditsData.final_credits &&
+        currentTime >= this.creditsData.final_credits &&
+        this.suggestion
+      ) {
+        this.showNextMovie = true
+      } else if (
+        !this.creditsData.final_credits &&
+        duration - currentTime <= 100 &&
+        this.suggestion
+      ) {
+        this.showNextMovie = true
       } else {
-        this.showNextEpisode = false
+        this.showNextMovie = false
       }
       return player
     },
@@ -361,13 +522,19 @@ computed: {
       }
     },
     playNextEpisode() {
-      this.$router.push({ name: 'episode-show-id', params: { id: this.suggestion.id } })
+      this.$router.push({
+        name: 'episode-show-id',
+        params: { id: this.suggestion.id },
+      })
     },
     playEpisode(episodeId) {
       this.$router.push({ name: 'episode-show-id', params: { id: episodeId } })
     },
     setSeason(seasonNum) {
       this.seasonOpened = seasonNum
+    },
+    onSeasonChange() {
+      // اختیاری: می‌توانید اینجا منطق اضافی برای تغییر فصل اضافه کنید
     },
     selectEpisode(episodeId) {
       // بسته شدن منو
@@ -379,8 +546,15 @@ computed: {
       if (window.history.length > 2) {
         this.$router.go(-1)
       } else {
-        this.$router.push({ name: 'episode-id', params: { id: this.$route.params.id } })
+        this.$router.push({
+          name: 'episode-id',
+          params: { id: this.$route.params.id },
+        })
       }
+    },
+    handleSubscriptionPurchase() {
+      // پردازش خرید اشتراک
+      console.log('Subscription purchase triggered from episode player')
     },
     reloadPage() {
       location.reload()
@@ -402,25 +576,36 @@ computed: {
         const payload = {
           type: this.report_problem_type,
           details: this.report_details,
-          id: this.$route.params.id
+          id: this.$route.params.id,
         }
         const res = await this.$axios.post('/create/report/episode', payload)
         if (res.data.status === 'success') {
           this.report_button = false
           this.closeReport()
-          this.$alertify.logPosition("top right")
+          this.$alertify.logPosition('top right')
           this.$alertify.success('Successful Send, our team will check it soon')
         }
       } catch (error) {
         this.report_button = false
         console.error('Report Error:', error)
       }
-    }
-  }
+    },
+    closePlaylistMenu() {
+      this.showPlaylistMenu = false
+    },
+  },
 }
 </script>
 
 <style scoped>
+.site-logo img {
+  opacity: 0.3 !important;
+}
+
+::v-deep .full-screen-player.vjs-fluid {
+  overflow: hidden !important;
+}
+
 .episode-player-page {
   position: relative;
   height: 100%;
@@ -435,7 +620,7 @@ computed: {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0,0,0,0.7);
+  background: rgba(0, 0, 0, 0.7);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -456,6 +641,68 @@ computed: {
 }
 
 /* استایل بخش بالایی (بازگشت، لودینگ، پیام) */
+.hamshahri {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+/* Fixed header on mobile */
+@media (max-width: 767.98px) {
+  .hamshahri {
+    position: fixed !important;
+    z-index: 1000;
+  }
+}
+
+/* لوگوی سایت */
+.site-logo {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 11;
+}
+
+.site-logo img {
+  height: 40px;
+  width: auto;
+}
+
+/* دکمه بازگشت */
+.back-button {
+  width: 131px;
+  height: 40px;
+  border-radius: 8px;
+  gap: 8px;
+  padding: 12px 28px;
+  background: #525252;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s;
+}
+
+.back-button:hover {
+  background: #6a6a6a;
+}
+
+.back-text {
+  font-weight: 600;
+  font-size: 16px;
+  text-align: right;
+  color: #f5f5f5;
+  margin: 0 0 0 8px;
+  height: 3rem;
+  line-height: 3.1rem;
+}
 
 #flowplayer-back-button {
   cursor: pointer;
@@ -483,7 +730,7 @@ computed: {
   bottom: 0;
   left: 0;
   right: 0;
-  background: rgba(0,0,0,0.8);
+  background: rgba(0, 0, 0, 0.8);
   padding: 10px;
   color: #fff;
 }
@@ -519,7 +766,7 @@ computed: {
   position: absolute;
   bottom: 80px;
   right: 20px;
-  background: rgba(0,0,0,0.7);
+  background: rgba(0, 0, 0, 0.7);
   padding: 10px;
   border-radius: 8px;
   cursor: pointer;
@@ -571,10 +818,14 @@ computed: {
 
 /* محتوای مدال */
 .playlist-modal-content {
-  background: #fff;
-  width: 90%;
-  max-width: 400px;
-  border-radius: 8px;
+  background: #f5f5f5;
+  width: 556px;
+  height: 370px;
+  border-radius: 16px;
+  opacity: 1;
+  padding: 12px 12px 12px 12px;
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
 }
 
@@ -583,13 +834,13 @@ computed: {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 16px;
-  background: #f5f5f5;
-  border-bottom: 1px solid #ddd;
+  padding: 0 4px 12px 4px;
 }
 .modal-title {
   font-size: 18px;
-  font-weight: bold;
+  font-weight: 700;
+  color: #000000;
+  text-align: right;
 }
 .close-btn {
   background: none;
@@ -597,51 +848,224 @@ computed: {
   font-size: 24px;
   line-height: 1;
   cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #000000;
+}
+.close-btn svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* جداکننده */
+.divider {
+  width: 100%;
+  height: 1px;
+  background: black;
+  margin-bottom: 16px;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
 }
 
 /* انتخاب فصل */
 .season-selector {
-  display: flex;
-  justify-content: center;
-  padding: 12px;
-  background: #fafafa;
+  padding: 0 4px;
+  margin-bottom: 16px;
 }
-.season-btn {
-  margin: 0 5px;
-  padding: 8px 12px;
-  border: 1px solid #007bff;
-  background: #fff;
-  color: #007bff;
-  border-radius: 4px;
+.season-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #000000;
+  margin-bottom: 8px;
+  text-align: right;
+}
+.season-dropdown {
+  width: 100%;
+  height: 44px;
+  border: 1px solid #d4d4d4;
+  border-radius: 12px;
+  background: #ffffff;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #000000;
   cursor: pointer;
-  transition: background 0.3s, color 0.3s;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23000000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: left 16px center;
+  text-align: right;
+  direction: rtl;
 }
-.season-btn.active,
-.season-btn:hover {
-  background: #007bff;
-  color: #fff;
+.season-dropdown:focus {
+  border-color: #000000;
 }
 
-/* انتخاب قسمت */
-.episode-selector {
+/* لیست قسمت‌ها */
+.episode-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 4px;
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  padding: 16px;
+  flex-direction: column;
+  gap: 8px;
 }
-.episode-btn {
-  margin: 5px;
-  padding: 8px 12px;
-  border: none;
-  background: #28a745;
-  color: #fff;
-  border-radius: 4px;
+
+/* کارت قسمت */
+.episode-card {
+  width: 100%;
+  height: 75px;
+  border-radius: 12px;
+  opacity: 1;
+  gap: 8px;
+  padding: 12px;
+  background: #ffffff;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-direction: row-reverse;
   cursor: pointer;
-  transition: background 0.3s;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
-.episode-btn:hover {
-  background: #1e7e34;
+.episode-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
+
+/* تصویر قسمت */
+.episode-image {
+  width: 89px;
+  height: 51px;
+  border-radius: 4px;
+  opacity: 1;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+/* اطلاعات قسمت */
+.episode-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 4px;
+  overflow: hidden;
+}
+
+/* عنوان قسمت */
+.episode-title {
+  font-weight: 500;
+  font-style: normal;
+  font-size: 14px;
+  line-height: 24px;
+  letter-spacing: 0%;
+  text-align: right;
+  vertical-align: middle;
+  color: #000000;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* متادیتای قسمت */
+.episode-meta {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 400;
+  color: #666666;
+  text-align: right;
+}
+.episode-meta .separator {
+  margin: 0 4px;
+}
+
+/* اسکرول‌بار سفارشی */
+.episode-list::-webkit-scrollbar {
+  width: 6px;
+}
+.episode-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+.episode-list::-webkit-scrollbar-thumb {
+  background: #d4d4d4;
+  border-radius: 3px;
+}
+.episode-list::-webkit-scrollbar-thumb:hover {
+  background: #b0b0b0;
+}
+
+/* ریسپانسیو */
+@media (max-width: 768px) {
+  .playlist-modal {
+    align-items: flex-end;
+  }
+
+  .playlist-modal-content {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    max-height: 70vh;
+    border-radius: 16px 16px 0 0;
+    animation: slideUp 0.3s ease-out;
+  }
+
+  @keyframes slideUp {
+    from {
+      transform: translateY(100%);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+
+  .episode-card {
+    width: 100%;
+  }
+
+  .episode-image {
+    width: 70px;
+    height: 40px;
+  }
+  ::v-deep .vjs-split-controls .vjs-control-bar {
+    gap: 0 !important;
+  }
+
+  ::v-deep .vjs-split-controls .vjs-next-button {
+    margin-left: 0 !important;
+  }
+
+  ::v-deep .video-js .vjs-control {
+    width: 3em !important;
+  }
+  ::v-deep .vjs-progress-control.vjs-control {
+    width: 100vw !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .modal-title {
+    font-size: 16px;
+  }
+
+  .episode-title {
+    font-size: 12px;
+    line-height: 20px;
+  }
+
+  .episode-meta {
+    font-size: 10px;
+  }
+}
+
 .video-loading-spinner {
   position: absolute;
   top: 50%;
@@ -649,4 +1073,68 @@ computed: {
   transform: translate(-50%, -50%);
 }
 
+/* Prevent vertical scrolling on mobile */
+@media (max-width: 767.98px) {
+  html.video-page-mobile,
+  body.video-page-mobile {
+    overflow: hidden !important;
+    position: fixed !important;
+    width: 100% !important;
+    height: 100% !important;
+    touch-action: none !important;
+    -webkit-overflow-scrolling: none !important;
+    overscroll-behavior: none !important;
+  }
+
+  /* Prevent scrolling on video container and all parents */
+  html.video-page-mobile #srm,
+  html.video-page-mobile #srmrtl,
+  body.video-page-mobile #srm,
+  body.video-page-mobile #srmrtl {
+    overflow: hidden !important;
+    height: 100vh !important;
+    max-height: 100vh !important;
+  }
+
+  /* Prevent scrolling on video container */
+  .video-container {
+    overflow: hidden !important;
+    height: 100vh !important;
+    max-height: 100vh !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+  }
+
+  /* Hide default header on mobile */
+  .video-container #header,
+  .video-container .page-header {
+    display: none !important;
+  }
+
+  /* Ensure hamshahri stays fixed */
+  .video-container .hamshahri {
+    position: fixed !important;
+    z-index: 1000 !important;
+  }
+
+  /* Chrome-specific: Allow touch interactions on video player */
+  .video-container .video-js,
+  .video-container .video-js video,
+  .video-container .video-js .vjs-control-bar,
+  .video-container .video-js .vjs-control-bar * {
+    touch-action: manipulation !important;
+  }
+
+  .video-container .video-js video {
+    touch-action: pan-x pan-y !important;
+  }
+
+  .video-container .video-js .vjs-progress-control {
+    touch-action: pan-x !important;
+  }
+}
 </style>

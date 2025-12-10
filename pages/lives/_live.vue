@@ -2,7 +2,7 @@
   <div class="video-container">
     <div class="hamshahri">
       <!-- دکمه بازگشت -->
-      <a class="srmjs " @click="goBack">
+      <a class="srmjs" @click="goBack">
         <div id="flowplayer-back-button">
           <div class="icon-back" />
         </div>
@@ -12,12 +12,14 @@
       <div v-if="loading" class="video-loading-spinner" />
 
       <!-- پیام "به زودی" -->
-      <p v-if="soon" class="soon">
-        به زودی...
-      </p>
+      <p v-if="soon" class="soon">به زودی...</p>
 
       <!-- دکمه رفرش -->
-      <button v-if="soon" class="btn btn-primary btn-lg fw-bold refresh-btn" @click="reloadPage">
+      <button
+        v-if="soon"
+        class="btn btn-primary btn-lg fw-bold refresh-btn"
+        @click="reloadPage"
+      >
         بارگذاری مجدد
       </button>
     </div>
@@ -33,7 +35,7 @@
         :poster="posterUrl"
         :player-auto-play="true"
         :show-auto-play-toggle="false"
-        class="full-screen-player  vjs-fluid"
+        class="full-screen-player vjs-fluid"
       />
     </div>
   </div>
@@ -44,17 +46,17 @@ import VideoPlayer from '~/components/VideoPlayer.vue'
 
 export default {
   components: {
-    VideoPlayer
+    VideoPlayer,
   },
-  layout: "empty",
+  layout: 'empty',
   data() {
     return {
       movieTitle: '',
       posterUrl: '',
       videoUrl: '',
       loading: true, // نشانگر لودینگ
-      soon: false,     // نشانگر حالت "به زودی"
-      intervalId: null // نشانگر حالت "به زودی"
+      soon: false, // نشانگر حالت "به زودی"
+      intervalId: null, // نشانگر حالت "به زودی"
     }
   },
   watch: {
@@ -62,7 +64,7 @@ export default {
       immediate: true,
       handler() {
         this.loadVideo()
-      }
+      },
     },
     // مانیتور تغییر وضعیت متغیر soon
     // soon(newVal) {
@@ -87,53 +89,49 @@ export default {
   // },
   methods: {
     async loadVideo() {
-      console.log("loadVideo() is called!")
+      console.log('loadVideo() is called!')
 
       try {
         const id = this.$route.params.live
         if (!id) {
-          console.log("No ID found in route params")
+          console.log('No ID found in route params')
           return
         }
 
-        console.log("ID:", id)
+        console.log('ID:', id)
 
         const ref = this.$cookiz.get('ref') || ''
         const apiUrl = `/ghost/get/watch/live/${id}${ref ? `?ref=${ref}` : ''}`
 
-        console.log("API URL:", apiUrl)
+        console.log('API URL:', apiUrl)
 
         // **دریافت اطلاعات ویدیو از API**
         const apiResponse = await this.$axios.get(apiUrl)
 
         if (apiResponse.status === 200) {
           const data = apiResponse.data.data
-          this.movieTitle = data.title || "پخش زنده"
-          this.posterUrl = data.poster || ""
-          const streamUrl = data.video.video  // دریافت آدرس استریم از API
+          this.movieTitle = data.title || 'پخش زنده'
+          this.posterUrl = data.poster || ''
+          const streamUrl = data.video.video // دریافت آدرس استریم از API
 
-          console.log("Stream URL from API:", streamUrl)
+          console.log('Stream URL from API:', streamUrl)
 
           // **بررسی استریم با `HEAD` request**
-          const streamResponse = await fetch(streamUrl, { method: "HEAD" })
+          const streamResponse = await fetch(streamUrl, { method: 'HEAD' })
 
           if (streamResponse.ok) {
-            console.log("Stream is available:", streamUrl)
             this.videoUrl = streamUrl
             this.soon = false
           } else {
-            console.log("Stream not available - Showing 'Soon' message")
             this.soon = true
           }
         } else {
-          console.log("API response was not 200")
           this.soon = true
         }
 
         this.loading = false
-
       } catch (error) {
-        console.error("API Error:", error)
+        console.error('API Error:', error)
         this.loading = false
         this.soon = true
       }
@@ -148,16 +146,16 @@ export default {
         this.$router.push({ name: 'index' })
       }
     },
-
-  }
+  },
 }
 </script>
 
 <style scoped>
+::v-deep .full-screen-player.vjs-fluid {
+  overflow: hidden !important;
+}
+
 /* کل صفحه را می‌گیرد */
-
-
-
 
 .hamshahri {
   background-color: unset !important;

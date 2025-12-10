@@ -1,6 +1,6 @@
 <template>
   <div id="checkcontainer">
-    <section class="page page-payment mt-5  pt-lg-5 pt-md-5 mb-5">
+    <section class="page page-payment pt-5 pt-lg-5 pt-md-5 mb-5">
       <div v-if="!$auth.loggedIn" class="container-fluid">
         <section id="banner" class="mt-5 pt-5">
           <div class="container">
@@ -9,13 +9,23 @@
                 {{ $t('new.account') }}
               </h5>
             </header>
-            <div class="d-flex flex-column justify-content-center align-items-center">
-              <img class="image-profile" src="@/assets/img/profile.png" alt="">
+            <div
+              class="d-flex flex-column justify-content-center align-items-center"
+            >
+              <img
+                class="image-profile"
+                src="@/assets/img/profile.png"
+                alt=""
+              />
               <!--             <nuxt-link :to="{ path: 'login', query: { redirect: 'profile' }}" class="btn btn-lg btn-main px-4 px-md-4 py-md-2 my-2 mb-4">
               {{ $t('new.login_register') }}
             </nuxt-link> -->
 
-              <a class="btn btn-lg btn-main px-4 px-md-4 py-md-2 my-2 mb-4" href="" @click.prevent="SHOW_MODAL();">
+              <a
+                class="btn btn-lg btn-main px-4 px-md-4 py-md-2 my-2 mb-4"
+                href=""
+                @click.prevent="SHOW_MODAL()"
+              >
                 {{ $t('new.login_register') }}
               </a>
               <p class="text-center h6 font-weight-normal">
@@ -29,23 +39,24 @@
         <div
           class="d-md-flex align-items-md-end justify-content-md-between payment-title-wrapper mt-3 mt-md-5 mb-3"
         >
-          <div class="title">
-            پرداخت ها
-          </div>
+          <div class="title">پرداخت ها</div>
           <div class="show-mobile mt-3">
-            در حال حاضر موجودی کیف پول شما <span class="text-secondary">{{ wallet }}</span> است. با <span
-              class="text-secondary" @click="SHOW_MODAL_CREDIT()"
-            >پرداخت بانکی</span>
+            در حال حاضر موجودی کیف پول شما
+            <span class="text-secondary">{{ wallet }}</span> است. با
+            <span class="text-secondary" @click="SHOW_MODAL_CREDIT()"
+              >پرداخت بانکی</span
+            >
             می&zwnj;توانید اعتبار خود را افزایش دهید
           </div>
           <div class="d-md-flex hide-mobile">
-            <button class="btn btn-primary-dark mr-2" @click="SHOW_MODAL_CREDIT()">
+            <button
+              class="btn btn-primary-dark mr-2"
+              @click="SHOW_MODAL_CREDIT()"
+            >
               افزایش موجودی <i class="icon-plus" />
             </button>
             <div class="btn btn-secondary-light">
-              موجودی کیف پول: <span
-                class="font-weight-bold"
-              >{{ wallet }}</span>
+              موجودی کیف پول: <span class="font-weight-bold">{{ wallet }}</span>
             </div>
           </div>
         </div>
@@ -61,11 +72,24 @@
               </tr>
             </thead>
             <tbody>
+<<<<<<< HEAD
               <tr v-for="(item,index) in data" :key="index">
                 <td>
                   <div class="text-fade text-center">
                     {{ item.for }}
                   </div>
+=======
+              <tr v-for="(item, index) in data" :key="index">
+                <td>
+                  <span v-if="item.status == 'pending'"
+                    ><span v-if="item.for == 'Buy Credit'"
+                      >پرداخت ناموفق شارژ</span
+                    ><span v-else>پرداخت ناموفق</span></span
+                  ><span v-else
+                    ><span v-if="item.for == 'Buy Credit'">شارژ مستقیم</span
+                    ><span v-else>پرداخت موفق</span></span
+                  >
+>>>>>>> task/refactor-currect-version
                 </td>
                 <td>
                   <div class="text-fade text-center">
@@ -74,16 +98,43 @@
                 </td>
                 <td>
                   <div class="text-right">
-                    <span :class="{'slanted-danger':item.status=='completed'}">{{ item.amount | replace }}</span>
+                    <span
+                      :class="{ 'slanted-danger': item.status == 'completed' }"
+                      >{{ item.amount | replace }}</span
+                    >
                   </div>
                 </td>
                 <td>
+<<<<<<< HEAD
                   <div class="d-md-flex justify-content-between payment-desc-wrapper">
                     <div class="payment-desc">
                       درگاه {{ item.method }}
                     </div>
                     <div v-if="item.status!=='completed'" class="payment-desc-button">
                       <a :href="'/callback?payment_id='+item.transaction_id+'&payment_uri='+item.method+'&ref_num='+item.ref_num+'&check_it_again=1&purchase='+item.purchase" class="btn btn-sm btn-primary-dark">بررسی پرداخت</a>
+=======
+                  <div
+                    class="d-md-flex justify-content-between payment-desc-wrapper"
+                  >
+                    <div class="payment-desc">درگاه {{ item.method }}</div>
+                    <div
+                      v-if="item.status !== 'completed'"
+                      class="payment-desc-button"
+                    >
+                      <a
+                        :href="
+                          '/callback?payment_id=' +
+                          item.transaction_id +
+                          '&payment_uri=' +
+                          item.method +
+                          '&ref_num=' +
+                          item.ref_num +
+                          '&check_it_again=1'
+                        "
+                        class="btn btn-sm btn-primary-dark"
+                        >بررسی پرداخت</a
+                      >
+>>>>>>> task/refactor-currect-version
                     </div>
                   </div>
                 </td>
@@ -96,15 +147,32 @@
             </tbody>
           </table>
         </div>
-        <div id="paymentAccardion" class="show-mobile accordion accordion-margin mb-4">
-          <div v-for="(item,index) in data" :key="index" class="card">
-            <div id="headingOne" class="card-header collapsed d-flex align-items-center justify-content-between"
-                 data-toggle="collapse" data-target="#collapseOne"
+        <div
+          id="paymentAccardion"
+          class="show-mobile accordion accordion-margin mb-4"
+        >
+          <div v-for="(item, index) in data" :key="index" class="card">
+            <div
+              id="headingOne"
+              class="card-header collapsed d-flex align-items-center justify-content-between"
+              data-toggle="collapse"
+              data-target="#collapseOne"
             >
               <div class="font-weight-bold">
+<<<<<<< HEAD
                 <div class="text-fade">
                   {{ item.for }}
                 </div>
+=======
+                <span v-if="item.status == 'pending'"
+                  ><span v-if="item.for == 'Buy Credit'"
+                    >پرداخت ناموفق شارژ</span
+                  ><span v-else>پرداخت ناموفق</span></span
+                ><span v-else
+                  ><span v-if="item.for == 'Buy Credit'">شارژ مستقیم</span
+                  ><span v-else>پرداخت موفق</span></span
+                >
+>>>>>>> task/refactor-currect-version
               </div>
               <div class="d-flex align-items-center">
                 <div class="text-fade">
@@ -113,20 +181,52 @@
                 <div class="font-weight-bold ml-3">
                   <span>{{ item.amount }}</span>
                 </div>
-                <i :id="'collapse-'+index" v-b-toggle="'accordion-' + index" class="icon-expand-arrow text-secondary ml-1" />
+                <i
+                  :id="'collapse-' + index"
+                  v-b-toggle="'accordion-' + index"
+                  class="icon-expand-arrow text-secondary ml-1"
+                />
               </div>
             </div>
-            <b-collapse :id="'accordion-'+index" accordion="my-accordion" role="tabpanel">
+            <b-collapse
+              :id="'accordion-' + index"
+              accordion="my-accordion"
+              role="tabpanel"
+            >
               <div class="card-body">
                 <div class="text-fade mb-3">
                   شناسه پیگیری: {{ item.transaction_id | replace2 }}
                 </div>
+<<<<<<< HEAD
                 <div class="d-flex justify-content-between payment-desc-wrapper">
                   <div class="payment-desc">
                     درگاه {{ item.method }}
                   </div>
                   <div v-if="item.status!=='completed'" class="payment-desc-button">
                     <a :href="'/callback?payment_id='+item.transaction_id+'&payment_uri='+item.method+'&ref_num='+item.ref_num+'&check_it_again=1&purchase='+item.purchase" class="btn btn-sm btn-primary-dark">بررسی پرداخت</a>
+=======
+                <div
+                  class="d-flex justify-content-between payment-desc-wrapper"
+                >
+                  <div class="payment-desc">درگاه {{ item.method }}</div>
+                  <div
+                    v-if="item.status !== 'completed'"
+                    class="payment-desc-button"
+                  >
+                    <a
+                      :href="
+                        '/callback?payment_id=' +
+                        item.transaction_id +
+                        '&payment_uri=' +
+                        item.method +
+                        '&ref_num=' +
+                        item.ref_num +
+                        '&check_it_again=1'
+                      "
+                      class="btn btn-sm btn-primary-dark"
+                      >بررسی پرداخت</a
+                    >
+>>>>>>> task/refactor-currect-version
                   </div>
                 </div>
               </div>
@@ -138,57 +238,63 @@
   </div>
 </template>
 <script>
+export default {
+  filters: {
+    // Cut word
+    replace(string) {
+      return string.replace(' تومان', '')
+    },
+    replace2(string) {
+      return string.replace('A00000000000000000000000000', '')
+    },
+  },
 
-  export default {
-
-
-        filters: {
-            // Cut word
-            replace(string) {
-                 return string.replace(" تومان",'')
-            },
-            replace2(string) {
-                 return string.replace("A00000000000000000000000000",'')
-            }
-        },
-
-  async asyncData (context) {
-  	let res
+  async asyncData(context) {
+    let res
     let res2
 
+<<<<<<< HEAD
   	if (context.app.$auth.loggedIn) {
   	    res = await context.app.$axios.get('/get/payments')
         res2 = await context.app.$axios.post('/get/my_wallet')
+=======
+    if (context.app.$auth.loggedIn) {
+      res = await context.app.$axios.get(
+        '/get/profile/payment/download-billing'
+      )
+      res2 = await context.app.$axios.post('/get/my_wallet')
+>>>>>>> task/refactor-currect-version
 
-        return {data:res.data.payments,wallet:res2.data.data.my_credit}
-  	 }
-
-
-    
+      return { data: res.data.payments, wallet: res2.data.data.my_credit }
+    }
   },
 
-        data() {
-            return {
-              data:{},
-              wallet: '0 تومان'
-            }
-        },
+  data() {
+    return {
+      data: {},
+      wallet: '0 تومان',
+    }
+  },
 
   head() {
-
-    return { title:  'پرداخت ها' }
+    return { title: 'پرداخت ها' }
   },
 
-    methods: {
-            HIDE_MODAL() {
-              this.$store.dispatch('credit/HIDE_MODAL')
-            },
-            SHOW_MODAL_CREDIT() {
-              this.$store.dispatch('credit/SHOW_MODAL',{prewallet: this.wallet})
-            },
-    SHOW_MODAL(){
-      this.$store.dispatch('login/SHOW_MODAL',{premessage: null,premobile: null,preredirect: null,prerefresh: false})
-    }
+  methods: {
+    HIDE_MODAL() {
+      this.$store.dispatch('credit/HIDE_MODAL')
     },
-  }
+    SHOW_MODAL_CREDIT() {
+      this.$store.dispatch('credit/SHOW_MODAL', { prewallet: this.wallet })
+    },
+    SHOW_MODAL() {
+      this.$store.dispatch('login/SHOW_MODAL', {
+        premessage: null,
+        premobile: null,
+        preredirect: null,
+        prerefresh: false,
+      })
+    },
+  },
+}
 </script>
