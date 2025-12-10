@@ -3,7 +3,7 @@
     <!-- Basket Icon -->
     <div
       v-if="$store?.state?.basketActive !== false || !$auth.loggedIn"
-      class="header-links header-links-basket d-md-flex align-items-center ml-lg-1 mr-lg-1 float-left"
+      class="header-links header-links-basket d-md-flex align-items-center ml-3 ml-md-1 mr-lg-1 float-left"
     >
       <b-link
         :id="!isMobile ? 'popover-basket' : 'mobile-basket'"
@@ -758,7 +758,7 @@ export default {
   }
 }
 
-.header-links.header-links-basket.d-md-flex.align-items-center.ml-lg-1.mr-lg-1.float-left {
+.header-links.header-links-basket.d-md-flex.align-items-center.ml-md-1.mr-lg-1.float-left {
   width: 100% !important;
 }
 </style>

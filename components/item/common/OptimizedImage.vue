@@ -10,6 +10,7 @@
       :src="computedSrc"
       :alt="alt"
       rounded="lg"
+      class="img-grid-flow"
       :class="height === 'full' ? 'h-full' : '' + ' ' + classNames"
       v-on="$listeners"
     />
@@ -127,3 +128,10 @@ export default {
   },
 }
 </script>
+<style scoped>
+@media (max-width: 567px) {
+  .img-grid-flow {
+    aspect-ratio: 121 / 76 !important;
+  }
+}
+</style>

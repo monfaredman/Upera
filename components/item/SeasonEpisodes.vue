@@ -486,6 +486,7 @@ export default {
       }
     },
     async handleAction(episode, action) {
+      console.log(episode, action)
       if (action === 'play') {
         this.$router.push({
           name: 'episode-show-id',
@@ -496,6 +497,8 @@ export default {
           this.$store.dispatch('SET_BASKET_ACTIVE', true)
         }
 
+        // Check if this is the first episode in the season and cart is empty
+        const isCartEmpty = this.cartItemIds.length === 0
         if (process.client) {
           try {
             localStorage.setItem('_download_skip_main_item', '1')
@@ -505,6 +508,13 @@ export default {
         }
 
         await this.addEpisodeToCart(episode)
+
+        // If cart was empty and first episode clicked, show download modal/drawer
+        if (isCartEmpty) {
+          // Emit event to show download modal (desktop) or drawer (mobile)
+          this.$emit('show-download-modal', episode)
+        }
+
         this.$store.dispatch('DOWNLOAD_MODAL_LOAD')
         this.$emit('buy', episode)
       } else if (action === 'subscription') {

@@ -842,6 +842,12 @@
   .theme-dark .actor > img {
     box-shadow: 0 0 4px rgb(29, 29, 29);
     border-radius: 5px;
+    height: 181px !important;
+  }
+.actor > img {
+    box-shadow: 0 0 4px rgb(29, 29, 29);
+    border-radius: 5px;
+    height: 181px !important;
   }
 
   .theme-dark .menu-bar_red {

@@ -128,6 +128,7 @@
             :seasontitle="seasontitle"
             :type="type"
             @select-season="selectseries"
+            @show-download-modal="handleEpisodeDownloadModal"
           />
         </div>
       </section>
@@ -844,6 +845,26 @@ export default {
     },
     HIDE_MODAL_DOWNLOAD() {
       this.showDownloadModalDownload = false
+    },
+    /**
+     * Handle showing download modal when first episode is clicked with empty cart
+     * Shows download modal on desktop, drawer on mobile
+     */
+    handleEpisodeDownloadModal(episode) {
+      console.log('isMobile')
+
+      if (!episode) return
+
+      // Check if mobile
+      const isMobile = process.client && window.innerWidth < 768
+      if (isMobile) {
+        // On mobile, emit event to show download drawer
+        // The download drawer is handled by the Download-New component
+        this.showDownloadModalBuy = true
+      } else {
+        // On desktop, show the download modal
+        this.showDownloadModalBuy = true
+      }
     },
     HIDE_MODAL3() {
       this.$store.dispatch('PLAYER_MODAL_CLEAN')

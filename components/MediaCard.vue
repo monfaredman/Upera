@@ -442,7 +442,7 @@
             blank-color="#bbb"
             :width="size.w"
             :height="size.h"
-            class="isSeries"
+            class="isSeries grid-image-img"
             show
             :src="posterSrc(item.poster)"
             :alt="altText"
@@ -459,7 +459,7 @@
               height: size.h,
               show: true,
             }"
-            class="isSeries"
+            class="isSeries grid-image-img"
             :src="
               'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/' +
               item.poster
@@ -476,7 +476,7 @@
               height: size.h,
               show: true,
             }"
-            class="isSeries"
+            class="isSeries grid-image-img"
             :src="
               'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/' +
               item.poster
@@ -494,6 +494,7 @@
           show
           :src="backdropSrc(item.backdrop, item.cdnType ?? 1)"
           :alt="altText"
+          class="grid-image-img"
         />
         <!-- Badges -->
         <template v-if="showBadges">
@@ -1077,6 +1078,12 @@ export default {
     position: absolute;
     border-radius: 8px;
     z-index: -5;
+  }
+}
+
+@media (max-width: 567px) {
+  .grid-image-img {
+    aspect-ratio: 51 / 76 !important;
   }
 }
 </style>
