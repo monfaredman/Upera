@@ -410,7 +410,9 @@
             class="type1-carousel-section"
           >
             <div
-              v-swiper:[block.swiperHandle]="swiperOptionType1"
+              v-swiper:[block.swiperHandle]="
+                getType1SwiperOptions(block.items.length)
+              "
               class="swiper-container type1-carousel-container"
             >
               <div class="swiper-wrapper">
@@ -429,6 +431,7 @@
                       show
                       class="type1-carousel-image"
                       :src="getType1ImageSrc(item)"
+                      :sizes="type1CarouselSizes"
                       :alt="ChooseLang(item.name, item.name_fa)"
                     />
                   </nuxt-link>
@@ -741,6 +744,7 @@ export default {
         effect: 'slide',
         speed: 500,
       },
+      type1CarouselSizes: '(max-width: 991.98px) 880px, 1920px',
       // Loading states
       isLoadingSlider: true,
       isLoadingRecently: true,
@@ -1447,35 +1451,27 @@ export default {
       })
     },
     getType1ImageSrc(item) {
-      // Transform image_src URL to match carousel dimensions
-      if (item.image_src) {
-        try {
-          const urlObj = new URL(item.image_src)
-          const src = urlObj.searchParams.get('src')
-          if (src) {
-            // Build new URL with carousel dimensions (full width, 324px height)
-            return `https://thumb.upera.shop/thumb?w=1920&h=324&q=100&a=t&src=${encodeURIComponent(
-              src
-            )}`
-          }
-        } catch (e) {
-          // If URL parsing fails, try to extract src parameter directly
-          const match = item.image_src.match(/src=([^&]+)/)
-          if (match) {
-            const decoded = decodeURIComponent(match[1])
-            return `https://thumb.upera.shop/thumb?w=1920&h=324&q=100&a=t&src=${encodeURIComponent(
-              decoded
-            )}`
-          }
-        }
-        // Fallback to original if transformation fails
-        return item.image_src
+      const desktop = item.image_src || item.image_mobile_src || ''
+      const mobile = item.image_mobile_src || item.image_src || ''
+      if (typeof window !== 'undefined' && window.innerWidth <= 991) {
+        return mobile || desktop
       }
-      // Fallback to backdrop if image_src is not available
-      if (item.backdrop) {
-        return `https://thumb.upera.shop/thumb?w=1920&h=324&q=100&a=t&src=https://cdn.upera.shop/s3/backdrops/${item.backdrop}`
+      return desktop || mobile
+    },
+    // getType1SrcSet(item) {
+    //   const desktop = item.image_src || ''
+    //   const mobile = item.image_mobile_src || ''
+    //   if (!desktop && !mobile) return ''
+    //   if (!desktop || desktop === mobile) return ''
+    //   return `${mobile || desktop} 880w, ${desktop} 1920w`
+    // },
+    getType1SwiperOptions(count = 0) {
+      const loopable = count > 2
+      return {
+        ...this.swiperOptionType1,
+        loop: loopable,
+        autoplay: loopable ? this.swiperOptionType1.autoplay : false,
       }
-      return ''
     },
     type1CarouselPrev(handle = 'type1Carousel') {
       const swiperInstance = this[handle] || this.type1Carousel
@@ -1580,42 +1576,27 @@ export default {
   border-radius: 16px;
   overflow: hidden;
   box-shadow: 0px 6px 12px 0px #00000033;
+  aspect-ratio: 1920 / 324;
 }
 
-.type1-carousel-container::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 100%;
-  background: linear-gradient(
-    to top,
-    rgba(0, 0, 0, 0.4) 0%,
-    rgba(0, 0, 0, 0.2) 30%,
-    transparent 100%
-  );
-  pointer-events: none;
-  z-index: 1;
-  border-radius: 16px;
+@media (max-width: 992px) {
+  .type1-carousel-container {
+    aspect-ratio: 880 / 260;
+  }
 }
 
-.type1-carousel-slide {
-  width: 100%;
-  height: 324px;
-}
-
+.type1-carousel-slide,
 .type1-carousel-link {
-  display: block;
   width: 100%;
   height: 100%;
-  position: relative;
+  aspect-ratio: inherit;
+  display: flex;
 }
 
 .type1-carousel-image {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   display: block;
 }
 
@@ -1660,9 +1641,9 @@ export default {
 }
 
 @media (max-width: 768px) {
-  .type1-carousel-slide {
+  /* .type1-carousel-slide {
     height: 200px;
-  }
+  } */
 
   .type1-carousel-navigation {
     left: 15px;
@@ -1673,6 +1654,23 @@ export default {
     width: 40px;
     height: 40px;
     font-size: 14px;
+  }
+}
+
+@media (max-width: 576px) {
+  /* .type1-carousel-slide {
+    height: 150px;
+  } */
+
+  .type1-carousel-navigation {
+    left: 10px;
+    bottom: 10px;
+  }
+
+  .type1-carousel-btn {
+    width: 30px;
+    height: 30px;
+    font-size: 12px;
   }
 }
 </style>
