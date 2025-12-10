@@ -58,21 +58,12 @@ typings/
 
 # dotenv environment variables file
 .env
-.env.test
-.env.production
-.env.plus
-.env.upera
-.env.hamshahri
-.env.local
+.env.*
+*.env
 
 
-# parcel-bundler cache (https://parceljs.org/)
-/ssl
-./ssl
-ssl/
-./ssl/*
-# Ignore SSL files
-ssl/
+# SSL certificates
+/ssl/
 ssl/**
 
 
