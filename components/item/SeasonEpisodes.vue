@@ -481,9 +481,45 @@ export default {
         }
 
         this.persistCartItem(prepared)
+
+        // Show toast notification when basket is active and cart has items
+        console.log(this.cartItemIds.length)
+        if (this.isBasketActive && this.cartItemIds.length > 1) {
+          this.showAddedToBasketToast()
+        }
       } catch (error) {
         console.error('Failed to add episode to cart:', error)
       }
+    },
+    /**
+     * Show toast notification when item is added to basket
+     * Auto-dismisses after 4 seconds
+     */
+    showAddedToBasketToast() {
+      this.$swal({
+        title: 'به سبد خرید اضافه شد',
+        icon: 'success',
+        buttons: {
+          basket: {
+            text: 'مشاهده سبد خرید',
+            value: 'basket',
+            className: 'swal-button--confirm',
+          },
+          close: {
+            text: 'بستن',
+            value: 'close',
+            className: 'swal-button--cancel',
+          },
+        },
+        timer: 4000,
+      }).then((value) => {
+        if (value === 'basket') {
+          // Emit event to show basket/navigate to basket
+          this.$root.$emit('show-basket')
+          // Also trigger the download modal to show basket
+          this.$store.dispatch('DOWNLOAD_MODAL_LOAD')
+        }
+      })
     },
     async handleAction(episode, action) {
       console.log(episode, action)

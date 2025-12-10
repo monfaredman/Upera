@@ -275,6 +275,17 @@ export default {
     cdnUser() {
       return this.$store.getters.avatars.cdnUser || ''
     },
+    // reflect basket activation state so we can react to changes in the UI
+    basketActive() {
+      return this.$store?.state?.basketActive
+    },
+  },
+  watch: {
+    // when basket activation changes, refresh badge/count
+    basketActive() {
+      // update badge to reflect new state (e.g., when basket toggled on/off)
+      this.updateBasketLength()
+    },
   },
   mounted() {
     if (this.isLoggedIn) {
@@ -287,6 +298,8 @@ export default {
       this.$root.$on('open-mobile-profile-drawer', this.openMobileDrawer)
       // Listen for cart updates
       this.$root.$on('cart-updated', this.updateBasketLength)
+      // Listen for show-basket event from toast notification
+      this.$root.$on('show-basket', this.handleShowBasket)
       window.addEventListener('storage', this.handleStorageChange)
       window.addEventListener('resize', this.checkIfMobile)
     }
@@ -296,6 +309,7 @@ export default {
     if (process.client) {
       this.$root.$off('open-mobile-profile-drawer', this.openMobileDrawer)
       this.$root.$off('cart-updated', this.updateBasketLength)
+      this.$root.$off('show-basket', this.handleShowBasket)
       window.removeEventListener('storage', this.handleStorageChange)
       window.removeEventListener('resize', this.checkIfMobile)
     }
@@ -344,6 +358,18 @@ export default {
     },
     openBasketDrawer() {
       this.basketDrawerVisible = true
+    },
+    /**
+     * Handle show-basket event from toast notification
+     * Opens basket drawer on mobile, shows popover on desktop
+     */
+    handleShowBasket() {
+      if (this.isMobile) {
+        this.openBasketDrawer()
+      } else {
+        // On desktop, show the basket popover
+        this.$root.$emit('bv::show::popover', 'popover-basket')
+      }
     },
     handleBasketClick(event) {
       if (this.isMobile) {
