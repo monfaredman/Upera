@@ -3,11 +3,12 @@
     <!-- Basket Icon -->
     <div
       v-if="$store?.state?.basketActive !== false || !$auth.loggedIn"
-      class="header-links header-links-basket d-md-flex align-items-center h-full ml-lg-1 mr-lg-1 float-left hide-mobile"
+      class="header-links header-links-basket d-md-flex align-items-center ml-lg-1 mr-lg-1 float-left"
     >
       <b-link
-        id="popover-basket"
+        :id="!isMobile ? 'popover-basket' : 'mobile-basket'"
         class="d-flex align-items-center header-link basket-icon-wrapper"
+        @click="handleBasketClick"
       >
         <!-- <i class="fa fa-shopping-basket ml-2" /> -->
         <img
@@ -20,6 +21,7 @@
         }}</span>
       </b-link>
       <b-popover
+        v-if="!isMobile"
         id="popover-d-basket"
         target="popover-basket"
         triggers="hover"
@@ -31,6 +33,9 @@
         <BasketPopoverContent @close-popover="closeBasketPopover" />
       </b-popover>
     </div>
+
+    <!-- Mobile Basket Drawer -->
+    <BasketDrawer :visible="basketDrawerVisible" @close="closeBasketDrawer" />
 
     <SearchInput :value="query || ''" @input="query = $event" />
 
@@ -210,6 +215,7 @@
 import UserProfileDropdown from './UserProfileDropdown.vue'
 import BasketPopoverContent from './BasketPopoverContent.vue'
 import MobileProfileDrawer from './MobileProfileDrawer.vue'
+import BasketDrawer from './BasketDrawer.vue'
 import SearchInput from '@/components/header/SearchInput.vue'
 
 export default {
@@ -218,6 +224,7 @@ export default {
     UserProfileDropdown,
     BasketPopoverContent,
     MobileProfileDrawer,
+    BasketDrawer,
     SearchInput,
   },
   props: {
@@ -248,6 +255,8 @@ export default {
       basketLength: 0,
       query: null,
       customPreview: null,
+      basketDrawerVisible: false,
+      isMobile: false,
       profileForm: {
         firstName: '',
         lastName: '',
@@ -274,10 +283,12 @@ export default {
     // Listen for event to open mobile drawer
 
     if (process.client) {
+      this.checkIfMobile()
       this.$root.$on('open-mobile-profile-drawer', this.openMobileDrawer)
       // Listen for cart updates
       this.$root.$on('cart-updated', this.updateBasketLength)
       window.addEventListener('storage', this.handleStorageChange)
+      window.addEventListener('resize', this.checkIfMobile)
     }
     this.updateBasketLength()
   },
@@ -286,6 +297,7 @@ export default {
       this.$root.$off('open-mobile-profile-drawer', this.openMobileDrawer)
       this.$root.$off('cart-updated', this.updateBasketLength)
       window.removeEventListener('storage', this.handleStorageChange)
+      window.removeEventListener('resize', this.checkIfMobile)
     }
   },
   methods: {
@@ -326,6 +338,27 @@ export default {
     },
     closeBasketPopover() {
       this.$root.$emit('bv::hide::popover', 'popover-basket')
+    },
+    closeBasketDrawer() {
+      this.basketDrawerVisible = false
+    },
+    openBasketDrawer() {
+      this.basketDrawerVisible = true
+    },
+    handleBasketClick(event) {
+      if (this.isMobile) {
+        event.preventDefault()
+        this.openBasketDrawer()
+      }
+      // On desktop, let the hover trigger work naturally
+    },
+    checkIfMobile() {
+      if (!process.client) return
+      this.isMobile = window.innerWidth < 768
+      // Close drawer if resizing to desktop
+      if (!this.isMobile && this.basketDrawerVisible) {
+        this.closeBasketDrawer()
+      }
     },
     // Logout modal methods
     showLogoutConfirmation() {
@@ -725,7 +758,7 @@ export default {
   }
 }
 
-.header-links.header-links-basket.d-md-flex.align-items-center.h-full.ml-lg-1.mr-lg-1.float-left.hide-mobile {
+.header-links.header-links-basket.d-md-flex.align-items-center.ml-lg-1.mr-lg-1.float-left {
   width: 100% !important;
 }
 </style>

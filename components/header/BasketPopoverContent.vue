@@ -819,4 +819,36 @@ export default {
   background: #888;
   border-radius: 10px !important;
 }
+
+@media (max-width: 768px) {
+  .basket-popover-content {
+    padding: 0 !important;
+    max-width: 100%;
+    min-width: 100%;
+    width: 100%;
+    margin: auto;
+  }
+  .empty-basket {
+    text-align: center;
+    padding: 1rem 0;
+    color: #6c757d;
+    margin: auto;
+  }
+}
+
+@media (max-width: 576px) {
+  .basket-popover-content {
+    padding: 0 !important;
+    max-width: 100%;
+    min-width: 100%;
+    width: 100%;
+    margin: auto;
+  }
+  .empty-basket {
+    text-align: center;
+    padding: 1rem 0;
+    color: #6c757d;
+    margin: auto;
+  }
+}
 </style>
