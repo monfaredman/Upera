@@ -348,7 +348,7 @@ export default {
     gap: 12px !important;
     width: 100% !important;
     max-width: 100% !important;
-    padding: 0 1rem !important;
+    padding: 0 !important;
     margin: 0 auto !important;
     border-radius: 8px !important;
   }

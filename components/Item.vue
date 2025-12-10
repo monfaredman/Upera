@@ -1230,7 +1230,7 @@ section#content {
   }
 
   .content-nav-header {
-    margin-top: 1rem;
+    margin-top: -3rem;
   }
 
   .content-nav-header .nav {
