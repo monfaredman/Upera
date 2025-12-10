@@ -71,6 +71,9 @@ typings/
 ./ssl
 ssl/
 ./ssl/*
+# Ignore SSL files
+ssl/
+ssl/**
 
 
 # parcel-bundler cache (https://parceljs.org/)
