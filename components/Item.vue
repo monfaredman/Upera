@@ -595,6 +595,15 @@ export default {
       }
     },
     handleBuy() {
+      // Clear skip flag when opening modal from main button (ShowcaseActions)
+      // This ensures the main item gets added to cart
+      if (process.client) {
+        try {
+          localStorage.removeItem('_download_skip_main_item')
+        } catch (error) {
+          console.error('Failed to clear skip flag:', error)
+        }
+      }
       this.ftb = true
       this.showDownloadModalBuy = true
     },

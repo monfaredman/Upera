@@ -604,6 +604,7 @@ export default {
       availableItems: [],
       isMobile: false,
       isDrawerVisible: false,
+      isSyncingFromCart: false,
       paymentMethods: [
         {
           value: 'sep',
@@ -732,7 +733,10 @@ export default {
           }
         }
 
-        if (!this.viewOnly && !skipMainItem) {
+        // Only load main item content if not skipping and not view-only
+        // When skipMainItem is true, we're adding episodes from SeasonEpisodes
+        // and don't want to add the main series/movie item
+        if (!this.viewOnly && !skipMainItem && this.type && this.id) {
           this.loadContentData(this.type, this.id)
         }
         this.loadAvailableItems()
@@ -752,7 +756,11 @@ export default {
     addedItems: {
       deep: true,
       handler() {
-        this.syncToCart()
+        // Don't sync to cart if we're currently syncing FROM cart
+        // This prevents a write loop when syncWithCart() sets addedItems
+        if (!this.isSyncingFromCart) {
+          this.syncToCart()
+        }
       },
     },
   },
@@ -768,7 +776,20 @@ export default {
     // Show modal if show prop is initially true
     if (this.show) {
       this.showModal()
-      if (!this.viewOnly) {
+      // Check skip flag in mounted as well
+      let skipMainItem = false
+      if (process.client) {
+        try {
+          skipMainItem =
+            localStorage.getItem('_download_skip_main_item') === '1'
+          if (skipMainItem) {
+            localStorage.removeItem('_download_skip_main_item')
+          }
+        } catch (error) {
+          console.error('Failed to read skip flag:', error)
+        }
+      }
+      if (!this.viewOnly && !skipMainItem && this.type && this.id) {
         this.loadContentData(this.type, this.id)
       }
       this.loadAvailableItems()
@@ -794,11 +815,15 @@ export default {
 
     syncWithCart() {
       try {
+        // Set flag to prevent addedItems watcher from triggering syncToCart
+        this.isSyncingFromCart = true
+
         // If basketActive is not active, clear cart storage
         if (!this.$store?.state?.basketActive) {
           localStorage.removeItem('_cart')
           this.addedItems = []
-          this.emitCartChange()
+          this.isSyncingFromCart = false
+          // Don't emit cart change when clearing during sync
           return
         }
 
@@ -807,10 +832,18 @@ export default {
           const parsedCart = JSON.parse(cart)
           if (parsedCart.content && Array.isArray(parsedCart.content)) {
             this.addedItems = parsedCart.content
+          } else {
+            this.addedItems = []
           }
+        } else {
+          this.addedItems = []
         }
+
+        // Reset flag after syncing
+        this.isSyncingFromCart = false
       } catch (error) {
         console.error('Error syncing with cart:', error)
+        this.isSyncingFromCart = false
       }
     },
 
@@ -876,15 +909,25 @@ export default {
           ? [...parsedCart.content]
           : []
 
-        // Check if item already exists
+        // Normalize item ID for comparison
+        const itemId = item && item.id != null ? String(item.id) : null
+        if (!itemId) {
+          console.warn('Cannot add item to cart: item has no ID', item)
+          return
+        }
+
+        // Check if item already exists (compare as strings)
         const existingIndex = content.findIndex(
-          (cartItem) => cartItem?.id === item.id
+          (cartItem) =>
+            cartItem && cartItem.id != null && String(cartItem.id) === itemId
         )
 
         if (existingIndex === -1) {
-          content.push(item)
+          // Add new item with normalized ID
+          content.push({ ...item, id: itemId })
         } else {
-          content.splice(existingIndex, 1, item)
+          // Update existing item
+          content.splice(existingIndex, 1, { ...item, id: itemId })
         }
 
         this.addedItems = content
@@ -916,6 +959,20 @@ export default {
     },
 
     async loadContentData(type, id) {
+      // Double-check skip flag before loading to prevent adding main item
+      if (process.client) {
+        try {
+          const skipMainItem =
+            localStorage.getItem('_download_skip_main_item') === '1'
+          if (skipMainItem) {
+            localStorage.removeItem('_download_skip_main_item')
+            return // Don't load main item if skip flag is set
+          }
+        } catch (error) {
+          console.error('Failed to check skip flag:', error)
+        }
+      }
+
       this.loading = true
       this.error = null
 
@@ -942,9 +999,14 @@ export default {
           normalized = api
         }
 
-        // Add to cart instead of directly pushing
-        this.addToCart(normalized)
-        // this.showAddMoreDropdown = false
+        // Only add to cart if item doesn't already exist
+        // Check if this item is already in addedItems to prevent duplicates
+        const existingIndex = this.addedItems.findIndex(
+          (item) => item && item.id && String(item.id) === String(normalized.id)
+        )
+        if (existingIndex === -1) {
+          this.addToCart(normalized)
+        }
       } catch (error) {
         this.error = 'خطا در بارگذاری اطلاعات محتوا'
         console.error('Error loading content data:', error)

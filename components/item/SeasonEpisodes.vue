@@ -191,6 +191,7 @@ export default {
       itemsPerRow: 4,
       sortOrder: SORT_OPTIONS[0].value,
       cartItemIds: [],
+      isUpdatingCart: false,
     }
   },
   computed: {
@@ -340,8 +341,12 @@ export default {
         this.cartItemIds = []
         return
       }
+      // Create new array to ensure Vue detects the change (new array reference)
       this.cartItemIds = cart.content
-        .map((item) => (item && item.id != null ? String(item.id) : null))
+        .map((item) => {
+          const id = item && item.id != null ? String(item.id) : null
+          return id
+        })
         .filter((id) => id !== null)
     },
     syncCartItems() {
@@ -364,26 +369,49 @@ export default {
     },
     emitCartChange() {
       if (!process.client) return
+      // Set flag to prevent storage listener from syncing (we just updated it)
+      this.isUpdatingCart = true
       try {
-        const event = new StorageEvent('storage', { key: '_cart' })
-        window.dispatchEvent(event)
-      } catch (error) {
-        window.dispatchEvent(new Event('storage'))
+        // Only emit Vue event for same-window updates
+        // Don't manually dispatch storage event - it causes duplicate updates
+        // Storage events are automatically fired by browser for cross-tab communication
+        this.$root.$emit('cart-updated')
+      } finally {
+        // Reset flag after a short delay to allow other components to sync
+        setTimeout(() => {
+          this.isUpdatingCart = false
+        }, 100)
       }
-      // Emit Vue event for same-window updates
-      this.$root.$emit('cart-updated')
     },
     attachCartListener() {
       if (!process.client || !this.isBasketActive) return
       if (this._cartStorageListener) return
-      this._cartStorageListener = () => this.syncCartItems()
+      this._cartStorageListener = (event) => {
+        // Only sync if we're not the ones making the change
+        // Storage events from other tabs/windows will have event.key === '_cart'
+        // Ignore if we're currently updating the cart ourselves
+        // Also check that event.key exists (real storage events have this)
+        if (
+          !this.isUpdatingCart &&
+          event &&
+          event.key === '_cart' &&
+          event.newValue !== undefined
+        ) {
+          this.syncCartItems()
+        }
+      }
       window.addEventListener('storage', this._cartStorageListener)
+      // Also listen to Vue cart-updated events for same-window updates
+      this.$root.$on('cart-updated', this.syncCartItems)
     },
     detachCartListener() {
       if (!process.client) return
-      if (!this._cartStorageListener) return
-      window.removeEventListener('storage', this._cartStorageListener)
-      this._cartStorageListener = null
+      if (this._cartStorageListener) {
+        window.removeEventListener('storage', this._cartStorageListener)
+        this._cartStorageListener = null
+      }
+      // Remove Vue event listener
+      this.$root.$off('cart-updated', this.syncCartItems)
     },
     persistCartItem(item) {
       if (!process.client) return
@@ -406,8 +434,14 @@ export default {
           (existing) => String(existing.id) === targetId
         )
         const normalizedItem = { ...item, id: targetId }
-        if (index === -1) cart.content.push(normalizedItem)
-        else cart.content.splice(index, 1, normalizedItem)
+
+        // Only add if not already in cart
+        if (index === -1) {
+          cart.content.push(normalizedItem)
+        } else {
+          // Update existing item
+          cart.content.splice(index, 1, normalizedItem)
+        }
 
         cart.amount = cart.content.reduce(
           (sum, current) => sum + (current.tvod_price || 0),
@@ -415,8 +449,12 @@ export default {
         )
 
         localStorage.setItem('_cart', JSON.stringify(cart))
+        // Update cart state immediately so button state updates
         this.updateCartState(cart)
-        this.emitCartChange()
+        // Use Vue's nextTick to ensure DOM updates after state change
+        this.$nextTick(() => {
+          this.emitCartChange()
+        })
       } catch (error) {
         console.error('Failed to persist cart item:', error)
       }
@@ -447,8 +485,12 @@ export default {
         )
 
         localStorage.setItem('_cart', JSON.stringify(cart))
+        // Update cart state immediately so button state updates
         this.updateCartState(cart)
-        this.emitCartChange()
+        // Use Vue's nextTick to ensure DOM updates after state change
+        this.$nextTick(() => {
+          this.emitCartChange()
+        })
       } catch (error) {
         console.error('Failed to remove episode from cart:', error)
       }
@@ -483,7 +525,6 @@ export default {
         this.persistCartItem(prepared)
 
         // Show toast notification when basket is active and cart has items
-        console.log(this.cartItemIds.length)
         if (this.isBasketActive && this.cartItemIds.length > 1) {
           this.showAddedToBasketToast()
         }
@@ -522,7 +563,6 @@ export default {
       })
     },
     async handleAction(episode, action) {
-      console.log(episode, action)
       if (action === 'play') {
         this.$router.push({
           name: 'episode-show-id',
