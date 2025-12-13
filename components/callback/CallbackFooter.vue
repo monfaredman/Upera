@@ -289,8 +289,23 @@ export default {
       if (this.purchaseType === 'download') {
         if (this.isSingleFile) {
           if (this.hasPresale || this.hasEkranScreening) {
+            if (this.isLoggedIn) {
+              return {
+                text: 'مشاهده محتوا',
+                iconClass: 'fa-play',
+                action: 'watch',
+              }
+            } else {
+              return {
+                text: 'ورود به سایت برای مشاهده محتوا',
+                iconClass: 'fa-sign-in-alt',
+                action: 'login',
+              }
+            }
+          }
+          if (this.isLoggedIn) {
             return {
-              text: 'مشاهده محتوا',
+              text: 'تماشا',
               iconClass: 'fa-play',
               action: 'watch',
             }

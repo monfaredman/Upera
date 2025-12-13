@@ -72,13 +72,6 @@
               </tr>
             </thead>
             <tbody>
-<<<<<<< HEAD
-              <tr v-for="(item,index) in data" :key="index">
-                <td>
-                  <div class="text-fade text-center">
-                    {{ item.for }}
-                  </div>
-=======
               <tr v-for="(item, index) in data" :key="index">
                 <td>
                   <span v-if="item.status == 'pending'"
@@ -89,7 +82,6 @@
                     ><span v-if="item.for == 'Buy Credit'">شارژ مستقیم</span
                     ><span v-else>پرداخت موفق</span></span
                   >
->>>>>>> task/refactor-currect-version
                 </td>
                 <td>
                   <div class="text-fade text-center">
@@ -105,14 +97,6 @@
                   </div>
                 </td>
                 <td>
-<<<<<<< HEAD
-                  <div class="d-md-flex justify-content-between payment-desc-wrapper">
-                    <div class="payment-desc">
-                      درگاه {{ item.method }}
-                    </div>
-                    <div v-if="item.status!=='completed'" class="payment-desc-button">
-                      <a :href="'/callback?payment_id='+item.transaction_id+'&payment_uri='+item.method+'&ref_num='+item.ref_num+'&check_it_again=1&purchase='+item.purchase" class="btn btn-sm btn-primary-dark">بررسی پرداخت</a>
-=======
                   <div
                     class="d-md-flex justify-content-between payment-desc-wrapper"
                   >
@@ -134,7 +118,6 @@
                         class="btn btn-sm btn-primary-dark"
                         >بررسی پرداخت</a
                       >
->>>>>>> task/refactor-currect-version
                     </div>
                   </div>
                 </td>
@@ -159,11 +142,6 @@
               data-target="#collapseOne"
             >
               <div class="font-weight-bold">
-<<<<<<< HEAD
-                <div class="text-fade">
-                  {{ item.for }}
-                </div>
-=======
                 <span v-if="item.status == 'pending'"
                   ><span v-if="item.for == 'Buy Credit'"
                     >پرداخت ناموفق شارژ</span
@@ -172,7 +150,6 @@
                   ><span v-if="item.for == 'Buy Credit'">شارژ مستقیم</span
                   ><span v-else>پرداخت موفق</span></span
                 >
->>>>>>> task/refactor-currect-version
               </div>
               <div class="d-flex align-items-center">
                 <div class="text-fade">
@@ -197,14 +174,6 @@
                 <div class="text-fade mb-3">
                   شناسه پیگیری: {{ item.transaction_id | replace2 }}
                 </div>
-<<<<<<< HEAD
-                <div class="d-flex justify-content-between payment-desc-wrapper">
-                  <div class="payment-desc">
-                    درگاه {{ item.method }}
-                  </div>
-                  <div v-if="item.status!=='completed'" class="payment-desc-button">
-                    <a :href="'/callback?payment_id='+item.transaction_id+'&payment_uri='+item.method+'&ref_num='+item.ref_num+'&check_it_again=1&purchase='+item.purchase" class="btn btn-sm btn-primary-dark">بررسی پرداخت</a>
-=======
                 <div
                   class="d-flex justify-content-between payment-desc-wrapper"
                 >
@@ -226,7 +195,6 @@
                       class="btn btn-sm btn-primary-dark"
                       >بررسی پرداخت</a
                     >
->>>>>>> task/refactor-currect-version
                   </div>
                 </div>
               </div>
@@ -253,17 +221,11 @@ export default {
     let res
     let res2
 
-<<<<<<< HEAD
-  	if (context.app.$auth.loggedIn) {
-  	    res = await context.app.$axios.get('/get/payments')
-        res2 = await context.app.$axios.post('/get/my_wallet')
-=======
     if (context.app.$auth.loggedIn) {
       res = await context.app.$axios.get(
         '/get/profile/payment/download-billing'
       )
       res2 = await context.app.$axios.post('/get/my_wallet')
->>>>>>> task/refactor-currect-version
 
       return { data: res.data.payments, wallet: res2.data.data.my_credit }
     }

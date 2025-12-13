@@ -60,15 +60,6 @@ typings/
 .env
 .env.*
 *.env
-<<<<<<< HEAD
-=======
-
-
-# SSL certificates
-/ssl/
-ssl/**
-
->>>>>>> task/refactor-currect-version
 
 
 # SSL certificates

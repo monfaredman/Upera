@@ -20,7 +20,7 @@
       </div>
     </div>
     <!-- Bank Grid Selection (Step 1) -->
-    <div v-if="!isEditMode" class="bank-selection-container mt-4">
+    <div class="bank-selection-container mt-4">
       <h5 class="font-weight-bold mb-3">بانک کارت خودتان را انتخاب کنید</h5>
 
       <!-- Bank Grid -->

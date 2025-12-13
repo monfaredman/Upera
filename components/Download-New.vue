@@ -187,6 +187,12 @@
                         {{ my_credit }}
                       </span>
                     </div>
+                    <div
+                      class="wallet-balance-error"
+                      v-if="!hasEnoughWalletBalance"
+                    >
+                      <span>موجودی کافی نیست</span>
+                    </div>
                   </div>
                 </div>
                 <div class="custom-control custom-switch ml-2 mb-2" dir="rtl">
@@ -1209,9 +1215,22 @@ export default {
         const endpoint = this.userLogin ? '/get/buy' : '/ghost/get/buy'
 
         const response = await this.$axios.post(endpoint, payload)
+        console.log(response.data)
         if (response.data.data.pay_url) {
           // Redirect to payment gateway
           window.location.href = response.data.data.pay_url
+        } else if (response.data.status === 'success' && this.useWalletCredit) {
+          // Clear paid items from basket
+          this.addedItems = []
+          localStorage.removeItem('_cart')
+          this.emitCartChange()
+          this.my_credit = this.my_credit - this.totalAmount
+          this.$store.dispatch('my_credit/SET_MY_CREDIT', this.my_credit)
+          this.$swal('پرداخت با موفقیت انجام شد', {
+            icon: 'success',
+          }).then(() => {
+            window.location.reload()
+          })
         } else {
           this.error = 'خطا در ایجاد لینک پرداخت'
         }
@@ -2145,5 +2164,11 @@ export default {
   .theme-dark .section-title {
     color: #f1f1f1;
   }
+}
+
+.wallet-balance-error {
+  color: #dc3545;
+  font-size: 0.8rem;
+  margin-top: 0.5rem;
 }
 </style>

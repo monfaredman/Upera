@@ -17,8 +17,11 @@
         </template>
 
         <template v-else>
-          <!-- Edit Mode: Registered Card Display -->
-          <div v-if="isEditMode && configs.id" class="registered-card-box mb-4">
+          <!-- Edit Mode: Registered Card Display (only shown after step 1) -->
+          <div
+            v-if="isEditMode && configs.id && currentStep === 2"
+            class="registered-card-box mb-4"
+          >
             <p class="cart-payment">اطلاعات ثبت شده</p>
             <div class="card-display">
               <div class="bank-info-row">
@@ -65,10 +68,7 @@
           </div> -->
 
           <!-- Step 1: Bank Selection -->
-          <div
-            v-if="currentStep === 1 && !isEditMode"
-            class="bank-selection-step"
-          >
+          <div v-if="currentStep === 1" class="bank-selection-step">
             <bank-management-section
               :subscriptions="subscriptions"
               :banks="banks"
@@ -85,10 +85,7 @@
           </div>
 
           <!-- Step 2: Serial Selection -->
-          <div
-            v-if="currentStep === 2 || isEditMode"
-            class="serial-selection-step"
-          >
+          <div v-if="currentStep === 2" class="serial-selection-step">
             <payment-options-section
               :form-data="formData"
               :subscription-description="subscriptionDescription"
@@ -106,7 +103,7 @@
       <div v-if="!isLoading" class="modal-footer-fixed">
         <div class="action-buttons">
           <!-- Step 1 Button -->
-          <template v-if="currentStep === 1 && !isEditMode">
+          <template v-if="currentStep === 1">
             <b-button
               variant="primary"
               block
@@ -118,7 +115,7 @@
           </template>
 
           <!-- Step 2 Buttons -->
-          <template v-else-if="currentStep === 2 || isEditMode">
+          <template v-else-if="currentStep === 2">
             <b-button
               v-if="!isEditMode"
               variant="outline-secondary"
@@ -333,8 +330,16 @@ export default {
         this.formData.mobile = this.formatMobile(data.mobile)
       }
 
+      // Populate bank from configs if exists
+      if (this.configs.bank && !this.formData.bank) {
+        this.formData.bank = this.configs.bank
+      }
+
       // Set edit mode if configs exist (user has registered card)
       this.isEditMode = !!this.configs.id
+
+      // Always start from step 1 (bank selection) initially
+      this.currentStep = 1
 
       // Initialize autoRenewal based on formData.subscription
       this.autoRenewal = this.formData.subscription
@@ -406,6 +411,7 @@ export default {
         this.configs = {}
         this.isEditMode = false
         this.currentStep = 1
+        this.acceptTerms = false
         this.formData.subscription = false
         this.formData.pay_anything = true
         this.formData.series = this.formData.series.map((series) => ({

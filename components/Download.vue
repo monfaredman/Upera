@@ -444,13 +444,8 @@
               </div>
 
               <div v-show="false" class="col-12 p-4 text-right">
-<<<<<<< HEAD
-                <a href="tel:02191690309">تلفن پشتیبانی در ساعات اداری:‌ 02191690309</a><br>
-                <a href="tel:09022018555">تلفن پشتیبانی در ساعات غیر اداری:‌ 09022018555</a><br>
-                <a href="https://telegram.me/srmweb" target="_blank">تلگرام پشتیبانی</a>
-=======
-                <a href="tel:02191079979"
-                  >تلفن پشتیبانی در ساعات اداری:‌ 02191079979</a
+                <a href="tel:02191690309"
+                  >تلفن پشتیبانی در ساعات اداری:‌ 02191690309</a
                 ><br />
                 <a href="tel:09022018555"
                   >تلفن پشتیبانی در ساعات غیر اداری:‌ 09022018555</a
@@ -458,7 +453,6 @@
                 <a href="https://telegram.me/srmweb" target="_blank"
                   >تلگرام پشتیبانی</a
                 >
->>>>>>> task/refactor-currect-version
               </div>
             </div>
             <div class="download-links-footer footer-1">

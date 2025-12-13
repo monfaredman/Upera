@@ -617,12 +617,11 @@ section#watching {
   }
 
   .col-lg-3.col-md-6.col-6.mb-3 {
-    padding: 0 !important;
-    max-width: 46% !important;
+    max-width: 49% !important;
   }
   .row {
     flex-direction: row !important;
-    gap: 0 26px !important;
+    gap: 0 1px !important;
   }
   .row.align-items-center.container-fluid-header {
     flex-direction: row !important;
@@ -636,7 +635,7 @@ section#watching {
   section#watching {
     margin-top: -1rem !important;
     margin-bottom: 1rem !important;
-    width: 84%;
+    width: 90%;
     text-align: center;
     justify-content: center;
     align-items: center;
@@ -680,10 +679,6 @@ section#watching {
     width: 100px;
     padding: 0;
   }
-
-  .container-fluid-header .col-6 {
-    padding: 0 !important;
-  }
 }
 @media (max-width: 400px) {
   .col-lg-3.col-md-6.col-6.mb-3 {
@@ -696,7 +691,7 @@ section#watching {
   padding: 0 !important;
 }
 .col-lg-3.col-md-6.col-6.mb-3 {
-  padding-right: 0 !important;
+  /* padding-right: 0 !important; */
 }
 
 .season-dropdown {

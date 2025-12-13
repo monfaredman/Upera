@@ -127,178 +127,6 @@
                 >
                   <div class="download-links-items">
                     <div class="col-12">
-<<<<<<< HEAD
-                      <svg v-if="loading || buyloading" id="L9" class="svg-loader" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 100 100" enable-background="new 0 0 0 0" xml:space="preserve"><path data-v-28f0b4cb="" fill="#373737" d="M73,50c0-12.7-10.3-23-23-23S27,37.3,27,50 M30.9,50c0-10.5,8.5-19.1,19.1-19.1S69.1,39.5,69.1,50" transform="rotate(109.69 50 50)"><animateTransform data-v-28f0b4cb="" attributeName="transform" attributeType="XML" type="rotate" dur="1s" from="0 50 50" to="360 50 50" repeatCount="indefinite" /></path></svg>
-
-                      <span v-if="false && message && !loading && !buyloading" class="text-danger h6 text-justify">{{ message }}<br><br></span>
-
-
-                      <span v-if="!loading && !buyloading && files!=null && files.length == 1">
-                        <span v-for="(item,index) in files" :key="index">
-                          <span v-show="item.presale && !item.screening.ekran" class="text-danger h6">اکنون می توانید فایل را دانلود نمایید و در صبح {{ item.presale_date }} کلمه عبور از طریق شماره همراه به شما اطلاع رسانی خواهد شد و می توانید همزمان با پخش خانگی فیلم را مشاهده نمایید.<br><br></span>
-
-                          <span v-show="item.presale && item.screening.ekran" class="text-danger h6">شما در صبح {{ item.presale_date }} می توانید از طریق لینک زیر که برای شما پیامک نیز شده است، همزمان با اکران سراسری فیلم را مشاهده نمایید.<br><br>
-                            برای تماشا از خانه، سانس سینمای آنلاین {{ item.screening.ekran_hour }} ساعته است، طوری تنظیم کنید که تماشای کامل فیلم را در سانس خود از دست ندهید.<br><br></span>
-
-                          <span v-show="!item.presale && item.screening.ekran" class="text-danger h6 text-justify">برای تماشا از خانه، سانس سینمای آنلاین {{ item.screening.ekran_hour }} ساعته است، دقیقا از از زمانی که فیلم را شروع به تماشا کنید، سانس شما آغاز و تا {{ item.screening.ekran_hour }} ساعت بعد به پایان می‌رسد، طوری تنظیم کنید که تماشای کامل فیلم را در سانس خود از دست ندهید.<br><br></span>
-                        </span>
-                      </span>
-                    </div>
-                    <div v-if="!loading && !buyloading && files!=null && files.length > 1">
-                      <div v-for="(item,index) in files" :key="index" class="download-links-item">
-                        <div class="row">
-                          <div class="col-sm-6">
-                            <div class="row">
-                              <div class="col-9">
-                                <div class="font-weight-bold">
-                                  {{ item.name }}
-                                </div>
-                                <div v-show="item.presale" class="download-suitable">
-                                  تاریخ پخش: {{ item.presale_date }}
-                                </div>
-                              </div>
-                              <div class="col-3 d-flex justify-end align-items-end text-right">
-                                <div v-if="!item.screening.ekran && item.link2" class="download-size">
-                                  <a :href="item.link2">
-                                    لینک کمکی
-                                  </a>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-
-
-
-                          <div v-if="item.screening.ekran" class="col-sm-6">
-                            <div class="d-flex h-100 align-items-end">
-                              <div class="download-full-link">
-                                <button class="btn btn-secondary btn-block" @click="EKRAN(item.screening.ekran_id)">
-                                  تماشا
-                                  <i class="icon-play" />
-                                </button>
-                              </div>
-                            </div>
-                          </div>
-
-                          <div v-else class="col-sm-6">
-                            <div class="d-flex h-100 align-items-end">
-                              <div class="download-link">
-                                <a :href="item.link1" class="btn btn-secondary btn-block">
-                                  {{ $t('show.download') }}
-                                  <i class="icon-download" />
-                                </a>
-                              </div>
-                              <div class="copy-link">
-                                <button class="btn btn-copy btn-block" @click="COPY(item.link1)">
-                                  کپی لینک
-                                </button>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div v-else-if="!loading && !buyloading && files!=null && files.length == 1" class="text-center">
-                      از خرید قانونی شما<br><span style="color:#4b4bf9">ممنونیم</span>
-                      <div class="offset-2 col-8">
-                        <img class="img-fluid" src="@/assets/img/success.png">
-                      </div>
-                      پرداخت شما موفقیت آمیز بود
-
-
-
-
-                      <span v-for="(item,index) in files" :key="index">
-                        <span v-if="!item.screening.ekran">
-                          <br><br>
-
-                          در گوشی های اندروید از برنامه adm جهت دانلود فیلم استفاده کنید ( <a href="https://play.google.com/store/apps/details?id=com.dv.adm&amp;hl=fa" target="_blank">نصب</a>)<br>
-                          در گوشی ios از برنامه Documents جهت دانلود فیلم استفاده کنید (<a href="https://itunes.apple.com/us/app/documents-by-readdle/id364901807?mt=8" target="_blank">آیتیونز</a>)<br>
-                          در کامپیوتر از برنامه Flash Get یا idm جهت دانلود فیلم استفاده نمایید
-                          <br><br>
-                          توجه داشته باشید که برای جلوگیری از دانلود ناقص یا آسیب دیدن به فایل های خریداری شده، حتما باید از نرم افزارهای دانلود منیجر استفاده شود. بدین صورت حتی اگر دانلود شما در هر زمانی و به هر دلیلی نیمه کاره متوقف شد، میتوانید در زمان دلخواه خود به راحتی به ادامه دانلود بپردازید.
-                        </span>
-                      </span>
-                    </div>
-                    <div v-else-if="!loading && !buyloading && success && $auth.loggedIn && $route.query.purchase=='subscription'" class="text-center">
-                      از خرید اشتراک شما<br><span style="color:#4b4bf9">ممنونیم</span>
-                      <div class="offset-2 col-8">
-                        <img class="img-fluid" src="@/assets/img/success.png">
-                      </div>
-                      پرداخت شما موفقیت آمیز بود
-
-                      <br><br>
-
-                      {{ checkuser.days_period_to_end }} روز از اشتراک شما باقیمانده است
-                    </div>
-                    <div v-else-if="!loading && !buyloading && success && $route.query.purchase=='subscription'" class="text-center">
-                      از خرید اشتراک شما<br><span style="color:#4b4bf9">ممنونیم</span>
-                      <div class="offset-2 col-8">
-                        <img class="img-fluid" src="@/assets/img/success.png">
-                      </div>
-                      پرداخت شما موفقیت آمیز بود
-
-                      <br><br>
-                    </div>
-                    <div v-else-if="!loading && !buyloading && success && $route.query.purchase=='wallet'" class="text-center">
-                      از افزایش موجودیتان<br><span style="color:#4b4bf9">ممنونیم</span>
-                      <div class="offset-2 col-8">
-                        <img class="img-fluid" src="@/assets/img/success.png">
-                      </div>
-                      پرداخت شما موفقیت آمیز بود
-
-                      <br><br>
-                    </div>
-                    <div v-else-if="!loading && !buyloading && success && $route.query.purchase=='directdebit'" class="text-center">
-                      از شما جهت فعال کردن پرداخت خودکار<br><span style="color:#4b4bf9">ممنونیم</span>
-                      <div class="offset-2 col-8">
-                        <img class="img-fluid" src="@/assets/img/success.png">
-                      </div>
-
-                      <button class="btn btn-copy btn-light btn-block" @click="SHOW_MODAL_DIRECTDEBIT()">
-                        تنظیمات پرداخت خودکار
-                      </button>
-                      <br><br>
-                    </div>
-                    <div v-else-if="!loading && !buyloading && checkagain" class="text-center">
-                      <div class="offset-2 col-8">
-                        <img class="img-fluid" src="@/assets/img/failed.png">
-                      </div>
-                      <b>متاسفانه خرید شما موفقیت آمیز نبود</b>
-
-                      <br><br>
-
-                      اگر مبلغی از حساب شما کسر شده است، نهایتا ظرف ۷۲ ساعت آینده به حساب شما برگشت داده خواهد شد
-                    </div>
-                    <div v-else-if="!loading && !buyloading && show_login==0" class="text-center">
-                      <div class="offset-2 col-8">
-                        <img class="img-fluid" src="@/assets/img/check.png">
-                      </div>
-                      <b>متاسفانه خرید شما موفقیت آمیز نبود</b><br>
-                      و یا در حین انجام تراکنش مشکلی رخ داده است
-
-                      <br><br> <br><br>
-
-                      می توانید پرداخت خود را بررسی کنید و یا نسبت به پرداخت مجدد اقدام کنید
-                    </div>
-
-
-                    <div v-else-if="!loading && !buyloading && show_login==1" class="text-center">
-                      <div class="offset-2 col-8">
-                        <img class="img-fluid" src="@/assets/img/check.png">
-                      </div>
-                      <b>پرداخت شما موفقیت آمیز بوده است</b><br>
-                      اما برای استفاده از آن باید وارد سایت شوید
-
-                      <br><br> <br><br>
-                    </div>
-
-
-                    <div v-if="!loading && !buyloading" class="col-12 p-4 text-right">
-                      <br><a href="tel:02191690309">تلفن پشتیبانی در ساعات اداری:‌ <br>02191690309</a><br><br>
-                      <a href="tel:09022018555">تلفن پشتیبانی در ساعات غیر اداری:‌ <br>09022018555</a><br><br>
-                      <a href="https://telegram.me/srmweb" target="_blank">تلگرام پشتیبانی</a>
-=======
                       <svg
                         v-if="loading || buyloading"
                         id="L9"
@@ -330,7 +158,6 @@
                           />
                         </path>
                       </svg>
->>>>>>> task/refactor-currect-version
                     </div>
                   </div>
                 </div>
@@ -368,33 +195,6 @@
                         @check-payment="CHECK(1)"
                       />
                     </div>
-<<<<<<< HEAD
-                  </div>
-                  <div v-if="title!=null" class="download-links-item">
-                    <div v-if="$route.query.reactnative&&$route.query.reactnative=='1'" class="row">
-                      <div class="col-12">
-                        <a :href="`uperaapp://callback?${queryString}`" class="btn btn-second btn-block">
-                          بازگشت به اپلیکیشن
-                          <i class="fa fa-arrow-alt-circle-left" />
-                        </a>
-                      </div>
-                    </div>
-                    <div v-else class="row">
-                      <div class="col-12">
-                        <a v-if="title.type=='movie'" href="" class="btn btn-second btn-block" @click.prevent="Push2(title.id,title.type)">
-                          بازگشت به صفحه فیلم
-                          <i class="fa fa-arrow-alt-circle-left" />
-                        </a>
-                        <a v-else-if="title.type=='series'" class="btn btn-second btn-block" href="" @click.prevent="Push2(title.id,title.type)">
-                          بازگشت به صفحه سریال
-                          <i class="fa fa-arrow-alt-circle-left" />
-                        </a>
-                        <a v-else href="" class="btn btn-second btn-block" @click.prevent="Push2(title.id,title.type)">
-                          بازگشت به صفحه این قسمت سریال
-                          <i class="fa fa-arrow-alt-circle-left" />
-                        </a>
-                      </div>
-=======
 
                     <!-- Error States -->
                     <div v-else>
@@ -419,7 +219,6 @@
                       />
 
                       <support-contact-section />
->>>>>>> task/refactor-currect-version
                     </div>
                   </div>
                 </div>
@@ -453,51 +252,6 @@
 </template>
 
 <script>
-<<<<<<< HEAD
-import {mapGetters} from 'vuex'
-
-  export default {
-    layout: "nofooter",
-    data() {
-      return {
-        castShow: null,
-        method: "saman",
-        login: 0,
-        message: null,
-        buyloading: false,
-        loading: false,
-        disable_button: false,
-        backtoapp: false,
-        checkagain: false,
-        divcount: 0,
-        success: false,
-        files: null,
-        ref_num: 0,
-        show_login: 0,
-        title: null
-      }
-    },
-  head() {
-
-    return {
-    bodyAttrs: {
-      class: 'callback'
-    },title:  'پرداخت' }
-  },
-    computed: {
-        ...mapGetters({cart: "download/cart"}),
-
-        queryString() {
-         const params = new URLSearchParams()
-        // Add all query parameters dynamically
-         Object.entries(this.$route.query).forEach(([key, value]) => {
-         if (value) params.append(key, value)
-         })
-
-         return params.toString()
-        },
-
-=======
 import { mapGetters } from 'vuex'
 import LoadingSpinner from '@/components/callback/LoadingSpinner.vue'
 import PaymentSuccessContent from '@/components/callback/PaymentSuccessContent.vue'
@@ -841,7 +595,6 @@ export default {
       if (process.client) {
         localStorage.removeItem('_cart')
       }
->>>>>>> task/refactor-currect-version
     },
 
     hideModal() {
@@ -850,47 +603,6 @@ export default {
       document.getElementsByClassName('default')[0].classList.remove('blure')
     },
 
-<<<<<<< HEAD
-
-
-        this.divcount=0
-
-        if(window.location.host=='app.upera.tv' || window.location.host=='app.pofefilm.tv'){
-          this.backtoapp=true
-          this.divcount=1
-        }
-
-
-                this.showModal()
-                document.getElementsByClassName('modal-content')[0].removeAttribute('tabindex')
-
-
-
-        this.$refs['callbackModal'].$on('hide', () => {
-          window.removeEventListener('resize', this.Resize)
-          document.getElementsByClassName('default')[0].classList.remove('blure')
-          this.$emit("hide-modal", null)
-        })
-
-
-          document.body.classList.add('loaded')
-
-
-
-
-    },
-    methods: {
-
-        Push2(id,type){
-            this.hideModal()
-
-            this.$router.push({
-                name: type+"-id",
-                params: {
-                    id: id
-                }
-            })
-=======
     Push2(id, type) {
       this.hideModal()
       console.log(type + '-id', id)
@@ -898,7 +610,6 @@ export default {
         name: type + '-id',
         params: {
           id: id,
->>>>>>> task/refactor-currect-version
         },
       })
     },
@@ -927,11 +638,7 @@ export default {
         api_url = '/ghost/payments/' + purchase + '/callback'
       }
 
-<<<<<<< HEAD
-
-=======
       var check_it_again = 0
->>>>>>> task/refactor-currect-version
 
       if (check) {
         check_it_again = 1
@@ -1010,21 +717,7 @@ export default {
             } else {
               this.divcount = this.divcount + 1
 
-<<<<<<< HEAD
-//this.checkuser.domain
-    this.$axios.post('/change_subscription', {
-                                method: this.$route.query.method,
-                                plan_id: this.$route.query.plan,
-                                host: window.location.hostname,
-                                content_id: content_id,
-                                content_type: content_type,
-                                ref: ref
-                            }).then((res) => {
-
-          if(res.status === 200){
-=======
               this.message = res.data.message
->>>>>>> task/refactor-currect-version
 
               if ('show_login' in res.data) {
                 this.show_login = res.data.show_login
@@ -1178,82 +871,13 @@ export default {
         }
         this.buyloading = true
 
-<<<<<<< HEAD
-
-
-
-        this.$axios.post(api_url, {
-=======
         this.$axios
           .post(api_url, {
->>>>>>> task/refactor-currect-version
             cart: this.cart,
             mobile: this.$route.query.mobile,
             callback_url:
               location.origin + '/callback?mobile=' + this.$route.query.mobile,
             method: this.method,
-<<<<<<< HEAD
-            ref: ref
-        }).then((res) => {
-          if(res.status === 200){
-            window.location.href = res.data.data.pay_url
-          }else{
-            this.buyloading=false
-            this.message=res.data.message
-          }
-        }, (error) => {
-          this.buyloading=false
-           this.premessage=error.response.data.message
-            if(error.response.data.login)
-              this.$store.dispatch('login/SHOW_MODAL',{premessage: this.premessage,premobile: this.$route.query.mobile,preredirect: null,prerefresh: false})
-        })
-
-      }
-      },
-
-
-      EKRAN(ekranid) {
-        this.hideModal()
-        this.$router.push({
-            name: "ekran-id",
-            params: {
-                id: ekranid
-            }
-        })
-      },
-      showModal() {
-        this.$refs['callbackModal'].show()
-
-this.CHECK(0)
-
-this.$refs['callbackModal'].$on('shown', () => {
-    window.addEventListener("resize", this.Resize)
-    this.Resize('e')
-
-})
-
-        this.$store.dispatch("download/GET_CART")
-      },
-      hideModal() {
-        this.$refs['callbackModal'].hide()
-        this.$emit("hide-modal", null)
-        document.getElementsByClassName('default')[0].classList.remove('blure')
-      },
-  Resize(e) {
-    let vh = window.innerHeight * 0.01
-    let element=document.getElementsByClassName('download-links')
-
-    if(element.length)
-      element[0].style.setProperty('--vh', `${vh}px`)
-
-    return e
-  },
-  Login() {
-  this.$store.dispatch('login/SHOW_MODAL',{premessage: null,premobile: null,preredirect: null,prerefresh: false})
-},
-            SHOW_MODAL_CREDIT() {
-              this.$store.dispatch('credit/SHOW_MODAL',{prewallet: this.wallet})
-=======
             ref: ref,
           })
           .then(
@@ -1264,7 +888,6 @@ this.$refs['callbackModal'].$on('shown', () => {
                 this.buyloading = false
                 this.message = res.data.message
               }
->>>>>>> task/refactor-currect-version
             },
             (error) => {
               this.buyloading = false
@@ -1677,14 +1300,6 @@ this.$refs['callbackModal'].$on('shown', () => {
 </style>
 
 <style>
-<<<<<<< HEAD
-.callback .modal{z-index:0}
-.callback #tab-bar,.callback header,.callback footer{z-index:2000 !important}
-.callback .search{z-index:9999999 !important}
-.callback .modal{top:50px !important;height:100% !important;}
-.callback #callbackModal___BV_modal_outer_{position:relative  !important;height:100% !important;}
-/*.callback .modal .modal-content{bottom:25px !important;}*/
-=======
 .callback #tab-bar,
 .callback header,
 .callback footer {
@@ -1698,5 +1313,4 @@ this.$refs['callbackModal'].$on('shown', () => {
   border: 1px solid var(--Gray-N100, #f5f5f5) !important;
   margin: 1rem;
 }
->>>>>>> task/refactor-currect-version
 </style>

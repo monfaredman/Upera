@@ -69,6 +69,9 @@
         <div class="wallet-info-compact">
           <i class="fas fa-wallet" />
           <span>کیف پول: {{ my_credit }}</span>
+          <p v-if="!hasEnoughWalletBalance" class="wallet-balance-error">
+            موجودی کافی نیست
+          </p>
         </div>
         <div class="custom-control custom-switch">
           <input
@@ -850,5 +853,22 @@ export default {
     color: #6c757d;
     margin: auto;
   }
+}
+
+.wallet-balance-error {
+  color: #dc3545;
+  font-size: 0.8rem;
+  text-align: right;
+  margin-right: 1rem;
+  margin-left: auto;
+  margin-top: 1rem;
+  padding-left: 0;
+  padding-right: 1rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  border-left: 1px solid #dc3545;
+  border-radius: 0.25rem;
+  background-color: #f8d7da;
+  padding: 0.25rem 0.5rem;
 }
 </style>

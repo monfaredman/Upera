@@ -64,6 +64,7 @@ export default {
 .container-fluid {
   padding-right: 0rem !important;
   margin: 0 41px;
+  width: 95vw !important;
 }
 
 .casts-tab-container {

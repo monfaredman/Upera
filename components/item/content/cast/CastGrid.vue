@@ -489,7 +489,6 @@ export default {
 }
 
 .cast-swiper {
-  overflow: visible;
   padding-bottom: 12px;
 }
 
