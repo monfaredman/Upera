@@ -133,6 +133,10 @@
                 :to="{ name: 'movie-show-id', params: { id: item.id } }"
               >
                 <b-img
+                  v-lazy="
+                    'https://thumb.upera.shop/thumb?w=364&h=190&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/' +
+                    item.backdrop
+                  "
                   v-bind="{
                     fluidGrow: true,
                     blank: true,
@@ -146,6 +150,7 @@
                     item.backdrop
                   "
                   :alt="item.name"
+                  loading="lazy"
                 />
               </nuxt-link>
               <nuxt-link

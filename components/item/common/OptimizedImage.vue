@@ -12,6 +12,8 @@
       rounded="lg"
       class="img-grid-flow"
       :class="height === 'full' ? 'h-full' : '' + ' ' + classNames"
+      loading="lazy"
+      v-lazy="computedSrc"
       v-on="$listeners"
     />
   </div>

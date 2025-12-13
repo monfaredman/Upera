@@ -304,17 +304,18 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import MediaShowcase from '@/components/item/showcase/MediaShowcase'
-import ContentDetails from '@/components/item/showcase/ContentDetails'
-import SeasonEpisodes from '@/components/item/SeasonEpisodes'
-import SimilarContent from '@/components/item/SimilarContent'
-import CastsTab from '@/components/item/content/tabs/CastsTab'
-import CommentsTab from '@/components/item/content/tabs/CommentsTab'
-import Download from '@/components/ItemDownload.vue'
-import DownloadNew from '@/components/Download-New.vue'
-import File from '@/components/item/File'
+// Dynamic imports for code splitting - load components only when needed
+const MediaShowcase = () => import('@/components/item/showcase/MediaShowcase')
+const ContentDetails = () => import('@/components/item/showcase/ContentDetails')
+const SeasonEpisodes = () => import('@/components/item/SeasonEpisodes')
+const SimilarContent = () => import('@/components/item/SimilarContent')
+const CastsTab = () => import('@/components/item/content/tabs/CastsTab')
+const CommentsTab = () => import('@/components/item/content/tabs/CommentsTab')
+const Download = () => import('@/components/ItemDownload.vue')
+const DownloadNew = () => import('@/components/Download-New.vue')
+const File = () => import('@/components/item/File')
 
-// Skeleton Components
+// Skeleton Components - keep as static imports for faster initial render
 import ShowcaseSkeleton from '@/components/item/skeletons/ShowcaseSkeleton'
 import SeasonEpisodesSkeleton from '@/components/item/skeletons/SeasonEpisodesSkeleton'
 import ContentDetailsSkeleton from '@/components/item/skeletons/ContentDetailsSkeleton'
@@ -323,8 +324,8 @@ import CastsTabSkeleton from '@/components/item/skeletons/CastsTabSkeleton'
 import CommentsTabSkeleton from '@/components/item/skeletons/CommentsTabSkeleton'
 import ContentStatisticsSkeleton from '@/components/item/skeletons/ContentStatisticsSkeleton'
 
-import Socialsharing from '@/components/Socialsharing'
-import ContentStatistics from '@/components/item/content/ContentStatistics'
+const Socialsharing = () => import('@/components/Socialsharing')
+const ContentStatistics = () => import('@/components/item/content/ContentStatistics')
 
 export default {
   name: 'ContentShowcase',

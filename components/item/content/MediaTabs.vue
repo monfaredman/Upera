@@ -31,8 +31,9 @@
   </section>
 </template>
 <script>
-import MediaSwiper from '@/components/item/content/MediaSwiper'
-import LightGallery from '@/components/item/content/gallery/LightGallery'
+// Dynamic imports for code splitting - load components only when needed
+const MediaSwiper = () => import('@/components/item/content/MediaSwiper')
+const LightGallery = () => import('@/components/item/content/gallery/LightGallery')
 
 export default {
   name: 'MediaTabs',

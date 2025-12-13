@@ -3,13 +3,17 @@
     <div class="hamshahri">
       <!-- لوگوی سایت -->
       <div class="site-logo">
-        <img src="@/assets/images/logo-mobile.svg" alt="Logo" />
+        <img
+          src="@/assets/images/logo-mobile.svg"
+          alt="Logo"
+          loading="lazy"
+          v-lazy="require('@/assets/images/logo-mobile.svg')"
+        />
       </div>
-
       <!-- دکمه بازگشت -->
       <button class="back-button" @click="goBack">
-        <i class="fa fa-chevron-left" style="color: white" />
         <p class="back-text">بازگشت</p>
+        <i class="fa fa-chevron-left" style="color: white" />
       </button>
 
       <!-- لودینگ -->
@@ -65,7 +69,8 @@
 </template>
 
 <script>
-import VideoPlayer from '~/components/VideoPlayer.vue'
+// Dynamic import for code splitting - VideoPlayer is heavy
+const VideoPlayer = () => import('~/components/VideoPlayer.vue')
 
 export default {
   components: { VideoPlayer },
@@ -503,9 +508,9 @@ export default {
 
 /* لوگوی سایت */
 .site-logo {
-  position: absolute;
+  /* position: absolute;
   top: 16px;
-  right: 16px;
+  right: 16px; */
   z-index: 11;
 }
 
@@ -518,6 +523,7 @@ export default {
 .back-button {
   width: 131px;
   height: 40px;
+  left: 0;
   border-radius: 8px;
   gap: 8px;
   padding: 12px 28px;

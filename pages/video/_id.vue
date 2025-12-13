@@ -582,9 +582,10 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
-import VideoPlayer from '~/components/VideoPlayer.vue'
-import Comments from '~/components/Comments.vue'
-import Socialsharing from '@/components/Socialsharing'
+// Dynamic imports for code splitting - heavy components
+const VideoPlayer = () => import('~/components/VideoPlayer.vue')
+const Comments = () => import('~/components/Comments.vue')
+const Socialsharing = () => import('@/components/Socialsharing')
 
 export default {
   components: {

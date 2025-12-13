@@ -71,8 +71,8 @@
 </template>
 
 <script>
-// فرض می‌کنیم که VideoPlayer یک کامپوننت موجود است
-import VideoPlayer from '~/components/VideoPlayer.vue'
+// Dynamic import for code splitting - VideoPlayer is heavy, only load when modal opens
+const VideoPlayer = () => import('~/components/VideoPlayer.vue')
 
 export default {
   components: { VideoPlayer },
