@@ -831,7 +831,7 @@ span.label.label-rounded.label-red.label-1 {
 
 @media (max-width: 576px) {
   .search-page-container {
-    margin: 4rem auto 0 auto;
+    padding-top: 4rem;
   }
 
   .actor {
