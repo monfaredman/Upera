@@ -4688,6 +4688,7 @@ nav a:hover {
 
 #watching {
   position: relative;
+  overflow-x: hidden;
 }
 
 #watching .in-watching {

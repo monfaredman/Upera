@@ -221,8 +221,6 @@ export default {
       if (this.purchaseType === 'wallet') {
         const amount = `${this.walletAmount || '0'} تومان` || '0'
         const balance = `${this.walletBalance || '0'} تومان` || '0'
-        console.log('walletAmount', this.walletAmount)
-        console.log('amount', amount)
         return `مبلغ ${amount}  به کیف پول شما اضافه شد.<br>موجودی فعلی: ${balance}`
       }
 

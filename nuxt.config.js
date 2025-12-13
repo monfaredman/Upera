@@ -196,6 +196,12 @@ export default {
   target: isGhPages ? 'static' : 'server',
   router: {
     base: routerBase,
+    // Prefetch links on hover for faster navigation
+    prefetchLinks: true,
+    // Link prefetching strategy
+    linkPrefetchedClass: 'nuxt-link-prefetched',
+    linkActiveClass: 'nuxt-link-active',
+    linkExactActiveClass: 'nuxt-link-exact-active',
   },
   build: {
     publicPath: nuxtPublicPath,
@@ -203,6 +209,49 @@ export default {
      * add external plugins
      */
     extractCSS: true,
+    // Optimize bundle size with tree-shaking
+    terser: {
+      terserOptions: {
+        compress: {
+          drop_console: process.env.NODE_ENV === 'production',
+          drop_debugger: true,
+        },
+      },
+    },
+    // Enable code splitting and optimization
+    optimization: {
+      splitChunks: {
+        chunks: 'all',
+        cacheGroups: {
+          vendor: {
+            test: /[\\/]node_modules[\\/]/,
+            name: 'vendors',
+            priority: 10,
+            reuseExistingChunk: true,
+          },
+          videojs: {
+            test: /[\\/]node_modules[\\/](video\.js|videojs)[\\/]/,
+            name: 'videojs',
+            priority: 20,
+            reuseExistingChunk: true,
+          },
+          swiper: {
+            test: /[\\/]node_modules[\\/](swiper|vue-awesome-swiper)[\\/]/,
+            name: 'swiper',
+            priority: 20,
+            reuseExistingChunk: true,
+          },
+          bootstrap: {
+            test: /[\\/]node_modules[\\/](bootstrap-vue)[\\/]/,
+            name: 'bootstrap',
+            priority: 20,
+            reuseExistingChunk: true,
+          },
+        },
+      },
+    },
+    // Analyze bundle size in production
+    analyze: process.env.ANALYZE === 'true',
     /*
      ** Run ESLint on save
      */
@@ -226,13 +275,54 @@ export default {
    */
   head: {
     title: process.env.APP_NAME_FA,
+    htmlAttrs: {
+      lang: 'fa',
+      dir: 'rtl',
+    },
     meta: [
       { charset: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+      {
+        name: 'viewport',
+        content: 'width=device-width, initial-scale=1, viewport-fit=cover',
+      },
       {
         hid: 'description',
         name: 'description',
-        content: process.env.npm_package_description || '',
+        content:
+          process.env.npm_package_description ||
+          'تماشای آنلاین فیلم ها و سریال ها در تلویزیون هوشمند , کنسول بازی , کامپیوتر , لپتاپ , تبلت و ...',
+      },
+      // Open Graph / Facebook
+      {
+        hid: 'og:type',
+        property: 'og:type',
+        content: 'website',
+      },
+      {
+        hid: 'og:site_name',
+        property: 'og:site_name',
+        content: process.env.APP_NAME_FA,
+      },
+      {
+        hid: 'og:locale',
+        property: 'og:locale',
+        content: 'fa_IR',
+      },
+      // Twitter Card
+      {
+        hid: 'twitter:card',
+        name: 'twitter:card',
+        content: 'summary_large_image',
+      },
+      {
+        hid: 'twitter:site',
+        name: 'twitter:site',
+        content: '@upera',
+      },
+      // Performance hints
+      {
+        'http-equiv': 'x-dns-prefetch-control',
+        content: 'on',
       },
     ],
     link: [
@@ -240,6 +330,24 @@ export default {
         rel: 'icon',
         type: 'image/x-icon',
         href: routerBase + 'favicon-' + process.env.ENV + '.ico',
+      },
+      {
+        rel: 'dns-prefetch',
+        href: 'https://cdn.upera.shop',
+      },
+      {
+        rel: 'dns-prefetch',
+        href: 'https://thumb.upera.shop',
+      },
+      {
+        rel: 'preconnect',
+        href: 'https://cdn.upera.shop',
+        crossorigin: 'anonymous',
+      },
+      {
+        rel: 'preconnect',
+        href: 'https://thumb.upera.shop',
+        crossorigin: 'anonymous',
       },
     ],
   },
@@ -284,6 +392,7 @@ export default {
     './plugins/mixins/validation',
     '~/plugins/persianDigits.client',
     '~/plugins/awesomeCountdown.client',
+    '~/plugins/seo.client',
   ],
   /*
    ** Auto import components
@@ -293,7 +402,11 @@ export default {
   /*
    ** Nuxt.js dev-modules
    */
-  buildModules: [['@nuxtjs/dotenv', { filename: '.env.' + process.env.ENV }]],
+  buildModules: [
+    ['@nuxtjs/dotenv', { filename: '.env.' + process.env.ENV }],
+    // Note: @nuxt/image v0.0.4 is for Nuxt 3, we'll use a custom image component instead
+    // For Nuxt 2, we'll optimize images manually with lazy loading
+  ],
   eslint: {
     fix: true,
   },
@@ -388,20 +501,94 @@ export default {
       short_name: process.env.APP_NAME_EN,
       lang: 'fa',
       description: 'سینمای آنلاین شما',
+      theme_color: process.env.COLOR2 || '#000000',
+      background_color: '#000000',
+      display: 'standalone',
+      start_url: routerBase,
+      scope: routerBase,
     },
-    // workbox: {
-    //  runtimeCaching: [
-    //    {
-    //      strategyPlugins: [{
-    //         use: 'Expiration',
-    //         config: {
-    //           maxEntries: 1000,
-    //           maxAgeSeconds: 1000
-    //         }
-    //       }]
-    //    }
-    //  ]
-    // }
+    workbox: {
+      // Enable workbox caching for production
+      enabled: process.env.NODE_ENV === 'production',
+      // Cache strategies
+      runtimeCaching: [
+        // Cache images with cache-first strategy
+        {
+          urlPattern: /^https:\/\/thumb\.upera\.shop\/.*/i,
+          handler: 'CacheFirst',
+          strategyOptions: {
+            cacheName: 'thumb-images-cache',
+            cacheableResponse: {
+              statuses: [0, 200],
+            },
+            expiration: {
+              maxEntries: 100,
+              maxAgeSeconds: 60 * 60 * 24 * 7, // 7 days
+            },
+          },
+        },
+        // Cache CDN images
+        {
+          urlPattern: /^https:\/\/cdn\.upera\.shop\/.*/i,
+          handler: 'CacheFirst',
+          strategyOptions: {
+            cacheName: 'cdn-images-cache',
+            cacheableResponse: {
+              statuses: [0, 200],
+            },
+            expiration: {
+              maxEntries: 200,
+              maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
+            },
+          },
+        },
+        // Cache API responses with network-first strategy
+        {
+          urlPattern: /^https?:\/\/.*\/get\/.*/i,
+          handler: 'NetworkFirst',
+          strategyOptions: {
+            cacheName: 'api-cache',
+            cacheableResponse: {
+              statuses: [0, 200],
+            },
+            networkTimeoutSeconds: 3,
+            expiration: {
+              maxEntries: 50,
+              maxAgeSeconds: 60 * 5, // 5 minutes
+            },
+          },
+        },
+        // Cache static assets
+        {
+          urlPattern: /\.(?:png|jpg|jpeg|svg|gif|webp|ico)$/,
+          handler: 'CacheFirst',
+          strategyOptions: {
+            cacheName: 'static-assets-cache',
+            expiration: {
+              maxEntries: 100,
+              maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
+            },
+          },
+        },
+        // Cache fonts
+        {
+          urlPattern: /\.(?:woff|woff2|ttf|eot|otf)$/,
+          handler: 'CacheFirst',
+          strategyOptions: {
+            cacheName: 'fonts-cache',
+            expiration: {
+              maxEntries: 50,
+              maxAgeSeconds: 60 * 60 * 24 * 365, // 1 year
+            },
+          },
+        },
+      ],
+      // Skip waiting and claim clients immediately
+      skipWaiting: true,
+      clientsClaim: true,
+      // Clean up old caches
+      cleanupOutdatedCaches: true,
+    },
   },
   colorMode: {
     classPrefix: 'theme-',
@@ -413,6 +600,26 @@ export default {
   pageTransition: {
     name: 'fade',
     mode: 'out-in',
+  },
+  // Performance optimizations
+  render: {
+    // Enable HTTP/2 Server Push
+    http2: {
+      push: true,
+      pushAssets: (req, res, publicPath, preloadFiles) => {
+        return preloadFiles
+          .filter((f) => f.asType === 'script' || f.asType === 'style')
+          .map((f) => `<${publicPath}${f.file}>; rel=preload; as=${f.asType}`)
+      },
+    },
+    // Resource hints for better performance
+    resourceHints: true,
+    // Compress responses
+    compressor: { threshold: 0 },
+    // Static file serving
+    static: {
+      maxAge: '1y',
+    },
   },
   bootstrapVue: {
     components: [

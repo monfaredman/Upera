@@ -12,6 +12,7 @@
       fluid-grow
       :thumb-options="{ w: 1920, h: 1200, q: 100, a: 'c' }"
       :type="mediaType"
+      :aspect-ratio="1920 / 1200"
     />
   </a>
 </template>

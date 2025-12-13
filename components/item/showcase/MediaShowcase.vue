@@ -16,6 +16,7 @@
               :thumb-options="{ w: 1920, h: 960, q: 95, a: 't', zc: 1 }"
               type="backdrops"
               class="showcase-img d-none d-lg-block"
+              :aspect-ratio="1120 / 960"
             />
 
             <!-- Mobile Backdrop -->
@@ -29,6 +30,7 @@
               type="backdrops"
               fluid-grow
               class="showcase-img d-lg-none"
+              :aspect-ratio="375 / 300"
             />
           </div>
         </div>

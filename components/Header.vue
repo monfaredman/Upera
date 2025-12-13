@@ -525,7 +525,44 @@ export default {
       else this.$colorMode.preference = 'light'
     },
     async logout() {
+      // Clear cart from localStorage
+      if (process.client) {
+        try {
+          // Clear cart data
+          localStorage.removeItem('_cart')
+
+          // Clear user-specific preferences
+          localStorage.removeItem('selected_avatar')
+          localStorage.removeItem('seasonEpisodesSortOrder')
+          localStorage.removeItem('basketActive')
+          localStorage.removeItem('_download_skip_main_item')
+
+          // Emit cart update event to notify components
+          this.$root.$emit('cart-updated')
+        } catch (error) {
+          console.error('Error clearing localStorage on logout:', error)
+        }
+      }
+
+      // Reset theme to system default
+      this.$colorMode.preference = 'system'
+
+      // Reset basket active state in store
+      this.$store.dispatch('SET_BASKET_ACTIVE', true)
+
+      // Clear avatars from store
+      if (this.$store.dispatch) {
+        try {
+          this.$store.dispatch('CLEAR_AVATARS')
+        } catch (e) {
+          // Store action may not exist, ignore
+        }
+      }
+
+      // Perform logout
       await this.$auth.logout()
+
+      // Refresh the page
       this.$router.go()
     },
     execute_content_filtering() {

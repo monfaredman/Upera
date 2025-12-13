@@ -3,13 +3,18 @@
     <div class="hamshahri">
       <!-- لوگوی سایت -->
       <div class="site-logo">
-        <img src="@/assets/images/logo-mobile.svg" alt="Logo" />
+        <img
+          src="@/assets/images/logo-mobile.svg"
+          alt="Logo"
+          loading="lazy"
+          v-lazy="require('@/assets/images/logo-mobile.svg')"
+        />
       </div>
 
       <!-- دکمه بازگشت -->
       <button class="back-button" @click="goBack">
-        <i class="fa fa-chevron-left" style="color: white" />
         <p class="back-text">بازگشت</p>
+        <i class="fa fa-chevron-left" style="color: white" />
       </button>
 
       <!-- لودینگ -->
@@ -663,9 +668,9 @@ export default {
 
 /* لوگوی سایت */
 .site-logo {
-  position: absolute;
+  /* position: absolute;
   top: 16px;
-  right: 16px;
+  right: 16px; */
   z-index: 11;
 }
 

@@ -425,7 +425,7 @@ export default {
 .empty-icon {
   font-size: 3rem;
   margin-bottom: 1rem;
-  color: #dee2e6;
+  color: #4a4a4a !important;
 }
 
 .basket-with-items {
@@ -677,10 +677,6 @@ export default {
   color: #979797;
 }
 
-.theme-dark .empty-icon {
-  color: #4a4a4a;
-}
-
 .theme-dark .basket-item-compact {
   background: #2d2d2d;
   border: 1px solid #3a3a3a;
@@ -704,6 +700,10 @@ export default {
 
 .theme-dark .btn-remove-compact:hover {
   background-color: #3a2419;
+}
+
+.btn-remove-compact i {
+  color: #ff6633 !important;
 }
 
 .theme-dark .btn-add-more-compact {
@@ -818,5 +818,37 @@ export default {
 .theme-dark .items-list-compact::-webkit-scrollbar-thumb:hover {
   background: #888;
   border-radius: 10px !important;
+}
+
+@media (max-width: 768px) {
+  .basket-popover-content {
+    padding: 0 !important;
+    max-width: 100%;
+    min-width: 100%;
+    width: 100%;
+    margin: auto;
+  }
+  .empty-basket {
+    text-align: center;
+    padding: 1rem 0;
+    color: #6c757d;
+    margin: auto;
+  }
+}
+
+@media (max-width: 576px) {
+  .basket-popover-content {
+    padding: 0 !important;
+    max-width: 100%;
+    min-width: 100%;
+    width: 100%;
+    margin: auto;
+  }
+  .empty-basket {
+    text-align: center;
+    padding: 1rem 0;
+    color: #6c757d;
+    margin: auto;
+  }
 }
 </style>

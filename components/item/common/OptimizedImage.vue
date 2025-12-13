@@ -10,7 +10,10 @@
       :src="computedSrc"
       :alt="alt"
       rounded="lg"
+      class="img-grid-flow"
       :class="height === 'full' ? 'h-full' : '' + ' ' + classNames"
+      loading="lazy"
+      v-lazy="computedSrc"
       v-on="$listeners"
     />
   </div>
@@ -80,6 +83,10 @@ export default {
       type: String,
       default: '',
     },
+    aspectRatio: {
+      type: String,
+      default: null,
+    },
   },
   computed: {
     computedProps() {
@@ -127,3 +134,10 @@ export default {
   },
 }
 </script>
+<style scoped>
+@media (max-width: 567px) {
+  .img-grid-flow {
+    aspect-ratio: v-bind(aspectRatio) !important;
+  }
+}
+</style>

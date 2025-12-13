@@ -62,4 +62,11 @@ export default {
 .header-search-submit {
   position: unset !important;
 }
+
+/* Hide search icon on mobile - users should use the search page instead */
+@media (max-width: 767px) {
+  .header-search {
+    display: none !important;
+  }
+}
 </style>

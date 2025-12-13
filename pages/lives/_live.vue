@@ -89,8 +89,6 @@ export default {
   // },
   methods: {
     async loadVideo() {
-      console.log('loadVideo() is called!')
-
       try {
         const id = this.$route.params.live
         if (!id) {
@@ -98,12 +96,8 @@ export default {
           return
         }
 
-        console.log('ID:', id)
-
         const ref = this.$cookiz.get('ref') || ''
         const apiUrl = `/ghost/get/watch/live/${id}${ref ? `?ref=${ref}` : ''}`
-
-        console.log('API URL:', apiUrl)
 
         // **دریافت اطلاعات ویدیو از API**
         const apiResponse = await this.$axios.get(apiUrl)
@@ -113,8 +107,6 @@ export default {
           this.movieTitle = data.title || 'پخش زنده'
           this.posterUrl = data.poster || ''
           const streamUrl = data.video.video // دریافت آدرس استریم از API
-
-          console.log('Stream URL from API:', streamUrl)
 
           // **بررسی استریم با `HEAD` request**
           const streamResponse = await fetch(streamUrl, { method: 'HEAD' })

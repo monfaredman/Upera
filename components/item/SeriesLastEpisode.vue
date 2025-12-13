@@ -13,6 +13,7 @@
               :thumb-options="{ w: 1120, h: 400, q: 95, a: 'c', zc: 1 }"
               type="backdrops"
               fluid-grow
+              :aspect-ratio="1120 / 400"
             />
 
             <OptimizedImage
@@ -24,6 +25,7 @@
               :thumb-options="{ w: 375, h: 300, q: 100, a: 'c', zc: 1 }"
               type="backdrops"
               fluid-grow
+              :aspect-ratio="375 / 300"
             />
           </div>
           <div class="col-md-6 col-lg-5" />
@@ -101,6 +103,7 @@
                     :thumb-options="{ w: 207, h: 307, q: 100, a: 'c' }"
                     type="posters"
                     fluid-grow
+                    :aspect-ratio="207 / 307"
                   />
                 </nuxt-link>
               </div>

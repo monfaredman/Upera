@@ -42,7 +42,8 @@
 </template>
 
 <script>
-import VideoPlayer from '~/components/VideoPlayer.vue'
+// Dynamic import for code splitting - VideoPlayer is heavy
+const VideoPlayer = () => import('~/components/VideoPlayer.vue')
 
 export default {
   components: {

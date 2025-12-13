@@ -1,6 +1,30 @@
 <template>
   <div>
+    <!-- Mobile Drawer -->
+    <client-only>
+      <transition v-if="isMobile && !staticmodal" name="download-drawer-slide">
+        <div
+          v-if="isDrawerVisible"
+          class="download-drawer-overlay"
+          @click.self="hideModal"
+        >
+          <div class="download-drawer">
+            <div class="download-drawer-header">
+              <button class="close-button" @click="hideModal">
+                <i class="fa fa-times" />
+              </button>
+            </div>
+            <div class="download-drawer-content">
+              <slot />
+            </div>
+          </div>
+        </div>
+      </transition>
+    </client-only>
+
+    <!-- Desktop Modal -->
     <b-modal
+      v-if="!isMobile || staticmodal"
       id="downloadLinks"
       ref="downloadLinks"
       :centered="!staticmodal"
@@ -251,6 +275,269 @@
         </div>
       </div>
     </b-modal>
+
+    <!-- Mobile Drawer Wrapper -->
+    <client-only>
+      <transition v-if="isMobile && !staticmodal" name="download-drawer-slide">
+        <div
+          v-if="isDrawerVisible"
+          class="download-drawer-overlay"
+          @click.self="hideModal"
+        >
+          <div class="download-drawer">
+            <div class="download-drawer-header">
+              <button class="close-button" @click="hideModal">
+                <i class="fa fa-times" />
+              </button>
+            </div>
+            <div class="download-drawer-content">
+              <div class="download-links">
+                <!-- Simple Header -->
+                <div class="top-section">
+                  <div class="download-links-header-simple">
+                    <div class="download-links-title-simple">
+                      {{ getContentTitleHeader() }}
+                    </div>
+                  </div>
+
+                  <!-- Modal Content -->
+                  <div class="download-links-body-simple">
+                    <!-- Loading State -->
+                    <div v-if="loading" class="loading-state">
+                      <div class="spinner-border" role="status">
+                        <span class="sr-only">Loading...</span>
+                      </div>
+                      <p>در حال بارگذاری...</p>
+                    </div>
+
+                    <!-- Error State -->
+                    <div v-else-if="error" class="error-state">
+                      <p class="text-danger">{{ error }}</p>
+                      <button
+                        class="btn btn-primary"
+                        @click="loadContentData(type, id)"
+                      >
+                        تلاش مجدد
+                      </button>
+                    </div>
+
+                    <!-- Content Loaded -->
+                    <div v-else class="tvod-content">
+                      <!-- Main Content Card -->
+                      <div class="content-card">
+                        <!-- List of added cards -->
+                        <div
+                          v-if="addedItems.length > 0"
+                          class="added-items-list"
+                        >
+                          <div
+                            v-for="item in addedItems"
+                            :key="item.id"
+                            class="added-item-card"
+                          >
+                            <div class="card-content">
+                              <div class="card-image">
+                                <img
+                                  :src="posterSrc(item.poster)"
+                                  alt="Poster"
+                                />
+                              </div>
+                              <div class="card-details">
+                                <div class="content-name">
+                                  {{ getContentTitle(item) }}
+                                </div>
+                                <div class="content-info">
+                                  <span
+                                    v-if="
+                                      item.season_number && item.episode_number
+                                    "
+                                  >
+                                    فصل {{ item.season_number }} - قسمت
+                                    {{ item.episode_number }}
+                                  </span>
+                                </div>
+                                <div class="content-price">
+                                  {{ formatPrice(item.tvod_price) }}
+                                  <span class="toman-title">تومان</span>
+                                </div>
+                              </div>
+                              <div class="card-actions">
+                                <button
+                                  class="btn-delete"
+                                  @click="removeAddedItem(item.id)"
+                                >
+                                  <i
+                                    class="fas fa-trash-alt"
+                                    style="color: #ff6633; font-size: 1.5rem"
+                                  />
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div v-if="showAddMoreButton" class="add-more-section">
+                        <button class="btn-add-more" @click="redirectToItem()">
+                          <i class="fas fa-plus" />اضافه کردن قسمت های دیگر
+                        </button>
+                      </div>
+
+                      <!-- Payment Method Selection -->
+                      <div v-if="showPaymentMethods" class="payment-section">
+                        <div class="section-title">انتخاب روش پرداخت</div>
+                        <div class="payment-options">
+                          <div
+                            v-for="method in paymentMethods"
+                            :key="method.value"
+                            class="payment-option"
+                            :class="{ disabled: useWalletCredit }"
+                          >
+                            <div class="payment-option-content">
+                              <div class="payment-image">
+                                <img
+                                  :src="
+                                    require(`@/assets/images/${method.src}`)
+                                  "
+                                />
+                              </div>
+                              <div class="payment-info">
+                                <div class="payment-name">
+                                  {{ method.name }}
+                                </div>
+                              </div>
+                              <div class="payment-radio">
+                                <input
+                                  :id="`payment-mobile-${method.value}`"
+                                  v-model="paymentMethod"
+                                  type="radio"
+                                  name="payment"
+                                  :value="method.value"
+                                  :disabled="useWalletCredit"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Wallet Section -->
+                      <div v-if="showWalletSection" class="wallet-section">
+                        <div
+                          class="d-flex justify-content-start align-content-center"
+                        >
+                          <i
+                            class="fas fa-wallet fa-2x"
+                            style="color: #525252; padding: 1rem"
+                          />
+                          <div class="wallet-option">
+                            <label
+                              for="use-wallet-mobile"
+                              class="text-sm mb-0"
+                              style="font-weight: 600"
+                              >کیف پول</label
+                            >
+                            <div class="wallet-balance">
+                              <span>موجودی :</span>
+                              <span class="balance-amount">
+                                {{ my_credit }}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          class="custom-control custom-switch ml-2 mb-2"
+                          dir="rtl"
+                        >
+                          <input
+                            id="use-wallet-mobile"
+                            v-model="useWalletCredit"
+                            class="custom-control-input"
+                            type="checkbox"
+                            :disabled="!hasEnoughWalletBalance"
+                          />
+                          <label
+                            class="custom-control-label"
+                            for="use-wallet-mobile"
+                          >
+                          </label>
+                        </div>
+                      </div>
+
+                      <!-- Mobile Input -->
+                      <div v-if="showMobileInput" class="mobile-section">
+                        <div class="mobile-input-container">
+                          <label for="mobile-input-drawer">شماره موبایل</label>
+                          <input
+                            id="mobile-input-drawer"
+                            ref="mobileInputDrawer"
+                            v-model="mobileDisplay"
+                            type="tel"
+                            placeholder="شماره موبایل خود را وارد کنید"
+                            class="form-control"
+                            dir="rtl"
+                            @input="validateMobile"
+                          />
+                          <div class="input-note">
+                            برای خرید شماره تلفن خودرا وارد کنید
+                          </div>
+                          <div v-if="mobileError" class="error-message">
+                            {{ mobileError }}
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Price Summary -->
+                      <div class="price-summary">
+                        <div class="price-row">
+                          <span>جمع</span>
+                          <span class="amount-value"
+                            >{{ formatPrice(subtotalAmount) }}
+                            <span class="toman-title">تومان</span>
+                          </span>
+                        </div>
+                        <div v-if="taxAmount > 0" class="price-row">
+                          <span>ارزش افزوده (۱۰٪)</span>
+                          <span class="amount-value"
+                            >{{ formatPrice(taxAmount) }}
+                            <span class="toman-title">تومان</span>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- Footer -->
+                <div
+                  v-if="!loading && !error"
+                  class="download-links-footer-simple"
+                >
+                  <div class="footer-content">
+                    <div class="payable-amount">
+                      <span class="amount-label">مبلغ قابل پرداخت:</span>
+                      <span class="amount-value">
+                        {{ formatPrice(totalAmount) }}
+                        <span class="toman-title">تومان</span>
+                      </span>
+                    </div>
+                    <button
+                      class="btn btn-primary btn-payment"
+                      :disabled="!canPurchase || processing"
+                      @click="handlePurchase"
+                    >
+                      <span
+                        v-if="processing"
+                        class="spinner-border spinner-border-sm"
+                      />
+                      <span v-else>پرداخت</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </transition>
+    </client-only>
   </div>
 </template>
 
@@ -315,6 +602,9 @@ export default {
       showAddMoreDropdown: false,
       addedItems: [],
       availableItems: [],
+      isMobile: false,
+      isDrawerVisible: false,
+      isSyncingFromCart: false,
       paymentMethods: [
         {
           value: 'sep',
@@ -443,7 +733,10 @@ export default {
           }
         }
 
-        if (!this.viewOnly && !skipMainItem) {
+        // Only load main item content if not skipping and not view-only
+        // When skipMainItem is true, we're adding episodes from SeasonEpisodes
+        // and don't want to add the main series/movie item
+        if (!this.viewOnly && !skipMainItem && this.type && this.id) {
           this.loadContentData(this.type, this.id)
         }
         this.loadAvailableItems()
@@ -463,7 +756,11 @@ export default {
     addedItems: {
       deep: true,
       handler() {
-        this.syncToCart()
+        // Don't sync to cart if we're currently syncing FROM cart
+        // This prevents a write loop when syncWithCart() sets addedItems
+        if (!this.isSyncingFromCart) {
+          this.syncToCart()
+        }
       },
     },
   },
@@ -471,16 +768,44 @@ export default {
     this.setupModalEvents()
     this.syncWithCart()
 
+    if (process.client) {
+      this.checkIfMobile()
+      window.addEventListener('resize', this.checkIfMobile)
+    }
+
     // Show modal if show prop is initially true
     if (this.show) {
       this.showModal()
-      if (!this.viewOnly) {
+      // Check skip flag in mounted as well
+      let skipMainItem = false
+      if (process.client) {
+        try {
+          skipMainItem =
+            localStorage.getItem('_download_skip_main_item') === '1'
+          if (skipMainItem) {
+            localStorage.removeItem('_download_skip_main_item')
+          }
+        } catch (error) {
+          console.error('Failed to read skip flag:', error)
+        }
+      }
+      if (!this.viewOnly && !skipMainItem && this.type && this.id) {
         this.loadContentData(this.type, this.id)
       }
       this.loadAvailableItems()
     }
   },
+  beforeDestroy() {
+    if (process.client) {
+      window.removeEventListener('resize', this.checkIfMobile)
+      document.body.style.overflow = ''
+    }
+  },
   methods: {
+    checkIfMobile() {
+      if (!process.client) return
+      this.isMobile = window.innerWidth < 768
+    },
     setupModalEvents() {
       this.$refs.downloadLinks?.$on('hide', () => {
         this.cleanup()
@@ -490,11 +815,15 @@ export default {
 
     syncWithCart() {
       try {
+        // Set flag to prevent addedItems watcher from triggering syncToCart
+        this.isSyncingFromCart = true
+
         // If basketActive is not active, clear cart storage
         if (!this.$store?.state?.basketActive) {
           localStorage.removeItem('_cart')
           this.addedItems = []
-          this.emitCartChange()
+          this.isSyncingFromCart = false
+          // Don't emit cart change when clearing during sync
           return
         }
 
@@ -503,10 +832,18 @@ export default {
           const parsedCart = JSON.parse(cart)
           if (parsedCart.content && Array.isArray(parsedCart.content)) {
             this.addedItems = parsedCart.content
+          } else {
+            this.addedItems = []
           }
+        } else {
+          this.addedItems = []
         }
+
+        // Reset flag after syncing
+        this.isSyncingFromCart = false
       } catch (error) {
         console.error('Error syncing with cart:', error)
+        this.isSyncingFromCart = false
       }
     },
 
@@ -572,15 +909,25 @@ export default {
           ? [...parsedCart.content]
           : []
 
-        // Check if item already exists
+        // Normalize item ID for comparison
+        const itemId = item && item.id != null ? String(item.id) : null
+        if (!itemId) {
+          console.warn('Cannot add item to cart: item has no ID', item)
+          return
+        }
+
+        // Check if item already exists (compare as strings)
         const existingIndex = content.findIndex(
-          (cartItem) => cartItem?.id === item.id
+          (cartItem) =>
+            cartItem && cartItem.id != null && String(cartItem.id) === itemId
         )
 
         if (existingIndex === -1) {
-          content.push(item)
+          // Add new item with normalized ID
+          content.push({ ...item, id: itemId })
         } else {
-          content.splice(existingIndex, 1, item)
+          // Update existing item
+          content.splice(existingIndex, 1, { ...item, id: itemId })
         }
 
         this.addedItems = content
@@ -612,6 +959,20 @@ export default {
     },
 
     async loadContentData(type, id) {
+      // Double-check skip flag before loading to prevent adding main item
+      if (process.client) {
+        try {
+          const skipMainItem =
+            localStorage.getItem('_download_skip_main_item') === '1'
+          if (skipMainItem) {
+            localStorage.removeItem('_download_skip_main_item')
+            return // Don't load main item if skip flag is set
+          }
+        } catch (error) {
+          console.error('Failed to check skip flag:', error)
+        }
+      }
+
       this.loading = true
       this.error = null
 
@@ -638,9 +999,14 @@ export default {
           normalized = api
         }
 
-        // Add to cart instead of directly pushing
-        this.addToCart(normalized)
-        // this.showAddMoreDropdown = false
+        // Only add to cart if item doesn't already exist
+        // Check if this item is already in addedItems to prevent duplicates
+        const existingIndex = this.addedItems.findIndex(
+          (item) => item && item.id && String(item.id) === String(normalized.id)
+        )
+        if (existingIndex === -1) {
+          this.addToCart(normalized)
+        }
       } catch (error) {
         this.error = 'خطا در بارگذاری اطلاعات محتوا'
         console.error('Error loading content data:', error)
@@ -882,11 +1248,25 @@ export default {
     },
 
     showModal() {
-      this.$refs.downloadLinks?.show()
+      if (this.isMobile && !this.staticmodal) {
+        this.isDrawerVisible = true
+        if (process.client) {
+          document.body.style.overflow = 'hidden'
+        }
+      } else {
+        this.$refs.downloadLinks?.show()
+      }
     },
 
     hideModal() {
-      this.$refs.downloadLinks?.hide()
+      if (this.isMobile && !this.staticmodal) {
+        this.isDrawerVisible = false
+        if (process.client) {
+          document.body.style.overflow = ''
+        }
+      } else {
+        this.$refs.downloadLinks?.hide()
+      }
       this.$emit('hide-modal', null)
       this.cleanup()
     },
@@ -1560,6 +1940,25 @@ export default {
   .btn-payment {
     min-width: 150px !important;
   }
+  .amount-label {
+    font-weight: 500;
+    font-size: 0.8rem;
+  }
+  .amount-value {
+    font-size: 16px !important;
+  }
+  .toman-title {
+    font-size: 12px !important;
+  }
+  .price-row {
+    font-size: 0.8rem;
+  }
+  .price-row.total {
+    font-size: 0.8rem;
+  }
+  .total-amount {
+    font-size: 14px !important;
+  }
 }
 @media (max-width: 768px) {
   .btn-payment {
@@ -1569,6 +1968,182 @@ export default {
 @media (max-width: 992px) {
   .btn-payment {
     min-width: 200px;
+  }
+}
+
+/* Download Drawer Styles */
+.download-drawer-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+  display: flex;
+  align-items: flex-end;
+}
+
+.download-drawer {
+  width: 100%;
+  background-color: white;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.download-drawer-header {
+  display: flex;
+  justify-content: flex-end;
+  padding: 16px 20px 8px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  background: white;
+  z-index: 10;
+}
+
+.download-drawer .close-button {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #333;
+}
+
+.download-drawer-content {
+  padding: 0;
+}
+
+.download-drawer .download-links {
+  padding: 0;
+}
+
+.download-drawer .top-section {
+  padding: 0 20px;
+}
+
+.download-drawer .download-links-header-simple {
+  padding: 0;
+  border: none;
+}
+
+.download-drawer .download-links-footer-simple {
+  position: sticky;
+  bottom: 0;
+  background: white;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 16px 20px;
+  margin: 0;
+}
+
+.download-drawer-slide-enter-active,
+.download-drawer-slide-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.download-drawer-slide-enter,
+.download-drawer-slide-leave-to {
+  opacity: 0;
+}
+
+/* Dark Mode Support for Drawer */
+.theme-dark .download-drawer {
+  background-color: #1f1f1f;
+  color: white;
+}
+
+.theme-dark .download-drawer-header {
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+  background: #1f1f1f;
+}
+
+.theme-dark .download-drawer .close-button {
+  color: #fff;
+}
+
+.theme-dark .download-drawer .download-links-footer-simple {
+  background: #1f1f1f;
+  border-top-color: rgba(255, 255, 255, 0.1);
+}
+
+@media (max-width: 768px) {
+  .theme-dark .download-links-title-simple {
+    color: white;
+    margin-top: 1rem;
+    border-radius: 8px;
+  }
+  .theme-dark .content-card {
+    background: #2d2d2d !important;
+    border-radius: 8px;
+  }
+  .theme-dark .added-item-card {
+    background: #2d2d2d !important;
+    border-radius: 8px;
+  }
+  .theme-dark .content-name {
+    color: #f1f1f1;
+  }
+  .theme-dark .content-info {
+    color: #b0b0b0;
+  }
+  .theme-dark .mobile-input-container label {
+    color: #f1f1f1;
+  }
+  .theme-dark .payment-option {
+    background: #2d2d2d;
+    border-radius: 8px;
+  }
+  .theme-dark .payment-option:hover {
+    border-color: #339af0;
+    box-shadow: 0 2px 8px rgba(51, 154, 240, 0.1);
+  }
+  .theme-dark .payment-name {
+    color: #f1f1f1;
+  }
+  .theme-dark .price-summary {
+    color: #f1f1f1;
+  }
+  .theme-dark .amount-label {
+    color: #f1f1f1;
+  }
+  .theme-dark .amount-value {
+    color: #f1f1f1;
+  }
+  .theme-dark .download-drawer .top-section {
+    padding: 0;
+  }
+
+  .theme-dark .wallet-section {
+    color: #f1f1f1;
+  }
+
+  .theme-dark .balance-amount {
+    color: #f1f1f1;
+  }
+
+  .theme-dark .wallet-section i {
+    color: white !important;
+  }
+  .theme-dark .section-title {
+    color: #f1f1f1;
   }
 }
 </style>

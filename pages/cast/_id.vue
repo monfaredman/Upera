@@ -101,6 +101,7 @@
                 :class="{ 'is-series': item.type != 'movie' }"
               >
                 <b-img
+                  class="img-grid-flow"
                   v-bind="{
                     fluidGrow: true,
                     blank: true,
@@ -117,6 +118,7 @@
                 />
                 <b-img
                   v-if="item.type != 'movie'"
+                  class="img-grid-flow"
                   v-bind="{
                     fluidGrow: true,
                     blank: true,
@@ -133,6 +135,7 @@
                 />
                 <b-img
                   v-if="item.type != 'movie'"
+                  class="img-grid-flow"
                   v-bind="{
                     fluidGrow: true,
                     blank: true,
@@ -299,3 +302,10 @@ export default {
   },
 }
 </script>
+<style scoped>
+@media (max-width: 567px) {
+  .img-grid-flow {
+    aspect-ratio: 71 / 106 !important;
+  }
+}
+</style>

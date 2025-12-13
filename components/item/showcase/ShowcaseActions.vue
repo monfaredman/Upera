@@ -244,26 +244,33 @@ export default {
     },
     emitCartChange() {
       if (!process.client) return
-      try {
-        const event = new StorageEvent('storage', { key: '_cart' })
-        window.dispatchEvent(event)
-      } catch (error) {
-        window.dispatchEvent(new Event('storage'))
-      }
-      // Emit Vue event for same-window updates
+      // Only emit Vue event for same-window updates
+      // Don't manually dispatch storage event - it causes duplicate updates
+      // Storage events are automatically fired by browser for cross-tab communication
       this.$root.$emit('cart-updated')
     },
     attachCartListener() {
       if (!process.client) return
       if (this.cartStorageListener) return
-      this.cartStorageListener = () => this.syncCartItems()
+      // Listen to both storage events (cross-tab) and Vue events (same-tab)
+      this.cartStorageListener = (event) => {
+        // Only sync if it's a real storage event from another tab
+        if (event && event.key === '_cart' && event.newValue !== undefined) {
+          this.syncCartItems()
+        }
+      }
       window.addEventListener('storage', this.cartStorageListener)
+      // Also listen to Vue cart-updated events for same-window updates
+      this.$root.$on('cart-updated', this.syncCartItems)
     },
     detachCartListener() {
       if (!process.client) return
-      if (!this.cartStorageListener) return
-      window.removeEventListener('storage', this.cartStorageListener)
-      this.cartStorageListener = null
+      if (this.cartStorageListener) {
+        window.removeEventListener('storage', this.cartStorageListener)
+        this.cartStorageListener = null
+      }
+      // Remove Vue event listener
+      this.$root.$off('cart-updated', this.syncCartItems)
     },
     ChooseLang(en, fa) {
       if (fa && this.$i18n.locale === 'fa') return fa
@@ -348,7 +355,7 @@ export default {
     gap: 12px !important;
     width: 100% !important;
     max-width: 100% !important;
-    padding: 0 1rem !important;
+    padding: 0 !important;
     margin: 0 auto !important;
     border-radius: 8px !important;
   }

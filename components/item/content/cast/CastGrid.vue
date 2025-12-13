@@ -52,6 +52,7 @@
               :thumb-options="{ w: 200, h: 200, q: 100, a: 't' }"
               type="casts"
               class="cast-image"
+              :aspect-ratio="200 / 200"
             />
           </div>
           <div class="cast-info">
@@ -177,13 +178,13 @@ export default {
         watchOverflow: true,
         freeMode: false,
         breakpoints: {
-          1600: { slidesPerView: 9.5 },
-          1400: { slidesPerView: 7.5 },
+          1600: { slidesPerView: 12.5 },
+          1400: { slidesPerView: 9.5 },
           1200: { slidesPerView: 7.5 },
           1024: { slidesPerView: 8.5 },
           768: { slidesPerView: 6.5 },
-          576: { slidesPerView: 6.5 },
-          376: { slidesPerView: 4.6 },
+          576: { slidesPerView: 5.5 },
+          376: { slidesPerView: 3.6 },
           0: { slidesPerView: 2.6 },
         },
       },
