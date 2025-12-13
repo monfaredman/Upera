@@ -51,7 +51,6 @@ export default {
       // Normalize getV2 response to a flat object with cdn + entity fields
       let normalized = null
       normalized = { ...api?.data?.movie, cdn: api?.data?.cdn }
-      console.log('item', { item: normalized })
 
       // Return the data instead of setting this.data
       return {

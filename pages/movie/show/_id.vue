@@ -291,7 +291,6 @@ export default {
             after_credits: data.after_credits || null,
             final_credits: data.final_credits || null,
           }
-          console.log(1111, data)
           // Store fullrate_data for subscription button
           if (data.fullrate_data) {
             this.fullrateData = data.fullrate_data

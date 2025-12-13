@@ -526,7 +526,6 @@ export default {
 
         // Show toast notification when basket is active and cart has items
         if (this.isBasketActive && this.cartItemIds.length > 1) {
-          console.log('showAddedToBasketToast')
           this.showAddedToBasketToast()
         }
       } catch (error) {
@@ -557,7 +556,6 @@ export default {
       }).then((value) => {
         if (value === 'basket') {
           if (window.innerWidth < 768) {
-            console.log('buy')
             this.$emit('buyItem')
           } else {
             // Emit event to show basket/navigate to basket

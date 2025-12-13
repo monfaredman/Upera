@@ -205,9 +205,7 @@ export default {
 
   methods: {
     BUY(plan) {
-      console.log(222, plan)
       if (!this.$auth.loggedIn) {
-        console.log('User not logged in, showing login modal')
         this.$store.dispatch('login/SHOW_MODAL', {
           premessage: null,
           premobile: null,
@@ -222,7 +220,6 @@ export default {
         })
         this.hideModal()
       } else {
-        console.log(6666, this.content_id, this.content_type)
         this.navigatingToPlan = true
         this.hideModal()
         this.$nextTick(() => {

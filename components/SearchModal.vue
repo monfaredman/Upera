@@ -355,12 +355,10 @@ export default {
             },
           }
         )
-        console.log(response)
         // API shape: { status, data: [ ...items ] } or response.data.data
         const payload =
           response && response.data ? response.data.data || response.data : []
         this.suggestions = payload ? payload : []
-        console.log('sugg', this.suggestions)
         this.showAutocomplete = this.suggestions.length > 0
         this.selectedSuggestion = -1
       } catch (e) {

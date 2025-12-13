@@ -633,8 +633,6 @@ export default {
         '/ghost/getVideoDetails/' + this.$route.params.id
       )
       this.selectedVideo = this.video = data.data || {}
-
-      console.log(this.video)
     } catch (error) {
       console.error('Error fetching video data:', error)
     } finally {

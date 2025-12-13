@@ -861,8 +861,6 @@ export default {
      * Shows download modal on desktop, drawer on mobile
      */
     handleEpisodeDownloadModal(episode) {
-      console.log('isMobile')
-
       if (!episode) return
 
       // Check if mobile
