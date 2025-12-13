@@ -1940,6 +1940,25 @@ export default {
   .btn-payment {
     min-width: 150px !important;
   }
+  .amount-label {
+    font-weight: 500;
+    font-size: 0.8rem;
+  }
+  .amount-value {
+    font-size: 16px !important;
+  }
+  .toman-title {
+    font-size: 12px !important;
+  }
+  .price-row {
+    font-size: 0.8rem;
+  }
+  .price-row.total {
+    font-size: 0.8rem;
+  }
+  .total-amount {
+    font-size: 14px !important;
+  }
 }
 @media (max-width: 768px) {
   .btn-payment {

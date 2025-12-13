@@ -37,7 +37,7 @@
           placeholder="نوشتن نظر"
         />
         <button class="comment-send-button" @click="saveComment">
-          ارسال
+          <span class="comment-send-button-text">ارسال</span>
           <svg
             width="20"
             height="20"
@@ -130,7 +130,7 @@
                 class="comment-reply-button"
                 @click="sendReply(comment.id, index)"
               >
-                ارسال پاسخ
+                <span class="comment-send-button-text">ارسال پاسخ</span>
 
                 <svg
                   width="20"
@@ -682,6 +682,55 @@ export default {
 
   .comments-count-header {
     font-size: 18px;
+  }
+}
+
+@media (max-width: 768px) {
+  .input-box-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    opacity: 1;
+    border-radius: 8px;
+    border: 1px solid #d4d4d4;
+    padding: 12px;
+    background: #373737;
+    gap: 2px;
+  }
+  .comment-send-button {
+    width: 25%;
+    justify-self: flex-end;
+  }
+  .comment-send-button-text {
+    display: none;
+  }
+  .comment-input-wrapper {
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    width: 100% !important;
+    height: 44px !important;
+  }
+  .user-avatar {
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 20px !important;
+  }
+
+  .input-box-wrapper {
+    width: 100% !important;
+    height: 35px !important;
+    min-height: 57px !important;
+  }
+
+  .comment-reply-button {
+    width: 25% !important;
+    justify-self: flex-end !important;
+  }
+  .comment-reply-button-text {
+    display: none;
   }
 }
 
