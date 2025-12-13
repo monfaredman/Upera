@@ -129,6 +129,7 @@
             :type="type"
             @select-season="selectseries"
             @show-download-modal="handleEpisodeDownloadModal"
+            @buyItem="handleBuy"
           />
         </div>
       </section>

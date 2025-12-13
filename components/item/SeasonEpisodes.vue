@@ -526,6 +526,7 @@ export default {
 
         // Show toast notification when basket is active and cart has items
         if (this.isBasketActive && this.cartItemIds.length > 1) {
+          console.log('showAddedToBasketToast')
           this.showAddedToBasketToast()
         }
       } catch (error) {
@@ -555,10 +556,16 @@ export default {
         timer: 4000,
       }).then((value) => {
         if (value === 'basket') {
-          // Emit event to show basket/navigate to basket
-          this.$root.$emit('show-basket')
-          // Also trigger the download modal to show basket
-          this.$store.dispatch('DOWNLOAD_MODAL_LOAD')
+          if (window.innerWidth < 768) {
+            console.log('buy')
+            this.$emit('buyItem')
+          } else {
+            // Emit event to show basket/navigate to basket
+            this.$root.$emit('show-basket')
+
+            // Also trigger the download modal to show basket
+            this.$store.dispatch('DOWNLOAD_MODAL_LOAD')
+          }
         }
       })
     },
