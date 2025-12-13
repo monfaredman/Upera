@@ -52,6 +52,7 @@
               :thumb-options="{ w: 200, h: 200, q: 100, a: 't' }"
               type="casts"
               class="cast-image"
+              :aspect-ratio="200 / 200"
             />
           </div>
           <div class="cast-info">

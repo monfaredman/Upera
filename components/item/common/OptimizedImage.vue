@@ -81,6 +81,10 @@ export default {
       type: String,
       default: '',
     },
+    aspectRatio: {
+      type: String,
+      default: null,
+    },
   },
   computed: {
     computedProps() {
@@ -131,7 +135,7 @@ export default {
 <style scoped>
 @media (max-width: 567px) {
   .img-grid-flow {
-    aspect-ratio: 121 / 76 !important;
+    aspect-ratio: v-bind(aspectRatio) !important;
   }
 }
 </style>

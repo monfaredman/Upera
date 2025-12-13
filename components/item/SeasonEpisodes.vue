@@ -75,6 +75,7 @@
                   :thumb-options="{ w: 364, h: 170, q: 100, a: 't' }"
                   type="backdrops"
                   fluid-grow
+                  :aspect-ratio="364 / 170"
                 />
                 <div
                   v-if="$auth.loggedIn && episode.current_time > 0"
