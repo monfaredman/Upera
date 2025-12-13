@@ -16,7 +16,6 @@
         <h4
           class="font-weight-bold horizontal-list-title"
           :class="isOffer ? 'text-handle-offer-title' : ''"
-          style="z-index: 4"
         >
           {{ localizedTitle }}
         </h4>
