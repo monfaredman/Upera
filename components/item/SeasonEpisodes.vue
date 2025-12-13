@@ -681,9 +681,14 @@ section#watching {
   }
 }
 @media (max-width: 400px) {
+  .row {
+    flex-direction: row !important;
+    gap: 0 0 !important;
+  }
   .col-lg-3.col-md-6.col-6.mb-3 {
-    padding: 0 !important;
-    max-width: 45% !important;
+    max-width: 49% !important;
+    padding-right: 15px !important;
+    padding-left: 15px !important;
   }
 }
 
