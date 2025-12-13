@@ -1,15 +1,25 @@
 <template>
   <section class="media-tabs-section">
-    <MediaSwiper
-      :data="data"
-      :medias="medias"
-      :light-images="lightImages"
-      :images-loading="imagesLoading"
-      @play-backstage="GET_FILE(2)"
-      @play-musicvideo="GET_FILE(4)"
-      @play-next="GET_FILE(3)"
-      @open-gallery="openGallery"
-    />
+    <div
+      v-if="hasAnyMedia"
+      v-swiper:mediaTabsSwiper="swiperOptions"
+      class="swiper-container media-tabs-swiper"
+    >
+      <div class="swiper-wrapper">
+        <div class="swiper-slide">
+          <MediaSwiper
+            :data="data"
+            :medias="medias"
+            :light-images="lightImages"
+            :images-loading="imagesLoading"
+            @play-backstage="GET_FILE(2)"
+            @play-musicvideo="GET_FILE(4)"
+            @play-next="GET_FILE(3)"
+            @open-gallery="openGallery"
+          />
+        </div>
+      </div>
+    </div>
 
     <!-- Light Gallery Modal -->
     <LightGallery
@@ -44,6 +54,14 @@ export default {
   data() {
     return {
       galleryIndex: null,
+      swiperOptions: {
+        slidesPerView: 1,
+        spaceBetween: 0,
+        loop: false,
+        watchOverflow: true,
+        observer: true,
+        observeParents: true,
+      },
     }
   },
   computed: {
@@ -74,5 +92,19 @@ export default {
 .media-tabs-section {
   width: 100%;
   padding: 20px 0;
+}
+
+.media-tabs-swiper {
+  width: 100%;
+  overflow: hidden;
+}
+
+.media-tabs-swiper .swiper-wrapper {
+  display: flex;
+}
+
+.media-tabs-swiper .swiper-slide {
+  width: 100%;
+  height: auto;
 }
 </style>
