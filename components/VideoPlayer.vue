@@ -608,10 +608,13 @@ export default {
       adActive: false,
       viewsIncremented: false,
       player: null,
+      vastData: null, // Store parsed VAST data (AdTitle, Description, Duration, etc.)
       showSkipCredits: false,
       skipButtonText: 'رد کردن تیتراژ',
       currentCreditType: null,
       creditCheckInterval: null,
+      runtimeDisplayComponent: null,
+      adEventsSetup: false,
       isMobile: false,
       isUltraWideScreen: false,
       currentTimeFormatted: '00:00',
@@ -726,6 +729,9 @@ export default {
     // Stop volume save monitoring
     this.stopVolumeSaveMonitoring()
 
+    // Reset ad events setup flag for next initialization
+    this.adEventsSetup = false
+
     if (this.player) {
       this.player.dispose()
     }
@@ -781,6 +787,9 @@ export default {
     },
 
     initPlayer() {
+      // Reset ad events setup flag for new player instance
+      this.adEventsSetup = false
+
       const currentLang = this.$i18n.locale
 
       if (currentLang === 'fa') {
@@ -895,9 +904,113 @@ export default {
     // VAST Ad Plugin Setup
     // ============================================
 
+    parseVastXml(xmlText) {
+      if (!xmlText) return null
+
+      try {
+        // Parse XML
+        const parser = new DOMParser()
+        const xmlDoc = parser.parseFromString(xmlText, 'text/xml')
+
+        // Extract VAST data
+        const adTitle = xmlDoc.querySelector('AdTitle')?.textContent || ''
+        const description =
+          xmlDoc.querySelector('Description')?.textContent || ''
+        const duration = xmlDoc.querySelector('Duration')?.textContent || ''
+        const adSystem = xmlDoc.querySelector('AdSystem')?.textContent || ''
+        const skipOffset =
+          xmlDoc.querySelector('Linear')?.getAttribute('skipoffset') || ''
+        const mediaFile = xmlDoc.querySelector('MediaFile')?.textContent || ''
+        const clickThrough =
+          xmlDoc.querySelector('ClickThrough')?.textContent || ''
+
+        const vastData = {
+          adTitle,
+          description,
+          duration,
+          adSystem,
+          skipOffset,
+          mediaFile,
+          clickThrough,
+        }
+
+        console.log('Parsed VAST data:', vastData)
+        this.vastData = vastData
+        return vastData
+      } catch (error) {
+        console.error('Error parsing VAST XML:', error)
+        return null
+      }
+    },
+
+    interceptVastRequests() {
+      if (!this.vastUrl) return
+
+      // Store original methods if not already stored
+      if (!this._originalXHROpen) {
+        this._originalXHROpen = XMLHttpRequest.prototype.open
+        this._originalXHRSend = XMLHttpRequest.prototype.send
+      }
+
+      const self = this
+      // Extract pathname from VAST URL for matching
+      let vastUrlPattern = ''
+      try {
+        vastUrlPattern = new URL(this.vastUrl).pathname
+      } catch (e) {
+        // If URL parsing fails, use the full URL as pattern
+        vastUrlPattern = this.vastUrl
+      }
+
+      // Intercept XMLHttpRequest to capture VAST plugin's request
+      XMLHttpRequest.prototype.open = function (method, url, ...args) {
+        // Check if this request is for the VAST URL
+        const isVastUrl =
+          url &&
+          (url === self.vastUrl ||
+            url.includes(vastUrlPattern) ||
+            url.includes('load/vast'))
+        this._isVastRequest = isVastUrl
+        return self._originalXHROpen.apply(this, [method, url, ...args])
+      }
+
+      XMLHttpRequest.prototype.send = function (...args) {
+        // Check if this is a VAST URL request
+        if (this._isVastRequest) {
+          const xhr = this
+          this.addEventListener(
+            'load',
+            function () {
+              if (xhr.status === 200 && xhr.responseText) {
+                // Parse the VAST XML response (only once)
+                if (!self.vastData) {
+                  self.parseVastXml(xhr.responseText)
+                }
+              }
+            },
+            { once: true }
+          )
+        }
+        return self._originalXHRSend.apply(this, args)
+      }
+    },
+
     setupVastPlugin() {
       if (!this.vastUrl) return
 
+      // Pre-fetch VAST data to have it ready before ad plays
+      // This runs in parallel and doesn't block plugin initialization
+      this.fetchVastDataPreload().catch((error) => {
+        console.error('Failed to pre-fetch VAST data:', error)
+      })
+
+      // Also intercept XHR requests as backup (in case pre-fetch fails)
+      this.interceptVastRequests()
+
+      const skipButtonOptions = {
+        text: 'رد کردن',
+      }
+      // Initialize VAST plugin immediately (must be done synchronously)
       const vastVjsOptions = {
         vastUrl: this.vastUrl,
         playAdAlways: true,
@@ -905,27 +1018,166 @@ export default {
         mediaFileRegex: /.*/,
         addCtaClickZone: false,
         timeout: 5,
-        skipButtonOptions: {
-          text: 'رد کردن >>',
-        },
+        skipButtonOptions: skipButtonOptions,
       }
 
       this.player.vast(vastVjsOptions)
       this.setupVastCtaButton()
+
+      // Setup ad events right after VAST plugin initialization
+      // Always use player.ready() as it's idempotent - will call immediately if already ready
+      this.player.ready(() => {
+        console.log('Player ready in setupVastPlugin, setting up ad events')
+        // Use nextTick to ensure VAST plugin is fully initialized
+        this.$nextTick(() => {
+          this.setupAdEvents()
+        })
+      })
+
+      // Listen for when ad starts to add icon to skip button
+      this.player.on('vast.play', () => {
+        // Add icon immediately and keep checking
+        this.addSkipButtonIcon()
+        // Also check periodically in case button is recreated
+        const iconCheckInterval = setInterval(() => {
+          const button = document.getElementById('videojs-vast-skipButton')
+          if (button && !button.querySelector('.fa-chevron-left')) {
+            this.addSkipButtonIcon()
+          }
+        }, 200)
+        // Stop checking after 10 seconds
+        setTimeout(() => clearInterval(iconCheckInterval), 10000)
+      })
+    },
+
+    addSkipButtonIcon() {
+      // Function to add icon to skip button
+      const addIcon = (button) => {
+        if (!button) return false
+
+        // Check if icon already exists
+        if (button.querySelector('.fa-chevron-left')) {
+          return true
+        }
+
+        // Get current text content
+        const textContent = button.textContent || button.innerText || ''
+
+        // Create icon element
+        // const icon = document.createElement('i')
+        // icon.className = 'fa fa-chevron-left'
+        // icon.style.marginRight = '8px'
+        // icon.style.fontSize = '14px'
+        // icon.style.display = 'inline-block'
+        // icon.style.verticalAlign = 'middle'
+
+        // Clear button content and rebuild with icon + text
+        button.innerHTML = ''
+        // button.appendChild(icon)
+
+        // Add text node
+        const textNode = document.createTextNode(textContent)
+        button.appendChild(textNode)
+
+        return true
+      }
+
+      // Try immediately
+      const skipButton = document.getElementById('videojs-vast-skipButton')
+      if (skipButton) {
+        addIcon(skipButton)
+        return
+      }
+
+      // If button doesn't exist, use MutationObserver + aggressive polling
+      const playerEl = this.player?.el()
+      if (playerEl) {
+        const observer = new MutationObserver(() => {
+          const button = document.getElementById('videojs-vast-skipButton')
+          if (button && !button.querySelector('.fa-chevron-left')) {
+            addIcon(button)
+          }
+        })
+
+        observer.observe(playerEl, {
+          childList: true,
+          subtree: true,
+          attributes: false,
+        })
+
+        // Aggressive polling as backup
+        let pollInterval = setInterval(() => {
+          const button = document.getElementById('videojs-vast-skipButton')
+          if (button && !button.querySelector('.fa-chevron-left')) {
+            addIcon(button)
+          }
+        }, 50) // Check every 50ms
+
+        // Clean up after 10 seconds
+        setTimeout(() => {
+          observer.disconnect()
+          if (pollInterval) clearInterval(pollInterval)
+        }, 10000)
+      }
+    },
+
+    async fetchVastDataPreload() {
+      if (!this.vastUrl || this.vastData) return // Already fetched
+
+      try {
+        const response = await fetch(this.vastUrl)
+        const xmlText = await response.text()
+        this.parseVastXml(xmlText)
+      } catch (error) {
+        console.error('Error pre-fetching VAST data:', error)
+        // Don't throw - interceptor will catch it as backup
+      }
     },
 
     setupVastCtaButton() {
       const ctaBtn = document.getElementById('vast-cta-btn')
       if (!ctaBtn) return
 
-      this.player.on('vast.play', (e, { ctaUrl, adClickCallback, adTitle }) => {
-        ctaBtn.innerText = adTitle
-        if (ctaUrl) {
+      const updateCtaButton = (ctaUrl, adClickCallback, adTitle) => {
+        // Use parsed VAST data if available, otherwise fall back to event data
+        const finalAdTitle =
+          this.vastData?.adTitle || adTitle || 'اطلاعات بیشتر'
+        console.log(
+          'VAST play event - AdTitle:',
+          finalAdTitle,
+          'VAST Data:',
+          this.vastData
+        )
+
+        ctaBtn.innerText = finalAdTitle
+
+        // Use clickThrough from parsed VAST data if available, otherwise use ctaUrl from event
+        const finalCtaUrl = this.vastData?.clickThrough || ctaUrl
+
+        if (finalCtaUrl) {
           ctaBtn.style.display = 'block'
           ctaBtn.onclick = () => {
-            adClickCallback()
-            window.open(ctaUrl, '_blank')
+            if (adClickCallback) {
+              adClickCallback()
+            }
+            window.open(finalCtaUrl, '_blank')
           }
+        }
+      }
+
+      this.player.on('vast.play', (e, { ctaUrl, adClickCallback, adTitle }) => {
+        updateCtaButton(ctaUrl, adClickCallback, adTitle)
+
+        // If vastData is not ready yet, check periodically and update when available
+        if (!this.vastData) {
+          const checkInterval = setInterval(() => {
+            if (this.vastData) {
+              updateCtaButton(ctaUrl, adClickCallback, adTitle)
+              clearInterval(checkInterval)
+            }
+          }, 100)
+          // Stop checking after 5 seconds
+          setTimeout(() => clearInterval(checkInterval), 5000)
         }
       })
 
@@ -938,13 +1190,67 @@ export default {
     },
 
     setupAdEvents() {
+      // Prevent duplicate event listeners
+      if (this.adEventsSetup) {
+        console.log('setupAdEvents already called, skipping')
+        return
+      }
+
+      console.log('Setting up ad events...')
+      this.adEventsSetup = true
+
+      // Use once() or check if events are already bound, but for now just set up
       this.player.on('vast.play', () => {
+        console.log('VAST play event fired')
         this.adActive = true
+        // Hide runtime display during ads
+        this.hideRuntimeDisplay()
+        // Emit event to parent components
+        console.log('otherrrrrrrrrrrr3333')
+        this.$emit('ad-started', true)
       })
 
       this.player.on(['vast.complete', 'vast.skip'], () => {
+        console.log('VAST complete/skip event fired')
         this.adActive = false
+        // Show runtime display after ads
+        this.showRuntimeDisplay()
+        // Emit event to parent components
+        console.log('otherrrrrrrrrrrr4444')
+        this.$emit('ad-ended', true)
       })
+    },
+
+    hideRuntimeDisplay() {
+      if (this.runtimeDisplayComponent) {
+        this.runtimeDisplayComponent.hide()
+      }
+      // Also hide via CSS class
+      const runtimeEl = this.player.el().querySelector('.vjs-runtime-display')
+      if (runtimeEl) {
+        runtimeEl.style.display = 'none'
+      }
+      // Hide timer element during ads
+      const timerEl = document.getElementById(`${this.playerid}-timer`)
+      if (timerEl) {
+        timerEl.style.display = 'none'
+      }
+    },
+
+    showRuntimeDisplay() {
+      if (this.runtimeDisplayComponent) {
+        this.runtimeDisplayComponent.show()
+      }
+      // Also show via CSS class
+      const runtimeEl = this.player.el().querySelector('.vjs-runtime-display')
+      if (runtimeEl) {
+        runtimeEl.style.display = ''
+      }
+      // Show timer element after ads
+      const timerEl = document.getElementById(`${this.playerid}-timer`)
+      if (timerEl) {
+        timerEl.style.display = ''
+      }
     },
 
     // ============================================
@@ -2072,7 +2378,11 @@ export default {
         insertIndex = controlBar.children().length - 2
       }
 
-      controlBar.addChild('RuntimeDisplay', {}, insertIndex)
+      this.runtimeDisplayComponent = controlBar.addChild(
+        'RuntimeDisplay',
+        {},
+        insertIndex
+      )
     },
 
     // ============================================
@@ -2097,6 +2407,12 @@ export default {
 
     checkCreditsPosition() {
       if (!this.player || this.player.paused()) return
+      // Don't show skip credits button during VAST ads
+      if (this.adActive) {
+        this.showSkipCredits = false
+        this.currentCreditType = null
+        return
+      }
 
       const currentTime = this.player.currentTime()
 
@@ -2266,7 +2582,12 @@ export default {
         // Restore volume and muted state from localStorage BEFORE creating controls
         this.restoreVolumeState(true) // Force initial restore
 
-        this.setupAdEvents()
+        // Setup ad events after player is ready
+        // Note: If vastUrl exists, setupAdEvents is called in setupVastPlugin()
+        // Only call here if there's no vastUrl to avoid duplicate listeners
+        if (!this.vastUrl) {
+          this.setupAdEvents()
+        }
         this.setupTextTracks()
         this.setupCustomButtons()
         this.setupPlaybackEvents()
@@ -3544,7 +3865,13 @@ video#episode-player_html5_api {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.3s ease, bottom 0.3s ease;
+}
+
+/* Reposition title during VAST ads */
+.vjs-ad-playing .video-title-bottom {
+  bottom: 140px;
+  left: 20px;
 }
 
 /* Timer Display at Bottom Right */

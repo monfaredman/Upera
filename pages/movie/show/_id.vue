@@ -53,10 +53,12 @@
         @ready="handlePlayerReady"
         @timeupdate="handleTimeUpdate"
         @ended="handleEnded"
+        @ad-started="handleAdStarted"
+        @ad-ended="handleAdEnded"
       />
     </div>
     <div
-      v-if="showNextMovie && suggestion"
+      v-if="showNextMovie && suggestion && !adActive"
       class="next-movie-overlay"
       @click="playNextMovie"
     >
@@ -119,6 +121,8 @@ export default {
       // Fullrate data for subscription button
       fullrateData: null,
       contentType: 'video',
+      // Track VAST ad state
+      adActive: false,
     }
   },
   head() {
@@ -435,6 +439,12 @@ export default {
         name: 'movie-show-id',
         params: { id: this.suggestion.id },
       })
+    },
+    handleAdStarted() {
+      this.adActive = true
+    },
+    handleAdEnded() {
+      this.adActive = false
     },
     goBack() {
       if (window.history.length > 2) {

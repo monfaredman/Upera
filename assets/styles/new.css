@@ -11464,60 +11464,134 @@ background-color: #f6f6f6 !important;
   background-size: contain;
 }
 
-/* یوتیوب‌وار کردن دکمه Skip Ad با عرض بیشتر */
+/* یوتیوب‌وار کردن دکمه Skip Ad با عرض بیشتر - styled to match back button */
 #videojs-vast-skipButton {
   font-family: 'dana VF';
   position: absolute;
   bottom: 60px;
-  right: 16px;
-
-  /* افزایش فاصله داخلی برای پهنای بیشتر */
-  padding: 8px 20px;
-
-  /* حداقل عرض */
-  min-width: 100px !important;
-
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 1;
-  color: #fff;
-  background: rgba(0, 0, 0, 0.8);
-  border: 1px solid #fff;
-  border-radius: 2px;
+  right: 16px !important;
+  width: 131px !important;
+  height: 40px !important;
+  padding: 12px 28px;
+  background: #525252 !important;
+  border: none !important;
+  border-radius: 8px !important;
   cursor: pointer;
   pointer-events: auto;
   z-index: 1000;
-  transition: background 0.2s, color 0.2s;
+  transition: background 0.3s;
   direction: rtl;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #f5f5f5;
+  min-width: 100px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* Add icon using CSS ::before as fallback */
+#videojs-vast-skipButton::before {
+  content: '\f054'; /* FontAwesome chevron-left icon */
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  font-size: 14px;
+  display: inline-block;
+  margin-left: 8px;
+  margin-right: 0;
+}
+
+#videojs-vast-skipButton:hover {
+  background: #6a6a6a;
 }
 
 #vast-cta-btn {
   font-family: 'dana VF';
   display: none;
   position: absolute;
-  bottom: 60px;
-  left: 0;
-
-  /* افزایش فاصله داخلی برای پهنای بیشتر */
-  padding: 8px 20px;
-
-  /* حداقل عرض */
-  min-width: 100px !important;
-
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 1;
-  color: #fff;
-  background: rgba(0, 0, 0, 0.8);
-  border: 1px solid #fff;
-  border-radius: 2px;
+  bottom: 90px;
+  left: 20px;
+  width: fit-content;
+  height: 40px;
+  padding: 12px 28px;
+  background: #525252;
+  border: none;
+  border-radius: 8px;
   cursor: pointer;
   pointer-events: auto;
   z-index: 1000;
-  transition: background 0.2s, color 0.2s;
-  padding: 15px;
-  bottom: 90px;
+  transition: background 0.3s;
   direction: rtl;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #f5f5f5;
+  min-width: 100px !important;
+}
+
+@media (max-width: 768px) {
+  #vast-cta-btn {
+    font-family: 'dana VF';
+    display: none;
+    position: absolute;
+    bottom: 14rem !important;
+    left: 20px;
+    width: fit-content;
+    height: 40px;
+    padding: 12px 28px;
+    background: #525252;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    pointer-events: auto;
+    z-index: 1000;
+    transition: background 0.3s;
+    direction: rtl;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #f5f5f5;
+    min-width: 100px !important;
+  }
+}
+
+@media (min-width: 430px) and (max-width: 768px) {
+  #vast-cta-btn {
+    bottom: 17.2rem !important;
+  }
+}
+@media (min-width: 390px) and (max-width: 418px) {
+  #vast-cta-btn {
+    bottom: 16.5rem !important;
+  }
+}
+
+@media (min-width: 385px) and (max-width: 390px) {
+  #vast-cta-btn {
+    bottom: 16rem !important;
+  }
+}
+@media (min-width: 375px) and (max-width: 385x) {
+  #vast-cta-btn {
+    bottom: 17rem !important;
+  }
+}
+@media (max-width: 375px) {
+  #vast-cta-btn {
+    bottom: 14rem !important;
+  }
+}
+
+#vast-cta-btn:hover {
+  background: #6a6a6a;
 }
 .vjs-ad-playing #vast-cta-btn .vjs-fullscreen {
   display: block !important;

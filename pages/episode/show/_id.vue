@@ -61,6 +61,8 @@
         @ended="handleEnded"
         @playlistButtonClick="togglePlaylistMenu"
         @subscription-purchase="handleSubscriptionPurchase"
+        @ad-started="handleAdStarted"
+        @ad-ended="handleAdEnded"
       />
     </div>
     <!--     <div v-if="season && seasonList.length" class="playlist-container">
@@ -162,7 +164,7 @@
 
     <!-- نمایش قسمت بعدی (Suggestion) -->
     <div
-      v-if="showNextEpisode && suggestion"
+      v-if="showNextEpisode && suggestion && !adActive"
       class="next-episode-overlay"
       @click="playNextEpisode"
     >
@@ -231,6 +233,8 @@ export default {
       startTime: 0,
       // داده‌های نرخ کامل برای دکمه اشتراک
       fullrateData: null,
+      // Track VAST ad state
+      adActive: false,
     }
   },
   head() {
@@ -575,6 +579,12 @@ export default {
         name: 'episode-show-id',
         params: { id: this.suggestion.id },
       })
+    },
+    handleAdStarted() {
+      this.adActive = true
+    },
+    handleAdEnded() {
+      this.adActive = false
     },
     playEpisode(episodeId) {
       this.$router.push({ name: 'episode-show-id', params: { id: episodeId } })

@@ -44,10 +44,12 @@
         @timeupdate="handleTimeUpdate"
         @ended="handleEnded"
         @subscription-purchase="handleSubscriptionPurchase"
+        @ad-started="handleAdStarted"
+        @ad-ended="handleAdEnded"
       />
     </div>
     <div
-      v-if="showNextVideo && suggestion"
+      v-if="showNextVideo && suggestion && !adActive"
       class="next-video-overlay"
       @click="playNextVideo"
     >
@@ -97,6 +99,8 @@ export default {
       startTime: 0,
       // داده‌های نرخ کامل برای دکمه اشتراک
       fullrateData: null,
+      // Track VAST ad state
+      adActive: false,
     }
   },
   mounted() {
@@ -350,6 +354,12 @@ export default {
     handleSubscriptionPurchase() {
       // پردازش خرید اشتراک
       console.log('Subscription purchase triggered from video player')
+    },
+    handleAdStarted() {
+      this.adActive = true
+    },
+    handleAdEnded() {
+      this.adActive = false
     },
   },
 }
