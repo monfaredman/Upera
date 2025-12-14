@@ -11565,28 +11565,28 @@ background-color: #f6f6f6 !important;
 
 @media (min-width: 430px) and (max-width: 768px) {
   #vast-cta-btn {
-    bottom: 17.2rem !important;
+    bottom: 5.6rem !important;
   }
 }
 @media (min-width: 390px) and (max-width: 418px) {
   #vast-cta-btn {
-    bottom: 16.5rem !important;
+    bottom: 5.6rem !important;
   }
 }
 
 @media (min-width: 385px) and (max-width: 390px) {
   #vast-cta-btn {
-    bottom: 16rem !important;
+    bottom: 5.6rem !important;
   }
 }
 @media (min-width: 375px) and (max-width: 385x) {
   #vast-cta-btn {
-    bottom: 17rem !important;
+    bottom: 5.6rem !important;
   }
 }
 @media (max-width: 375px) {
   #vast-cta-btn {
-    bottom: 14rem !important;
+    bottom: 5.6rem !important;
   }
 }
 
