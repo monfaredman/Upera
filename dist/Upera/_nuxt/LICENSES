@@ -40,12 +40,6 @@
  */
 
 /*!
- * vue-infinite-loading v2.4.5
- * (c) 2016-2020 PeachScript
- * MIT License
- */
-
-/*!
  * vue-no-ssr v1.1.1
  * (c) 2018-present egoist <0x142857@gmail.com>
  * Released under the MIT License.
@@ -63,19 +57,7 @@
  * @license MIT
  */
 
-/*! @name m3u8-parser @version 7.2.0 @license Apache-2.0 */
-
-/*! @name videojs-hls-quality-selector @version 2.0.0 @license MIT */
-
 /*! ieee754. BSD-3-Clause License. Feross Aboukhadijeh <https://feross.org/opensource> */
-
-/**
- * @license
- * slighly modified parse-headers 2.0.2 <https://github.com/kesla/parse-headers/>
- * Copyright (c) 2014 David Björklund
- * Available under the MIT license
- * <https://github.com/kesla/parse-headers/blob/master/LICENCE>
- */
 
 /**!
  * @fileOverview Kickass library to create and place poppers near their reference elements.
@@ -126,14 +108,23 @@ and limitations under the License.
 ***************************************************************************** */
 
 
-/*! @name @videojs/http-streaming @version 3.17.2 @license Apache-2.0 */
+/*!
+ * vue-infinite-loading v2.4.5
+ * (c) 2016-2020 PeachScript
+ * MIT License
+ */
 
-/*! @name aes-decrypter @version 4.0.2 @license Apache-2.0 */
+/*! @name m3u8-parser @version 7.2.0 @license Apache-2.0 */
 
-/*! @name pkcs7 @version 1.0.4 @license Apache-2.0 */
+/*! @name videojs-hls-quality-selector @version 2.0.0 @license MIT */
 
-/*! @name videojs-contrib-quality-levels @version 4.1.0 @license Apache-2.0 */
-
+/**
+ * @license
+ * slighly modified parse-headers 2.0.2 <https://github.com/kesla/parse-headers/>
+ * Copyright (c) 2014 David Björklund
+ * Available under the MIT license
+ * <https://github.com/kesla/parse-headers/blob/master/LICENCE>
+ */
 
 /**!
  * @fileOverview Kickass library to create and place poppers near their reference elements.
@@ -159,3 +150,12 @@ and limitations under the License.
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
+
+/*! @name @videojs/http-streaming @version 3.17.2 @license Apache-2.0 */
+
+/*! @name aes-decrypter @version 4.0.2 @license Apache-2.0 */
+
+/*! @name pkcs7 @version 1.0.4 @license Apache-2.0 */
+
+/*! @name videojs-contrib-quality-levels @version 4.1.0 @license Apache-2.0 */
