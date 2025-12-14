@@ -855,6 +855,18 @@ export default {
       return merged
     },
   },
+  watch: {
+    recently(newVal) {
+      if (newVal && newVal.length > 0) {
+        this.watchSwip.on('reachBeginning', () => {
+          document.getElementById('watching').classList.remove('swipe')
+        })
+        this.watchSwip.on('fromEdge', () => {
+          document.getElementById('watching').classList.add('swipe')
+        })
+      }
+    },
+  },
   destroyed() {
     if (this.data.occasions != null) {
       let specials = document.getElementsByClassName('special-slides')
@@ -874,6 +886,7 @@ export default {
       this.clapCheckTimer = false
     }
   },
+
   async mounted() {
     // Fetch slider FIRST and wait for it to complete
     this.isLoadingSlider = true
@@ -938,6 +951,7 @@ export default {
     //     this.isLoadingUgcs = false
     //   })
   },
+
   methods: {
     async loadDynamicSliderLayout({ force = false } = {}) {
       this.isLoadingDynamicSliders = true
@@ -1187,15 +1201,18 @@ export default {
         const { data, status } = await this.$axios.get(
           apiurl + this.filtercontents
         )
+        console.log('65456465464564564564', data)
         if (status === 200) {
           this.recently = data.data
           this.$nextTick(() => {
             const watching = document.getElementById('watching')
             if (watching && this.watchSwip) {
               this.watchSwip.on('reachBeginning', () => {
+                console.log('reachBeginning')
                 watching.classList.remove('swipe')
               })
               this.watchSwip.on('fromEdge', () => {
+                console.log('fromEdge')
                 watching.classList.add('swipe')
               })
             }
