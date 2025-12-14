@@ -57,8 +57,14 @@ typings/
 .yarn-integrity
 
 # dotenv environment variables file
-.env
+#.env
+#.env.*
+# / *.env
 
+
+# SSL certificates
+#/ssl/
+#/ssl/**
 # parcel-bundler cache (https://parceljs.org/)
 .cache
 
@@ -68,8 +74,7 @@ typings/
 # nuxt.js build output
 .nuxt
 
-# Nuxt generate
-dist
+
 
 # vuepress build output
 .vuepress/dist
@@ -91,3 +96,5 @@ sw.*
 
 /cgi-bin
 /.well-known
+
+package-lock.json

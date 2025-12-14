@@ -1,6 +1,6 @@
 <template>
   <div id="checkcontainer" class="container-fluid">
-    <div class="container mt-5 pt-lg-5 pt-md-5 mb-5 pt-1  faq-page">
+    <div class="container pt-5 pt-lg-5 pt-md-5 mb-5 pt-1 faq-page">
       <section id="banner">
         <div class="container">
           <header class="headline mt-5">
@@ -10,16 +10,20 @@
           </header>
         </div>
       </section>
-      <br><br>
+      <br /><br />
       <!--     <h4 class="font-weight-bold h6 mt-1 pt-2">
       <span class="pl-2 title">{{ $t('footer.halfPrice') }}</span>
     </h4> -->
       <!-- <hr> -->
-            
 
       <ul class="list-unstyled">
-        <li v-for="(item,index) in data" :key="index" class="media mb-5">
-          <img :src="item.icon" class="align-self-center mr-3" :alt="item.operator" width="80px">
+        <li v-for="(item, index) in data" :key="index" class="media mb-5">
+          <img
+            :src="item.icon"
+            class="align-self-center mr-3"
+            :alt="item.operator"
+            width="80px"
+          />
           <div class="media-body">
             <h5 class="mt-0 mb-1">
               {{ item.operator }}
@@ -36,22 +40,21 @@
 
 <script>
 export default {
-  async asyncData (context) {
+  async asyncData(context) {
     let res
     res = await context.app.$axios.get('/get/app/details')
     // if(context.app.i18n.locale=="fa")
-    return {data:res.data.data.operators}
+    return { data: res.data.data.operators }
     // else
     //   return {data:res.data.data.about_en}
   },
-    data () {
-      return {
-        data:{},
-      }
-    },
+  data() {
+    return {
+      data: {},
+    }
+  },
   head() {
-
-    return { title:  this.$t('new.halfPrice') }
-  }
+    return { title: this.$t('new.halfPrice') }
+  },
 }
 </script>
