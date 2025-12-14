@@ -325,7 +325,8 @@ import CommentsTabSkeleton from '@/components/item/skeletons/CommentsTabSkeleton
 import ContentStatisticsSkeleton from '@/components/item/skeletons/ContentStatisticsSkeleton'
 
 const Socialsharing = () => import('@/components/Socialsharing')
-const ContentStatistics = () => import('@/components/item/content/ContentStatistics')
+const ContentStatistics = () =>
+  import('@/components/item/content/ContentStatistics')
 
 export default {
   name: 'ContentShowcase',
@@ -542,9 +543,6 @@ export default {
     data() {
       this.INIT(0)
       this.loadAdditionalData()
-      if (this.$i18n.locale == 'fa' && this.data.item.name_fa)
-        document.title = this.data.item.name_fa
-      else document.title = this.data.item.name
     },
   },
 

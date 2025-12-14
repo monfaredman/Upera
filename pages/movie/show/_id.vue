@@ -121,6 +121,50 @@ export default {
       contentType: 'video',
     }
   },
+  head() {
+    const title = this.movieTitle || 'در حال پخش'
+    const appName = process.env.APP_NAME_FA || 'آپرا'
+
+    return {
+      title: `${title} | ${appName}`,
+      meta: [
+        {
+          hid: 'description',
+          name: 'description',
+          content: `در حال پخش ${title}`,
+        },
+        {
+          hid: 'og:title',
+          property: 'og:title',
+          content: title,
+        },
+        {
+          hid: 'og:type',
+          property: 'og:type',
+          content: 'video.movie',
+        },
+        ...(this.posterUrl
+          ? [
+              {
+                hid: 'og:image',
+                property: 'og:image',
+                content: this.posterUrl,
+              },
+            ]
+          : []),
+        {
+          hid: 'twitter:title',
+          name: 'twitter:title',
+          content: title,
+        },
+        {
+          hid: 'twitter:card',
+          name: 'twitter:card',
+          content: 'player',
+        },
+      ],
+    }
+  },
   mounted() {
     // Prevent scrolling on mobile
     if (process.client && window.innerWidth <= 767.98) {

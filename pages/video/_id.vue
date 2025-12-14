@@ -614,6 +614,113 @@ export default {
       modalreporting: false,
     }
   },
+  head() {
+    if (!this.selectedVideo || !this.selectedVideo.title) {
+      return {
+        title: process.env.APP_NAME_FA || 'آپرا',
+      }
+    }
+
+    const title = this.selectedVideo.title
+    const description = this.selectedVideo.description || ''
+    const image = this.selectedVideo.image || this.selectedVideo.poster || ''
+    const url = `${process.env.APP_URL || ''}${this.$route.path}`
+    const channelName = this.video?.channel?.name || ''
+
+    return {
+      title: `${title} | ${process.env.APP_NAME_FA || 'آپرا'}`,
+      meta: [
+        {
+          hid: 'description',
+          name: 'description',
+          content: description.substring(0, 160) || `تماشای ویدیو ${title}`,
+        },
+        {
+          hid: 'keywords',
+          name: 'keywords',
+          content: `${title}, ویدیو, ${channelName}, تماشای آنلاین`,
+        },
+        // Open Graph
+        {
+          hid: 'og:title',
+          property: 'og:title',
+          content: title,
+        },
+        {
+          hid: 'og:description',
+          property: 'og:description',
+          content: description.substring(0, 200) || `تماشای ویدیو ${title}`,
+        },
+        {
+          hid: 'og:image',
+          property: 'og:image',
+          content: image,
+        },
+        {
+          hid: 'og:url',
+          property: 'og:url',
+          content: url,
+        },
+        {
+          hid: 'og:type',
+          property: 'og:type',
+          content: 'video.other',
+        },
+        // Twitter Card
+        {
+          hid: 'twitter:title',
+          name: 'twitter:title',
+          content: title,
+        },
+        {
+          hid: 'twitter:description',
+          name: 'twitter:description',
+          content: description.substring(0, 200) || `تماشای ویدیو ${title}`,
+        },
+        {
+          hid: 'twitter:image',
+          name: 'twitter:image',
+          content: image,
+        },
+        {
+          hid: 'twitter:card',
+          name: 'twitter:card',
+          content: 'player',
+        },
+      ],
+      link: [
+        {
+          hid: 'canonical',
+          rel: 'canonical',
+          href: url,
+        },
+      ],
+      script: [
+        {
+          type: 'application/ld+json',
+          json: {
+            '@context': 'https://schema.org',
+            '@type': 'VideoObject',
+            name: title,
+            description: description,
+            thumbnailUrl: image,
+            uploadDate:
+              this.selectedVideo.created_at || new Date().toISOString(),
+            contentUrl: url,
+            ...(this.selectedVideo.duration && {
+              duration: `PT${this.selectedVideo.duration}S`,
+            }),
+            ...(channelName && {
+              author: {
+                '@type': 'Organization',
+                name: channelName,
+              },
+            }),
+          },
+        },
+      ],
+    }
+  },
   computed: {
     ...mapGetters({
       autoPlay: 'autoplay',

@@ -233,6 +233,50 @@ export default {
       fullrateData: null,
     }
   },
+  head() {
+    const title = this.episodeTitle || 'در حال پخش'
+    const appName = process.env.APP_NAME_FA || 'آپرا'
+
+    return {
+      title: `${title} | ${appName}`,
+      meta: [
+        {
+          hid: 'description',
+          name: 'description',
+          content: `در حال پخش ${title}`,
+        },
+        {
+          hid: 'og:title',
+          property: 'og:title',
+          content: title,
+        },
+        {
+          hid: 'og:type',
+          property: 'og:type',
+          content: 'video.episode',
+        },
+        ...(this.posterUrl
+          ? [
+              {
+                hid: 'og:image',
+                property: 'og:image',
+                content: this.posterUrl,
+              },
+            ]
+          : []),
+        {
+          hid: 'twitter:title',
+          name: 'twitter:title',
+          content: title,
+        },
+        {
+          hid: 'twitter:card',
+          name: 'twitter:card',
+          content: 'player',
+        },
+      ],
+    }
+  },
   computed: {
     currentEpisodeList() {
       // اگر داده‌های فصل وجود دارد و فصل باز شده معتبر است، لیست قسمت‌های آن را برگردانیم؛ در غیر این صورت آرایه خالی برگردانیم.
