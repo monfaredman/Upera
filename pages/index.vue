@@ -766,6 +766,8 @@ export default {
       user_claps_counter: 0,
       clapCheckTimer: false,
       modalsharing: false,
+      // Timeout timers for skeleton loading
+      skeletonTimeouts: {},
     }
   },
   computed: {
@@ -885,33 +887,48 @@ export default {
       clearTimeout(this.clapCheckTimer)
       this.clapCheckTimer = false
     }
+    // Clear all skeleton timeout timers
+    Object.keys(this.skeletonTimeouts || {}).forEach((key) => {
+      if (this.skeletonTimeouts[key]) {
+        clearTimeout(this.skeletonTimeouts[key])
+      }
+    })
+    this.skeletonTimeouts = {}
   },
 
   async mounted() {
     // Fetch slider FIRST and wait for it to complete
-    this.isLoadingSlider = true
-    await this.$store.dispatch('slider/fetchSlider', {
-      filtercontents: this.filtercontents,
-    })
-    this.isLoadingSlider = false
+    await this.withSkeletonTimeout(
+      'slider',
+      (state) => {
+        this.isLoadingSlider = state
+      },
+      async () => {
+        await this.$store.dispatch('slider/fetchSlider', {
+          filtercontents: this.filtercontents,
+        })
+      }
+    )
 
     // After slider loads, trigger filters/genres to load
     this.startFetchingFilters = true
 
     // After slider is loaded, fetch other content in parallel
     // Fetch offer
-    this.isLoadingOffer = true
-    this.$axios
-      .get('/get/offer' + this.filtercontents)
-      .then((offerRes) => {
+    this.withSkeletonTimeout(
+      'offer',
+      (state) => {
+        this.isLoadingOffer = state
+      },
+      async () => {
+        const offerRes = await this.$axios.get(
+          '/get/offer' + this.filtercontents
+        )
         this.offer = offerRes.data
-      })
-      .catch((error) => {
-        console.error('Error fetching offer:', error)
-      })
-      .finally(() => {
-        this.isLoadingOffer = false
-      })
+      }
+    ).catch((error) => {
+      console.error('Error fetching offer:', error)
+    })
 
     // Fetch recently watched
     this.get_recently()
@@ -923,18 +940,20 @@ export default {
     this.loadDynamicSliderLayout()
 
     // Fetch lives
-    this.isLoadingLives = true
-    this.$axios
-      .get('/get/lives?ref=' + this.checkuser?.ref)
-      .then((livesRes) => {
+    this.withSkeletonTimeout(
+      'lives',
+      (state) => {
+        this.isLoadingLives = state
+      },
+      async () => {
+        const livesRes = await this.$axios.get(
+          '/get/lives?ref=' + this.checkuser?.ref
+        )
         this.lives = livesRes.data
-      })
-      .catch((e) => {
-        console.error('fetch lives failed', e)
-      })
-      .finally(() => {
-        this.isLoadingLives = false
-      })
+      }
+    ).catch((e) => {
+      console.error('fetch lives failed', e)
+    })
 
     // Fetch UGCs
     // this.isLoadingUgcs = true
@@ -953,6 +972,52 @@ export default {
   },
 
   methods: {
+    /**
+     * Helper method to handle API requests with timeout for skeleton loading
+     * @param {string} loadingStateKey - Key in this.skeletonTimeouts to track timeout
+     * @param {Function} loadingStateSetter - Function to set loading state (e.g., () => this.isLoadingSlider = true)
+     * @param {Function} apiCall - Function that returns a Promise (the API call)
+     * @param {number} timeoutMs - Timeout in milliseconds (default: 15000)
+     */
+    async withSkeletonTimeout(
+      loadingStateKey,
+      loadingStateSetter,
+      apiCall,
+      timeoutMs = 15000
+    ) {
+      // Set loading state
+      loadingStateSetter(true)
+
+      // Clear any existing timeout for this key
+      if (this.skeletonTimeouts[loadingStateKey]) {
+        clearTimeout(this.skeletonTimeouts[loadingStateKey])
+      }
+
+      // Set timeout to hide skeleton
+      this.skeletonTimeouts[loadingStateKey] = setTimeout(() => {
+        loadingStateSetter(false)
+        delete this.skeletonTimeouts[loadingStateKey]
+      }, timeoutMs)
+
+      try {
+        const result = await apiCall()
+        // Clear timeout on success
+        if (this.skeletonTimeouts[loadingStateKey]) {
+          clearTimeout(this.skeletonTimeouts[loadingStateKey])
+          delete this.skeletonTimeouts[loadingStateKey]
+        }
+        loadingStateSetter(false)
+        return result
+      } catch (error) {
+        // Clear timeout on error
+        if (this.skeletonTimeouts[loadingStateKey]) {
+          clearTimeout(this.skeletonTimeouts[loadingStateKey])
+          delete this.skeletonTimeouts[loadingStateKey]
+        }
+        loadingStateSetter(false)
+        throw error
+      }
+    },
     async loadDynamicSliderLayout({ force = false } = {}) {
       this.isLoadingDynamicSliders = true
       try {
@@ -1191,54 +1256,61 @@ export default {
       return { name: item.type + '-show-id', params: { id: item.id } }
     },
     async get_recently() {
-      this.isLoadingRecently = true
-      try {
-        if (!this.$auth.loggedIn) {
-          this.recently = null
-          return
-        }
-        const apiurl = '/get/recently'
-        const { data, status } = await this.$axios.get(
-          apiurl + this.filtercontents
-        )
-        console.log('65456465464564564564', data)
-        if (status === 200) {
-          this.recently = data.data
-          this.$nextTick(() => {
-            const watching = document.getElementById('watching')
-            if (watching && this.watchSwip) {
-              this.watchSwip.on('reachBeginning', () => {
-                console.log('reachBeginning')
-                watching.classList.remove('swipe')
-              })
-              this.watchSwip.on('fromEdge', () => {
-                console.log('fromEdge')
-                watching.classList.add('swipe')
-              })
-            }
-          })
-        }
-      } catch (error) {
-        console.error('get_recently failed:', error)
-      } finally {
-        this.isLoadingRecently = false
+      if (!this.$auth.loggedIn) {
+        this.recently = null
+        return
       }
+
+      await this.withSkeletonTimeout(
+        'recently',
+        (state) => {
+          this.isLoadingRecently = state
+        },
+        async () => {
+          const apiurl = '/get/recently'
+          const { data, status } = await this.$axios.get(
+            apiurl + this.filtercontents
+          )
+          console.log('65456465464564564564', data)
+          if (status === 200) {
+            this.recently = data.data
+            this.$nextTick(() => {
+              const watching = document.getElementById('watching')
+              if (watching && this.watchSwip) {
+                this.watchSwip.on('reachBeginning', () => {
+                  console.log('reachBeginning')
+                  watching.classList.remove('swipe')
+                })
+                this.watchSwip.on('fromEdge', () => {
+                  console.log('fromEdge')
+                  watching.classList.add('swipe')
+                })
+              }
+            })
+          }
+        }
+      ).catch((error) => {
+        console.error('get_recently failed:', error)
+      })
     },
     async fetchDiscoverData() {
-      this.isLoadingDiscover = true
-      try {
-        const response = await this.$axios.get(
-          this.ghostApi + this.filtercontents
-        )
-        if (response.status === 200) {
-          this.data = response.data.data
-          if (!this.data.data.length) this.nocontent = true
+      await this.withSkeletonTimeout(
+        'discover',
+        (state) => {
+          this.isLoadingDiscover = state
+        },
+        async () => {
+          const response = await this.$axios.get(
+            this.ghostApi + this.filtercontents
+          )
+          if (response.status === 200) {
+            this.data = response.data.data
+            if (!this.data.data.length) this.nocontent = true
+          }
         }
-      } catch (error) {
+      ).catch((error) => {
         console.error('Error fetching discover:', error)
-      } finally {
-        this.isLoadingDiscover = false
-      }
+      })
     },
     showNext() {
       this.$refs.carousel.next()
@@ -1247,42 +1319,51 @@ export default {
       this.$refs.carousel.prev()
     },
     async execute_content_filtering() {
-      // Set all loading states
-      this.isLoadingSlider = true
-      this.isLoadingRecently = true
-      this.isLoadingDiscover = true
-      this.isLoadingOffer = true
       this.$store.dispatch('filter/FILTER_LOADING')
 
       const requests = []
 
       requests.push(
-        this.$store
-          .dispatch('slider/fetchSlider', {
-            filtercontents: this.filtercontents,
-            loadagain: 1,
-          })
-          .finally(() => {
-            this.isLoadingSlider = false
-          })
+        this.withSkeletonTimeout(
+          'slider-filter',
+          (state) => {
+            this.isLoadingSlider = state
+          },
+          async () => {
+            await this.$store.dispatch('slider/fetchSlider', {
+              filtercontents: this.filtercontents,
+              loadagain: 1,
+            })
+          }
+        )
       )
 
       requests.push(
-        this.$axios
-          .get('/get/offer' + this.filtercontents)
-          .then((response) => {
+        this.withSkeletonTimeout(
+          'offer-filter',
+          (state) => {
+            this.isLoadingOffer = state
+          },
+          async () => {
+            const response = await this.$axios.get(
+              '/get/offer' + this.filtercontents
+            )
             if (response.status === 200) this.offer = response.data
-          })
-          .finally(() => {
-            this.isLoadingOffer = false
-          })
+          }
+        )
       )
 
       if (this.$auth.loggedIn) {
         requests.push(
-          this.$axios
-            .get('/get/recently' + this.filtercontents)
-            .then((response) => {
+          this.withSkeletonTimeout(
+            'recently-filter',
+            (state) => {
+              this.isLoadingRecently = state
+            },
+            async () => {
+              const response = await this.$axios.get(
+                '/get/recently' + this.filtercontents
+              )
               if (response.status === 200) {
                 this.recently = response.data.data
                 this.$nextTick(() => {
@@ -1297,19 +1378,23 @@ export default {
                   }
                 })
               }
-            })
-            .finally(() => {
-              this.isLoadingRecently = false
-            })
+            }
+          )
         )
       } else {
         this.isLoadingRecently = false
       }
 
       requests.push(
-        this.$axios
-          .get(this.ghostApi + this.filtercontents)
-          .then((response) => {
+        this.withSkeletonTimeout(
+          'discover-filter',
+          (state) => {
+            this.isLoadingDiscover = state
+          },
+          async () => {
+            const response = await this.$axios.get(
+              this.ghostApi + this.filtercontents
+            )
             if (response.status === 200) {
               this.nocontent = !response.data.data.data.length
               this.data = response.data.data
@@ -1317,10 +1402,8 @@ export default {
               this.infiniteId += 1
               this.swiperKey += 1
             }
-          })
-          .finally(() => {
-            this.isLoadingDiscover = false
-          })
+          }
+        )
       )
 
       // Refresh dynamic slider layout for the selected filters

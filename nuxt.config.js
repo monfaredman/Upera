@@ -487,6 +487,7 @@ export default {
   axios: {
     baseURL: process.env.URL,
     browserBaseURL: process.env.BURL,
+    timeout: 15000, // 15 seconds timeout for API requests
   },
   /*
    ** Build configuration
