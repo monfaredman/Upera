@@ -448,6 +448,12 @@
                                 {{ my_credit }}
                               </span>
                             </div>
+                            <span
+                              v-if="!hasEnoughWalletBalance"
+                              class="wallet-balance-error-mobile"
+                            >
+                              موجودی کافی نیست
+                            </span>
                           </div>
                         </div>
                         <div
@@ -2170,5 +2176,11 @@ export default {
   color: #dc3545;
   font-size: 0.8rem;
   margin-top: 0.5rem;
+}
+
+.wallet-balance-error-mobile {
+  color: #dc3545;
+  font-size: 0.8rem;
+  text-align: right;
 }
 </style>
