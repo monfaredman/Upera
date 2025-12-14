@@ -31,7 +31,7 @@ const SWIPER_OPTION_OFFER = {
   resistanceRatio: 0,
   freeMode: false,
   breakpoints: {
-    320: { slidesPerView: 1.5 },
+    320: { slidesPerView: 1.5, slidesPerGroup: 1 },
     768: { slidesPerView: 3.5 },
     1200: { slidesPerView: 5.5 },
     1600: { slidesPerView: 7.5 },
