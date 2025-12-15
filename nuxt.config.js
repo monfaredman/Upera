@@ -209,17 +209,19 @@ export default {
      * add external plugins
      */
     extractCSS: true,
-    // Optimize bundle size with tree-shaking
-    terser: {
-      terserOptions: {
-        compress: {
-          drop_console: process.env.NODE_ENV === 'production',
-          drop_debugger: true,
-        },
-      },
-    },
+    // Minification: rely on Nuxt's default webpack minimizer.
+    // A custom terser configuration can break when a bundle contains
+    // non-top-level ESM `import` (Terser error: "Import statement may only appear at the top level").
+    // If you still want to drop console logs in production, do it via Babel
+    // or a dedicated plugin rather than overriding the minimizer here.
     // Enable code splitting and optimization
     optimization: {
+      // Terser is currently failing with: "Import statement may only appear at the top level"
+      // on some generated chunks during `nuxt generate`.
+      // Disabling minimization unblocks the build (output is larger but correct).
+      // If you want minification back later, we can switch to a newer terser-webpack-plugin
+      // or adjust webpack output/module settings.
+      minimize: false,
       splitChunks: {
         chunks: 'all',
         cacheGroups: {
