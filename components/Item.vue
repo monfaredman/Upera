@@ -615,153 +615,171 @@ export default {
     },
 
     async loadAdditionalData() {
-      // Set loading states
-      this.isLoadingShowcase = true
-      this.isLoadingSeasons = true
-      this.isLoadingContent = true
-      this.isLoadingCasts = true
-      this.isLoadingStatistics = true
-      this.isLoadingSimilar = true
-
       try {
+        // 1) Base item data is already loaded by /getV2/{type}/{idOrSlug} (asyncData in page)
+        //    Here we only load secondary data in the desired priority order:
+        //    2) accessibility  3) statistics  4) season  5) media  6) cast  7) comments(store)  8) other(similar, files, ...)
+
+        // Initialize loading states just for secondary data
+        this.isLoadingShowcase = true
+        this.isLoadingSeasons = this.type !== 'movie'
+        this.isLoadingContent = true
+        this.isLoadingCasts = true
+        this.isLoadingStatistics = true
+        this.isLoadingSimilar = true
+
         const statisticsEndpoint = this.$auth.loggedIn
           ? '/get/statistics/'
           : '/ghost/get/statistics/'
 
-        const accessibilityPromise = this.$auth.loggedIn
-          ? this.$axios.get(
-              '/get/accessibility/' + this.type + '/' + this.data.item.id
-            )
-          : Promise.resolve({
-              data: {
-                data: {
-                  owned: 0,
-                  owned_period_end: null,
-                  actions: this.data.item.actions,
-                },
-              },
-            })
+        const seasonEndpoint =
+          this.type !== 'movie'
+            ? this.$auth.loggedIn
+              ? '/get/season/'
+              : '/ghost/get/season/'
+            : null
 
-        if (this.type === 'movie') {
-          const [
-            castRes,
-            mediaRes,
-            similarRes,
-            accessibilityRes,
-            statisticsRes,
-          ] = await Promise.all([
-            this.$axios.get('/get/cast/' + this.type + '/' + this.data.item.id),
-            this.$axios.get(
-              '/get/media/' + this.type + '/' + this.data.item.id
-            ),
-            this.$axios.get(
-              '/ghost/get/similar/' + this.type + '/' + this.data.item.id
-            ),
-            accessibilityPromise,
-            this.$axios.get(
-              statisticsEndpoint + this.type + '/' + this.data.item.id
-            ),
-          ])
-
-          // ادغام داده‌های دریافتی برای فیلم
-          this.casts = castRes.data.data.casts || []
-          this.directors = castRes.data.data.directors || null
-          this.producers = castRes.data.data.producers || null
-          this.writers = castRes.data.data.writers || null
-          this.investors = castRes.data.data.investors || null
-          this.characters = castRes.data.data.characters || null
-          this.isLoadingCasts = false
-          this.medias = mediaRes.data.data.medias || {}
-          this.isLoadingContent = false
-
-          this.similar = similarRes.data.data.similar || []
-          this.offer = similarRes.data.data.offer || null
-          this.isLoadingSimilar = false
-
-          this.owned = accessibilityRes.data.data.owned || 0
-          this.owned_period_end =
-            accessibilityRes.data.data.owned_period_end || null
-          this.actions = accessibilityRes.data.data.actions || null
-          this.isLoadingShowcase = false
-
-          this.total_claps = statisticsRes.data.data.claps?.total || 0
-          this.user_claps = statisticsRes.data.data.claps?.user || 0
-          this.current_time = statisticsRes.data.data.current_time || 0
-          this.duration_time = statisticsRes.data.data.duration_time || 0
-          this.is_watchlist = statisticsRes.data.data.is_watchlist || 0
-          this.comm_num = statisticsRes.data.data.comm_num || 0
-          this.isLoadingStatistics = false
+        // -----------------------------
+        // 2) Accessibility (buttons, ownership, actions)
+        // -----------------------------
+        let accessibilityRes
+        if (this.$auth.loggedIn) {
+          accessibilityRes = await this.$axios.get(
+            '/get/accessibility/' + this.type + '/' + this.data.item.id
+          )
         } else {
-          const seasonEndpoint = this.$auth.loggedIn
-            ? '/get/season/'
-            : '/ghost/get/season/'
-
-          const [
-            castRes,
-            mediaRes,
-            similarRes,
-            accessibilityRes,
-            statisticsRes,
-            seasonRes,
-          ] = await Promise.all([
-            this.$axios.get('/get/cast/' + this.type + '/' + this.data.item.id),
-            this.$axios.get(
-              '/get/media/' + this.type + '/' + this.data.item.id
-            ),
-            this.$axios.get(
-              '/ghost/get/similar/' + this.type + '/' + this.data.item.id
-            ),
-            accessibilityPromise,
-            this.$axios.get(
-              statisticsEndpoint + this.type + '/' + this.data.item.id
-            ),
-            this.$axios.get(
-              seasonEndpoint + this.type + '/' + this.data.item.id
-            ),
-          ])
-
-          // ادغام داده‌های دریافتی برای محتواهای غیر فیلم (سریال/اپیزود)
-          this.casts = castRes.data.data.casts || []
-          this.directors = castRes.data.data.directors || null
-          this.producers = castRes.data.data.producers || null
-          this.writers = castRes.data.data.writers || null
-          this.investors = castRes.data.data.investors || null
-          this.characters = castRes.data.data.characters || null
-          this.isLoadingCasts = false
-
-          this.medias = mediaRes.data.data.medias || {}
-          this.isLoadingContent = false
-
-          this.similar = similarRes.data.data.similar || []
-          this.offer = similarRes.data.data.offer || null
-          this.isLoadingSimilar = false
-
-          this.owned = accessibilityRes.data.data.owned || 0
-          this.owned_period_end =
-            accessibilityRes.data.data.owned_period_end || null
-          this.actions = accessibilityRes.data.data.actions || null
-          this.isLoadingShowcase = false
-
-          this.total_claps = statisticsRes.data.data.claps?.total || 0
-          this.user_claps = statisticsRes.data.data.claps?.user || 0
-          this.current_time = statisticsRes.data.data.current_time || 0
-          this.duration_time = statisticsRes.data.data.duration_time || 0
-          this.is_watchlist = statisticsRes.data.data.is_watchlist || 0
-          this.comm_num = statisticsRes.data.data.comm_num || 0
-          this.isLoadingStatistics = false
-
-          // اختصاص داده‌های مربوط به فصل
-          if (seasonRes?.data?.data) {
-            this.season = seasonRes.data.data.season || null
-            this.last_episode_seen =
-              seasonRes.data.data.last_episode_seen || null
-            this.first_episode = seasonRes.data.data.first_episode || null
-            this.last_episode = seasonRes.data.data.last_episode || null
+          accessibilityRes = {
+            data: {
+              data: {
+                owned: 0,
+                owned_period_end: null,
+                actions: this.data.item.actions,
+              },
+            },
           }
-          this.isLoadingSeasons = false
         }
 
-        if (this.type == 'series' && this.season) {
+        this.owned = accessibilityRes.data.data.owned || 0
+        this.owned_period_end =
+          accessibilityRes.data.data.owned_period_end || null
+        this.actions = accessibilityRes.data.data.actions || null
+        // Showcase (hero + main buttons) can render fully after accessibility
+        this.isLoadingShowcase = false
+
+        // -----------------------------
+        // 3) Statistics (claps, watchlist, progress, comments count)
+        // -----------------------------
+        try {
+          const statisticsRes = await this.$axios.get(
+            statisticsEndpoint + this.type + '/' + this.data.item.id
+          )
+
+          this.total_claps = statisticsRes.data.data.claps?.total || 0
+          this.user_claps = statisticsRes.data.data.claps?.user || 0
+          this.current_time = statisticsRes.data.data.current_time || 0
+          this.duration_time = statisticsRes.data.data.duration_time || 0
+          this.is_watchlist = statisticsRes.data.data.is_watchlist || 0
+          this.comm_num = statisticsRes.data.data.comm_num || 0
+        } catch (e) {
+          // Keep page usable even if statistics fail
+          // eslint-disable-next-line no-console
+          console.error('Error loading statistics:', e)
+        } finally {
+          this.isLoadingStatistics = false
+        }
+
+        // -----------------------------
+        // 4) Season data (series / episode only)
+        // -----------------------------
+        let seasonRes = null
+        if (this.type !== 'movie' && seasonEndpoint) {
+          try {
+            seasonRes = await this.$axios.get(
+              seasonEndpoint + this.type + '/' + this.data.item.id
+            )
+            if (seasonRes?.data?.data) {
+              this.season = seasonRes.data.data.season || null
+              this.last_episode_seen =
+                seasonRes.data.data.last_episode_seen || null
+              this.first_episode = seasonRes.data.data.first_episode || null
+              this.last_episode = seasonRes.data.data.last_episode || null
+            }
+          } catch (e) {
+            // eslint-disable-next-line no-console
+            console.error('Error loading season data:', e)
+          } finally {
+            this.isLoadingSeasons = false
+          }
+        }
+
+        // -----------------------------
+        // 5) Media tabs (backstage, image, musicvideo, next)
+        // -----------------------------
+        try {
+          const mediaRes = await this.$axios.get(
+            '/get/media/' + this.type + '/' + this.data.item.id
+          )
+          this.medias = mediaRes.data.data.medias || {}
+        } catch (e) {
+          // eslint-disable-next-line no-console
+          console.error('Error loading media data:', e)
+          this.medias = {}
+        } finally {
+          this.isLoadingContent = false
+        }
+
+        // -----------------------------
+        // 6) Cast & crew
+        // -----------------------------
+        try {
+          const castRes = await this.$axios.get(
+            '/get/cast/' + this.type + '/' + this.data.item.id
+          )
+          this.casts = castRes.data.data.casts || []
+          this.directors = castRes.data.data.directors || null
+          this.producers = castRes.data.data.producers || null
+          this.writers = castRes.data.data.writers || null
+          this.investors = castRes.data.data.investors || null
+          this.characters = castRes.data.data.characters || null
+        } catch (e) {
+          // eslint-disable-next-line no-console
+          console.error('Error loading cast data:', e)
+          this.casts = []
+          this.directors = null
+          this.producers = null
+          this.writers = null
+          this.investors = null
+          this.characters = null
+        } finally {
+          this.isLoadingCasts = false
+        }
+
+        // -----------------------------
+        // 7) Comments
+        // -----------------------------
+        // Comments are already handled lazily via the CommentsTab component + Vuex module.
+        // Here we only ensured that `comm_num` is filled via statistics (step 3).
+
+        // -----------------------------
+        // 8) Other (similar content / offer)
+        // -----------------------------
+        try {
+          const similarRes = await this.$axios.get(
+            '/ghost/get/similar/' + this.type + '/' + this.data.item.id
+          )
+          this.similar = similarRes.data.data.similar || []
+          this.offer = similarRes.data.data.offer || null
+        } catch (e) {
+          // eslint-disable-next-line no-console
+          console.error('Error loading similar data:', e)
+          this.similar = []
+          this.offer = null
+        } finally {
+          this.isLoadingSimilar = false
+        }
+
+        // Derivations based on season data (series only)
+        if (this.type === 'series' && this.season) {
           this.season_num = this.sizeofobj(this.season)
 
           if (this.season_num > 0) {
@@ -772,7 +790,7 @@ export default {
           }
         }
 
-        if (this.type == 'series') {
+        if (this.type === 'series') {
           if (this.last_episode_seen) this.episode = this.last_episode_seen
           else if (this.first_episode) this.episode = this.first_episode
         }
