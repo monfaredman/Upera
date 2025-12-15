@@ -224,7 +224,7 @@
       <template v-for="(block, blockIndex) in discoverBlocks">
         <div
           v-if="block.kind === 'discover'"
-          :key="block.key || `discover-${blockIndex}`"
+          :key="block.key || `discover-block-${blockIndex}`"
         >
           <div
             v-if="block.list.style == 'occasion' && block.list.data.length > 0"
@@ -800,7 +800,8 @@ export default {
     discoverBlocks() {
       const baseBlocks = this.discoverLists.map((list, index) => ({
         kind: 'discover',
-        key: `discover-${list.list || index}`,
+        // Use index to ensure unique keys even if list.list values are duplicated
+        key: `discover-${list.list || 'unknown'}-${index}`,
         list,
         originalIndex: index,
       }))
