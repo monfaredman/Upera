@@ -4,8 +4,8 @@
       :variant="variant"
       :block="block"
       :disabled="isLoading"
-      @click="$emit('click')"
       class="submit-btn"
+      @click="$emit('click')"
     >
       <template v-if="isLoading">
         <b-spinner small class="mr-2" />

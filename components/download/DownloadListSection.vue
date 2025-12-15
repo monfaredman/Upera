@@ -169,6 +169,13 @@ export default {
       default: true,
     },
   },
+  emits: [
+    'add-to-cart',
+    'remove-from-cart',
+    'download',
+    'copy-download',
+    'play',
+  ],
   methods: {
     isInCart(item) {
       return this.cart.some((cartItem) => cartItem.itemid === item.id)
@@ -187,12 +194,5 @@ export default {
       else return amountStr.substring(0, 3) + '.' + amountStr.substring(3)
     },
   },
-  emits: [
-    'add-to-cart',
-    'remove-from-cart',
-    'download',
-    'copy-download',
-    'play',
-  ],
 }
 </script>

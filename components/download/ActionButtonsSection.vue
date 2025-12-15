@@ -157,6 +157,7 @@ export default {
       default: () => ({}),
     },
   },
+  emits: ['play', 'subscribe', 'free-download', 'buy-download', 'ussd-call'],
   computed: {
     footerClass() {
       let count = 0
@@ -180,6 +181,5 @@ export default {
       return null
     },
   },
-  emits: ['play', 'subscribe', 'free-download', 'buy-download', 'ussd-call'],
 }
 </script>

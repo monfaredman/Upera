@@ -113,11 +113,11 @@ export default {
       default: '',
     },
   },
+  emits: ['check-connection'],
   data() {
     return {
       operatorFullrate: 'همراه اول یا ایرانسل',
     }
   },
-  emits: ['check-connection'],
 }
 </script>

@@ -3,8 +3,8 @@
     <a
       :class="watchlistClasses"
       :style="customStyle"
-      @click.prevent="$emit('toggle-watchlist')"
       class="icon-btn-style"
+      @click.prevent="$emit('toggle-watchlist')"
     >
       <i
         :class="{
@@ -17,21 +17,21 @@
     <a
       :class="shareClasses"
       :style="customStyle"
-      @click.prevent="$emit('share')"
       class="icon-btn-style"
+      @click.prevent="$emit('share')"
     >
       <i class="icon-share-android fa-xs" />
     </a>
     <a
       :class="clapClasses"
       :style="customStyle"
+      class="icon-btn-style"
       @mousedown="$emit('clap-start')"
       @mouseleave="$emit('clap-stop')"
       @mouseup="$emit('clap-stop')"
       @touchstart="$emit('clap-start')"
       @touchend="$emit('clap-stop')"
       @touchcancel="$emit('clap-stop')"
-      class="icon-btn-style"
     >
       <div class="likes">
         <span v-if="userClaps" class="badge badge-secondary">{{

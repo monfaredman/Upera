@@ -188,8 +188,8 @@
                       </span>
                     </div>
                     <div
-                      class="wallet-balance-error"
                       v-if="!hasEnoughWalletBalance"
+                      class="wallet-balance-error"
                     >
                       <span>موجودی کافی نیست</span>
                     </div>
