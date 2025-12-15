@@ -2,6 +2,7 @@
   <div>
     <b-img
       blank
+      v-lazy="computedSrc"
       blank-color="#bbb"
       show
       :width="width"
@@ -13,7 +14,6 @@
       class="img-grid-flow"
       :class="height === 'full' ? 'h-full' : '' + ' ' + classNames"
       loading="lazy"
-      v-lazy="computedSrc"
       v-on="$listeners"
     />
   </div>

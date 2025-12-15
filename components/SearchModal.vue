@@ -16,8 +16,8 @@
       <div class="search-modal-header">
         <div class="search-input-container">
           <b-form-input
-            v-model="query"
             ref="searchInput"
+            v-model="query"
             autofocus
             :placeholder="$t('new.search')"
             type="text"
@@ -50,7 +50,7 @@
               <div class="title">
                 {{ ChooseLang(item.title_en || item.title, item.title_fa) }}
               </div>
-              <div class="meta" v-if="item.type">
+              <div v-if="item.type" class="meta">
                 {{ item.type }}
               </div>
             </div>
@@ -227,9 +227,9 @@
               </div>
               <div v-if="data.cast != null" class="container-fluid mt-4">
                 <div
-                  class="actor2"
                   v-for="(item, index) in data.cast"
                   :key="index"
+                  class="actor2"
                 >
                   <nuxt-link
                     :to="{ name: 'cast-id', params: { id: item.id } }"

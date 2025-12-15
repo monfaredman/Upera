@@ -4,10 +4,10 @@
       <!-- لوگوی سایت -->
       <div class="site-logo">
         <img
+          v-lazy="require('@/assets/images/logo-mobile.svg')"
           src="@/assets/images/logo-mobile.svg"
           alt="Logo"
           loading="lazy"
-          v-lazy="require('@/assets/images/logo-mobile.svg')"
         />
       </div>
       <!-- دکمه بازگشت -->
