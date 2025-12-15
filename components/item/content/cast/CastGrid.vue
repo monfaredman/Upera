@@ -35,7 +35,7 @@
     <swiper ref="castsSwiper" class="cast-swiper" :options="swiperOptions">
       <swiper-slide
         v-for="(person, index) in mergedList"
-        :key="person.id || `${person._role}-${index}`"
+        :key="`${person._role}-${person.id || index}`"
         class="cast-slide"
       >
         <nuxt-link
