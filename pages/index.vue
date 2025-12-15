@@ -415,9 +415,7 @@
             class="type1-carousel-section"
           >
             <div
-              v-swiper:[block.swiperHandle]="
-                getType1SwiperOptions(block.items.length)
-              "
+              v-swiper:[block.swiperHandle]="getType1SwiperOptions()"
               class="swiper-container type1-carousel-container"
             >
               <div class="swiper-wrapper">
@@ -1655,8 +1653,8 @@ export default {
     //   if (!desktop || desktop === mobile) return ''
     //   return `${mobile || desktop} 880w, ${desktop} 1920w`
     // },
-    getType1SwiperOptions(count = 0) {
-      const loopable = count > 2
+    getType1SwiperOptions() {
+      const loopable = false
       return {
         ...this.swiperOptionType1,
         loop: loopable,
