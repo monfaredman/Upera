@@ -25,7 +25,7 @@
     </section>
 
     <OfferSectionSkeleton v-if="isLoadingOffer" />
-    <OfferSection v-else :offer="offer" />
+    <OfferSection v-else-if="offer" :offer="offer" />
 
     <!-- Filter Section with Skeleton -->
     <FilterSkeleton v-show="isLoadingFilters" />
@@ -43,7 +43,7 @@
 
     <!-- Lives Section with Skeleton -->
     <HorizontalListSkeleton v-if="isLoadingLives" variant="backdrop" />
-    <div v-else-if="lives && lives.data.length" class="mt-4">
+    <div v-else-if="lives && lives.data && lives.data.length" class="mt-4">
       <HorizontalList
         :title-en="lives.list_en"
         :title-fa="lives.list_fa"
@@ -63,7 +63,10 @@
 
     <!-- UGCs Section with Skeleton -->
     <HorizontalListSkeleton v-if="isLoadingUgcs" variant="backdrop" />
-    <div v-else-if="ugcs && ugcs.data.length" class="mt-4">
+    <div
+      v-else-if="ugcs && Array.isArray(ugcs) && ugcs.length > 0"
+      class="mt-4"
+    >
       <div v-for="(sec, rootindex) in ugcs" :key="rootindex">
         <HorizontalList
           :title-en="sec.title_en"
@@ -220,11 +223,11 @@
       <HorizontalListSkeleton variant="poster" />
       <HorizontalListSkeleton variant="poster" />
     </template>
-    <div v-else-if="discoverBlocks.length">
+    <template v-else-if="discoverBlocks.length">
       <template v-for="(block, blockIndex) in discoverBlocks">
         <div
           v-if="block.kind === 'discover'"
-          :key="block.key || `discover-${blockIndex}`"
+          :key="block.key || `discover-block-${blockIndex}`"
         >
           <div
             v-if="block.list.style == 'occasion' && block.list.data.length > 0"
@@ -495,7 +498,7 @@
           </div>
         </div>
       </template>
-    </div>
+    </template>
 
     <div v-else-if="nocontent" class="container-fluid-notfound">
       <div class="text-center py-5">
@@ -800,7 +803,8 @@ export default {
     discoverBlocks() {
       const baseBlocks = this.discoverLists.map((list, index) => ({
         kind: 'discover',
-        key: `discover-${list.list || index}`,
+        // Use index to ensure unique keys even if list.list values are duplicated
+        key: `discover-${list.list || 'unknown'}-${index}`,
         list,
         originalIndex: index,
       }))
@@ -919,10 +923,16 @@ export default {
         const offerRes = await this.$axios.get(
           '/get/offer' + this.filtercontents
         )
-        this.offer = offerRes.data
+        if (offerRes.data) {
+          this.offer = offerRes.data
+        } else {
+          this.offer = null
+        }
       }
     ).catch((error) => {
       console.error('Error fetching offer:', error)
+      this.isLoadingOffer = false
+      this.offer = null
     })
 
     // Fetch recently watched
@@ -944,7 +954,11 @@ export default {
         const livesRes = await this.$axios.get(
           '/get/lives?ref=' + this.checkuser?.ref
         )
-        this.lives = livesRes.data
+        if (livesRes.data && livesRes.data.data) {
+          this.lives = livesRes.data
+        } else {
+          this.lives = null
+        }
       }
     ).catch((e) => {
       console.error('fetch lives failed', e)
@@ -1355,6 +1369,7 @@ export default {
     async get_recently() {
       if (!this.$auth.loggedIn) {
         this.recently = null
+        this.isLoadingRecently = false
         return
       }
 
@@ -1370,10 +1385,14 @@ export default {
           )
           if (status === 200) {
             this.recently = data.data
+          } else {
+            this.recently = null
           }
         }
       ).catch((error) => {
         console.error('get_recently failed:', error)
+        this.isLoadingRecently = false
+        this.recently = null
       })
     },
     async fetchDiscoverData() {
@@ -1388,11 +1407,17 @@ export default {
           )
           if (response.status === 200) {
             this.data = response.data.data
-            if (!this.data.data.length) this.nocontent = true
+            if (!this.data.data.length) {
+              this.nocontent = true
+            } else {
+              this.nocontent = false
+            }
           }
         }
       ).catch((error) => {
         console.error('Error fetching discover:', error)
+        this.isLoadingDiscover = false
+        this.nocontent = true
       })
     },
     showNext() {

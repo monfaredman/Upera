@@ -253,9 +253,10 @@ export default {
     // Analyze bundle size in production
     analyze: process.env.ANALYZE === 'true',
     /*
-     ** Run ESLint on save
+     ** Extend webpack config
      */
     extend(config, { isDev, isClient }) {
+      // Run ESLint on save in development
       if (isDev && isClient) {
         config.module.rules.push({
           enforce: 'pre',
@@ -264,6 +265,57 @@ export default {
           exclude: /(node_modules)/,
         })
       }
+
+      // Ensure module & rules exist before pushing custom loaders
+      config.module = config.module || {}
+      config.module.rules = config.module.rules || []
+
+      // Handle imported PDF files (e.g. assets/images/hainternational.pdf)
+      // so webpack does not error when encountering them in a require context.
+      // This must be added early to ensure PDFs are handled before other loaders try to parse them
+      config.module.rules.unshift({
+        test: /\.pdf$/,
+        type: 'javascript/auto',
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: 'files/[name].[hash:8].[ext]',
+              esModule: false,
+            },
+          },
+        ],
+      })
+
+      // Exclude bootstrap-vue icons from parsing to avoid Babel deoptimization warnings
+      // This file is very large (>500KB) and doesn't need to be parsed/transformed
+      if (!config.module.noParse) {
+        config.module.noParse = []
+      }
+      // Add bootstrap-vue icons to noParse if it's not already there
+      const bootstrapIconsPath = /bootstrap-vue[\\/]src[\\/]icons[\\/]icons\.js/
+      if (
+        !config.module.noParse.some((pattern) => {
+          if (typeof pattern === 'object' && pattern.test) {
+            return pattern.test.toString() === bootstrapIconsPath.toString()
+          }
+          return (
+            pattern === bootstrapIconsPath ||
+            pattern.toString() === bootstrapIconsPath.toString()
+          )
+        })
+      ) {
+        config.module.noParse.push(bootstrapIconsPath)
+      }
+
+      // Tweak performance hints so large, but intentional, assets
+      // (fonts, large images, vendor bundles) don't spam the console.
+      config.performance = config.performance || {}
+      config.performance.maxAssetSize = 1024 * 1024 * 3 // 3 MiB (increased from 2 MiB)
+      config.performance.maxEntrypointSize = 1024 * 1024 * 5 // 5 MiB (increased from 4 MiB)
+      // Disable performance hints in production to reduce noise
+      // The warnings are informational and don't affect functionality
+      config.performance.hints = false
     },
   },
   server: {
@@ -385,6 +437,7 @@ export default {
   plugins: [
     // Language detection must run first, before i18n initializes
     '~/plugins/i18n-detection.client',
+    '~/plugins/lazyload.client',
     '~plugins/slick',
     '~plugins/swiper',
     '~/plugins/swal',

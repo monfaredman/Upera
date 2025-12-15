@@ -84,7 +84,8 @@ export default {
       default: '',
     },
     aspectRatio: {
-      type: String,
+      // Accept both String and Number to avoid Vue type warnings
+      type: [String, Number],
       default: null,
     },
   },
