@@ -859,12 +859,9 @@ export default {
   },
   watch: {
     recently(newVal) {
-      if (newVal && newVal.length > 0) {
-        this.watchSwip.on('reachBeginning', () => {
-          document.getElementById('watching').classList.remove('swipe')
-        })
-        this.watchSwip.on('fromEdge', () => {
-          document.getElementById('watching').classList.add('swipe')
+      if (newVal && newVal.recently && newVal.recently.length > 0) {
+        this.$nextTick(() => {
+          this.setupWatchingSwiper()
         })
       }
     },
@@ -1255,6 +1252,108 @@ export default {
     buildShowIdRoute(item) {
       return { name: item.type + '-show-id', params: { id: item.id } }
     },
+    setupWatchingSwiper() {
+      // Wait a bit for swiper to initialize
+      const trySetup = (attempts = 0) => {
+        const watching = document.getElementById('watching')
+        if (!watching) {
+          if (attempts < 10) {
+            setTimeout(() => trySetup(attempts + 1), 100)
+          }
+          return
+        }
+
+        const swiper = this.watchSwip
+        if (!swiper || swiper.isBeginning === undefined) {
+          // Retry if swiper not ready yet
+          if (attempts < 10) {
+            setTimeout(() => trySetup(attempts + 1), 100)
+          }
+          return
+        }
+
+        // Remove existing listeners to avoid duplicates
+        swiper.off('reachBeginning')
+        swiper.off('slideChange')
+        swiper.off('slideChangeTransitionEnd')
+        swiper.off('touchEnd')
+        swiper.off('fromEdge')
+        swiper.off('touchMove')
+        swiper.off('progress')
+        swiper.off('setTranslate')
+
+        // Helper function to update swipe class based on swiper state
+        const updateSwipeClass = () => {
+          if (!watching || !swiper) return
+
+          try {
+            // Check if swiper has moved away from beginning
+            const isAtBeginning = swiper.isBeginning
+
+            if (isAtBeginning) {
+              watching.classList.remove('swipe')
+            } else {
+              watching.classList.add('swipe')
+            }
+          } catch (e) {
+            console.warn('Error updating swipe class:', e)
+          }
+        }
+
+        // Update class when slide changes (primary method)
+        swiper.on('slideChange', () => {
+          updateSwipeClass()
+        })
+
+        // Update after transition ends for smoother updates
+        swiper.on('slideChangeTransitionEnd', () => {
+          updateSwipeClass()
+        })
+
+        // Remove class when slider reaches the beginning
+        swiper.on('reachBeginning', () => {
+          if (watching) {
+            watching.classList.remove('swipe')
+          }
+        })
+
+        // Add class when swiping away from the beginning
+        swiper.on('fromEdge', () => {
+          if (watching) {
+            watching.classList.add('swipe')
+          }
+        })
+
+        // Handle during swipe for real-time updates
+        swiper.on('touchMove', () => {
+          updateSwipeClass()
+        })
+
+        // Also listen to progress for more accurate detection
+        swiper.on('progress', () => {
+          updateSwipeClass()
+        })
+
+        // Handle when swipe ends - ensure class state is correct
+        swiper.on('touchEnd', () => {
+          // Small delay to ensure swiper state is updated
+          setTimeout(() => {
+            updateSwipeClass()
+          }, 50)
+        })
+
+        // Initialize class state based on current position
+        // Use a small delay to ensure swiper is fully initialized
+        setTimeout(() => {
+          updateSwipeClass()
+        }, 100)
+      }
+
+      // Start trying after a short delay
+      setTimeout(() => {
+        trySetup(0)
+      }, 200)
+    },
     async get_recently() {
       if (!this.$auth.loggedIn) {
         this.recently = null
@@ -1271,22 +1370,8 @@ export default {
           const { data, status } = await this.$axios.get(
             apiurl + this.filtercontents
           )
-          console.log('65456465464564564564', data)
           if (status === 200) {
             this.recently = data.data
-            this.$nextTick(() => {
-              const watching = document.getElementById('watching')
-              if (watching && this.watchSwip) {
-                this.watchSwip.on('reachBeginning', () => {
-                  console.log('reachBeginning')
-                  watching.classList.remove('swipe')
-                })
-                this.watchSwip.on('fromEdge', () => {
-                  console.log('fromEdge')
-                  watching.classList.add('swipe')
-                })
-              }
-            })
           }
         }
       ).catch((error) => {
