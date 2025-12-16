@@ -254,6 +254,9 @@ export default {
     },
     // Analyze bundle size in production
     analyze: process.env.ANALYZE === 'true',
+    // Transpile specific node_modules packages that ship ESM source.
+    // This avoids emitting raw `import` statements into client chunks.
+    transpile: ['bootstrap-vue'],
     /*
      ** Extend webpack config
      */
@@ -291,24 +294,12 @@ export default {
 
       // Exclude bootstrap-vue icons from parsing to avoid Babel deoptimization warnings
       // This file is very large (>500KB) and doesn't need to be parsed/transformed
-      if (!config.module.noParse) {
-        config.module.noParse = []
-      }
-      // Add bootstrap-vue icons to noParse if it's not already there
-      const bootstrapIconsPath = /bootstrap-vue[\\/]src[\\/]icons[\\/]icons\.js/
-      if (
-        !config.module.noParse.some((pattern) => {
-          if (typeof pattern === 'object' && pattern.test) {
-            return pattern.test.toString() === bootstrapIconsPath.toString()
-          }
-          return (
-            pattern === bootstrapIconsPath ||
-            pattern.toString() === bootstrapIconsPath.toString()
-          )
-        })
-      ) {
-        config.module.noParse.push(bootstrapIconsPath)
-      }
+      // IMPORTANT: do NOT noParse bootstrap-vue icons.
+      // bootstrap-vue ships ESM sources under `src/` that include `import` statements.
+      // If webpack skips parsing/transpiling that file, the raw `import` can leak into
+      // the emitted chunk, causing runtime errors like:
+      //   "Cannot use import statement outside a module"
+      // We'll tolerate the Babel deopt warning here to keep production working.
 
       // Tweak performance hints so large, but intentional, assets
       // (fonts, large images, vendor bundles) don't spam the console.
