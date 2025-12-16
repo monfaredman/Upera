@@ -23275,15 +23275,14 @@ __webpack_require__.d(components_namespaceObject, "Socialsharing", function() { 
 __webpack_require__.d(components_namespaceObject, "Subscription", function() { return Subscription; });
 __webpack_require__.d(components_namespaceObject, "VideoPlayer", function() { return VideoPlayer; });
 __webpack_require__.d(components_namespaceObject, "Pwa", function() { return Pwa; });
-__webpack_require__.d(components_namespaceObject, "AppLinks", function() { return AppLinks; });
-__webpack_require__.d(components_namespaceObject, "AppBanner", function() { return AppBanner; });
-__webpack_require__.d(components_namespaceObject, "AppChildSection", function() { return AppChildSection; });
-__webpack_require__.d(components_namespaceObject, "AppHighlights", function() { return AppHighlights; });
-__webpack_require__.d(components_namespaceObject, "AppLogoSection", function() { return AppLogoSection; });
-__webpack_require__.d(components_namespaceObject, "AppNewMoviesSlider", function() { return AppNewMoviesSlider; });
-__webpack_require__.d(components_namespaceObject, "AppTopRatedSlider", function() { return AppTopRatedSlider; });
 __webpack_require__.d(components_namespaceObject, "ButtonsDownloadButton", function() { return ButtonsDownloadButton; });
 __webpack_require__.d(components_namespaceObject, "ButtonsPrimaryActionButton", function() { return ButtonsPrimaryActionButton; });
+__webpack_require__.d(components_namespaceObject, "CallbackFooter", function() { return CallbackFooter; });
+__webpack_require__.d(components_namespaceObject, "CallbackFileDownloadItem", function() { return CallbackFileDownloadItem; });
+__webpack_require__.d(components_namespaceObject, "CallbackLoadingSpinner", function() { return CallbackLoadingSpinner; });
+__webpack_require__.d(components_namespaceObject, "CallbackPaymentErrorContent", function() { return CallbackPaymentErrorContent; });
+__webpack_require__.d(components_namespaceObject, "CallbackPaymentSuccessContent", function() { return CallbackPaymentSuccessContent; });
+__webpack_require__.d(components_namespaceObject, "CallbackSupportContactSection", function() { return CallbackSupportContactSection; });
 __webpack_require__.d(components_namespaceObject, "CommonNuxtOptimizedImage", function() { return CommonNuxtOptimizedImage; });
 __webpack_require__.d(components_namespaceObject, "DirectdebitBankManagementSection", function() { return DirectdebitBankManagementSection; });
 __webpack_require__.d(components_namespaceObject, "DirectdebitPaymentOptionsSection", function() { return DirectdebitPaymentOptionsSection; });
@@ -23317,26 +23316,20 @@ __webpack_require__.d(components_namespaceObject, "HomeFilterSkeleton", function
 __webpack_require__.d(components_namespaceObject, "HomeHorizontalListSkeleton", function() { return HomeHorizontalListSkeleton; });
 __webpack_require__.d(components_namespaceObject, "HomeOccasionSectionSkeleton", function() { return HomeOccasionSectionSkeleton; });
 __webpack_require__.d(components_namespaceObject, "HomeOfferSectionSkeleton", function() { return HomeOfferSectionSkeleton; });
+__webpack_require__.d(components_namespaceObject, "AppLinks", function() { return AppLinks; });
+__webpack_require__.d(components_namespaceObject, "AppBanner", function() { return AppBanner; });
+__webpack_require__.d(components_namespaceObject, "AppChildSection", function() { return AppChildSection; });
+__webpack_require__.d(components_namespaceObject, "AppHighlights", function() { return AppHighlights; });
+__webpack_require__.d(components_namespaceObject, "AppLogoSection", function() { return AppLogoSection; });
+__webpack_require__.d(components_namespaceObject, "AppNewMoviesSlider", function() { return AppNewMoviesSlider; });
+__webpack_require__.d(components_namespaceObject, "AppTopRatedSlider", function() { return AppTopRatedSlider; });
 __webpack_require__.d(components_namespaceObject, "ItemFile", function() { return ItemFile; });
 __webpack_require__.d(components_namespaceObject, "ItemSeasonEpisodes", function() { return ItemSeasonEpisodes; });
 __webpack_require__.d(components_namespaceObject, "ItemSeriesLastEpisode", function() { return ItemSeriesLastEpisode; });
 __webpack_require__.d(components_namespaceObject, "ItemSimilarContent", function() { return ItemSimilarContent; });
 __webpack_require__.d(components_namespaceObject, "PlayerSubscriptionButton", function() { return PlayerSubscriptionButton; });
-__webpack_require__.d(components_namespaceObject, "CallbackFooter", function() { return CallbackFooter; });
-__webpack_require__.d(components_namespaceObject, "CallbackFileDownloadItem", function() { return CallbackFileDownloadItem; });
-__webpack_require__.d(components_namespaceObject, "CallbackLoadingSpinner", function() { return CallbackLoadingSpinner; });
-__webpack_require__.d(components_namespaceObject, "CallbackPaymentErrorContent", function() { return CallbackPaymentErrorContent; });
-__webpack_require__.d(components_namespaceObject, "CallbackPaymentSuccessContent", function() { return CallbackPaymentSuccessContent; });
-__webpack_require__.d(components_namespaceObject, "CallbackSupportContactSection", function() { return CallbackSupportContactSection; });
 __webpack_require__.d(components_namespaceObject, "ItemCommonBackNavigation", function() { return ItemCommonBackNavigation; });
 __webpack_require__.d(components_namespaceObject, "ItemCommonOptimizedImage", function() { return ItemCommonOptimizedImage; });
-__webpack_require__.d(components_namespaceObject, "ItemSkeletonsCastsTabSkeleton", function() { return ItemSkeletonsCastsTabSkeleton; });
-__webpack_require__.d(components_namespaceObject, "ItemSkeletonsCommentsTabSkeleton", function() { return ItemSkeletonsCommentsTabSkeleton; });
-__webpack_require__.d(components_namespaceObject, "ItemSkeletonsContentDetailsSkeleton", function() { return ItemSkeletonsContentDetailsSkeleton; });
-__webpack_require__.d(components_namespaceObject, "ItemSkeletonsContentStatisticsSkeleton", function() { return ItemSkeletonsContentStatisticsSkeleton; });
-__webpack_require__.d(components_namespaceObject, "ItemSkeletonsSeasonEpisodesSkeleton", function() { return ItemSkeletonsSeasonEpisodesSkeleton; });
-__webpack_require__.d(components_namespaceObject, "ItemSkeletonsShowcaseSkeleton", function() { return ItemSkeletonsShowcaseSkeleton; });
-__webpack_require__.d(components_namespaceObject, "ItemSkeletonsSimilarContentSkeleton", function() { return ItemSkeletonsSimilarContentSkeleton; });
 __webpack_require__.d(components_namespaceObject, "ItemContentAgeRatingItem", function() { return ItemContentAgeRatingItem; });
 __webpack_require__.d(components_namespaceObject, "ItemContentStatistics", function() { return ItemContentStatistics; });
 __webpack_require__.d(components_namespaceObject, "ItemContentMediaPreview", function() { return ItemContentMediaPreview; });
@@ -23346,6 +23339,13 @@ __webpack_require__.d(components_namespaceObject, "ItemContentRuntimeItem", func
 __webpack_require__.d(components_namespaceObject, "ItemContentStatisticsItem", function() { return ItemContentStatisticsItem; });
 __webpack_require__.d(components_namespaceObject, "ItemContentStoryContent", function() { return ItemContentStoryContent; });
 __webpack_require__.d(components_namespaceObject, "ItemContentTeaserPreview", function() { return ItemContentTeaserPreview; });
+__webpack_require__.d(components_namespaceObject, "ItemSkeletonsCastsTabSkeleton", function() { return ItemSkeletonsCastsTabSkeleton; });
+__webpack_require__.d(components_namespaceObject, "ItemSkeletonsCommentsTabSkeleton", function() { return ItemSkeletonsCommentsTabSkeleton; });
+__webpack_require__.d(components_namespaceObject, "ItemSkeletonsContentDetailsSkeleton", function() { return ItemSkeletonsContentDetailsSkeleton; });
+__webpack_require__.d(components_namespaceObject, "ItemSkeletonsContentStatisticsSkeleton", function() { return ItemSkeletonsContentStatisticsSkeleton; });
+__webpack_require__.d(components_namespaceObject, "ItemSkeletonsSeasonEpisodesSkeleton", function() { return ItemSkeletonsSeasonEpisodesSkeleton; });
+__webpack_require__.d(components_namespaceObject, "ItemSkeletonsShowcaseSkeleton", function() { return ItemSkeletonsShowcaseSkeleton; });
+__webpack_require__.d(components_namespaceObject, "ItemSkeletonsSimilarContentSkeleton", function() { return ItemSkeletonsSimilarContentSkeleton; });
 __webpack_require__.d(components_namespaceObject, "ItemShowcaseActionButtons", function() { return ItemShowcaseActionButtons; });
 __webpack_require__.d(components_namespaceObject, "ItemShowcaseContentDetails", function() { return ItemShowcaseContentDetails; });
 __webpack_require__.d(components_namespaceObject, "ItemShowcaseContentLanguageInfo", function() { return ItemShowcaseContentLanguageInfo; });
@@ -27924,41 +27924,6 @@ var Pwa = function Pwa() {
     return wrapFunctional(c.default || c);
   });
 };
-var AppLinks = function AppLinks() {
-  return __webpack_require__.e(/* import() | components/app-links */ 31).then(__webpack_require__.bind(null, 849)).then(function (c) {
-    return wrapFunctional(c.default || c);
-  });
-};
-var AppBanner = function AppBanner() {
-  return __webpack_require__.e(/* import() | components/app-banner */ 28).then(__webpack_require__.bind(null, 943)).then(function (c) {
-    return wrapFunctional(c.default || c);
-  });
-};
-var AppChildSection = function AppChildSection() {
-  return __webpack_require__.e(/* import() | components/app-child-section */ 29).then(__webpack_require__.bind(null, 944)).then(function (c) {
-    return wrapFunctional(c.default || c);
-  });
-};
-var AppHighlights = function AppHighlights() {
-  return __webpack_require__.e(/* import() | components/app-highlights */ 30).then(__webpack_require__.bind(null, 916)).then(function (c) {
-    return wrapFunctional(c.default || c);
-  });
-};
-var AppLogoSection = function AppLogoSection() {
-  return __webpack_require__.e(/* import() | components/app-logo-section */ 32).then(__webpack_require__.bind(null, 945)).then(function (c) {
-    return wrapFunctional(c.default || c);
-  });
-};
-var AppNewMoviesSlider = function AppNewMoviesSlider() {
-  return Promise.all(/* import() | components/app-new-movies-slider */[__webpack_require__.e(7), __webpack_require__.e(1), __webpack_require__.e(33)]).then(__webpack_require__.bind(null, 915)).then(function (c) {
-    return wrapFunctional(c.default || c);
-  });
-};
-var AppTopRatedSlider = function AppTopRatedSlider() {
-  return Promise.all(/* import() | components/app-top-rated-slider */[__webpack_require__.e(7), __webpack_require__.e(1), __webpack_require__.e(34)]).then(__webpack_require__.bind(null, 1099)).then(function (c) {
-    return wrapFunctional(c.default || c);
-  });
-};
 var ButtonsDownloadButton = function ButtonsDownloadButton() {
   return __webpack_require__.e(/* import() | components/buttons-download-button */ 35).then(__webpack_require__.bind(null, 802)).then(function (c) {
     return wrapFunctional(c.default || c);
@@ -27966,6 +27931,36 @@ var ButtonsDownloadButton = function ButtonsDownloadButton() {
 };
 var ButtonsPrimaryActionButton = function ButtonsPrimaryActionButton() {
   return __webpack_require__.e(/* import() | components/buttons-primary-action-button */ 36).then(__webpack_require__.bind(null, 803)).then(function (c) {
+    return wrapFunctional(c.default || c);
+  });
+};
+var CallbackFooter = function CallbackFooter() {
+  return __webpack_require__.e(/* import() | components/callback-footer */ 38).then(__webpack_require__.bind(null, 850)).then(function (c) {
+    return wrapFunctional(c.default || c);
+  });
+};
+var CallbackFileDownloadItem = function CallbackFileDownloadItem() {
+  return __webpack_require__.e(/* import() | components/callback-file-download-item */ 37).then(__webpack_require__.bind(null, 1099)).then(function (c) {
+    return wrapFunctional(c.default || c);
+  });
+};
+var CallbackLoadingSpinner = function CallbackLoadingSpinner() {
+  return __webpack_require__.e(/* import() | components/callback-loading-spinner */ 39).then(__webpack_require__.bind(null, 917)).then(function (c) {
+    return wrapFunctional(c.default || c);
+  });
+};
+var CallbackPaymentErrorContent = function CallbackPaymentErrorContent() {
+  return __webpack_require__.e(/* import() | components/callback-payment-error-content */ 40).then(__webpack_require__.bind(null, 919)).then(function (c) {
+    return wrapFunctional(c.default || c);
+  });
+};
+var CallbackPaymentSuccessContent = function CallbackPaymentSuccessContent() {
+  return __webpack_require__.e(/* import() | components/callback-payment-success-content */ 41).then(__webpack_require__.bind(null, 918)).then(function (c) {
+    return wrapFunctional(c.default || c);
+  });
+};
+var CallbackSupportContactSection = function CallbackSupportContactSection() {
+  return __webpack_require__.e(/* import() | components/callback-support-contact-section */ 42).then(__webpack_require__.bind(null, 920)).then(function (c) {
     return wrapFunctional(c.default || c);
   });
 };
@@ -28134,58 +28129,63 @@ var HomeOfferSectionSkeleton = function HomeOfferSectionSkeleton() {
     return wrapFunctional(c.default || c);
   });
 };
+var AppLinks = function AppLinks() {
+  return __webpack_require__.e(/* import() | components/app-links */ 31).then(__webpack_require__.bind(null, 849)).then(function (c) {
+    return wrapFunctional(c.default || c);
+  });
+};
+var AppBanner = function AppBanner() {
+  return __webpack_require__.e(/* import() | components/app-banner */ 28).then(__webpack_require__.bind(null, 943)).then(function (c) {
+    return wrapFunctional(c.default || c);
+  });
+};
+var AppChildSection = function AppChildSection() {
+  return __webpack_require__.e(/* import() | components/app-child-section */ 29).then(__webpack_require__.bind(null, 944)).then(function (c) {
+    return wrapFunctional(c.default || c);
+  });
+};
+var AppHighlights = function AppHighlights() {
+  return __webpack_require__.e(/* import() | components/app-highlights */ 30).then(__webpack_require__.bind(null, 916)).then(function (c) {
+    return wrapFunctional(c.default || c);
+  });
+};
+var AppLogoSection = function AppLogoSection() {
+  return __webpack_require__.e(/* import() | components/app-logo-section */ 32).then(__webpack_require__.bind(null, 945)).then(function (c) {
+    return wrapFunctional(c.default || c);
+  });
+};
+var AppNewMoviesSlider = function AppNewMoviesSlider() {
+  return Promise.all(/* import() | components/app-new-movies-slider */[__webpack_require__.e(7), __webpack_require__.e(1), __webpack_require__.e(33)]).then(__webpack_require__.bind(null, 915)).then(function (c) {
+    return wrapFunctional(c.default || c);
+  });
+};
+var AppTopRatedSlider = function AppTopRatedSlider() {
+  return Promise.all(/* import() | components/app-top-rated-slider */[__webpack_require__.e(7), __webpack_require__.e(1), __webpack_require__.e(34)]).then(__webpack_require__.bind(null, 1113)).then(function (c) {
+    return wrapFunctional(c.default || c);
+  });
+};
 var ItemFile = function ItemFile() {
-  return Promise.all(/* import() | components/item-file */[__webpack_require__.e(2), __webpack_require__.e(0), __webpack_require__.e(4), __webpack_require__.e(21)]).then(__webpack_require__.bind(null, 1113)).then(function (c) {
+  return Promise.all(/* import() | components/item-file */[__webpack_require__.e(2), __webpack_require__.e(0), __webpack_require__.e(4), __webpack_require__.e(21)]).then(__webpack_require__.bind(null, 1114)).then(function (c) {
     return wrapFunctional(c.default || c);
   });
 };
 var ItemSeasonEpisodes = function ItemSeasonEpisodes() {
-  return __webpack_require__.e(/* import() | components/item-season-episodes */ 22).then(__webpack_require__.bind(null, 1114)).then(function (c) {
+  return __webpack_require__.e(/* import() | components/item-season-episodes */ 22).then(__webpack_require__.bind(null, 1115)).then(function (c) {
     return wrapFunctional(c.default || c);
   });
 };
 var ItemSeriesLastEpisode = function ItemSeriesLastEpisode() {
-  return __webpack_require__.e(/* import() | components/item-series-last-episode */ 73).then(__webpack_require__.bind(null, 1115)).then(function (c) {
+  return __webpack_require__.e(/* import() | components/item-series-last-episode */ 73).then(__webpack_require__.bind(null, 1116)).then(function (c) {
     return wrapFunctional(c.default || c);
   });
 };
 var ItemSimilarContent = function ItemSimilarContent() {
-  return Promise.all(/* import() | components/item-similar-content */[__webpack_require__.e(1), __webpack_require__.e(6), __webpack_require__.e(25)]).then(__webpack_require__.bind(null, 1116)).then(function (c) {
+  return Promise.all(/* import() | components/item-similar-content */[__webpack_require__.e(1), __webpack_require__.e(6), __webpack_require__.e(25)]).then(__webpack_require__.bind(null, 1117)).then(function (c) {
     return wrapFunctional(c.default || c);
   });
 };
 var PlayerSubscriptionButton = function PlayerSubscriptionButton() {
   return __webpack_require__.e(/* import() | components/player-subscription-button */ 91).then(__webpack_require__.bind(null, 922)).then(function (c) {
-    return wrapFunctional(c.default || c);
-  });
-};
-var CallbackFooter = function CallbackFooter() {
-  return __webpack_require__.e(/* import() | components/callback-footer */ 38).then(__webpack_require__.bind(null, 850)).then(function (c) {
-    return wrapFunctional(c.default || c);
-  });
-};
-var CallbackFileDownloadItem = function CallbackFileDownloadItem() {
-  return __webpack_require__.e(/* import() | components/callback-file-download-item */ 37).then(__webpack_require__.bind(null, 1117)).then(function (c) {
-    return wrapFunctional(c.default || c);
-  });
-};
-var CallbackLoadingSpinner = function CallbackLoadingSpinner() {
-  return __webpack_require__.e(/* import() | components/callback-loading-spinner */ 39).then(__webpack_require__.bind(null, 917)).then(function (c) {
-    return wrapFunctional(c.default || c);
-  });
-};
-var CallbackPaymentErrorContent = function CallbackPaymentErrorContent() {
-  return __webpack_require__.e(/* import() | components/callback-payment-error-content */ 40).then(__webpack_require__.bind(null, 919)).then(function (c) {
-    return wrapFunctional(c.default || c);
-  });
-};
-var CallbackPaymentSuccessContent = function CallbackPaymentSuccessContent() {
-  return __webpack_require__.e(/* import() | components/callback-payment-success-content */ 41).then(__webpack_require__.bind(null, 918)).then(function (c) {
-    return wrapFunctional(c.default || c);
-  });
-};
-var CallbackSupportContactSection = function CallbackSupportContactSection() {
-  return __webpack_require__.e(/* import() | components/callback-support-contact-section */ 42).then(__webpack_require__.bind(null, 920)).then(function (c) {
     return wrapFunctional(c.default || c);
   });
 };
@@ -28196,41 +28196,6 @@ var ItemCommonBackNavigation = function ItemCommonBackNavigation() {
 };
 var ItemCommonOptimizedImage = function ItemCommonOptimizedImage() {
   return __webpack_require__.e(/* import() | components/item-common-optimized-image */ 59).then(__webpack_require__.bind(null, 743)).then(function (c) {
-    return wrapFunctional(c.default || c);
-  });
-};
-var ItemSkeletonsCastsTabSkeleton = function ItemSkeletonsCastsTabSkeleton() {
-  return __webpack_require__.e(/* import() | components/item-skeletons-casts-tab-skeleton */ 84).then(__webpack_require__.bind(null, 927)).then(function (c) {
-    return wrapFunctional(c.default || c);
-  });
-};
-var ItemSkeletonsCommentsTabSkeleton = function ItemSkeletonsCommentsTabSkeleton() {
-  return __webpack_require__.e(/* import() | components/item-skeletons-comments-tab-skeleton */ 85).then(__webpack_require__.bind(null, 928)).then(function (c) {
-    return wrapFunctional(c.default || c);
-  });
-};
-var ItemSkeletonsContentDetailsSkeleton = function ItemSkeletonsContentDetailsSkeleton() {
-  return __webpack_require__.e(/* import() | components/item-skeletons-content-details-skeleton */ 86).then(__webpack_require__.bind(null, 925)).then(function (c) {
-    return wrapFunctional(c.default || c);
-  });
-};
-var ItemSkeletonsContentStatisticsSkeleton = function ItemSkeletonsContentStatisticsSkeleton() {
-  return __webpack_require__.e(/* import() | components/item-skeletons-content-statistics-skeleton */ 87).then(__webpack_require__.bind(null, 929)).then(function (c) {
-    return wrapFunctional(c.default || c);
-  });
-};
-var ItemSkeletonsSeasonEpisodesSkeleton = function ItemSkeletonsSeasonEpisodesSkeleton() {
-  return __webpack_require__.e(/* import() | components/item-skeletons-season-episodes-skeleton */ 88).then(__webpack_require__.bind(null, 924)).then(function (c) {
-    return wrapFunctional(c.default || c);
-  });
-};
-var ItemSkeletonsShowcaseSkeleton = function ItemSkeletonsShowcaseSkeleton() {
-  return __webpack_require__.e(/* import() | components/item-skeletons-showcase-skeleton */ 26).then(__webpack_require__.bind(null, 923)).then(function (c) {
-    return wrapFunctional(c.default || c);
-  });
-};
-var ItemSkeletonsSimilarContentSkeleton = function ItemSkeletonsSimilarContentSkeleton() {
-  return __webpack_require__.e(/* import() | components/item-skeletons-similar-content-skeleton */ 89).then(__webpack_require__.bind(null, 926)).then(function (c) {
     return wrapFunctional(c.default || c);
   });
 };
@@ -28276,6 +28241,41 @@ var ItemContentStoryContent = function ItemContentStoryContent() {
 };
 var ItemContentTeaserPreview = function ItemContentTeaserPreview() {
   return Promise.all(/* import() | components/item-content-teaser-preview */[__webpack_require__.e(1), __webpack_require__.e(6), __webpack_require__.e(72)]).then(__webpack_require__.bind(null, 1125)).then(function (c) {
+    return wrapFunctional(c.default || c);
+  });
+};
+var ItemSkeletonsCastsTabSkeleton = function ItemSkeletonsCastsTabSkeleton() {
+  return __webpack_require__.e(/* import() | components/item-skeletons-casts-tab-skeleton */ 84).then(__webpack_require__.bind(null, 927)).then(function (c) {
+    return wrapFunctional(c.default || c);
+  });
+};
+var ItemSkeletonsCommentsTabSkeleton = function ItemSkeletonsCommentsTabSkeleton() {
+  return __webpack_require__.e(/* import() | components/item-skeletons-comments-tab-skeleton */ 85).then(__webpack_require__.bind(null, 928)).then(function (c) {
+    return wrapFunctional(c.default || c);
+  });
+};
+var ItemSkeletonsContentDetailsSkeleton = function ItemSkeletonsContentDetailsSkeleton() {
+  return __webpack_require__.e(/* import() | components/item-skeletons-content-details-skeleton */ 86).then(__webpack_require__.bind(null, 925)).then(function (c) {
+    return wrapFunctional(c.default || c);
+  });
+};
+var ItemSkeletonsContentStatisticsSkeleton = function ItemSkeletonsContentStatisticsSkeleton() {
+  return __webpack_require__.e(/* import() | components/item-skeletons-content-statistics-skeleton */ 87).then(__webpack_require__.bind(null, 929)).then(function (c) {
+    return wrapFunctional(c.default || c);
+  });
+};
+var ItemSkeletonsSeasonEpisodesSkeleton = function ItemSkeletonsSeasonEpisodesSkeleton() {
+  return __webpack_require__.e(/* import() | components/item-skeletons-season-episodes-skeleton */ 88).then(__webpack_require__.bind(null, 924)).then(function (c) {
+    return wrapFunctional(c.default || c);
+  });
+};
+var ItemSkeletonsShowcaseSkeleton = function ItemSkeletonsShowcaseSkeleton() {
+  return __webpack_require__.e(/* import() | components/item-skeletons-showcase-skeleton */ 26).then(__webpack_require__.bind(null, 923)).then(function (c) {
+    return wrapFunctional(c.default || c);
+  });
+};
+var ItemSkeletonsSimilarContentSkeleton = function ItemSkeletonsSimilarContentSkeleton() {
+  return __webpack_require__.e(/* import() | components/item-skeletons-similar-content-skeleton */ 89).then(__webpack_require__.bind(null, 926)).then(function (c) {
     return wrapFunctional(c.default || c);
   });
 };
