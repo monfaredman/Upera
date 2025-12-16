@@ -160,12 +160,17 @@ export default {
     }),
 
     userAvatar() {
-      // Get the stored avatar from localStorage
+      // Priority 1: User image from API /api/v1/get/user
+      const userImage = this.$store.getters.userImage
+      if (userImage) {
+        return userImage
+      }
+      // Priority 2: Get the stored avatar from localStorage
       if (process.client) {
         const stored = localStorage.getItem('selected_avatar')
         if (stored) return stored
       }
-      // Fallback to checkuser avatar if available
+      // Priority 3: Fallback to checkuser avatar if available
       if (
         this.checkuser &&
         this.checkuser.user_avatar &&
@@ -287,6 +292,11 @@ export default {
 
     if (this.$route.params.search) this.query = this.$route.params.search
     document.body.classList.add('hfixed')
+
+    // Fetch user image from API
+    if (process.client && this.$auth.loggedIn) {
+      this.$store.dispatch('FETCH_USER_IMAGE')
+    }
 
     // Listen for avatar changes
     if (process.client) {

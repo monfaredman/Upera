@@ -755,17 +755,34 @@ export default {
       this.fetchAvatars()
     }
 
-    if (this.userAvatar) {
+    // Priority: userImage from store > localStorage > userAvatar from avatars
+    // Note: userImage is fetched by Header.vue to avoid duplicate calls
+    const userImage = this.$store.getters.userImage
+    if (userImage) {
+      this.userAvatar = userImage
+      this.selectedAvatar = userImage
+    } else if (this.userAvatar) {
       this.selectedAvatar = this.userAvatar
     }
-    // load selected avatar from storage if exists
-    if (process.client) {
+    // load selected avatar from storage if exists (only if no userImage)
+    if (process.client && !userImage) {
       const stored = localStorage.getItem('selected_avatar')
       if (stored) {
         this.userAvatar = stored
         this.selectedAvatar = stored
       }
     }
+
+    // Watch for userImage updates from store
+    this.$watch(
+      () => this.$store.getters.userImage,
+      (newImage) => {
+        if (newImage) {
+          this.userAvatar = newImage
+          this.selectedAvatar = newImage
+        }
+      }
+    )
   },
   beforeDestroy() {
     if (process.client) {
@@ -806,13 +823,21 @@ export default {
         // Use Vuex store action to fetch avatars (only fetches once)
         await this.$store.dispatch('FETCH_AVATARS')
 
+        // Check userImage from API first (highest priority)
+        const userImage = this.$store.getters.userImage
+        if (userImage) {
+          this.userAvatar = userImage
+          this.selectedAvatar = userImage
+          return
+        }
+
         const { userAvatar: user_avatar, cdnUser: cdn_user } =
           this.$store.getters.avatars
 
         if (user_avatar) {
           const ua = cdn_user ? `${cdn_user}/${user_avatar}` : user_avatar
-          // only set userAvatar if not overridden by stored selection
-          if (!localStorage.getItem('selected_avatar')) {
+          // only set userAvatar if not overridden by stored selection or userImage
+          if (!localStorage.getItem('selected_avatar') && !userImage) {
             this.userAvatar = ua
             this.selectedAvatar = this.userAvatar
           }

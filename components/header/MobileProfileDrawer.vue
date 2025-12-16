@@ -331,16 +331,34 @@ export default {
     },
   },
   mounted() {
+    // Note: userImage is fetched by Header.vue to avoid duplicate calls
     if (this.checkuser) {
       this.fetchAvatars()
     }
-    if (process.client) {
+
+    // Priority: userImage from store > localStorage > userAvatar from avatars
+    const userImage = this.$store.getters.userImage
+    if (userImage) {
+      this.userAvatar = userImage
+      this.selectedAvatar = userImage
+    } else if (process.client) {
       const stored = localStorage.getItem('selected_avatar')
       if (stored) {
         this.userAvatar = stored
         this.selectedAvatar = stored
       }
     }
+
+    // Watch for userImage updates from store
+    this.$watch(
+      () => this.$store.getters.userImage,
+      (newImage) => {
+        if (newImage) {
+          this.userAvatar = newImage
+          this.selectedAvatar = newImage
+        }
+      }
+    )
   },
   methods: {
     close() {
@@ -381,10 +399,22 @@ export default {
         // Use Vuex store action to fetch avatars (only fetches once)
         await this.$store.dispatch('FETCH_AVATARS')
 
+        // Check userImage from API first (highest priority)
+        const userImage = this.$store.getters.userImage
+        if (userImage) {
+          this.userAvatar = userImage
+          this.selectedAvatar = userImage
+          return
+        }
+
         const { userAvatar: user_avatar, cdnUser: cdn_user } =
           this.$store.getters.avatars
 
-        if (user_avatar && !localStorage.getItem('selected_avatar')) {
+        if (
+          user_avatar &&
+          !localStorage.getItem('selected_avatar') &&
+          !userImage
+        ) {
           this.userAvatar = cdn_user
             ? `${cdn_user}/${user_avatar}`
             : user_avatar
