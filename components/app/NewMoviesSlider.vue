@@ -73,7 +73,6 @@ export default {
   },
   data() {
     return {
-      itemsToShow: 20,
       header: 'تازه های آپرا',
       swiperOptions: {
         slidesPerView: 3,
@@ -96,17 +95,36 @@ export default {
     }
   },
   computed: {
-    newMovies() {
-      const list = this.ugcMovies
-      if (Array.isArray(list) && list.length && Array.isArray(list[0]?.data)) {
-        return list[0]?.data
-      }
-      return Array.isArray(list) ? list : []
-    },
     displayedItems() {
-      const arr = this.newMovies
-      const n = Math.min(this.itemsToShow, arr.length || this.itemsToShow)
-      return arr.slice(0, n)
+      // Directly use ugcMovies prop, no filtering needed
+      if (!this.ugcMovies) {
+        return []
+      }
+
+      // Handle Vue reactive objects - Vue reactive arrays should still pass Array.isArray()
+      // But if it doesn't, try to convert it
+      let arr = []
+
+      if (Array.isArray(this.ugcMovies)) {
+        arr = this.ugcMovies
+      } else if (this.ugcMovies && typeof this.ugcMovies === 'object') {
+        // Check if it's array-like (has length and numeric indices)
+        if (
+          typeof this.ugcMovies.length === 'number' &&
+          this.ugcMovies.length >= 0
+        ) {
+          // Convert array-like object to real array
+          arr = Array.from(this.ugcMovies)
+        } else {
+          // Not an array or array-like, return empty
+          return []
+        }
+      } else {
+        return []
+      }
+
+      // Show only first 12 items
+      return arr.slice(0, 12)
     },
   },
   watch: {

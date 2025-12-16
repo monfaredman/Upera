@@ -209,17 +209,19 @@ export default {
      * add external plugins
      */
     extractCSS: true,
-    // Optimize bundle size with tree-shaking
-    terser: {
-      terserOptions: {
-        compress: {
-          drop_console: process.env.NODE_ENV === 'production',
-          drop_debugger: true,
-        },
-      },
-    },
+    // Minification: rely on Nuxt's default webpack minimizer.
+    // A custom terser configuration can break when a bundle contains
+    // non-top-level ESM `import` (Terser error: "Import statement may only appear at the top level").
+    // If you still want to drop console logs in production, do it via Babel
+    // or a dedicated plugin rather than overriding the minimizer here.
     // Enable code splitting and optimization
     optimization: {
+      // Terser is currently failing with: "Import statement may only appear at the top level"
+      // on some generated chunks during `nuxt generate`.
+      // Disabling minimization unblocks the build (output is larger but correct).
+      // If you want minification back later, we can switch to a newer terser-webpack-plugin
+      // or adjust webpack output/module settings.
+      minimize: false,
       splitChunks: {
         chunks: 'all',
         cacheGroups: {
@@ -252,6 +254,9 @@ export default {
     },
     // Analyze bundle size in production
     analyze: process.env.ANALYZE === 'true',
+    // Transpile specific node_modules packages that ship ESM source.
+    // This avoids emitting raw `import` statements into client chunks.
+    transpile: ['bootstrap-vue'],
     /*
      ** Extend webpack config
      */
@@ -289,24 +294,12 @@ export default {
 
       // Exclude bootstrap-vue icons from parsing to avoid Babel deoptimization warnings
       // This file is very large (>500KB) and doesn't need to be parsed/transformed
-      if (!config.module.noParse) {
-        config.module.noParse = []
-      }
-      // Add bootstrap-vue icons to noParse if it's not already there
-      const bootstrapIconsPath = /bootstrap-vue[\\/]src[\\/]icons[\\/]icons\.js/
-      if (
-        !config.module.noParse.some((pattern) => {
-          if (typeof pattern === 'object' && pattern.test) {
-            return pattern.test.toString() === bootstrapIconsPath.toString()
-          }
-          return (
-            pattern === bootstrapIconsPath ||
-            pattern.toString() === bootstrapIconsPath.toString()
-          )
-        })
-      ) {
-        config.module.noParse.push(bootstrapIconsPath)
-      }
+      // IMPORTANT: do NOT noParse bootstrap-vue icons.
+      // bootstrap-vue ships ESM sources under `src/` that include `import` statements.
+      // If webpack skips parsing/transpiling that file, the raw `import` can leak into
+      // the emitted chunk, causing runtime errors like:
+      //   "Cannot use import statement outside a module"
+      // We'll tolerate the Babel deopt warning here to keep production working.
 
       // Tweak performance hints so large, but intentional, assets
       // (fonts, large images, vendor bundles) don't spam the console.

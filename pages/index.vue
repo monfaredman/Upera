@@ -773,10 +773,8 @@ export default {
   },
   computed: {
     sliders() {
-      // Return sliders sorted by index property, or empty array if not found
-      const sliders = this.$store.state.slider.sliders
-      return Array.isArray(sliders) && sliders.length > 0
-        ? sliders.slice().sort((a, b) => (a.index ?? 0) - (b.index ?? 0))
+      return Array.isArray(this.$store.state.slider.sliders)
+        ? this.$store.state.slider.sliders
         : []
     },
     type1Sliders() {

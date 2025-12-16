@@ -16,13 +16,17 @@
 
         <!-- Genres and Age Rating as chips -->
         <div class="chips-container">
-          <span
+          <nuxt-link
             v-for="(genreFa, genreKey) in data.item.new_genres"
             :key="genreKey"
+            :to="{
+              name: 'lists-list',
+              params: { list: genreKey },
+            }"
             class="chip genre-chip"
           >
             {{ genreFa }}
-          </span>
+          </nuxt-link>
           <span v-if="data.item.age" class="chip age-chip">
             رده سنی {{ data.item.age }}
           </span>
@@ -292,6 +296,15 @@ export default {
   background: rgba(255, 255, 255, 0.15);
   color: #ffffff;
   border: 1px solid rgba(255, 255, 255, 0.2);
+  text-decoration: none;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.genre-chip:hover {
+  background: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
 }
 
 .age-chip {
