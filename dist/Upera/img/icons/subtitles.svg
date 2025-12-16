@@ -1,6 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-    <g id="prefix__subtitles" transform="translate(-152 -317)">
-        <path id="prefix__Path_428" d="M1.615 2A1.6 1.6 0 0 0 0 3.636v8.727A1.6 1.6 0 0 0 1.615 14h10.77A1.6 1.6 0 0 0 14 12.364V3.636A1.6 1.6 0 0 0 12.385 2zm1.077 6h8.615a.511.511 0 0 1 .538.545v2.182a.511.511 0 0 1-.538.545h-.538v1.636l-1.615-1.635H2.692a.511.511 0 0 1-.538-.545V8.545A.511.511 0 0 1 2.692 8zm1.616 1.091v1.091h1.077V9.091zm2.154 0v1.091h1.076V9.091zm2.154 0v1.091h1.076V9.091z" data-name="Path 428" transform="translate(157 321)" style="fill:#3737b6"/>
-        <path id="prefix__Rectangle_1039" d="M0 0H24V24H0z" data-name="Rectangle 1039" transform="translate(152 317)" style="fill:none"/>
-    </g>
-</svg>
