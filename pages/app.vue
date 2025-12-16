@@ -115,16 +115,37 @@ export default {
     async fetchDiscoverData() {
       try {
         const response = await this.$axios.get(
-          this.ghostApi + this.filtercontents
+          'https://web.upera.tv/api/v1/ghost/get/get_listV3/new_titles'
         )
         if (response.status === 200) {
-          this.ugcs = response.data.data.data.filter(
-            (item) => item.list_en === 'New Titles'
-          )
-          if (!this.data.data.length) this.nocontent = true
+          // Extract data from new response structure
+          // Response structure: { list: { data: [...] } }
+          let listData = []
+
+          // Try different response structures
+          if (response.data?.list?.data) {
+            listData = response.data.list.data
+          } else if (response.data?.data?.list?.data) {
+            listData = response.data.data.list.data
+          }
+
+          // Ensure it's an array and take only first 12 items for swiper
+          // Convert to plain array to ensure it's recognized as an array
+          if (
+            listData &&
+            (Array.isArray(listData) ||
+              (listData.length && typeof listData.length === 'number'))
+          ) {
+            // Convert to plain array and take first 12 items
+            const items = Array.from(listData).slice(0, 12)
+            this.ugcs = items
+          } else {
+            this.ugcs = []
+          }
         }
       } catch (error) {
         console.error('Error fetching discover:', error)
+        this.ugcs = []
       }
     },
     async fetchOfferData() {
