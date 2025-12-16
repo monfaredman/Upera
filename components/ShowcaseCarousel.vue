@@ -321,8 +321,8 @@ export default {
   computed: {
     reorderedSliders() {
       if (this.sliders.length === 0) return []
-      const [first, ...rest] = this.sliders
-      return [...rest, first]
+      // Reverse array for RTL display
+      return [...this.sliders].reverse()
     },
   },
   methods: {
