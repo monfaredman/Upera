@@ -167,10 +167,16 @@
                   <!--Description-->
                   <div
                     v-if="item.type == 'episode'"
-                    class="detail-paragraph text-invert mb-1 mb-md-3 hide-mobile font-weight-normal"
+                    class="detail-paragraph text-invert mb-1 mb-md-3 font-weight-normal"
                   >
-                    {{ $t('show.season') }}{{ item.season_number }} -
-                    {{ $t('show.episode') }} {{ item.episode_number }}
+                    <div v-if="item.slogan" class="tag slogan-episode">
+                      {{ item.slogan }}
+                    </div>
+
+                    <span :class="{ 'slogan-episode-show': item.slogan }">
+                      {{ $t('show.season') }}{{ item.season_number }} -
+                      {{ $t('show.episode') }} {{ item.episode_number }}</span
+                    >
                   </div>
                   <div v-else class="detail-paragraph text-invert mb-2 mb-md-3">
                     <div v-if="item.slogan" class="tag">
@@ -868,5 +874,19 @@ export default {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+}
+
+.slogan-episode {
+  display: inline !important;
+  border-radius: 4px;
+  font-size: 13px !important;
+  font-weight: 100 !important;
+  margin-left: 8px;
+}
+
+.slogan-episode-show {
+  background-color: rgba(0, 0, 0, 0.202);
+  padding: 0.5rem 0.8rem;
+  border-radius: 11px;
 }
 </style>
