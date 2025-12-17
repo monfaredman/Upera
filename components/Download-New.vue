@@ -259,24 +259,35 @@
         <!-- Footer -->
         <div v-if="!loading && !error" class="download-links-footer-simple">
           <div class="footer-content">
-            <div class="payable-amount">
-              <span class="amount-label">مبلغ قابل پرداخت:</span>
-              <span class="amount-value">
-                {{ formatPrice(totalAmount) }}
-                <span class="toman-title">تومان</span>
-              </span>
+            <div class="payable-amount-wrapper">
+              <div class="payable-amount">
+                <span class="amount-label">مبلغ قابل پرداخت:</span>
+                <span class="amount-value">
+                  {{ formatPrice(totalAmount) }}
+                  <span class="toman-title">تومان</span>
+                </span>
+              </div>
+              <button
+                class="btn btn-primary btn-payment"
+                :disabled="!canPurchase || processing"
+                @click="handlePurchase"
+              >
+                <span
+                  v-if="processing"
+                  class="spinner-border spinner-border-sm"
+                />
+                <span v-else>پرداخت</span>
+              </button>
             </div>
-            <button
-              class="btn btn-primary btn-payment"
-              :disabled="!canPurchase || processing"
-              @click="handlePurchase"
-            >
-              <span
-                v-if="processing"
-                class="spinner-border spinner-border-sm"
-              />
-              <span v-else>پرداخت</span>
-            </button>
+            <!-- Info Alert -->
+            <div class="info-alert-download">
+              <div class="info-icon-download">
+                <i class="fa fa-info-circle" aria-hidden="true"></i>
+              </div>
+              <div class="info-text-download">
+                با این خرید، به تمام کیفیت‌ها دسترسی خواهید داشت.
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -524,24 +535,35 @@
                   class="download-links-footer-simple"
                 >
                   <div class="footer-content">
-                    <div class="payable-amount">
-                      <span class="amount-label">مبلغ قابل پرداخت:</span>
-                      <span class="amount-value">
-                        {{ formatPrice(totalAmount) }}
-                        <span class="toman-title">تومان</span>
-                      </span>
+                    <div class="payable-amount-wrapper">
+                      <div class="payable-amount">
+                        <span class="amount-label">مبلغ قابل پرداخت:</span>
+                        <span class="amount-value">
+                          {{ formatPrice(totalAmount) }}
+                          <span class="toman-title">تومان</span>
+                        </span>
+                      </div>
+                      <button
+                        class="btn btn-primary btn-payment"
+                        :disabled="!canPurchase || processing"
+                        @click="handlePurchase"
+                      >
+                        <span
+                          v-if="processing"
+                          class="spinner-border spinner-border-sm"
+                        />
+                        <span v-else>پرداخت</span>
+                      </button>
                     </div>
-                    <button
-                      class="btn btn-primary btn-payment"
-                      :disabled="!canPurchase || processing"
-                      @click="handlePurchase"
-                    >
-                      <span
-                        v-if="processing"
-                        class="spinner-border spinner-border-sm"
-                      />
-                      <span v-else>پرداخت</span>
-                    </button>
+                    <!-- Info Alert -->
+                    <div class="info-alert-download">
+                      <div class="info-icon-download">
+                        <i class="fa fa-info-circle" aria-hidden="true"></i>
+                      </div>
+                      <div class="info-text-download">
+                        با این خرید، به تمام کیفیت‌ها دسترسی خواهید داشت.
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1394,6 +1416,12 @@ export default {
 
 .footer-content {
   display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.payable-amount-wrapper {
+  display: flex;
   justify-content: space-between;
   align-items: center;
 }
@@ -1402,6 +1430,32 @@ export default {
   display: flex;
   justify-content: start;
   gap: 0.5rem;
+}
+
+.info-alert-download {
+  border-radius: 8px;
+  border: 1px solid #b6d0f7;
+  padding: 8px 12px;
+  background: #dbe7fb;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.info-icon-download {
+  flex-shrink: 0;
+  color: #0047f1;
+  font-size: 18px;
+  margin-top: 2px;
+}
+
+.info-text-download {
+  flex: 1;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  color: #1c1c1e;
+  text-align: right;
 }
 
 .amount-label {
@@ -2107,6 +2161,19 @@ export default {
 .theme-dark .download-drawer .download-links-footer-simple {
   background: #1f1f1f;
   border-top-color: rgba(255, 255, 255, 0.1);
+}
+
+.theme-dark .info-alert-download {
+  background: #2d3a5a;
+  border-color: #3d4f7a;
+}
+
+.theme-dark .info-icon-download {
+  color: #5a9eff;
+}
+
+.theme-dark .info-text-download {
+  color: #f2f2f2;
 }
 
 @media (max-width: 768px) {
