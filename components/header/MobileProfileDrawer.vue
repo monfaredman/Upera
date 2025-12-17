@@ -332,9 +332,7 @@ export default {
   },
   mounted() {
     // Note: userImage is fetched by Header.vue to avoid duplicate calls
-    if (this.checkuser) {
-      this.fetchAvatars()
-    }
+    // Avatars are now only fetched when user opens profile edit modal
 
     // Priority: userImage from store > localStorage > userAvatar from avatars
     const userImage = this.$store.getters.userImage

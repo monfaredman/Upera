@@ -750,10 +750,7 @@ export default {
       window.addEventListener('resize', this.checkIfMobile)
     }
 
-    // Fetch avatars only once
-    if (this.checkuser) {
-      this.fetchAvatars()
-    }
+    // Avatars are now only fetched when user opens profile edit modal
 
     // Priority: userImage from store > localStorage > userAvatar from avatars
     // Note: userImage is fetched by Header.vue to avoid duplicate calls
@@ -887,7 +884,9 @@ export default {
       this.userAvatar = this.customPreview
       // do not persist custom preview to localStorage until server confirms upload
     },
-    showProfileEditModal() {
+    async showProfileEditModal() {
+      // Fetch avatars when user opens profile edit modal
+      await this.fetchAvatars()
       this.profileEditModalVisible = true
       this.$root.$emit('bv::hide::popover')
       this.closeMobileDrawer()

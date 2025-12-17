@@ -5681,6 +5681,14 @@ nav a:hover {
 
 /* Responsive */
 @media (max-width: 576px) {
+#watching .in-watching {
+  position: absolute;
+  left: 0;
+  top: 39%;
+  -webkit-transition: all 300ms ease-in-out;
+  transition: all 300ms ease-in-out;
+}
+
   .modal-dialog {
     max-height: 95vh;
     margin: 0.5rem;

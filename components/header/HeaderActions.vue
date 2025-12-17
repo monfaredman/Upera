@@ -288,9 +288,7 @@ export default {
     },
   },
   mounted() {
-    if (this.isLoggedIn) {
-      this.fetchAvatars()
-    }
+    // Avatars are now only fetched when user opens profile edit modal
     // Listen for event to open mobile drawer
 
     if (process.client) {
@@ -412,7 +410,9 @@ export default {
     },
 
     // Profile Edit Modal methods
-    showProfileEditModal() {
+    async showProfileEditModal() {
+      // Fetch avatars when user opens profile edit modal
+      await this.fetchAvatars()
       this.profileEditModalVisible = true
     },
 
@@ -534,14 +534,7 @@ export default {
             // non-fatal
           }
 
-          // Clear and refetch avatars from store
-          await this.$store.dispatch('CLEAR_AVATARS')
-          await this.$store.dispatch('FETCH_AVATARS')
-
-          // Update the UserProfileDropdown component
-          if (this.$refs.userProfileDropdown) {
-            this.$refs.userProfileDropdown.fetchAvatars()
-          }
+          // Avatars are only fetched when opening profile edit modal, not after saving
         }
       } catch (error) {
         console.error('Error saving profile:', error)

@@ -861,6 +861,7 @@ export default {
     recently(newVal) {
       if (newVal && newVal.recently && newVal.recently.length > 0) {
         this.$nextTick(() => {
+          console.log('handling')
           this.setupWatchingSwiper()
         })
       }
@@ -942,40 +943,54 @@ export default {
     // Fetch dynamic sliders based on user request configuration
     this.loadDynamicSliderLayout()
 
-    // Fetch lives
-    this.withSkeletonTimeout(
-      'lives',
-      (state) => {
-        this.isLoadingLives = state
-      },
-      async () => {
-        const livesRes = await this.$axios.get(
-          '/get/lives?ref=' + this.checkuser?.ref
-        )
-        if (livesRes.data && livesRes.data.data) {
-          this.lives = livesRes.data
-        } else {
-          this.lives = null
+    // Fetch lives only if user.show_lives === 1
+    const checkuser = this.$store?.getters?.checkuser || {}
+    const authUser = this.$auth?.user || {}
+    const user = checkuser || authUser
+    if (user.show_lives === 1) {
+      this.withSkeletonTimeout(
+        'lives',
+        (state) => {
+          this.isLoadingLives = state
+        },
+        async () => {
+          const livesRes = await this.$axios.get(
+            '/get/lives?ref=' + this.checkuser?.ref
+          )
+          if (livesRes.data && livesRes.data.data) {
+            this.lives = livesRes.data
+          } else {
+            this.lives = null
+          }
         }
-      }
-    ).catch((e) => {
-      console.error('fetch lives failed', e)
-    })
+      ).catch((e) => {
+        console.error('fetch lives failed', e)
+        this.isLoadingLives = false
+      })
+    } else {
+      this.isLoadingLives = false
+      this.lives = null
+    }
 
-    // Fetch UGCs
-    // this.isLoadingUgcs = true
-    // this.$axios
-    //   .get('/get/ugcs?ref=' + this.checkuser?.ref)
-    //   .then((ugcsRes) => {
-    //     this.ugcs = ugcsRes.data
-    //     this.ugcs = this.transformUgcsData(this.ugcs)
-    //   })
-    //   .catch((e) => {
-    //     console.error('fetch ugcs failed', e)
-    //   })
-    //   .finally(() => {
-    //     this.isLoadingUgcs = false
-    //   })
+    // Fetch UGCs only if user.show_ugcs === 1
+    if (user.show_ugcs === 1) {
+      this.isLoadingUgcs = true
+      this.$axios
+        .get('/get/ugcs?ref=' + this.checkuser?.ref)
+        .then((ugcsRes) => {
+          this.ugcs = ugcsRes.data
+          this.ugcs = this.transformUgcsData(this.ugcs)
+        })
+        .catch((e) => {
+          console.error('fetch ugcs failed', e)
+        })
+        .finally(() => {
+          this.isLoadingUgcs = false
+        })
+    } else {
+      this.isLoadingUgcs = false
+      this.ugcs = null
+    }
   },
 
   methods: {
@@ -1301,8 +1316,11 @@ export default {
             const isAtBeginning = swiper.isBeginning
 
             if (isAtBeginning) {
+              console.log('no swiping')
+
               watching.classList.remove('swipe')
             } else {
+              console.log('swiping')
               watching.classList.add('swipe')
             }
           } catch (e) {
@@ -1700,6 +1718,11 @@ export default {
 }
 </script>
 <style scoped>
+section#watching {
+  max-height: 17rem !important;
+  overflow: hidden !important;
+}
+
 /* Type 1 Carousel Styles */
 .type1-carousel-section {
   width: 100%;
@@ -1882,6 +1905,11 @@ export default {
     width: 30px;
     height: 30px;
     font-size: 12px;
+  }
+
+  section#watching {
+    max-height: 14rem !important;
+    overflow: hidden !important;
   }
 }
 </style>
