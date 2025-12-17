@@ -258,6 +258,9 @@ export default {
     FilterContents,
   },
   async asyncData(context) {
+    // Ensure topsearch is loaded from store (will only fetch if not already loaded)
+    await context.store.dispatch('FETCH_TOPSEARCH')
+    
     if (context.params.search) {
       const queries = { query: context.params.search }
       if (context.query.dubbed) {
@@ -288,25 +291,13 @@ export default {
         noresult2 = false
       }
 
-      const res2 = await context.app.$axios.get('/ghost/topsearch')
-
-      if (context.app.i18n.locale !== 'fa')
-        res2.data.data.topsearch = res2.data.data.topsearch_en
-
       return {
         data: res.data.data,
-        topsearch: res2.data.data.topsearch,
         noresult: noresult2,
       }
     } else {
-      const res = await context.app.$axios.get('/ghost/topsearch')
-
-      if (context.app.i18n.locale !== 'fa')
-        res.data.data.topsearch = res.data.data.topsearch_en
-
       return {
         data: { data: null, cast: null },
-        topsearch: res.data.data.topsearch,
       }
     }
   },
@@ -319,7 +310,6 @@ export default {
       kids: 0,
       showCast: null,
       data: {},
-      topsearch: {},
       noresult: false,
       isLoading: false,
       // Autocomplete state
@@ -339,7 +329,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters({ lastsearchs: 'search/lastsearchs' }),
+    ...mapGetters({ 
+      lastsearchs: 'search/lastsearchs',
+      topsearch: 'topsearch',
+    }),
     filtercontents() {
       return this.$store.getters.filtercontents
     },
