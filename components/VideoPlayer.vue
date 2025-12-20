@@ -802,37 +802,51 @@ export default {
       // parse audio options from the original prop stream first
       this.parseAudioOptionsFromStream(this.stream)
 
-      console.log('[VideoPlayer] Parsed audio options:', this.audioOptions)
-
       // Determine initial stream to load. If user has a persisted audio selection
       // and that audio option exists in the parsed audioOptions, build a stream
       // containing only the selected audio param so the player loads with correct audio.
       let initialStream = this.currentStream || this.stream
       try {
+        // First, check if stream URL already has an audio param
+        const url = new URL(this.stream, window.location.origin)
+        const params = new URLSearchParams(url.search)
+        let streamAudioLang = null
+        for (const key of params.keys()) {
+          if (/^audio\[.+\]$/.test(key)) {
+            const langMatch = key.match(/audio\[(.+)\]/)
+            if (langMatch) {
+              streamAudioLang = langMatch[1]
+
+              break
+            }
+          }
+        }
+
         const persisted = localStorage.getItem(`${this.playerid}-audioLang`)
         if (persisted && this.audioOptions) {
           const match = this.audioOptions.find((o) => o.lang === persisted)
           if (match) {
-            console.log('[VideoPlayer] Using persisted audio:', persisted)
             initialStream = this.buildStreamWithAudio(this.stream, match.lang)
             this.currentAudioLang = match.lang
           }
+        } else if (streamAudioLang) {
+          // Stream URL already specifies audio, use that (highest priority after persisted)
+
+          this.currentAudioLang = streamAudioLang.toUpperCase()
+          // Don't rebuild stream, it already has the audio param
         } else {
-          // No persisted selection: prefer FA audio if available (main language is FA)
+          // No persisted selection and no audio in URL: prefer FA audio if available (main language is FA)
           if (this.audioOptions) {
             const faOpt = this.audioOptions.find(
               (o) => o.lang && o.lang.toString().toLowerCase() === 'fa'
             )
             if (faOpt) {
-              console.log('[VideoPlayer] Using FA audio as default')
               initialStream = this.buildStreamWithAudio(this.stream, faOpt.lang)
               this.currentAudioLang = faOpt.lang
             } else {
               // FA not available, detect which audio will be default from stream URL
               // If no audio param is specified, the stream will use its natural default
               // which is typically the first audio track (often EN)
-              const url = new URL(this.stream, window.location.origin)
-              const params = new URLSearchParams(url.search)
               let hasAudioParam = false
 
               for (const key of params.keys()) {
@@ -849,10 +863,6 @@ export default {
                 this.audioOptions &&
                 this.audioOptions.length > 0
               ) {
-                console.log(
-                  '[VideoPlayer] No audio param in URL, assuming first option as default:',
-                  this.audioOptions[0].lang
-                )
                 this.currentAudioLang = this.audioOptions[0].lang
               }
             }
@@ -862,9 +872,6 @@ export default {
         // ignore localStorage errors
         console.warn('[VideoPlayer] Error initializing audio state:', e)
       }
-
-      console.log('[VideoPlayer] Initial audio lang:', this.currentAudioLang)
-      console.log('[VideoPlayer] Initial stream:', initialStream)
 
       // ensure we track the actual stream we've chosen to load
       this.currentStream = initialStream
@@ -885,6 +892,27 @@ export default {
         language: currentLang,
         sources: [{ src: initialStream, type: 'application/x-mpegURL' }],
       })
+
+      // Suppress VideoJS bandwidth warnings (expected behavior for adaptive bitrate streaming)
+      // Only override if not already overridden to avoid issues with multiple player instances
+      if (!videojs.log._bandwidthWarningSuppressed) {
+        const originalWarn = videojs.log.warn
+        videojs.log.warn = function (...args) {
+          const message = args.join(' ')
+          // Filter out bandwidth-related warnings as they're expected during adaptive streaming
+          if (
+            message.includes(
+              "Aborted early because there isn't enough bandwidth"
+            ) ||
+            message.includes('Problem encountered with playlist')
+          ) {
+            return
+          }
+          originalWarn.apply(videojs.log, args)
+        }
+        videojs.log._bandwidthWarningSuppressed = true
+        videojs.log._originalWarn = originalWarn
+      }
 
       this.player.addClass('vjs-split-controls')
       this.applyRtlSettings()
@@ -934,7 +962,6 @@ export default {
           clickThrough,
         }
 
-        console.log('Parsed VAST data:', vastData)
         this.vastData = vastData
         return vastData
       } catch (error) {
@@ -1027,7 +1054,6 @@ export default {
       // Setup ad events right after VAST plugin initialization
       // Always use player.ready() as it's idempotent - will call immediately if already ready
       this.player.ready(() => {
-        console.log('Player ready in setupVastPlugin, setting up ad events')
         // Use nextTick to ensure VAST plugin is fully initialized
         this.$nextTick(() => {
           this.setupAdEvents()
@@ -1142,12 +1168,6 @@ export default {
         // Use parsed VAST data if available, otherwise fall back to event data
         const finalAdTitle =
           this.vastData?.adTitle || adTitle || 'اطلاعات بیشتر'
-        console.log(
-          'VAST play event - AdTitle:',
-          finalAdTitle,
-          'VAST Data:',
-          this.vastData
-        )
 
         ctaBtn.innerText = finalAdTitle
 
@@ -1192,31 +1212,25 @@ export default {
     setupAdEvents() {
       // Prevent duplicate event listeners
       if (this.adEventsSetup) {
-        console.log('setupAdEvents already called, skipping')
         return
       }
 
-      console.log('Setting up ad events...')
       this.adEventsSetup = true
 
       // Use once() or check if events are already bound, but for now just set up
       this.player.on('vast.play', () => {
-        console.log('VAST play event fired')
         this.adActive = true
         // Hide runtime display during ads
         this.hideRuntimeDisplay()
         // Emit event to parent components
-        console.log('otherrrrrrrrrrrr3333')
         this.$emit('ad-started', true)
       })
 
       this.player.on(['vast.complete', 'vast.skip'], () => {
-        console.log('VAST complete/skip event fired')
         this.adActive = false
         // Show runtime display after ads
         this.showRuntimeDisplay()
         // Emit event to parent components
-        console.log('otherrrrrrrrrrrr4444')
         this.$emit('ad-ended', true)
       })
     },
@@ -1261,11 +1275,6 @@ export default {
       if (!this.tracks?.length) return
       if (this.subtitleTracksInitialized && !force) return
 
-      console.log(
-        '[VideoPlayer] Setting up text tracks. Current audio lang:',
-        this.currentAudioLang
-      )
-
       // Clear any existing tracks first
       const existingTracks = this.player.remoteTextTracks()
       for (let i = existingTracks.length - 1; i >= 0; i--) {
@@ -1308,76 +1317,63 @@ export default {
 
       const textTracks = this.player.textTracks()
 
-      // Determine which subtitle to show based on audio language
-      if (
+      // Simple approach: If subtitles exist, enable them automatically
+      // Only disable if user explicitly selected FA audio (from persisted selection or URL)
+      const isExplicitFA =
         this.currentAudioLang &&
-        this.currentAudioLang.toString().toLowerCase() === 'fa'
-      ) {
-        // audio is FA, leave all subtitles disabled
-        console.log('[VideoPlayer] FA audio detected, disabling all subtitles')
+        this.currentAudioLang.toString().toLowerCase() === 'fa' &&
+        // Check if FA was explicitly selected (persisted or in URL)
+        (localStorage.getItem(`${this.playerid}-audioLang`)?.toLowerCase() ===
+          'fa' ||
+          (this.currentStream || this.stream)?.includes('audio[FA]') ||
+          (this.currentStream || this.stream)?.includes('audio[fa]'))
+
+      if (isExplicitFA && textTracks.length > 0) {
+        // User explicitly selected FA audio, disable subtitles
+
         for (let i = 0; i < textTracks.length; i++) {
           textTracks[i].mode = 'disabled'
         }
         this.currentSubtitle = null
-      } else if (
-        this.currentAudioLang &&
-        this.currentAudioLang.toString().toLowerCase() === 'en'
-      ) {
-        // audio is EN, enable FA subtitle if available
+      } else if (textTracks.length > 0) {
+        // Subtitles exist - enable them automatically
+        // Prefer FA subtitle if available, otherwise enable first available
         if (faSubtitleIndex !== -1) {
-          console.log(
-            '[VideoPlayer] EN audio detected, enabling FA subtitle at index:',
-            faSubtitleIndex
-          )
+          // Enable FA subtitle if available
+
           for (let i = 0; i < textTracks.length; i++) {
             textTracks[i].mode = i === faSubtitleIndex ? 'showing' : 'disabled'
           }
           this.currentSubtitle = faSubtitleIndex
         } else {
-          // no FA subtitle, leave all disabled
-          console.log(
-            '[VideoPlayer] EN audio but no FA subtitle found, disabling all'
-          )
-          for (let i = 0; i < textTracks.length; i++) {
-            textTracks[i].mode = 'disabled'
-          }
-          this.currentSubtitle = null
-        }
-      } else {
-        // audio language not determined or other language
-        // Try to detect from stream or honor defaults
-        console.log(
-          '[VideoPlayer] Audio language unknown, applying fallback logic'
-        )
-        if (faSubtitleIndex !== -1) {
-          // enable FA subtitle as fallback
-          console.log(
-            '[VideoPlayer] Enabling FA subtitle as fallback at index:',
-            faSubtitleIndex
-          )
-          for (let i = 0; i < textTracks.length; i++) {
-            textTracks[i].mode = i === faSubtitleIndex ? 'showing' : 'disabled'
-          }
-          this.currentSubtitle = faSubtitleIndex
-        } else {
-          // no FA subtitle found, honor default flags from tracks
-          let found = false
+          // No FA subtitle, check for default flag first
+          let foundDefault = false
           for (let i = 0; i < this.tracks.length; i++) {
             if (this.tracks[i].default) {
               textTracks[i].mode = 'showing'
               this.currentSubtitle = i
-              found = true
+              for (let j = 0; j < textTracks.length; j++) {
+                if (j !== i) {
+                  textTracks[j].mode = 'disabled'
+                }
+              }
+              foundDefault = true
               break
             }
           }
-          if (!found) {
-            // leave all disabled
-            for (let i = 0; i < textTracks.length; i++) {
+          if (!foundDefault) {
+            // Enable first available subtitle
+
+            textTracks[0].mode = 'showing'
+            this.currentSubtitle = 0
+            for (let i = 1; i < textTracks.length; i++) {
               textTracks[i].mode = 'disabled'
             }
-            this.currentSubtitle = null
           }
         }
+      } else {
+        // No subtitles available
+        this.currentSubtitle = null
       }
 
       this.subtitleTracksInitialized = true
@@ -1635,22 +1631,230 @@ export default {
       return this.currentQuality === value
     },
 
-    selectQuality(value) {
+    selectQuality(value, skipDrawerClose = false) {
       this.currentQuality = value
-      if (this.player && this.player.qualityLevels) {
-        const levels = this.player.qualityLevels()
-        if (value === 'auto') {
-          for (let i = 0; i < levels.length; i++) {
-            levels[i].enabled = true
+
+      // Persist quality selection to localStorage
+      try {
+        localStorage.setItem(`${this.playerid}-quality`, value)
+      } catch (e) {
+        console.warn('Error saving quality to localStorage:', e)
+      }
+
+      if (!this.player) {
+        if (!skipDrawerClose) {
+          this.closeSettingsDrawer()
+        }
+        return
+      }
+
+      // Try to access quality levels through the player's qualityLevels API (from videojs-hls-quality-selector)
+      if (
+        this.player.qualityLevels &&
+        typeof this.player.qualityLevels === 'function'
+      ) {
+        try {
+          const levels = this.player.qualityLevels()
+          if (levels && levels.length > 0) {
+            if (value === 'auto') {
+              // Enable all levels for auto mode
+              for (let i = 0; i < levels.length; i++) {
+                const level = levels[i]
+                // Handle both property and method forms
+                if (typeof level.enabled === 'function') {
+                  level.enabled(true)
+                } else {
+                  level.enabled = true
+                }
+              }
+            } else {
+              // Extract the numeric height from value (e.g., '1080p' -> 1080)
+              const targetHeight = parseInt(value.replace('p', ''))
+              let foundMatch = false
+              let targetLevelIndex = null
+
+              // First, disable all levels
+              for (let i = 0; i < levels.length; i++) {
+                const level = levels[i]
+                // Handle both property and method forms
+                if (typeof level.enabled === 'function') {
+                  level.enabled(false)
+                } else {
+                  level.enabled = false
+                }
+              }
+
+              // Find exact match first
+              for (let i = 0; i < levels.length; i++) {
+                const level = levels[i]
+                const height = level.height
+                if (height === targetHeight) {
+                  // Handle both property and method forms
+                  if (typeof level.enabled === 'function') {
+                    level.enabled(true)
+                  } else {
+                    level.enabled = true
+                  }
+                  foundMatch = true
+                  targetLevelIndex = i
+                  break
+                }
+              }
+
+              // If no exact match found, enable the closest lower quality
+              if (!foundMatch && targetHeight) {
+                let closestLevel = null
+                let closestDiff = Infinity
+
+                for (let i = 0; i < levels.length; i++) {
+                  const height = levels[i].height
+                  if (height && height <= targetHeight) {
+                    const diff = targetHeight - height
+                    if (diff < closestDiff) {
+                      closestDiff = diff
+                      closestLevel = i
+                    }
+                  }
+                }
+
+                if (closestLevel !== null) {
+                  const level = levels[closestLevel]
+                  // Handle both property and method forms
+                  if (typeof level.enabled === 'function') {
+                    level.enabled(true)
+                  } else {
+                    level.enabled = true
+                  }
+                  targetLevelIndex = closestLevel
+                }
+              }
+
+              // The enabled state change should trigger automatic quality switch
+              // The player will switch on the next segment boundary automatically
+              // For immediate feedback, we can try to access VHS and ensure the change is applied
+              if (targetLevelIndex !== null) {
+                try {
+                  const tech = this.player.tech({
+                    IWillNotUseThisInPlugins: true,
+                  })
+                  if (tech && tech.vhs) {
+                    // Trigger a quality change event to notify the player
+                    // This helps ensure the player picks up the change immediately
+                    if (tech.vhs.trigger) {
+                      tech.vhs.trigger('qualitychange')
+                    }
+                    // Also try to access masterPlaylistController if available
+                    if (tech.vhs.masterPlaylistController_) {
+                      const mpc = tech.vhs.masterPlaylistController_
+                      // Force an update to the playlist controller
+                      if (mpc.trigger) {
+                        mpc.trigger('representationschange')
+                      }
+                    }
+                  }
+                } catch (e) {
+                  // If triggering events fails, the enabled state change should still work
+                  // The player will switch on the next segment boundary
+                }
+              }
+            }
+            if (!skipDrawerClose) {
+              this.closeSettingsDrawer()
+            }
+            return
           }
-        } else {
-          for (let i = 0; i < levels.length; i++) {
-            const height = levels[i].height
-            levels[i].enabled = height + 'p' === value
-          }
+        } catch (error) {
+          console.warn('Error accessing qualityLevels API:', error)
         }
       }
-      this.closeSettingsDrawer()
+
+      // Fallback: Access quality levels through HLS tech object (VHS)
+      try {
+        const tech = this.player.tech({ IWillNotUseThisInPlugins: true })
+        if (tech && tech.vhs && tech.vhs.representations) {
+          const representations = tech.vhs.representations()
+
+          if (representations && representations.length > 0) {
+            if (value === 'auto') {
+              // Enable all representations for auto mode
+              representations.forEach((rep) => {
+                rep.enabled(true)
+              })
+            } else {
+              // Extract the numeric height from value (e.g., '1080p' -> 1080)
+              const targetHeight = parseInt(value.replace('p', ''))
+              let foundMatch = false
+              let targetRep = null
+
+              // First, disable all representations
+              representations.forEach((rep) => {
+                rep.enabled(false)
+              })
+
+              // Find and enable the matching representation
+              representations.forEach((rep) => {
+                const height = rep.height
+                if (height === targetHeight) {
+                  rep.enabled(true)
+                  foundMatch = true
+                  targetRep = rep
+                }
+              })
+
+              // If no exact match found, enable the closest lower quality
+              if (!foundMatch && targetHeight) {
+                let closestRep = null
+                let closestDiff = Infinity
+
+                representations.forEach((rep) => {
+                  const height = rep.height
+                  if (height && height <= targetHeight) {
+                    const diff = targetHeight - height
+                    if (diff < closestDiff) {
+                      closestDiff = diff
+                      closestRep = rep
+                    }
+                  }
+                })
+
+                if (closestRep) {
+                  closestRep.enabled(true)
+                  targetRep = closestRep
+                }
+              }
+
+              // The enabled state change should trigger automatic quality switch
+              // The player will switch on the next segment boundary automatically
+              // For immediate feedback, we can trigger events to notify the player
+              if (targetRep) {
+                try {
+                  // Trigger quality change events to help the player pick up the change
+                  if (tech.vhs && tech.vhs.trigger) {
+                    tech.vhs.trigger('qualitychange')
+                  }
+                  // Also try to access masterPlaylistController if available
+                  if (tech.vhs && tech.vhs.masterPlaylistController_) {
+                    const mpc = tech.vhs.masterPlaylistController_
+                    // Force an update to the playlist controller
+                    if (mpc.trigger) {
+                      mpc.trigger('representationschange')
+                    }
+                  }
+                } catch (e) {
+                  // If triggering events fails, the enabled state change should still work
+                  console.warn('Error triggering quality change events:', e)
+                }
+              }
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Error switching quality through VHS:', error)
+      }
+
+      if (!skipDrawerClose) {
+        this.closeSettingsDrawer()
+      }
     },
 
     // ============================================
@@ -2600,6 +2804,18 @@ export default {
         this.initializeSubtitleState()
         // apply persisted audio selection if available
         this.initializeAudioState()
+        // apply persisted quality selection if available
+        this.initializeQualityState()
+
+        // Ensure quality selector plugin is available
+        // The plugin should auto-register when imported, but we can verify it's available
+        if (
+          this.player.qualityLevels &&
+          typeof this.player.qualityLevels === 'function'
+        ) {
+          // Plugin is available, quality switching should work
+          console.log('[VideoPlayer] Quality selector plugin is available')
+        }
 
         // Persist volume and muted state on changes
         this.player.on('volumechange', () => {
@@ -2619,6 +2835,17 @@ export default {
           setTimeout(() => {
             this.restoreVolumeState(true)
           }, 100)
+          // Apply quality selection when metadata is loaded (quality levels are now available)
+          setTimeout(() => {
+            this.applyQualitySelection()
+          }, 200)
+          // Ensure subtitles are properly enabled after metadata loads
+          // This handles cases where audio detection happens after initial setup
+          setTimeout(() => {
+            if (this.tracks && this.tracks.length > 0) {
+              this.syncSubtitlesWithAudio()
+            }
+          }, 300)
         })
 
         // Also restore on playing event - Chrome/Safari may reset volume when playback starts
@@ -2824,44 +3051,110 @@ export default {
 
             if (audioTracks && audioTracks.length > 0) {
               for (let i = 0; i < audioTracks.length; i++) {
-                if (audioTracks[i].enabled) {
+                const track = audioTracks[i]
+
+                if (track.enabled) {
                   // Found the active audio track
                   const trackLabel =
-                    audioTracks[i].label || audioTracks[i].language || ''
+                    track.label || track.language || track.id || ''
                   const trackLang = trackLabel.toLowerCase()
 
                   // Try to determine language from track info
                   let detectedLang = null
 
+                  // Check FA first (more specific)
                   if (
                     trackLang.includes('fa') ||
                     trackLang.includes('farsi') ||
-                    trackLang.includes('persian')
+                    trackLang.includes('persian') ||
+                    trackLang === 'fa'
                   ) {
                     detectedLang = 'FA'
                   } else if (
                     trackLang.includes('en') ||
-                    trackLang.includes('english')
+                    trackLang.includes('english') ||
+                    trackLang === 'en' ||
+                    // Also check if it's NOT FA (default to EN for non-FA)
+                    (!trackLang.includes('fa') && trackLang.length > 0)
                   ) {
+                    // If it's not FA and has some content, assume EN
+                    // This handles cases where label might be empty or generic
                     detectedLang = 'EN'
                   }
 
-                  // If we detected a language and it differs from current state, update
-                  if (
-                    detectedLang &&
-                    (!this.currentAudioLang ||
-                      this.currentAudioLang !== detectedLang)
-                  ) {
-                    console.log('Detected actual audio track:', detectedLang)
-                    this.currentAudioLang = detectedLang
+                  // Always update if we detected a language, even if it matches
+                  // This ensures subtitles are synced correctly
+                  if (detectedLang) {
+                    const shouldUpdate =
+                      !this.currentAudioLang ||
+                      this.currentAudioLang.toUpperCase() !==
+                        detectedLang.toUpperCase()
 
-                    // Re-sync subtitles based on detected audio
-                    this.syncSubtitlesWithAudio()
+                    if (shouldUpdate) {
+                      this.currentAudioLang = detectedLang
+
+                      // Re-sync subtitles based on detected audio
+                      this.syncSubtitlesWithAudio()
+                    } else {
+                      // Even if same, ensure subtitles are synced
+
+                      this.syncSubtitlesWithAudio()
+                    }
+                  } else {
+                    console.warn(
+                      '[VideoPlayer] Could not detect audio language from track:',
+                      trackLabel
+                    )
+                    // If we can't detect but currentAudioLang is FA and we have subtitles,
+                    // assume it might be EN and enable subtitles
+                    if (
+                      this.currentAudioLang &&
+                      this.currentAudioLang.toUpperCase() === 'FA' &&
+                      this.tracks &&
+                      this.tracks.length > 0
+                    ) {
+                      // Check stream URL to see if EN audio is actually selected
+                      try {
+                        const url = new URL(
+                          this.currentStream || this.stream,
+                          window.location.origin
+                        )
+                        const params = new URLSearchParams(url.search)
+                        let hasEnAudio = false
+                        for (const key of params.keys()) {
+                          if (key.startsWith('audio[')) {
+                            const langMatch = key.match(/audio\[(.+)\]/)
+                            if (
+                              langMatch &&
+                              langMatch[1].toUpperCase() === 'EN'
+                            ) {
+                              hasEnAudio = true
+                              break
+                            }
+                          }
+                        }
+                        if (hasEnAudio) {
+                          this.currentAudioLang = 'EN'
+                          this.syncSubtitlesWithAudio()
+                        }
+                      } catch (e) {
+                        console.warn(
+                          '[VideoPlayer] Error checking stream URL:',
+                          e
+                        )
+                      }
+                    }
                   }
                   break
                 }
               }
+            } else {
+              console.warn('[VideoPlayer] No audio tracks found in HLS stream')
             }
+          } else {
+            console.warn(
+              '[VideoPlayer] HLS tech not available for audio detection'
+            )
           }
         } catch (e) {
           console.warn('Could not detect audio track:', e)
@@ -2870,38 +3163,60 @@ export default {
     },
 
     syncSubtitlesWithAudio() {
-      // Sync subtitle display with current audio language
+      // Sync subtitle display - simple approach: enable subtitles if they exist
       if (!this.player || !this.tracks || this.tracks.length === 0) return
 
       const textTracks = this.player.textTracks()
+      if (textTracks.length === 0) {
+        console.log('[VideoPlayer] No text tracks available for syncing')
+        return
+      }
 
-      // Find FA subtitle index
+      // Find FA subtitle index in textTracks (not this.tracks, as indices may differ)
       let faSubtitleIndex = -1
-      for (let i = 0; i < this.tracks.length; i++) {
-        const t = this.tracks[i]
-        const lang = (t.language || t.label || '').toString().toLowerCase()
+      for (let i = 0; i < textTracks.length; i++) {
+        const track = textTracks[i]
+        const lang = (track.language || track.label || '')
+          .toString()
+          .toLowerCase()
         if (lang === 'fa' || lang === 'farsi' || lang.includes('fa')) {
           faSubtitleIndex = i
           break
         }
       }
 
-      // Apply subtitle logic based on audio
-      if (
+      // Simple approach: Enable subtitles if they exist
+      // Only disable if user explicitly selected FA audio (from persisted selection or URL)
+      const isExplicitFA =
         this.currentAudioLang &&
-        this.currentAudioLang.toString().toLowerCase() === 'fa'
-      ) {
-        // FA audio -> subtitles OFF
+        this.currentAudioLang.toString().toLowerCase() === 'fa' &&
+        (localStorage.getItem(`${this.playerid}-audioLang`)?.toLowerCase() ===
+          'fa' ||
+          (this.currentStream || this.stream)?.includes('audio[FA]') ||
+          (this.currentStream || this.stream)?.includes('audio[fa]'))
+
+      if (isExplicitFA) {
+        // User explicitly selected FA audio -> subtitles OFF
+
         for (let i = 0; i < textTracks.length; i++) {
           textTracks[i].mode = 'disabled'
         }
         this.currentSubtitle = null
-      } else if (this.currentAudioLang && faSubtitleIndex !== -1) {
-        // Non-FA audio and FA subtitle exists -> enable FA subtitle
-        for (let i = 0; i < textTracks.length; i++) {
-          textTracks[i].mode = i === faSubtitleIndex ? 'showing' : 'disabled'
+      } else {
+        // Enable subtitles - prefer FA if available, otherwise first available
+        if (faSubtitleIndex !== -1) {
+          for (let i = 0; i < textTracks.length; i++) {
+            textTracks[i].mode = i === faSubtitleIndex ? 'showing' : 'disabled'
+          }
+          this.currentSubtitle = faSubtitleIndex
+        } else if (textTracks.length > 0) {
+          // No FA subtitle, enable first available
+          textTracks[0].mode = 'showing'
+          this.currentSubtitle = 0
+          for (let i = 1; i < textTracks.length; i++) {
+            textTracks[i].mode = 'disabled'
+          }
         }
-        this.currentSubtitle = faSubtitleIndex
       }
     },
 
@@ -2973,6 +3288,32 @@ export default {
     initializeAudioState() {
       // No-op now: initial audio selection is applied before player creation
       // This method kept for compatibility but does not force a reload.
+    },
+
+    initializeQualityState() {
+      // Restore persisted quality selection from localStorage
+      try {
+        const persisted = localStorage.getItem(`${this.playerid}-quality`)
+        if (
+          persisted &&
+          ['auto', '1080p', '720p', '480p', '360p'].includes(persisted)
+        ) {
+          this.currentQuality = persisted
+        }
+      } catch (e) {
+        console.warn('Error initializing quality state:', e)
+      }
+    },
+
+    applyQualitySelection() {
+      // Apply the current quality selection to the player
+      // This is called when metadata is loaded and quality levels become available
+      if (this.currentQuality) {
+        // Use a small delay to ensure quality levels are fully initialized
+        setTimeout(() => {
+          this.selectQuality(this.currentQuality, true) // Pass true to skip drawer close
+        }, 100)
+      }
     },
 
     openAudioSettings() {

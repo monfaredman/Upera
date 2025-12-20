@@ -266,23 +266,17 @@ export const actions = {
   async FETCH_AVATARS(store) {
     // If already loaded, return immediately
     if (store.state.avatars.loaded) {
-      console.log('[FETCH_AVATARS] Already loaded, skipping')
       return
     }
 
     // If a fetch is already in progress, wait for it
     if (avatarFetchPromise) {
-      console.log(
-        '[FETCH_AVATARS] Fetch in progress, waiting for existing promise'
-      )
       return avatarFetchPromise
     }
 
-    console.log('[FETCH_AVATARS] Starting new fetch')
     // Start the fetch and store the promise
     avatarFetchPromise = (async () => {
       try {
-        console.log('[FETCH_AVATARS] Making API call to /get/avatars')
         const response = await this.$axios.get('/get/avatars')
         if (response?.data?.data) {
           const { avatars, user_avatar, cdn_user } = response.data.data
@@ -295,7 +289,6 @@ export const actions = {
             userAvatar: user_avatar,
             cdnUser: cdn_user,
           })
-          console.log('[FETCH_AVATARS] Successfully fetched and stored avatars')
         }
       } catch (error) {
         console.error('[FETCH_AVATARS] Error fetching avatars:', error)
@@ -328,11 +321,9 @@ export const actions = {
   async FETCH_TOPSEARCH(store) {
     // If already loaded, return immediately
     if (store.state.topsearchLoaded && store.state.topsearch) {
-      console.log('[FETCH_TOPSEARCH] Already loaded, skipping')
       return store.state.topsearch
     }
 
-    console.log('[FETCH_TOPSEARCH] Starting new fetch')
     try {
       const response = await this.$axios.get('/ghost/topsearch')
       if (response?.data?.data) {
@@ -342,9 +333,6 @@ export const actions = {
           topsearch = response.data.data.topsearch_en || topsearch
         }
         store.commit('SET_TOPSEARCH', topsearch)
-        console.log(
-          '[FETCH_TOPSEARCH] Successfully fetched and stored topsearch'
-        )
         return topsearch
       }
     } catch (error) {
@@ -371,22 +359,17 @@ export const actions = {
     // CRITICAL: Check if a fetch is already in progress FIRST (before any other checks)
     // This must be the first check to prevent race conditions
     if (userImageFetchPromise) {
-      console.log(
-        '[FETCH_USER_IMAGE] Fetch in progress, waiting for existing promise'
-      )
       return userImageFetchPromise
     }
 
     // If we already have the user image, no need to fetch again
     if (store.state.userImage) {
-      console.log('[FETCH_USER_IMAGE] User image already exists, skipping')
       store.commit('SET_USER_IMAGE_LOADED', true)
       return Promise.resolve()
     }
 
     // If user image fetch has already completed (loaded flag is set), return immediately
     if (store.state.userImageLoaded) {
-      console.log('[FETCH_USER_IMAGE] Already loaded, skipping')
       return Promise.resolve()
     }
 
@@ -395,11 +378,8 @@ export const actions = {
     const now = Date.now()
     // If we fetched within the last 10 seconds, skip (prevents duplicate calls on rapid refreshes)
     if (lastFetchTime && now - parseInt(lastFetchTime) < 10000) {
-      console.log('[FETCH_USER_IMAGE] Recently fetched, skipping')
       return Promise.resolve()
     }
-
-    console.log('[FETCH_USER_IMAGE] Starting new fetch')
 
     // CRITICAL: Create a pending promise IMMEDIATELY and assign it synchronously
     // This must happen BEFORE any async operations to prevent race conditions
@@ -422,11 +402,9 @@ export const actions = {
           'https://web.upera.tv/api/v1/get/user'
         )
         // Handle different response structures - get avatar from avatar field
-        console.log(response)
         const avatar = response?.data?.user?.avatar
         if (avatar) {
           store.commit('SET_USER_IMAGE', avatar)
-          console.log('[FETCH_USER_IMAGE] Successfully fetched user avatar')
           // Cache the avatar URL in localStorage for faster access on refresh
           localStorage.setItem('user_image_cache', avatar)
           resolvePromise(avatar)
