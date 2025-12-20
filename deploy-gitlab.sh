@@ -57,7 +57,7 @@ log "Step 1: Checking .gitignore status..."
 
 if [ -f "$GITIGNORE_BACKUP" ]; then
     log_warning "Found .gitignore backup file"
-    
+
     # Check if .gitignore has the temporary exclusions
     if grep -q "# Temporary exclusions for GH Pages deployment" .gitignore 2>/dev/null; then
         log_warning ".gitignore contains temporary exclusions, restoring from backup..."
@@ -81,6 +81,37 @@ fi
 
 log_success ".gitignore is in correct state"
 
+
+# Step 1.1: Remove build artifacts (.nuxt and dist)
+log "Step 1.1: Removing build artifacts..."
+
+REMOVED=false
+
+if [ -d ".nuxt" ]; then
+    rm -rf .nuxt
+    log_success "Removed .nuxt/ folder"
+    REMOVED=true
+else
+    log ".nuxt/ folder not found, skipping"
+fi
+
+if [ -d "dist" ]; then
+    rm -rf dist
+    log_success "Removed dist/ folder"
+    REMOVED=true
+else
+    log "dist/ folder not found, skipping"
+fi
+
+# Commit removal if needed
+if [ "$REMOVED" = true ]; then
+    git add -A
+    git commit -m "chore: remove build artifacts (.nuxt, dist)"
+    log_success "Build artifacts removal committed"
+fi
+
+
+
 # Step 2: Check git status
 log "Step 2: Checking git status..."
 if [ -n "$(git status --porcelain)" ]; then
@@ -102,11 +133,11 @@ REMOTE_BRANCH_EXISTS=false
 if git ls-remote --heads "$REMOTE_NAME" "$CURRENT_BRANCH" | grep -q "$CURRENT_BRANCH"; then
     REMOTE_BRANCH_EXISTS=true
     log "Remote branch '${REMOTE_NAME}/${CURRENT_BRANCH}' exists"
-    
+
     # Check if local and remote are in sync
     LOCAL_COMMIT=$(git rev-parse HEAD)
     REMOTE_COMMIT=$(git rev-parse "${REMOTE_NAME}/${CURRENT_BRANCH}" 2>/dev/null || echo "")
-    
+
     if [ -n "$REMOTE_COMMIT" ] && [ "$LOCAL_COMMIT" != "$REMOTE_COMMIT" ]; then
         log_warning "Local and remote branches are out of sync"
         log "Local commit:  ${LOCAL_COMMIT:0:7}"
