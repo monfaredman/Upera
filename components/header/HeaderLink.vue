@@ -10,7 +10,7 @@
     ]"
   >
     <i v-if="icon" :class="icon" />
-    <span v-if="text" class="ml-md-2" v-html="text" />
+    <span v-if="text" class="ml-md-2">{{ text }}</span>
     <slot />
   </component>
 </template>
