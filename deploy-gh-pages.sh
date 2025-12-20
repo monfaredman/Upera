@@ -138,7 +138,7 @@ log "Step 4.1: Committing generated files to ${REMOTE_NAME}..."
 if [ -n "$(git status --porcelain)" ]; then
     git add .
     git commit -m "chore: generate static site for GH Pages"
-    git push "$REMOTE_NAME" "$CURRENT_BRANCH"
+    git push
     log_success "Changes committed and pushed to ${REMOTE_NAME}:${CURRENT_BRANCH}"
 else
     log_warning "No changes to commit"
