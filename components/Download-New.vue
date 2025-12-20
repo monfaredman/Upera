@@ -186,12 +186,12 @@
                       <span class="balance-amount">
                         {{ my_credit }}
                       </span>
-                    </div>
-                    <div
-                      v-if="!hasEnoughWalletBalance"
-                      class="wallet-balance-error"
-                    >
-                      <span>موجودی کافی نیست</span>
+                      <span
+                        v-if="!hasEnoughWalletBalance"
+                        class="wallet-balance-error"
+                      >
+                        <span>موجودی کافی نیست</span>
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -256,27 +256,39 @@
             </div>
           </div>
         </div>
+
         <!-- Footer -->
         <div v-if="!loading && !error" class="download-links-footer-simple">
-          <div class="footer-content">
-            <div class="payable-amount">
-              <span class="amount-label">مبلغ قابل پرداخت:</span>
-              <span class="amount-value">
-                {{ formatPrice(totalAmount) }}
-                <span class="toman-title">تومان</span>
-              </span>
+          <!-- Info Alert -->
+          <div class="info-alert-download mb-3">
+            <div class="info-icon-download">
+              <i class="fa fa-info-circle" aria-hidden="true"></i>
             </div>
-            <button
-              class="btn btn-primary btn-payment"
-              :disabled="!canPurchase || processing"
-              @click="handlePurchase"
-            >
-              <span
-                v-if="processing"
-                class="spinner-border spinner-border-sm"
-              />
-              <span v-else>پرداخت</span>
-            </button>
+            <div class="info-text-download">
+              با این خرید، به تمام کیفیت‌ها دسترسی خواهید داشت.
+            </div>
+          </div>
+          <div class="footer-content">
+            <div class="payable-amount-wrapper">
+              <div class="payable-amount">
+                <span class="amount-label">مبلغ قابل پرداخت:</span>
+                <span class="amount-value">
+                  {{ formatPrice(totalAmount) }}
+                  <span class="toman-title">تومان</span>
+                </span>
+              </div>
+              <button
+                class="btn btn-primary btn-payment"
+                :disabled="!canPurchase || processing"
+                @click="handlePurchase"
+              >
+                <span
+                  v-if="processing"
+                  class="spinner-border spinner-border-sm"
+                />
+                <span v-else>پرداخت</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -524,24 +536,35 @@
                   class="download-links-footer-simple"
                 >
                   <div class="footer-content">
-                    <div class="payable-amount">
-                      <span class="amount-label">مبلغ قابل پرداخت:</span>
-                      <span class="amount-value">
-                        {{ formatPrice(totalAmount) }}
-                        <span class="toman-title">تومان</span>
-                      </span>
+                    <!-- Info Alert -->
+                    <div class="info-alert-download">
+                      <div class="info-icon-download">
+                        <i class="fa fa-info-circle" aria-hidden="true"></i>
+                      </div>
+                      <div class="info-text-download">
+                        با این خرید، به تمام کیفیت‌ها دسترسی خواهید داشت.
+                      </div>
                     </div>
-                    <button
-                      class="btn btn-primary btn-payment"
-                      :disabled="!canPurchase || processing"
-                      @click="handlePurchase"
-                    >
-                      <span
-                        v-if="processing"
-                        class="spinner-border spinner-border-sm"
-                      />
-                      <span v-else>پرداخت</span>
-                    </button>
+                    <div class="payable-amount-wrapper">
+                      <div class="payable-amount">
+                        <span class="amount-label">مبلغ قابل پرداخت:</span>
+                        <span class="amount-value">
+                          {{ formatPrice(totalAmount) }}
+                          <span class="toman-title">تومان</span>
+                        </span>
+                      </div>
+                      <button
+                        class="btn btn-primary btn-payment"
+                        :disabled="!canPurchase || processing"
+                        @click="handlePurchase"
+                      >
+                        <span
+                          v-if="processing"
+                          class="spinner-border spinner-border-sm"
+                        />
+                        <span v-else>پرداخت</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1221,7 +1244,6 @@ export default {
         const endpoint = this.userLogin ? '/get/buy' : '/ghost/get/buy'
 
         const response = await this.$axios.post(endpoint, payload)
-        console.log(response.data)
         if (response.data.data.pay_url) {
           // Redirect to payment gateway
           window.location.href = response.data.data.pay_url
@@ -1394,6 +1416,12 @@ export default {
 
 .footer-content {
   display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.payable-amount-wrapper {
+  display: flex;
   justify-content: space-between;
   align-items: center;
 }
@@ -1402,6 +1430,32 @@ export default {
   display: flex;
   justify-content: start;
   gap: 0.5rem;
+}
+
+.info-alert-download {
+  border-radius: 8px;
+  border: 1px solid #b6d0f7;
+  padding: 8px 12px;
+  background: #dbe7fb;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.info-icon-download {
+  flex-shrink: 0;
+  color: #0047f1;
+  font-size: 18px;
+  margin-top: 2px;
+}
+
+.info-text-download {
+  flex: 1;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  color: #1c1c1e;
+  text-align: right;
 }
 
 .amount-label {
@@ -1438,7 +1492,7 @@ export default {
   background: white;
   border-radius: 0 0 8px 8px;
   overflow: auto;
-  max-height: 240px !important;
+  max-height: 184px !important;
   direction: rtl;
 }
 
@@ -2014,7 +2068,7 @@ export default {
   background-color: white;
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
-  max-height: 90vh;
+  max-height: 94vh;
   overflow-y: auto;
   animation: slideUp 0.3s ease-out;
 }
@@ -2109,6 +2163,19 @@ export default {
   border-top-color: rgba(255, 255, 255, 0.1);
 }
 
+.theme-dark .info-alert-download {
+  background: #2d3a5a;
+  border-color: #3d4f7a;
+}
+
+.theme-dark .info-icon-download {
+  color: #5a9eff;
+}
+
+.theme-dark .info-text-download {
+  color: #f2f2f2;
+}
+
 @media (max-width: 768px) {
   .theme-dark .download-links-title-simple {
     color: white;
@@ -2175,7 +2242,8 @@ export default {
 .wallet-balance-error {
   color: #dc3545;
   font-size: 0.8rem;
-  margin-top: 0.5rem;
+  margin-right: 1rem;
+  margin-bottom: 0.2rem;
 }
 
 .wallet-balance-error-mobile {

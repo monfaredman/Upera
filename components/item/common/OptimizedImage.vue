@@ -1,8 +1,8 @@
 <template>
   <div>
     <b-img
-      blank
       v-lazy="computedSrc"
+      blank
       blank-color="#bbb"
       show
       :width="width"

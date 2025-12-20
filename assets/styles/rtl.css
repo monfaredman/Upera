@@ -53,8 +53,8 @@
   margin-bottom: 1rem;
   margin-right: 0 !important;
   margin-left: 0 !important;
-  padding-left: 0 !important;
-  padding-right: 0 !important;
+  padding-left: 2.6rem !important;
+  padding-right: 2.6rem !important;
 }
 
 .srmrtl #watching > div {
@@ -1013,6 +1013,8 @@ dd {
 }
 
 @media (min-width: 576px) {
+
+
   .srmrtl .offset-sm-0 {
     margin-right: 0;
     margin-left: auto;
@@ -1251,6 +1253,9 @@ dd {
   }
 }
 @media (max-width: 576px) {
+  .srmrtl #watching.swipe .in-watching {
+  margin-bottom: 1rem !important;
+}
   .srmrtl .profile-menu {
     position: initial !important;
     height: auto !important;

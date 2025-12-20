@@ -287,7 +287,6 @@ export default {
       kids: 0,
       showCast: null,
       data: { data: null, cast: null },
-      topsearch: {},
       noresult: false,
       isVisible: false,
       isHandlingHashChange: false, // Prevent recursive calls
@@ -302,7 +301,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters({ lastsearchs: 'search/lastsearchs' }),
+    ...mapGetters({
+      lastsearchs: 'search/lastsearchs',
+      topsearch: 'topsearch',
+    }),
     filtercontents() {
       return this.$store.getters.filtercontents
     },
@@ -315,8 +317,9 @@ export default {
       }
     },
   },
-  async mounted() {
-    await this.loadTopSearch()
+  mounted() {
+    // Topsearch is now managed by the store and fetched on initial load
+    // No need to fetch it here
     this.handleHashChange(this.$route.hash)
     window.addEventListener('hashchange', this.handleWindowHashChange)
   },
@@ -487,21 +490,6 @@ export default {
       }
     },
 
-    async loadTopSearch() {
-      try {
-        let res
-
-        res = await this.$axios.get('/ghost/topsearch')
-
-        if (this.$i18n.locale !== 'fa')
-          res.data.data.topsearch = res.data.data.topsearch_en
-
-        this.topsearch = res.data.data.topsearch
-      } catch (error) {
-        console.error('Error loading top search:', error)
-      }
-    },
-
     ChooseLang(en, fa) {
       if (fa && this.$i18n.locale == 'fa') return fa
       else return en
@@ -643,8 +631,11 @@ export default {
       this.hideModal()
     },
 
-    onShown() {
+    async onShown() {
       this.isVisible = true
+
+      // Fetch topsearch when modal opens (if not already loaded)
+      await this.$store.dispatch('FETCH_TOPSEARCH')
 
       // Perform search if we have a query when modal opens
       if (this.query) {

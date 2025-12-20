@@ -105,7 +105,13 @@ export default {
     }
   },
   async mounted() {
-    this.fetchDiscoverData()
+    // Fetch UGCs only if user.show_ugcs === 1
+    const checkuser = this.$store?.getters?.checkuser || {}
+    const authUser = this.$auth?.user || {}
+    const user = checkuser || authUser
+    if (user.show_ugcs === 1) {
+      this.fetchDiscoverData()
+    }
     this.fetchOfferData()
   },
   methods: {

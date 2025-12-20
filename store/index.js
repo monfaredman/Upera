@@ -1,5 +1,7 @@
 // Global promise to track ongoing avatar fetch
 let avatarFetchPromise = null
+// Global promise to track ongoing user image fetch
+let userImageFetchPromise = null
 
 export const state = () => ({
   locales: ['en', 'fa'],
@@ -21,6 +23,10 @@ export const state = () => ({
     cdnUser: null,
     loaded: false,
   },
+  userImage: null, // User avatar image from /api/v1/get/user
+  userImageLoaded: false, // Track if user image has been loaded
+  topsearch: null, // Top search results
+  topsearchLoaded: false, // Track if topsearch has been loaded
 })
 
 // getters
@@ -59,6 +65,18 @@ export const getters = {
   avatars(state) {
     return state.avatars
   },
+  userImage(state) {
+    return state.userImage
+  },
+  userImageLoaded(state) {
+    return state.userImageLoaded
+  },
+  topsearch(state) {
+    return state.topsearch
+  },
+  topsearchLoaded(state) {
+    return state.topsearchLoaded
+  },
 }
 
 export const mutations = {
@@ -96,6 +114,25 @@ export const mutations = {
   },
   SET_LOCALE(state, locale) {
     state.locale = locale
+  },
+  SET_USER_IMAGE(state, image) {
+    state.userImage = image
+    state.userImageLoaded = true
+  },
+  SET_USER_IMAGE_LOADED(state, loaded) {
+    state.userImageLoaded = loaded
+  },
+  CLEAR_USER_IMAGE_MUTATION(state) {
+    state.userImage = null
+    state.userImageLoaded = false
+  },
+  SET_TOPSEARCH(state, data) {
+    state.topsearch = data
+    state.topsearchLoaded = true
+  },
+  CLEAR_TOPSEARCH(state) {
+    state.topsearch = null
+    state.topsearchLoaded = false
   },
 }
 
@@ -146,6 +183,15 @@ export const actions = {
         localStorage.getItem('basketActive') === 'true'
       )
     }
+    // Restore user image from cache on page refresh
+    if (process.client && store.state.auth.loggedIn) {
+      const cachedImage = localStorage.getItem('user_image_cache')
+      if (cachedImage) {
+        store.commit('SET_USER_IMAGE', cachedImage)
+      }
+    }
+    // Note: avatars are now only fetched when user opens profile edit modal
+    // Note: topsearch is now only fetched when search modal opens or on search page
     // }
   },
   logout(store) {
@@ -154,10 +200,20 @@ export const actions = {
         store.commit('SET_USER', response.data)
       }
     })
+    // Clear user image on logout
+    store.dispatch('CLEAR_USER_IMAGE')
+    // Clear topsearch and avatars on logout
+    store.dispatch('CLEAR_TOPSEARCH')
+    store.dispatch('CLEAR_AVATARS')
   },
-  login(store) {
+  async login(store) {
     if (store.state.auth.loggedIn) {
       store.commit('SET_USER', store.state.auth.user)
+      // Note: FETCH_USER_IMAGE will be called by Header.vue on mount after redirect
+      // No need to call it here to avoid duplicate calls
+      // Fetch topsearch after login
+      // Note: avatars are now only fetched when user opens profile edit modal
+      await store.dispatch('FETCH_TOPSEARCH')
       window.location.href = location.href
     }
   },
@@ -210,23 +266,17 @@ export const actions = {
   async FETCH_AVATARS(store) {
     // If already loaded, return immediately
     if (store.state.avatars.loaded) {
-      console.log('[FETCH_AVATARS] Already loaded, skipping')
       return
     }
 
     // If a fetch is already in progress, wait for it
     if (avatarFetchPromise) {
-      console.log(
-        '[FETCH_AVATARS] Fetch in progress, waiting for existing promise'
-      )
       return avatarFetchPromise
     }
 
-    console.log('[FETCH_AVATARS] Starting new fetch')
     // Start the fetch and store the promise
     avatarFetchPromise = (async () => {
       try {
-        console.log('[FETCH_AVATARS] Making API call to /get/avatars')
         const response = await this.$axios.get('/get/avatars')
         if (response?.data?.data) {
           const { avatars, user_avatar, cdn_user } = response.data.data
@@ -239,7 +289,6 @@ export const actions = {
             userAvatar: user_avatar,
             cdnUser: cdn_user,
           })
-          console.log('[FETCH_AVATARS] Successfully fetched and stored avatars')
         }
       } catch (error) {
         console.error('[FETCH_AVATARS] Error fetching avatars:', error)
@@ -261,6 +310,123 @@ export const actions = {
       cdnUser: null,
       loaded: false,
     })
+  },
+
+  CLEAR_USER_IMAGE(store) {
+    // Reset the promise as well
+    userImageFetchPromise = null
+    store.commit('CLEAR_USER_IMAGE_MUTATION')
+  },
+
+  async FETCH_TOPSEARCH(store) {
+    // If already loaded, return immediately
+    if (store.state.topsearchLoaded && store.state.topsearch) {
+      return store.state.topsearch
+    }
+
+    try {
+      const response = await this.$axios.get('/ghost/topsearch')
+      if (response?.data?.data) {
+        let topsearch = response.data.data.topsearch
+        // Handle locale
+        if (this.app && this.app.i18n && this.app.i18n.locale !== 'fa') {
+          topsearch = response.data.data.topsearch_en || topsearch
+        }
+        store.commit('SET_TOPSEARCH', topsearch)
+        return topsearch
+      }
+    } catch (error) {
+      console.error('[FETCH_TOPSEARCH] Error fetching topsearch:', error)
+      return null
+    }
+  },
+
+  CLEAR_TOPSEARCH(store) {
+    store.commit('CLEAR_TOPSEARCH')
+  },
+
+  async FETCH_USER_IMAGE(store) {
+    // Only fetch on client side
+    if (!process.client) {
+      return Promise.resolve()
+    }
+
+    // Only fetch if user is logged in
+    if (!store.state.auth || !store.state.auth.loggedIn) {
+      return Promise.resolve()
+    }
+
+    // CRITICAL: Check if a fetch is already in progress FIRST (before any other checks)
+    // This must be the first check to prevent race conditions
+    if (userImageFetchPromise) {
+      return userImageFetchPromise
+    }
+
+    // If we already have the user image, no need to fetch again
+    if (store.state.userImage) {
+      store.commit('SET_USER_IMAGE_LOADED', true)
+      return Promise.resolve()
+    }
+
+    // If user image fetch has already completed (loaded flag is set), return immediately
+    if (store.state.userImageLoaded) {
+      return Promise.resolve()
+    }
+
+    // Check localStorage for cached fetch timestamp to prevent duplicate calls on refresh
+    const lastFetchTime = localStorage.getItem('user_image_fetch_time')
+    const now = Date.now()
+    // If we fetched within the last 10 seconds, skip (prevents duplicate calls on rapid refreshes)
+    if (lastFetchTime && now - parseInt(lastFetchTime) < 10000) {
+      return Promise.resolve()
+    }
+
+    // CRITICAL: Create a pending promise IMMEDIATELY and assign it synchronously
+    // This must happen BEFORE any async operations to prevent race conditions
+    // If another call happens at the exact same time, it will see this promise
+    let resolvePromise, rejectPromise
+    const pendingPromise = new Promise((resolve, reject) => {
+      resolvePromise = resolve
+      rejectPromise = reject
+    })
+
+    // Assign the promise to the global variable IMMEDIATELY (synchronously)
+    userImageFetchPromise = pendingPromise
+
+    // Now start the async operation
+    ;(async () => {
+      // Store fetch timestamp
+      localStorage.setItem('user_image_fetch_time', now.toString())
+      try {
+        const response = await this.$axios.get(
+          'https://web.upera.tv/api/v1/get/user'
+        )
+        // Handle different response structures - get avatar from avatar field
+        const avatar = response?.data?.user?.avatar
+        if (avatar) {
+          store.commit('SET_USER_IMAGE', avatar)
+          // Cache the avatar URL in localStorage for faster access on refresh
+          localStorage.setItem('user_image_cache', avatar)
+          resolvePromise(avatar)
+        } else {
+          // Mark as loaded even if no image, to prevent repeated calls
+          store.commit('SET_USER_IMAGE_LOADED', true)
+          resolvePromise(null)
+        }
+      } catch (error) {
+        console.error('[FETCH_USER_IMAGE] Error fetching user image:', error)
+        // Mark as loaded on error to prevent infinite retry loops
+        store.commit('SET_USER_IMAGE_LOADED', true)
+        // Remove fetch timestamp on error so it can retry later
+        localStorage.removeItem('user_image_fetch_time')
+        rejectPromise(error)
+      } finally {
+        // Clear the promise after completion
+        userImageFetchPromise = null
+      }
+    })()
+
+    return userImageFetchPromise
   },
 
   /**

@@ -117,6 +117,15 @@
             >{{ formatPrice(totalAmount) }} تومان</span
           >
         </div>
+        <!-- Info Alert -->
+        <div class="info-alert-compact">
+          <div class="info-icon-compact">
+            <i class="fa fa-info-circle" aria-hidden="true"></i>
+          </div>
+          <div class="info-text-compact">
+            با این خرید، به تمام کیفیت‌ها دسترسی خواهید داشت.
+          </div>
+        </div>
       </div>
 
       <!-- Action Button -->
@@ -414,7 +423,7 @@ export default {
   min-width: 500px;
   max-width: 500px;
   direction: rtl;
-  max-height: 81vh;
+  max-height: 86vh;
   overflow-y: auto;
   padding: 1.25rem;
 }
@@ -671,6 +680,34 @@ export default {
   font-size: 1rem;
 }
 
+.info-alert-compact {
+  border-radius: 8px;
+  border: 1px solid #b6d0f7;
+  padding: 8px 12px;
+  background: #dbe7fb;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.info-icon-compact {
+  flex-shrink: 0;
+  color: #0047f1;
+  font-size: 18px;
+  margin-top: 2px;
+}
+
+.info-text-compact {
+  flex: 1;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  color: #1c1c1e;
+  text-align: right;
+}
+
 /* Dark mode support */
 .theme-dark .basket-popover-content {
   background: #1e1e1e;
@@ -870,5 +907,18 @@ export default {
   border-radius: 0.25rem;
   background-color: #f8d7da;
   padding: 0.25rem 0.5rem;
+}
+
+.theme-dark .info-alert-compact {
+  background: #2d3a5a;
+  border-color: #3d4f7a;
+}
+
+.theme-dark .info-icon-compact {
+  color: #5a9eff;
+}
+
+.theme-dark .info-text-compact {
+  color: #f2f2f2;
 }
 </style>
