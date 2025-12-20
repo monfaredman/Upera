@@ -39,14 +39,14 @@ log_warning() {
 cleanup() {
     local exit_code=$?
     log "Cleaning up..."
-    
+
     # Restore .gitignore if backup exists
     if [ -f "$GITIGNORE_BACKUP" ]; then
         log "Restoring original .gitignore..."
         mv "$GITIGNORE_BACKUP" .gitignore
         log_success ".gitignore restored"
     fi
-    
+
     if [ $exit_code -ne 0 ]; then
         log_error "Script failed with exit code $exit_code"
         exit $exit_code
@@ -129,6 +129,22 @@ if ! DEPLOY_ENV=GH_PAGES npm run generate; then
     exit 1
 fi
 log_success "Generation completed successfully"
+
+
+# Step 4.1: Commit generated files to remote (monfared)
+log "Step 4.1: Committing generated files to ${REMOTE_NAME}..."
+
+# Check for changes
+if [ -n "$(git status --porcelain)" ]; then
+    git add .
+    git commit -m "chore: generate static site for GH Pages"
+    git push "$REMOTE_NAME" "$CURRENT_BRANCH"
+    log_success "Changes committed and pushed to ${REMOTE_NAME}:${CURRENT_BRANCH}"
+else
+    log_warning "No changes to commit"
+fi
+
+
 
 # Verify dist folder exists
 if [ ! -d "dist" ]; then
