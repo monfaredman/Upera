@@ -1244,7 +1244,6 @@ export default {
         const endpoint = this.userLogin ? '/get/buy' : '/ghost/get/buy'
 
         const response = await this.$axios.post(endpoint, payload)
-        console.log(response.data)
         if (response.data.data.pay_url) {
           // Redirect to payment gateway
           window.location.href = response.data.data.pay_url

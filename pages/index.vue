@@ -861,7 +861,6 @@ export default {
     recently(newVal) {
       if (newVal && newVal.recently && newVal.recently.length > 0) {
         this.$nextTick(() => {
-          console.log('handling')
           this.setupWatchingSwiper()
         })
       }
@@ -1316,11 +1315,8 @@ export default {
             const isAtBeginning = swiper.isBeginning
 
             if (isAtBeginning) {
-              console.log('no swiping')
-
               watching.classList.remove('swipe')
             } else {
-              console.log('swiping')
               watching.classList.add('swipe')
             }
           } catch (e) {

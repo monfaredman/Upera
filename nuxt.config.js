@@ -655,7 +655,13 @@ export default {
       push: true,
       pushAssets: (req, res, publicPath, preloadFiles) => {
         return preloadFiles
-          .filter((f) => f.asType === 'script' || f.asType === 'style')
+          .filter((f) => {
+            // Filter out hot-update files to prevent preload warnings in development
+            if (f.file && f.file.includes('hot-update')) {
+              return false
+            }
+            return f.asType === 'script' || f.asType === 'style'
+          })
           .map((f) => `<${publicPath}${f.file}>; rel=preload; as=${f.asType}`)
       },
     },
