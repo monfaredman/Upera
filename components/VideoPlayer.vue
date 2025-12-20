@@ -809,6 +809,24 @@ export default {
       // containing only the selected audio param so the player loads with correct audio.
       let initialStream = this.currentStream || this.stream
       try {
+        // First, check if stream URL already has an audio param
+        const url = new URL(this.stream, window.location.origin)
+        const params = new URLSearchParams(url.search)
+        let streamAudioLang = null
+        for (const key of params.keys()) {
+          if (/^audio\[.+\]$/.test(key)) {
+            const langMatch = key.match(/audio\[(.+)\]/)
+            if (langMatch) {
+              streamAudioLang = langMatch[1]
+              console.log(
+                '[VideoPlayer] Stream URL already has audio param:',
+                streamAudioLang
+              )
+              break
+            }
+          }
+        }
+
         const persisted = localStorage.getItem(`${this.playerid}-audioLang`)
         if (persisted && this.audioOptions) {
           const match = this.audioOptions.find((o) => o.lang === persisted)
@@ -817,8 +835,16 @@ export default {
             initialStream = this.buildStreamWithAudio(this.stream, match.lang)
             this.currentAudioLang = match.lang
           }
+        } else if (streamAudioLang) {
+          // Stream URL already specifies audio, use that (highest priority after persisted)
+          console.log(
+            '[VideoPlayer] Using audio from stream URL:',
+            streamAudioLang
+          )
+          this.currentAudioLang = streamAudioLang.toUpperCase()
+          // Don't rebuild stream, it already has the audio param
         } else {
-          // No persisted selection: prefer FA audio if available (main language is FA)
+          // No persisted selection and no audio in URL: prefer FA audio if available (main language is FA)
           if (this.audioOptions) {
             const faOpt = this.audioOptions.find(
               (o) => o.lang && o.lang.toString().toLowerCase() === 'fa'
@@ -831,8 +857,6 @@ export default {
               // FA not available, detect which audio will be default from stream URL
               // If no audio param is specified, the stream will use its natural default
               // which is typically the first audio track (often EN)
-              const url = new URL(this.stream, window.location.origin)
-              const params = new URLSearchParams(url.search)
               let hasAudioParam = false
 
               for (const key of params.keys()) {
@@ -1308,25 +1332,33 @@ export default {
 
       const textTracks = this.player.textTracks()
 
-      // Determine which subtitle to show based on audio language
-      if (
+      // Simple approach: If subtitles exist, enable them automatically
+      // Only disable if user explicitly selected FA audio (from persisted selection or URL)
+      const isExplicitFA =
         this.currentAudioLang &&
-        this.currentAudioLang.toString().toLowerCase() === 'fa'
-      ) {
-        // audio is FA, leave all subtitles disabled
-        console.log('[VideoPlayer] FA audio detected, disabling all subtitles')
+        this.currentAudioLang.toString().toLowerCase() === 'fa' &&
+        // Check if FA was explicitly selected (persisted or in URL)
+        (localStorage.getItem(`${this.playerid}-audioLang`)?.toLowerCase() ===
+          'fa' ||
+          (this.currentStream || this.stream)?.includes('audio[FA]') ||
+          (this.currentStream || this.stream)?.includes('audio[fa]'))
+
+      if (isExplicitFA && textTracks.length > 0) {
+        // User explicitly selected FA audio, disable subtitles
+        console.log(
+          '[VideoPlayer] Explicit FA audio selected, disabling all subtitles'
+        )
         for (let i = 0; i < textTracks.length; i++) {
           textTracks[i].mode = 'disabled'
         }
         this.currentSubtitle = null
-      } else if (
-        this.currentAudioLang &&
-        this.currentAudioLang.toString().toLowerCase() === 'en'
-      ) {
-        // audio is EN, enable FA subtitle if available
+      } else if (textTracks.length > 0) {
+        // Subtitles exist - enable them automatically
+        // Prefer FA subtitle if available, otherwise enable first available
         if (faSubtitleIndex !== -1) {
+          // Enable FA subtitle if available
           console.log(
-            '[VideoPlayer] EN audio detected, enabling FA subtitle at index:',
+            '[VideoPlayer] Subtitles available, enabling FA subtitle at index:',
             faSubtitleIndex
           )
           for (let i = 0; i < textTracks.length; i++) {
@@ -1334,50 +1366,40 @@ export default {
           }
           this.currentSubtitle = faSubtitleIndex
         } else {
-          // no FA subtitle, leave all disabled
-          console.log(
-            '[VideoPlayer] EN audio but no FA subtitle found, disabling all'
-          )
-          for (let i = 0; i < textTracks.length; i++) {
-            textTracks[i].mode = 'disabled'
-          }
-          this.currentSubtitle = null
-        }
-      } else {
-        // audio language not determined or other language
-        // Try to detect from stream or honor defaults
-        console.log(
-          '[VideoPlayer] Audio language unknown, applying fallback logic'
-        )
-        if (faSubtitleIndex !== -1) {
-          // enable FA subtitle as fallback
-          console.log(
-            '[VideoPlayer] Enabling FA subtitle as fallback at index:',
-            faSubtitleIndex
-          )
-          for (let i = 0; i < textTracks.length; i++) {
-            textTracks[i].mode = i === faSubtitleIndex ? 'showing' : 'disabled'
-          }
-          this.currentSubtitle = faSubtitleIndex
-        } else {
-          // no FA subtitle found, honor default flags from tracks
-          let found = false
+          // No FA subtitle, check for default flag first
+          let foundDefault = false
           for (let i = 0; i < this.tracks.length; i++) {
             if (this.tracks[i].default) {
+              console.log(
+                '[VideoPlayer] Subtitles available, enabling default subtitle at index:',
+                i
+              )
               textTracks[i].mode = 'showing'
               this.currentSubtitle = i
-              found = true
+              for (let j = 0; j < textTracks.length; j++) {
+                if (j !== i) {
+                  textTracks[j].mode = 'disabled'
+                }
+              }
+              foundDefault = true
               break
             }
           }
-          if (!found) {
-            // leave all disabled
-            for (let i = 0; i < textTracks.length; i++) {
+          if (!foundDefault) {
+            // Enable first available subtitle
+            console.log(
+              '[VideoPlayer] Subtitles available, auto-enabling first available subtitle'
+            )
+            textTracks[0].mode = 'showing'
+            this.currentSubtitle = 0
+            for (let i = 1; i < textTracks.length; i++) {
               textTracks[i].mode = 'disabled'
             }
-            this.currentSubtitle = null
           }
         }
+      } else {
+        // No subtitles available
+        this.currentSubtitle = null
       }
 
       this.subtitleTracksInitialized = true
@@ -1738,7 +1760,9 @@ export default {
               // For immediate feedback, we can try to access VHS and ensure the change is applied
               if (targetLevelIndex !== null) {
                 try {
-                  const tech = this.player.tech({ IWillNotUseThisInPlugins: true })
+                  const tech = this.player.tech({
+                    IWillNotUseThisInPlugins: true,
+                  })
                   if (tech && tech.vhs) {
                     // Trigger a quality change event to notify the player
                     // This helps ensure the player picks up the change immediately
@@ -2808,10 +2832,13 @@ export default {
         this.initializeAudioState()
         // apply persisted quality selection if available
         this.initializeQualityState()
-        
+
         // Ensure quality selector plugin is available
         // The plugin should auto-register when imported, but we can verify it's available
-        if (this.player.qualityLevels && typeof this.player.qualityLevels === 'function') {
+        if (
+          this.player.qualityLevels &&
+          typeof this.player.qualityLevels === 'function'
+        ) {
           // Plugin is available, quality switching should work
           console.log('[VideoPlayer] Quality selector plugin is available')
         }
@@ -2838,6 +2865,13 @@ export default {
           setTimeout(() => {
             this.applyQualitySelection()
           }, 200)
+          // Ensure subtitles are properly enabled after metadata loads
+          // This handles cases where audio detection happens after initial setup
+          setTimeout(() => {
+            if (this.tracks && this.tracks.length > 0) {
+              this.syncSubtitlesWithAudio()
+            }
+          }, 300)
         })
 
         // Also restore on playing event - Chrome/Safari may reset volume when playback starts
@@ -3041,46 +3075,156 @@ export default {
             // Check the active audio track in HLS
             const audioTracks = tech.audioTracks()
 
+            console.log(
+              '[VideoPlayer] Audio tracks available:',
+              audioTracks?.length || 0
+            )
+
             if (audioTracks && audioTracks.length > 0) {
               for (let i = 0; i < audioTracks.length; i++) {
-                if (audioTracks[i].enabled) {
+                const track = audioTracks[i]
+                console.log(
+                  `[VideoPlayer] Audio track ${i}:`,
+                  'enabled:',
+                  track.enabled,
+                  'label:',
+                  track.label,
+                  'language:',
+                  track.language,
+                  'id:',
+                  track.id
+                )
+
+                if (track.enabled) {
                   // Found the active audio track
                   const trackLabel =
-                    audioTracks[i].label || audioTracks[i].language || ''
+                    track.label || track.language || track.id || ''
                   const trackLang = trackLabel.toLowerCase()
+
+                  console.log(
+                    '[VideoPlayer] Active audio track label:',
+                    trackLabel,
+                    'normalized:',
+                    trackLang
+                  )
 
                   // Try to determine language from track info
                   let detectedLang = null
 
+                  // Check FA first (more specific)
                   if (
                     trackLang.includes('fa') ||
                     trackLang.includes('farsi') ||
-                    trackLang.includes('persian')
+                    trackLang.includes('persian') ||
+                    trackLang === 'fa'
                   ) {
                     detectedLang = 'FA'
                   } else if (
                     trackLang.includes('en') ||
-                    trackLang.includes('english')
+                    trackLang.includes('english') ||
+                    trackLang === 'en' ||
+                    // Also check if it's NOT FA (default to EN for non-FA)
+                    (!trackLang.includes('fa') && trackLang.length > 0)
                   ) {
+                    // If it's not FA and has some content, assume EN
+                    // This handles cases where label might be empty or generic
                     detectedLang = 'EN'
                   }
 
-                  // If we detected a language and it differs from current state, update
-                  if (
-                    detectedLang &&
-                    (!this.currentAudioLang ||
-                      this.currentAudioLang !== detectedLang)
-                  ) {
-                    console.log('Detected actual audio track:', detectedLang)
-                    this.currentAudioLang = detectedLang
+                  console.log(
+                    '[VideoPlayer] Detected audio language:',
+                    detectedLang,
+                    'Current audio lang:',
+                    this.currentAudioLang
+                  )
 
-                    // Re-sync subtitles based on detected audio
-                    this.syncSubtitlesWithAudio()
+                  // Always update if we detected a language, even if it matches
+                  // This ensures subtitles are synced correctly
+                  if (detectedLang) {
+                    const shouldUpdate =
+                      !this.currentAudioLang ||
+                      this.currentAudioLang.toUpperCase() !==
+                        detectedLang.toUpperCase()
+
+                    if (shouldUpdate) {
+                      console.log(
+                        '[VideoPlayer] Updating audio lang from',
+                        this.currentAudioLang,
+                        'to',
+                        detectedLang
+                      )
+                      this.currentAudioLang = detectedLang
+
+                      // Re-sync subtitles based on detected audio
+                      this.syncSubtitlesWithAudio()
+                    } else {
+                      // Even if same, ensure subtitles are synced
+                      console.log(
+                        '[VideoPlayer] Audio lang unchanged, syncing subtitles anyway'
+                      )
+                      this.syncSubtitlesWithAudio()
+                    }
+                  } else {
+                    console.warn(
+                      '[VideoPlayer] Could not detect audio language from track:',
+                      trackLabel
+                    )
+                    // If we can't detect but currentAudioLang is FA and we have subtitles,
+                    // assume it might be EN and enable subtitles
+                    if (
+                      this.currentAudioLang &&
+                      this.currentAudioLang.toUpperCase() === 'FA' &&
+                      this.tracks &&
+                      this.tracks.length > 0
+                    ) {
+                      console.log(
+                        '[VideoPlayer] Cannot detect audio, but FA is set and subtitles exist. Checking stream URL for audio param...'
+                      )
+                      // Check stream URL to see if EN audio is actually selected
+                      try {
+                        const url = new URL(
+                          this.currentStream || this.stream,
+                          window.location.origin
+                        )
+                        const params = new URLSearchParams(url.search)
+                        let hasEnAudio = false
+                        for (const key of params.keys()) {
+                          if (key.startsWith('audio[')) {
+                            const langMatch = key.match(/audio\[(.+)\]/)
+                            if (
+                              langMatch &&
+                              langMatch[1].toUpperCase() === 'EN'
+                            ) {
+                              hasEnAudio = true
+                              break
+                            }
+                          }
+                        }
+                        if (hasEnAudio) {
+                          console.log(
+                            '[VideoPlayer] Stream URL indicates EN audio, updating currentAudioLang'
+                          )
+                          this.currentAudioLang = 'EN'
+                          this.syncSubtitlesWithAudio()
+                        }
+                      } catch (e) {
+                        console.warn(
+                          '[VideoPlayer] Error checking stream URL:',
+                          e
+                        )
+                      }
+                    }
                   }
                   break
                 }
               }
+            } else {
+              console.warn('[VideoPlayer] No audio tracks found in HLS stream')
             }
+          } else {
+            console.warn(
+              '[VideoPlayer] HLS tech not available for audio detection'
+            )
           }
         } catch (e) {
           console.warn('Could not detect audio track:', e)
@@ -3089,38 +3233,76 @@ export default {
     },
 
     syncSubtitlesWithAudio() {
-      // Sync subtitle display with current audio language
+      // Sync subtitle display - simple approach: enable subtitles if they exist
       if (!this.player || !this.tracks || this.tracks.length === 0) return
 
       const textTracks = this.player.textTracks()
+      if (textTracks.length === 0) {
+        console.log('[VideoPlayer] No text tracks available for syncing')
+        return
+      }
 
-      // Find FA subtitle index
+      // Find FA subtitle index in textTracks (not this.tracks, as indices may differ)
       let faSubtitleIndex = -1
-      for (let i = 0; i < this.tracks.length; i++) {
-        const t = this.tracks[i]
-        const lang = (t.language || t.label || '').toString().toLowerCase()
+      for (let i = 0; i < textTracks.length; i++) {
+        const track = textTracks[i]
+        const lang = (track.language || track.label || '')
+          .toString()
+          .toLowerCase()
         if (lang === 'fa' || lang === 'farsi' || lang.includes('fa')) {
           faSubtitleIndex = i
           break
         }
       }
 
-      // Apply subtitle logic based on audio
-      if (
+      console.log(
+        '[VideoPlayer] syncSubtitlesWithAudio - Audio lang:',
+        this.currentAudioLang,
+        'FA subtitle index:',
+        faSubtitleIndex,
+        'Total tracks:',
+        textTracks.length
+      )
+
+      // Simple approach: Enable subtitles if they exist
+      // Only disable if user explicitly selected FA audio (from persisted selection or URL)
+      const isExplicitFA =
         this.currentAudioLang &&
-        this.currentAudioLang.toString().toLowerCase() === 'fa'
-      ) {
-        // FA audio -> subtitles OFF
+        this.currentAudioLang.toString().toLowerCase() === 'fa' &&
+        (localStorage.getItem(`${this.playerid}-audioLang`)?.toLowerCase() ===
+          'fa' ||
+          (this.currentStream || this.stream)?.includes('audio[FA]') ||
+          (this.currentStream || this.stream)?.includes('audio[fa]'))
+
+      if (isExplicitFA) {
+        // User explicitly selected FA audio -> subtitles OFF
+        console.log(
+          '[VideoPlayer] Explicit FA audio selected in sync, disabling all subtitles'
+        )
         for (let i = 0; i < textTracks.length; i++) {
           textTracks[i].mode = 'disabled'
         }
         this.currentSubtitle = null
-      } else if (this.currentAudioLang && faSubtitleIndex !== -1) {
-        // Non-FA audio and FA subtitle exists -> enable FA subtitle
-        for (let i = 0; i < textTracks.length; i++) {
-          textTracks[i].mode = i === faSubtitleIndex ? 'showing' : 'disabled'
+      } else {
+        // Enable subtitles - prefer FA if available, otherwise first available
+        if (faSubtitleIndex !== -1) {
+          console.log(
+            '[VideoPlayer] Enabling FA subtitle in sync at index:',
+            faSubtitleIndex
+          )
+          for (let i = 0; i < textTracks.length; i++) {
+            textTracks[i].mode = i === faSubtitleIndex ? 'showing' : 'disabled'
+          }
+          this.currentSubtitle = faSubtitleIndex
+        } else if (textTracks.length > 0) {
+          // No FA subtitle, enable first available
+          console.log('[VideoPlayer] Enabling first available subtitle in sync')
+          textTracks[0].mode = 'showing'
+          this.currentSubtitle = 0
+          for (let i = 1; i < textTracks.length; i++) {
+            textTracks[i].mode = 'disabled'
+          }
         }
-        this.currentSubtitle = faSubtitleIndex
       }
     },
 
