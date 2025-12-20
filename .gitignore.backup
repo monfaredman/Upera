@@ -103,10 +103,3 @@ sw.*
 /.well-known
 
 package-lock.json
-
-# Temporary exclusions for GH Pages deployment
-.env
-.env.*
-*.env
-/ssl/
-/ssl/**
