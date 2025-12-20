@@ -1635,22 +1635,228 @@ export default {
       return this.currentQuality === value
     },
 
-    selectQuality(value) {
+    selectQuality(value, skipDrawerClose = false) {
       this.currentQuality = value
-      if (this.player && this.player.qualityLevels) {
-        const levels = this.player.qualityLevels()
-        if (value === 'auto') {
-          for (let i = 0; i < levels.length; i++) {
-            levels[i].enabled = true
+
+      // Persist quality selection to localStorage
+      try {
+        localStorage.setItem(`${this.playerid}-quality`, value)
+      } catch (e) {
+        console.warn('Error saving quality to localStorage:', e)
+      }
+
+      if (!this.player) {
+        if (!skipDrawerClose) {
+          this.closeSettingsDrawer()
+        }
+        return
+      }
+
+      // Try to access quality levels through the player's qualityLevels API (from videojs-hls-quality-selector)
+      if (
+        this.player.qualityLevels &&
+        typeof this.player.qualityLevels === 'function'
+      ) {
+        try {
+          const levels = this.player.qualityLevels()
+          if (levels && levels.length > 0) {
+            if (value === 'auto') {
+              // Enable all levels for auto mode
+              for (let i = 0; i < levels.length; i++) {
+                const level = levels[i]
+                // Handle both property and method forms
+                if (typeof level.enabled === 'function') {
+                  level.enabled(true)
+                } else {
+                  level.enabled = true
+                }
+              }
+            } else {
+              // Extract the numeric height from value (e.g., '1080p' -> 1080)
+              const targetHeight = parseInt(value.replace('p', ''))
+              let foundMatch = false
+              let targetLevelIndex = null
+
+              // First, disable all levels
+              for (let i = 0; i < levels.length; i++) {
+                const level = levels[i]
+                // Handle both property and method forms
+                if (typeof level.enabled === 'function') {
+                  level.enabled(false)
+                } else {
+                  level.enabled = false
+                }
+              }
+
+              // Find exact match first
+              for (let i = 0; i < levels.length; i++) {
+                const level = levels[i]
+                const height = level.height
+                if (height === targetHeight) {
+                  // Handle both property and method forms
+                  if (typeof level.enabled === 'function') {
+                    level.enabled(true)
+                  } else {
+                    level.enabled = true
+                  }
+                  foundMatch = true
+                  targetLevelIndex = i
+                  break
+                }
+              }
+
+              // If no exact match found, enable the closest lower quality
+              if (!foundMatch && targetHeight) {
+                let closestLevel = null
+                let closestDiff = Infinity
+
+                for (let i = 0; i < levels.length; i++) {
+                  const height = levels[i].height
+                  if (height && height <= targetHeight) {
+                    const diff = targetHeight - height
+                    if (diff < closestDiff) {
+                      closestDiff = diff
+                      closestLevel = i
+                    }
+                  }
+                }
+
+                if (closestLevel !== null) {
+                  const level = levels[closestLevel]
+                  // Handle both property and method forms
+                  if (typeof level.enabled === 'function') {
+                    level.enabled(true)
+                  } else {
+                    level.enabled = true
+                  }
+                  targetLevelIndex = closestLevel
+                }
+              }
+
+              // The enabled state change should trigger automatic quality switch
+              // The player will switch on the next segment boundary automatically
+              // For immediate feedback, we can try to access VHS and ensure the change is applied
+              if (targetLevelIndex !== null) {
+                try {
+                  const tech = this.player.tech({ IWillNotUseThisInPlugins: true })
+                  if (tech && tech.vhs) {
+                    // Trigger a quality change event to notify the player
+                    // This helps ensure the player picks up the change immediately
+                    if (tech.vhs.trigger) {
+                      tech.vhs.trigger('qualitychange')
+                    }
+                    // Also try to access masterPlaylistController if available
+                    if (tech.vhs.masterPlaylistController_) {
+                      const mpc = tech.vhs.masterPlaylistController_
+                      // Force an update to the playlist controller
+                      if (mpc.trigger) {
+                        mpc.trigger('representationschange')
+                      }
+                    }
+                  }
+                } catch (e) {
+                  // If triggering events fails, the enabled state change should still work
+                  // The player will switch on the next segment boundary
+                }
+              }
+            }
+            if (!skipDrawerClose) {
+              this.closeSettingsDrawer()
+            }
+            return
           }
-        } else {
-          for (let i = 0; i < levels.length; i++) {
-            const height = levels[i].height
-            levels[i].enabled = height + 'p' === value
-          }
+        } catch (error) {
+          console.warn('Error accessing qualityLevels API:', error)
         }
       }
-      this.closeSettingsDrawer()
+
+      // Fallback: Access quality levels through HLS tech object (VHS)
+      try {
+        const tech = this.player.tech({ IWillNotUseThisInPlugins: true })
+        if (tech && tech.vhs && tech.vhs.representations) {
+          const representations = tech.vhs.representations()
+
+          if (representations && representations.length > 0) {
+            if (value === 'auto') {
+              // Enable all representations for auto mode
+              representations.forEach((rep) => {
+                rep.enabled(true)
+              })
+            } else {
+              // Extract the numeric height from value (e.g., '1080p' -> 1080)
+              const targetHeight = parseInt(value.replace('p', ''))
+              let foundMatch = false
+              let targetRep = null
+
+              // First, disable all representations
+              representations.forEach((rep) => {
+                rep.enabled(false)
+              })
+
+              // Find and enable the matching representation
+              representations.forEach((rep) => {
+                const height = rep.height
+                if (height === targetHeight) {
+                  rep.enabled(true)
+                  foundMatch = true
+                  targetRep = rep
+                }
+              })
+
+              // If no exact match found, enable the closest lower quality
+              if (!foundMatch && targetHeight) {
+                let closestRep = null
+                let closestDiff = Infinity
+
+                representations.forEach((rep) => {
+                  const height = rep.height
+                  if (height && height <= targetHeight) {
+                    const diff = targetHeight - height
+                    if (diff < closestDiff) {
+                      closestDiff = diff
+                      closestRep = rep
+                    }
+                  }
+                })
+
+                if (closestRep) {
+                  closestRep.enabled(true)
+                  targetRep = closestRep
+                }
+              }
+
+              // The enabled state change should trigger automatic quality switch
+              // The player will switch on the next segment boundary automatically
+              // For immediate feedback, we can trigger events to notify the player
+              if (targetRep) {
+                try {
+                  // Trigger quality change events to help the player pick up the change
+                  if (tech.vhs && tech.vhs.trigger) {
+                    tech.vhs.trigger('qualitychange')
+                  }
+                  // Also try to access masterPlaylistController if available
+                  if (tech.vhs && tech.vhs.masterPlaylistController_) {
+                    const mpc = tech.vhs.masterPlaylistController_
+                    // Force an update to the playlist controller
+                    if (mpc.trigger) {
+                      mpc.trigger('representationschange')
+                    }
+                  }
+                } catch (e) {
+                  // If triggering events fails, the enabled state change should still work
+                  console.warn('Error triggering quality change events:', e)
+                }
+              }
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Error switching quality through VHS:', error)
+      }
+
+      if (!skipDrawerClose) {
+        this.closeSettingsDrawer()
+      }
     },
 
     // ============================================
@@ -2600,6 +2806,15 @@ export default {
         this.initializeSubtitleState()
         // apply persisted audio selection if available
         this.initializeAudioState()
+        // apply persisted quality selection if available
+        this.initializeQualityState()
+        
+        // Ensure quality selector plugin is available
+        // The plugin should auto-register when imported, but we can verify it's available
+        if (this.player.qualityLevels && typeof this.player.qualityLevels === 'function') {
+          // Plugin is available, quality switching should work
+          console.log('[VideoPlayer] Quality selector plugin is available')
+        }
 
         // Persist volume and muted state on changes
         this.player.on('volumechange', () => {
@@ -2619,6 +2834,10 @@ export default {
           setTimeout(() => {
             this.restoreVolumeState(true)
           }, 100)
+          // Apply quality selection when metadata is loaded (quality levels are now available)
+          setTimeout(() => {
+            this.applyQualitySelection()
+          }, 200)
         })
 
         // Also restore on playing event - Chrome/Safari may reset volume when playback starts
@@ -2973,6 +3192,32 @@ export default {
     initializeAudioState() {
       // No-op now: initial audio selection is applied before player creation
       // This method kept for compatibility but does not force a reload.
+    },
+
+    initializeQualityState() {
+      // Restore persisted quality selection from localStorage
+      try {
+        const persisted = localStorage.getItem(`${this.playerid}-quality`)
+        if (
+          persisted &&
+          ['auto', '1080p', '720p', '480p', '360p'].includes(persisted)
+        ) {
+          this.currentQuality = persisted
+        }
+      } catch (e) {
+        console.warn('Error initializing quality state:', e)
+      }
+    },
+
+    applyQualitySelection() {
+      // Apply the current quality selection to the player
+      // This is called when metadata is loaded and quality levels become available
+      if (this.currentQuality) {
+        // Use a small delay to ensure quality levels are fully initialized
+        setTimeout(() => {
+          this.selectQuality(this.currentQuality, true) // Pass true to skip drawer close
+        }, 100)
+      }
     },
 
     openAudioSettings() {
