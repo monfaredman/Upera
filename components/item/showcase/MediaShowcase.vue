@@ -8,21 +8,20 @@
           <div class="col-12 showcase-pic showcase-pic-main">
             <!-- Desktop Backdrop -->
             <OptimizedImage
-              v-if="backdropSrc"
-              :image-src="backdropSrc"
+              v-if="backdropSrcDesktop"
+              :image-src="backdropSrcDesktop"
               :alt="data.item.name"
               :width="1120"
-              :height="'full'"
+              :height="960"
               :thumb-options="{ w: 1920, h: 960, q: 95, a: 't', zc: 1 }"
               type="backdrops"
               class="showcase-img d-none d-lg-block"
               :aspect-ratio="1120 / 960"
             />
-
             <!-- Mobile Backdrop -->
             <OptimizedImage
-              v-if="backdropSrc"
-              :image-src="backdropSrc"
+              v-if="backdropSrcMobile"
+              :image-src="backdropSrcMobile"
               :alt="data.item.name"
               :width="375"
               :height="300"
@@ -132,17 +131,28 @@ export default {
     'share',
   ],
   computed: {
-    backdropSrc() {
+    rawBackdropSrc() {
       const en = this.data && this.data.item ? this.data.item.backdrop : null
       const fa = this.data && this.data.item ? this.data.item.backdrop_fa : null
       const src = this.ChooseLang(en, fa)
-      return src || ''
+      const normalized = typeof src === 'string' ? src.trim() : src
+      return normalized || ''
+    },
+    backdropSrcDesktop() {
+      return this.rawBackdropSrc || this.blackSvgDataUrl(1920, 960)
+    },
+    backdropSrcMobile() {
+      return this.rawBackdropSrc || this.blackSvgDataUrl(375, 300)
     },
   },
   methods: {
     ChooseLang(en, fa) {
       if (fa && this.$i18n.locale === 'fa') return fa
       return en
+    },
+    blackSvgDataUrl(w, h) {
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none"><rect width="100%" height="100%" fill="black"/></svg>`
+      return `data:image/svg+xml;charset=utf-8,` + encodeURIComponent(svg)
     },
   },
 }

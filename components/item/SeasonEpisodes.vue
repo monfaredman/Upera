@@ -67,7 +67,8 @@
             >
               <div class="episode-image-wrapper">
                 <OptimizedImage
-                  :image-src="episode.backdrop"
+                  v-if="getEpisodeBackdropSrc(episode)"
+                  :image-src="getEpisodeBackdropSrc(episode)"
                   :alt="episode.name"
                   class="episode-image"
                   :width="364"
@@ -76,6 +77,11 @@
                   type="backdrops"
                   fluid-grow
                   :aspect-ratio="364 / 170"
+                />
+                <div
+                  v-else
+                  class="episode-image episode-image--placeholder"
+                  aria-hidden="true"
                 />
                 <div
                   v-if="$auth.loggedIn && episode.current_time > 0"
@@ -603,9 +609,20 @@ export default {
         this.$emit('subscription', episode)
       }
     },
+    getEpisodeBackdropSrc(episode) {
+      const src = episode ? episode.backdrop : null
+      const normalized = typeof src === 'string' ? src.trim() : src
+      // return null so OptimizedImage is not rendered on missing backdrop
+      return normalized || null
+    },
+    blackSvgDataUrl(w, h) {
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none"><rect width="100%" height="100%" fill="black"/></svg>`
+      return `data:image/svg+xml;charset=utf-8,` + encodeURIComponent(svg)
+    },
   },
 }
 </script>
+
 <style scoped>
 section#watching {
   margin: -1rem 50px 0 50px !important;
@@ -848,6 +865,14 @@ section#watching {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  border-radius: 8px;
+}
+
+.episode-image--placeholder {
+  width: 100%;
+  /* keep same aspect as 364x170 */
+  aspect-ratio: 364 / 170;
+  background: #000;
   border-radius: 8px;
 }
 
