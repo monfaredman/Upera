@@ -1,6 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-    <g id="prefix__menu" transform="translate(-103 -250)">
-        <path id="prefix__Path_429" d="M10.75 3a.751.751 0 0 0-.75.75v1.5a.751.751 0 0 0 .75.75h1.5a.751.751 0 0 0 .75-.75v-1.5a.751.751 0 0 0-.75-.75zm0 5.25A.751.751 0 0 0 10 9v1.5a.751.751 0 0 0 .75.75h1.5a.751.751 0 0 0 .75-.75V9a.751.751 0 0 0-.75-.75zm0 5.25a.751.751 0 0 0-.75.75v1.5a.751.751 0 0 0 .75.75h1.5a.751.751 0 0 0 .75-.75v-1.5a.751.751 0 0 0-.75-.75z" data-name="Path 429" transform="translate(104 253)" style="fill:#3737b6"/>
-        <path id="prefix__Rectangle_1040" d="M0 0H24V24H0z" data-name="Rectangle 1040" transform="translate(103 250)" style="fill:none"/>
-    </g>
-</svg>
