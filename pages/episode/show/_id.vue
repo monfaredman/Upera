@@ -551,20 +551,19 @@ export default {
         }
       }
 
-      if (
-        this.creditsData.final_credits &&
-        currentTime >= this.creditsData.final_credits &&
-        this.suggestion
-      ) {
-        this.showNextMovie = true
-      } else if (
-        !this.creditsData.final_credits &&
-        duration - currentTime <= 100 &&
-        this.suggestion
-      ) {
-        this.showNextMovie = true
+      // Show next episode overlay when in final credits or near end
+      if (this.suggestion) {
+        const { final_credits } = this.creditsData || {}
+        const creditsStart =
+          final_credits > 0 ? final_credits : duration * 0.975
+
+        if (duration > 0 && currentTime >= creditsStart) {
+          this.showNextEpisode = true
+        } else {
+          this.showNextEpisode = false
+        }
       } else {
-        this.showNextMovie = false
+        this.showNextEpisode = false
       }
       return player
     },
