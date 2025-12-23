@@ -12,7 +12,9 @@
               :image-src="backdropSrcDesktop"
               :alt="data.item.name"
               :width="1120"
-              :height="960"
+              :height="
+                data.item.backdrop ? 'full' : renderHeightForSVGBackdrop()
+              "
               :thumb-options="{ w: 1920, h: 960, q: 95, a: 't', zc: 1 }"
               type="backdrops"
               class="showcase-img d-none d-lg-block"
@@ -24,7 +26,7 @@
               :image-src="backdropSrcMobile"
               :alt="data.item.name"
               :width="375"
-              :height="300"
+              :height="data.item.backdrop ? 300 : renderHeightForSVGBackdrop()"
               :thumb-options="{ w: 375, h: 300, q: 100, a: 'c', zc: 1 }"
               type="backdrops"
               fluid-grow
@@ -153,6 +155,19 @@ export default {
     blackSvgDataUrl(w, h) {
       const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none"><rect width="100%" height="100%" fill="black"/></svg>`
       return `data:image/svg+xml;charset=utf-8,` + encodeURIComponent(svg)
+    },
+    renderHeightForSVGBackdrop() {
+      if (window.innerWidth >= 1500) {
+        return 960
+      } else if (window.innerWidth >= 1300) {
+        return 714
+      } else if (window.innerWidth >= 1150) {
+        return 645
+      } else if (window.innerWidth >= 992) {
+        return 574
+      } else if (window.innerWidth >= 850) {
+        return 250
+      }
     },
   },
 }
