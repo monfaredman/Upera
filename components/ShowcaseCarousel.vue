@@ -350,7 +350,7 @@ export default {
       const src = urlObj.searchParams.get('src')
 
       // Build the new URL
-      return `https://thumb.upera.shop/thumb?w=1920&h=1070&src=${encodeURIComponent(
+      return `https://thumb.upera.tv/thumb?w=1920&h=1070&src=${encodeURIComponent(
         src
       )}`
     },
@@ -363,7 +363,7 @@ export default {
       const src = urlObj.searchParams.get('src')
 
       // Build the new URL
-      return `https://thumb.upera.shop/thumb?w=960&h=1000&a=c&src=${encodeURIComponent(
+      return `https://thumb.upera.tv/thumb?w=960&h=1000&a=c&src=${encodeURIComponent(
         src
       )}`
     },

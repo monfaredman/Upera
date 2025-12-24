@@ -100,7 +100,7 @@
                           >
                             <img
                               :src="
-                                'https://cdn.upera.shop/s3/files/logos/' +
+                                'https://cdn.upera.tv/s3/files/logos/' +
                                 video.channel.logo
                               "
                             />

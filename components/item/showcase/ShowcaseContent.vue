@@ -160,7 +160,7 @@ export default {
   computed: {
     logoSrc() {
       const prefix =
-        'https://thumb.upera.shop/thumb?w=400&q=90&fmt=webp&src=https://thumb.upera.shop/s3/files/'
+        'https://thumb.upera.tv/thumb?w=400&q=90&fmt=webp&src=https://thumb.upera.tv/s3/files/'
       const logo =
         this.data && this.data.item && this.data.item.logo
           ? String(this.data.item.logo)

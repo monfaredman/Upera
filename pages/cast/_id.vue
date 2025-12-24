@@ -18,7 +18,7 @@
                     show: true,
                   }"
                   :src="
-                    'https://thumb.upera.shop/thumb?w=800&h=600&q=90&fmt=webp&a=t&src=https://cdn.upera.shop/s3/casts/' +
+                    'https://thumb.upera.tv/thumb?w=800&h=600&q=90&fmt=webp&a=t&src=https://cdn.upera.tv/s3/casts/' +
                     data.cast.image
                   "
                   :alt="data.cast.name_fa"
@@ -34,14 +34,14 @@
                     show: true,
                   }"
                   :src="
-                    'https://thumb.upera.shop/thumb?w=400&h=300&q=90&fmt=webp&a=c&src=https://cdn.upera.shop/s3/casts/' +
+                    'https://thumb.upera.tv/thumb?w=400&h=300&q=90&fmt=webp&a=c&src=https://cdn.upera.tv/s3/casts/' +
                     data.cast.image
                   "
                   :alt="data.cast.name_fa"
                 />
 
-                <!--                <img class="showcase-img d-none d-lg-block" :src="'https://thumb.upera.shop/thumb?w=800&h=400&zc=3&q=100&a=t&src=https://cdn.upera.shop/s3/casts/'+data.cast.image" :alt="data.cast.name_fa">
-                <img class="showcase-img d-lg-none" :src="'https://thumb.upera.shop/thumb?w=400&h=300&zc=3&q=100&a=c&src=https://cdn.upera.shop/s3/casts/'+data.cast.image" :alt="data.cast.name_fa"> -->
+                <!--                <img class="showcase-img d-none d-lg-block" :src="'https://thumb.upera.tv/thumb?w=800&h=400&zc=3&q=100&a=t&src=https://cdn.upera.tv/s3/casts/'+data.cast.image" :alt="data.cast.name_fa">
+                <img class="showcase-img d-lg-none" :src="'https://thumb.upera.tv/thumb?w=400&h=300&zc=3&q=100&a=c&src=https://cdn.upera.tv/s3/casts/'+data.cast.image" :alt="data.cast.name_fa"> -->
               </div>
             </div>
             <div
@@ -111,7 +111,7 @@
                     show: true,
                   }"
                   :src="
-                    'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/' +
+                    'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.tv/s3/posters/' +
                     item.poster
                   "
                   :alt="item.name"
@@ -128,7 +128,7 @@
                     show: true,
                   }"
                   :src="
-                    'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/' +
+                    'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.tv/s3/posters/' +
                     item.poster
                   "
                   :alt="item.name"
@@ -145,15 +145,15 @@
                     show: true,
                   }"
                   :src="
-                    'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/' +
+                    'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.tv/s3/posters/' +
                     item.poster
                   "
                   :alt="item.name"
                 />
 
-                <!--                 <img :src="'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
-                <img v-if="item.type!='movie'" :src="'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
-                <img v-if="item.type!='movie'" :src="'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name"> -->
+                <!--                 <img :src="'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.tv/s3/posters/'+item.poster" :alt="item.name">
+                <img v-if="item.type!='movie'" :src="'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.tv/s3/posters/'+item.poster" :alt="item.name">
+                <img v-if="item.type!='movie'" :src="'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.tv/s3/posters/'+item.poster" :alt="item.name"> -->
                 <span
                   v-if="!item.ir && item.persian"
                   class="label label-rounded label-red label-1"

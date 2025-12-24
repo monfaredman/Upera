@@ -52,11 +52,11 @@ export default {
   computed: {
     posterStyle() {
       return {
-        backgroundImage: `url('https://thumb.upera.shop/thumb?w=800&h=412&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/${this.backdrop}')`,
+        backgroundImage: `url('https://thumb.upera.tv/thumb?w=800&h=412&q=100&a=c&src=https://cdn.upera.tv/s3/backdrops/${this.backdrop}')`,
       }
     },
     thumbnailUrl() {
-      return `https://thumb.upera.shop/thumb?w=70&h=103&q=100&a=c&src=https://cdn.upera.shop/s3/posters/${this.poster}`
+      return `https://thumb.upera.tv/thumb?w=70&h=103&q=100&a=c&src=https://cdn.upera.tv/s3/posters/${this.poster}`
     },
   },
   methods: {

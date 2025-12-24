@@ -118,7 +118,7 @@
                   }"
                   class="d-none d-lg-block d-xl-block d-xxl-none non-hover-media-image-xxl"
                   :src="
-                    'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/' +
+                    'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.tv/s3/posters/' +
                     item.poster
                   "
                   :alt="item.name"
@@ -135,7 +135,7 @@
                   }"
                   class="d-none d-lg-block d-xl-block d-xxl-none non-hover-media-image-xxl"
                   :src="
-                    'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/' +
+                    'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.tv/s3/posters/' +
                     item.poster
                   "
                   :alt="item.name"
@@ -394,7 +394,7 @@
               }"
               class="d-block d-lg-none non-hover-media-image-xxl"
               :src="
-                'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/' +
+                'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.tv/s3/posters/' +
                 item.poster
               "
               :alt="item.name"
@@ -411,7 +411,7 @@
               }"
               class="d-block d-lg-none non-hover-media-image-xxl"
               :src="
-                'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/' +
+                'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.tv/s3/posters/' +
                 item.poster
               "
               :alt="item.name"
@@ -461,7 +461,7 @@
             }"
             class="isSeries grid-image-img"
             :src="
-              'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/' +
+              'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.tv/s3/posters/' +
               item.poster
             "
             :alt="item.name"
@@ -478,7 +478,7 @@
             }"
             class="isSeries grid-image-img"
             :src="
-              'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/' +
+              'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.tv/s3/posters/' +
               item.poster
             "
             :alt="item.name"
@@ -514,9 +514,9 @@
 </template>
 
 <script>
-const THUMB_BASE = 'https://thumb.upera.shop/thumb'
-const CDN_POSTERS = 'https://cdn.upera.shop/s3/posters'
-const CDN_BACKDROPS_1 = 'https://cdn.upera.shop/s3/backdrops'
+const THUMB_BASE = 'https://thumb.upera.tv/thumb'
+const CDN_POSTERS = 'https://cdn.upera.tv/s3/posters'
+const CDN_BACKDROPS_1 = 'https://cdn.upera.tv/s3/backdrops'
 const CDN_BACKDROPS_2 = 'https://s35.upera.net/files2'
 
 export default {
@@ -608,14 +608,14 @@ export default {
       }
 
       if (isTeaser) {
-        return `https://thumb.upera.shop/thumb?w=382&h=220&q=100&a=t&src=https://cdn.upera.shop/s3/${filename}`
+        return `https://thumb.upera.tv/thumb?w=382&h=220&q=100&a=t&src=https://cdn.upera.tv/s3/${filename}`
       }
       const base = cdnType === 1 ? CDN_BACKDROPS_1 : CDN_BACKDROPS_2
       if (this.isOffer) {
         if (this.index === 0)
-          return `https://thumb.upera.shop/thumb?w=${w}&h=${h}&q=100&a=r&src=https://cdn.upera.shop/s3/${filename}`
+          return `https://thumb.upera.tv/thumb?w=${w}&h=${h}&q=100&a=r&src=https://cdn.upera.tv/s3/${filename}`
         else {
-          return `https://thumb.upera.shop/thumb?w=${310}&h=${180}&q=100&a=c&src=https://cdn.upera.shop/s3/${filename}`
+          return `https://thumb.upera.tv/thumb?w=${310}&h=${180}&q=100&a=c&src=https://cdn.upera.tv/s3/${filename}`
         }
       }
       return this.variant === 'md_backdrop'

@@ -199,7 +199,7 @@
                       show: true,
                     }"
                     :src="
-                      'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/' +
+                      'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.tv/s3/posters/' +
                       item.poster
                     "
                     :alt="item.name"
@@ -227,7 +227,7 @@
                       show: true,
                     }"
                     :src="
-                      'https://thumb.upera.shop/thumb?w=140&h=140&q=100&a=t&src=https://cdn.upera.shop/s3/casts/' +
+                      'https://thumb.upera.tv/thumb?w=140&h=140&q=100&a=t&src=https://cdn.upera.tv/s3/casts/' +
                       item.image
                     "
                     :alt="item.name"
@@ -260,7 +260,7 @@ export default {
   async asyncData(context) {
     // Ensure topsearch is loaded from store (will only fetch if not already loaded)
     await context.store.dispatch('FETCH_TOPSEARCH')
-    
+
     if (context.params.search) {
       const queries = { query: context.params.search }
       if (context.query.dubbed) {
@@ -329,7 +329,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters({ 
+    ...mapGetters({
       lastsearchs: 'search/lastsearchs',
       topsearch: 'topsearch',
     }),

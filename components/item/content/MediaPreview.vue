@@ -43,7 +43,7 @@ export default {
       const imageUrl = this.data.item.back_teaser || this.data.item.backdrop
       if (!imageUrl) return ''
 
-      return `https://thumb.upera.shop/thumb?w=1920&h=1200&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/${imageUrl}`
+      return `https://thumb.upera.tv/thumb?w=1920&h=1200&q=100&a=c&src=https://cdn.upera.tv/s3/backdrops/${imageUrl}`
     },
   },
 }

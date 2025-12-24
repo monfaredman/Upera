@@ -205,7 +205,7 @@ export default {
                 // تنظیم URL فایل پخش، پوستر و عنوان
                 this.filePlayerUrl = data.file[0].file
                 this.filePosterUrl = this.backdrop
-                  ? 'https://thumb.upera.shop/thumb?w=1920&h=938&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/' +
+                  ? 'https://thumb.upera.tv/thumb?w=1920&h=938&q=100&a=c&src=https://cdn.upera.tv/s3/backdrops/' +
                     this.Chooseback(this.backdropteaser, this.backdrop)
                   : null
                 this.fileTitle = titlesm

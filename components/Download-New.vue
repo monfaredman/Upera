@@ -579,8 +579,8 @@
 <script>
 import { mapGetters } from 'vuex'
 
-const THUMB_BASE = 'https://thumb.upera.shop/thumb'
-const CDN_POSTERS = 'https://cdn.upera.shop/s3/posters'
+const THUMB_BASE = 'https://thumb.upera.tv/thumb'
+const CDN_POSTERS = 'https://cdn.upera.tv/s3/posters'
 
 export default {
   name: 'Download',
@@ -1065,7 +1065,7 @@ export default {
     //     return `${this.contentData.cdn.sm_poster}${this.contentData.poster}`
     //   }
     //   if (this.posterf) {
-    //     return `https://thumb.upera.shop/thumb?w=70&h=103&q=100&a=c&src=https://cdn.upera.shop/s3/posters/${this.posterf}`
+    //     return `https://thumb.upera.tv/thumb?w=70&h=103&q=100&a=c&src=https://cdn.upera.tv/s3/posters/${this.posterf}`
     //   }
     //   return ''
     // },

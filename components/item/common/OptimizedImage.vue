@@ -107,7 +107,7 @@ export default {
       return baseProps
     },
     computedSrc() {
-      const baseUrl = 'https://thumb.upera.shop/thumb?'
+      const baseUrl = 'https://thumb.upera.tv/thumb?'
       const params = new URLSearchParams()
 
       // Add thumbnail options
@@ -124,11 +124,11 @@ export default {
         }
         params.set(
           'src',
-          `https://cdn.upera.shop/s3/${this.type}/${this.imageSrc}`
+          `https://cdn.upera.tv/s3/${this.type}/${this.imageSrc}`
         )
       }
       if (this.type === 'backstage' || this.type === 'next') {
-        return `https://thumb.upera.shop/thumb?w=382&h=220&q=100&a=t&src=https://cdn.upera.shop/s3/${this.imageSrc}`
+        return `https://thumb.upera.tv/thumb?w=382&h=220&q=100&a=t&src=https://cdn.upera.tv/s3/${this.imageSrc}`
       }
       return baseUrl + params.toString()
     },

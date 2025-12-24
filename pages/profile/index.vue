@@ -81,13 +81,13 @@
                       show: true,
                     }"
                     :src="
-                      'https://thumb.upera.shop/thumb?w=364&h=190&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/' +
+                      'https://thumb.upera.tv/thumb?w=364&h=190&q=100&a=c&src=https://cdn.upera.tv/s3/backdrops/' +
                       item.backdrop
                     "
                     :alt="item.name"
                   />
 
-                  <!-- <img loading="lazy" data-back="/images/364x190.png" :src="'https://thumb.upera.shop/thumb?w=364&h=190&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/'+item.backdrop" :alt="item.name"> -->
+                  <!-- <img loading="lazy" data-back="/images/364x190.png" :src="'https://thumb.upera.tv/thumb?w=364&h=190&q=100&a=c&src=https://cdn.upera.tv/s3/backdrops/'+item.backdrop" :alt="item.name"> -->
                 </nuxt-link>
                 <nuxt-link
                   v-else-if="item.type == 'episode'"
@@ -103,13 +103,13 @@
                       show: true,
                     }"
                     :src="
-                      'https://thumb.upera.shop/thumb?w=364&h=190&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/' +
+                      'https://thumb.upera.tv/thumb?w=364&h=190&q=100&a=c&src=https://cdn.upera.tv/s3/backdrops/' +
                       item.backdrop
                     "
                     :alt="item.name"
                   />
 
-                  <!-- <img loading="lazy" data-back="/images/364x190.png" :src="'https://thumb.upera.shop/thumb?w=364&h=190&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/'+item.backdrop" :alt="item.name"> -->
+                  <!-- <img loading="lazy" data-back="/images/364x190.png" :src="'https://thumb.upera.tv/thumb?w=364&h=190&q=100&a=c&src=https://cdn.upera.tv/s3/backdrops/'+item.backdrop" :alt="item.name"> -->
                 </nuxt-link>
                 <nuxt-link
                   v-else
@@ -125,12 +125,12 @@
                       show: true,
                     }"
                     :src="
-                      'https://thumb.upera.shop/thumb?w=364&h=190&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/' +
+                      'https://thumb.upera.tv/thumb?w=364&h=190&q=100&a=c&src=https://cdn.upera.tv/s3/backdrops/' +
                       item.backdrop
                     "
                     :alt="item.name"
                   />
-                  <!-- <img loading="lazy" data-back="/images/364x190.png" :src="'https://thumb.upera.shop/thumb?w=364&h=190&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/'+item.backdrop" :alt="item.name"> -->
+                  <!-- <img loading="lazy" data-back="/images/364x190.png" :src="'https://thumb.upera.tv/thumb?w=364&h=190&q=100&a=c&src=https://cdn.upera.tv/s3/backdrops/'+item.backdrop" :alt="item.name"> -->
                 </nuxt-link>
                 <div class="progress">
                   <div
@@ -193,7 +193,7 @@
                     show: true,
                   }"
                   :src="
-                    'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/' +
+                    'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.tv/s3/posters/' +
                     item.poster
                   "
                   :alt="item.name"
@@ -209,7 +209,7 @@
                     show: true,
                   }"
                   :src="
-                    'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/' +
+                    'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.tv/s3/posters/' +
                     item.poster
                   "
                   :alt="item.name"
@@ -225,15 +225,15 @@
                     show: true,
                   }"
                   :src="
-                    'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/' +
+                    'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.tv/s3/posters/' +
                     item.poster
                   "
                   :alt="item.name"
                 />
 
-                <!-- <img loading="lazy" data-back="/images/142x212.png" :src="'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
-                <img v-if="item.type!='movie'" loading="lazy" data-back="/images/142x212.png" :src="'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
-                <img v-if="item.type!='movie'" loading="lazy" data-back="/images/142x212.png" :src="'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name"> -->
+                <!-- <img loading="lazy" data-back="/images/142x212.png" :src="'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.tv/s3/posters/'+item.poster" :alt="item.name">
+                <img v-if="item.type!='movie'" loading="lazy" data-back="/images/142x212.png" :src="'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.tv/s3/posters/'+item.poster" :alt="item.name">
+                <img v-if="item.type!='movie'" loading="lazy" data-back="/images/142x212.png" :src="'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.tv/s3/posters/'+item.poster" :alt="item.name"> -->
                 <span
                   v-if="!item.ir && item.persian"
                   class="label label-rounded label-red label-1"
@@ -302,7 +302,7 @@
                     show: true,
                   }"
                   :src="
-                    'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/' +
+                    'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.tv/s3/posters/' +
                     item.poster
                   "
                   :alt="item.name"
@@ -318,7 +318,7 @@
                     show: true,
                   }"
                   :src="
-                    'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/' +
+                    'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.tv/s3/posters/' +
                     item.poster
                   "
                   :alt="item.name"
@@ -334,14 +334,14 @@
                     show: true,
                   }"
                   :src="
-                    'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/' +
+                    'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.tv/s3/posters/' +
                     item.poster
                   "
                   :alt="item.name"
                 />
-                <!--                 <img loading="lazy" data-back="/images/142x212.png" :src="'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
-                <img v-if="item.type!='movie'" loading="lazy" data-back="/images/142x212.png" :src="'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
-                <img v-if="item.type!='movie'" loading="lazy" data-back="/images/142x212.png" :src="'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name"> -->
+                <!--                 <img loading="lazy" data-back="/images/142x212.png" :src="'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.tv/s3/posters/'+item.poster" :alt="item.name">
+                <img v-if="item.type!='movie'" loading="lazy" data-back="/images/142x212.png" :src="'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.tv/s3/posters/'+item.poster" :alt="item.name">
+                <img v-if="item.type!='movie'" loading="lazy" data-back="/images/142x212.png" :src="'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.tv/s3/posters/'+item.poster" :alt="item.name"> -->
                 <span
                   v-if="!item.ir && item.persian"
                   class="label label-rounded label-red label-1"
@@ -410,7 +410,7 @@
                     show: true,
                   }"
                   :src="
-                    'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/' +
+                    'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.tv/s3/posters/' +
                     item.poster
                   "
                   :alt="item.name"
@@ -426,7 +426,7 @@
                     show: true,
                   }"
                   :src="
-                    'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/' +
+                    'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.tv/s3/posters/' +
                     item.poster
                   "
                   :alt="item.name"
@@ -442,14 +442,14 @@
                     show: true,
                   }"
                   :src="
-                    'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/' +
+                    'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.tv/s3/posters/' +
                     item.poster
                   "
                   :alt="item.name"
                 />
-                <!--                 <img loading="lazy" data-back="/images/142x212.png" :src="'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
-                <img v-if="item.type!='movie'" loading="lazy" data-back="/images/142x212.png" :src="'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
-                <img v-if="item.type!='movie'" loading="lazy" data-back="/images/142x212.png" :src="'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name"> -->
+                <!--                 <img loading="lazy" data-back="/images/142x212.png" :src="'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.tv/s3/posters/'+item.poster" :alt="item.name">
+                <img v-if="item.type!='movie'" loading="lazy" data-back="/images/142x212.png" :src="'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.tv/s3/posters/'+item.poster" :alt="item.name">
+                <img v-if="item.type!='movie'" loading="lazy" data-back="/images/142x212.png" :src="'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.tv/s3/posters/'+item.poster" :alt="item.name"> -->
                 <span
                   v-if="!item.ir && item.persian"
                   class="label label-rounded label-red label-1"
@@ -518,7 +518,7 @@
                     show: true,
                   }"
                   :src="
-                    'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/' +
+                    'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.tv/s3/posters/' +
                     item.poster
                   "
                   :alt="item.name"
@@ -534,7 +534,7 @@
                     show: true,
                   }"
                   :src="
-                    'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/' +
+                    'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.tv/s3/posters/' +
                     item.poster
                   "
                   :alt="item.name"
@@ -550,14 +550,14 @@
                     show: true,
                   }"
                   :src="
-                    'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/' +
+                    'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.tv/s3/posters/' +
                     item.poster
                   "
                   :alt="item.name"
                 />
-                <!--                 <img loading="lazy" data-back="/images/142x212.png" :src="'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
-                <img v-if="item.type!='movie'" loading="lazy" data-back="/images/142x212.png" :src="'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
-                <img v-if="item.type!='movie'" loading="lazy" data-back="/images/142x212.png" :src="'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name"> -->
+                <!--                 <img loading="lazy" data-back="/images/142x212.png" :src="'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.tv/s3/posters/'+item.poster" :alt="item.name">
+                <img v-if="item.type!='movie'" loading="lazy" data-back="/images/142x212.png" :src="'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.tv/s3/posters/'+item.poster" :alt="item.name">
+                <img v-if="item.type!='movie'" loading="lazy" data-back="/images/142x212.png" :src="'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.tv/s3/posters/'+item.poster" :alt="item.name"> -->
                 <span
                   v-if="!item.ir && item.persian"
                   class="label label-rounded label-red label-1"
@@ -626,7 +626,7 @@
                     show: true,
                   }"
                   :src="
-                    'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/' +
+                    'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.tv/s3/posters/' +
                     item.poster
                   "
                   :alt="item.name"
@@ -642,7 +642,7 @@
                     show: true,
                   }"
                   :src="
-                    'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/' +
+                    'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.tv/s3/posters/' +
                     item.poster
                   "
                   :alt="item.name"
@@ -658,14 +658,14 @@
                     show: true,
                   }"
                   :src="
-                    'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/' +
+                    'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.tv/s3/posters/' +
                     item.poster
                   "
                   :alt="item.name"
                 />
-                <!--               <img loading="lazy" data-back="/images/142x212.png" :src="'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
-                <img v-if="item.type!='movie'" loading="lazy" data-back="/images/142x212.png" :src="'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name">
-                <img v-if="item.type!='movie'" loading="lazy" data-back="/images/142x212.png" :src="'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/'+item.poster" :alt="item.name"> -->
+                <!--               <img loading="lazy" data-back="/images/142x212.png" :src="'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.tv/s3/posters/'+item.poster" :alt="item.name">
+                <img v-if="item.type!='movie'" loading="lazy" data-back="/images/142x212.png" :src="'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.tv/s3/posters/'+item.poster" :alt="item.name">
+                <img v-if="item.type!='movie'" loading="lazy" data-back="/images/142x212.png" :src="'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.tv/s3/posters/'+item.poster" :alt="item.name"> -->
                 <span
                   v-if="!item.ir && item.persian"
                   class="label label-rounded label-red label-1"

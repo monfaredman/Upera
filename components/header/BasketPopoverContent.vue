@@ -144,8 +144,8 @@
 <script>
 import { mapGetters } from 'vuex'
 
-const THUMB_BASE = 'https://thumb.upera.shop/thumb'
-const CDN_POSTERS = 'https://cdn.upera.shop/s3/posters'
+const THUMB_BASE = 'https://thumb.upera.tv/thumb'
+const CDN_POSTERS = 'https://cdn.upera.tv/s3/posters'
 
 export default {
   name: 'BasketPopoverContent',

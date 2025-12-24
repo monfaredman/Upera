@@ -452,7 +452,7 @@ export default {
     posterSrc(poster) {
       if (!poster) return ''
       const prefix =
-        'https://thumb.upera.shop/thumb?w=400&q=90&fmt=webp&src=https://thumb.upera.shop/s3/posters/'
+        'https://thumb.upera.tv/thumb?w=400&q=90&fmt=webp&src=https://thumb.upera.tv/s3/posters/'
       return poster.startsWith(prefix) ? poster : prefix + poster
     },
 
@@ -460,7 +460,7 @@ export default {
     backdropSrc(backdrop) {
       if (!backdrop) return ''
       const prefix =
-        'https://thumb.upera.shop/thumb?w=700&h=300&q=100&a=t&src=https://cdn.upera.shop/s3/backdrops/'
+        'https://thumb.upera.tv/thumb?w=700&h=300&q=100&a=t&src=https://cdn.upera.tv/s3/backdrops/'
       return backdrop.startsWith('https://') ? backdrop : prefix + backdrop
     },
 

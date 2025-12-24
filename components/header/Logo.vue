@@ -75,7 +75,7 @@ export default {
     logoUrl() {
       if (!this.isPlus) return ''
 
-      const baseUrl = 'https://cdn.upera.shop/s3/vods/'
+      const baseUrl = 'https://cdn.upera.tv/s3/vods/'
       const logoFile =
         this.$colorMode.value === 'light'
           ? this.checkuser.logo
@@ -88,7 +88,7 @@ export default {
     },
     mobileLogo() {
       if (this.showMobileLogo) {
-        return 'https://cdn.upera.shop/s3/vods/' + this.checkuser.logo_dark
+        return 'https://cdn.upera.tv/s3/vods/' + this.checkuser.logo_dark
       }
       return '@/assets/images/mobile.png'
     },

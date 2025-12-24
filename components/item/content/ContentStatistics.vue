@@ -202,12 +202,12 @@ export default {
         // Use backdrop for mobile
         const backdrop = this.data.item.backdrop
         if (!backdrop) return ''
-        return `https://thumb.upera.shop/thumb?w=375&h=300&q=100&a=c&zc=1&src=https://cdn.upera.shop/s3/backdrops/${backdrop}`
+        return `https://thumb.upera.tv/thumb?w=375&h=300&q=100&a=c&zc=1&src=https://cdn.upera.tv/s3/backdrops/${backdrop}`
       } else {
         // Use poster for desktop
         const poster = this.data.item.poster
         if (!poster) return ''
-        return `https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/${poster}`
+        return `https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.tv/s3/posters/${poster}`
       }
     },
   },

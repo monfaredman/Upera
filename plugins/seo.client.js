@@ -28,7 +28,9 @@ export default ({ app }, inject) => {
 
     const routerBase = app.router.options.base || '/'
     const baseUrl = process.env.BURL || process.env.URL || ''
-    const fullUrl = url ? `${baseUrl}${url}` : `${baseUrl}${app.router.currentRoute.fullPath}`
+    const fullUrl = url
+      ? `${baseUrl}${url}`
+      : `${baseUrl}${app.router.currentRoute.fullPath}`
     const defaultImage = image || `${baseUrl}${routerBase}images/og-default.jpg`
     const defaultTitle = siteName || process.env.APP_NAME_FA || 'Upera'
     const pageTitle = title ? `${title} | ${defaultTitle}` : defaultTitle
@@ -133,7 +135,7 @@ export default ({ app }, inject) => {
       name: video.name || video.name_fa,
       description: video.overview || video.overview_fa,
       thumbnailUrl: video.poster
-        ? `https://thumb.upera.shop/thumb?w=1200&h=630&q=85&a=c&src=https://cdn.upera.shop/s3/posters/${video.poster}`
+        ? `https://thumb.upera.tv/thumb?w=1200&h=630&q=85&a=c&src=https://cdn.upera.tv/s3/posters/${video.poster}`
         : '',
       uploadDate: video.created_at || new Date().toISOString(),
       duration: video.runtime ? `PT${video.runtime}M` : undefined,
@@ -155,7 +157,7 @@ export default ({ app }, inject) => {
       alternateName: content.name_fa || content.name,
       description: content.overview || content.overview_fa,
       image: content.poster
-        ? `https://thumb.upera.shop/thumb?w=1200&h=630&q=85&a=c&src=https://cdn.upera.shop/s3/posters/${content.poster}`
+        ? `https://thumb.upera.tv/thumb?w=1200&h=630&q=85&a=c&src=https://cdn.upera.tv/s3/posters/${content.poster}`
         : '',
       datePublished: content.year ? `${content.year}-01-01` : undefined,
       aggregateRating: content.rate
@@ -198,4 +200,3 @@ export default ({ app }, inject) => {
     breadcrumb: generateBreadcrumbStructuredData,
   })
 }
-
