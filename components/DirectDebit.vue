@@ -465,7 +465,7 @@ export default {
 
     getSeriesImage(poster) {
       if (!poster) return ''
-      return `https://thumb.upera.shop/thumb?w=200&h=300&q=100&a=c&src=https://cdn.upera.shop/s3/posters/${poster}`
+      return `https://thumb.upera.tv/thumb?w=200&h=300&q=100&a=c&src=https://cdn.upera.tv/s3/posters/${poster}`
     },
 
     goToStep2() {

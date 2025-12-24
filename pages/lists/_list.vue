@@ -152,8 +152,8 @@ import FilterContents from '@/components/FilterContents'
 import MediaCard from '@/components/MediaCard'
 
 const API_BASE = '/ghost/get/get_listV3/'
-const THUMB_BASE = 'https://thumb.upera.shop/thumb'
-const CDN_BACKDROPS_1 = 'https://cdn.upera.shop/s3/backdrops'
+const THUMB_BASE = 'https://thumb.upera.tv/thumb'
+const CDN_BACKDROPS_1 = 'https://cdn.upera.tv/s3/backdrops'
 
 const SIZES = Object.freeze({
   backdropGrid: { w: 364, h: 190 },

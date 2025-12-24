@@ -203,7 +203,7 @@ export default {
     },
     getSeriesImage(poster) {
       if (!poster) return ''
-      return `https://thumb.upera.shop/thumb?w=225&h=146&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/${poster}`
+      return `https://thumb.upera.tv/thumb?w=225&h=146&q=100&a=c&src=https://cdn.upera.tv/s3/backdrops/${poster}`
     },
     handleChange() {
       this.$emit('update:formData', { ...this.localFormData })

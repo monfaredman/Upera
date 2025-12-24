@@ -137,7 +137,7 @@
               >
                 <b-img
                   v-lazy="
-                    'https://thumb.upera.shop/thumb?w=364&h=190&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/' +
+                    'https://thumb.upera.tv/thumb?w=364&h=190&q=100&a=c&src=https://cdn.upera.tv/s3/backdrops/' +
                     item.backdrop
                   "
                   v-bind="{
@@ -149,7 +149,7 @@
                     show: true,
                   }"
                   :src="
-                    'https://thumb.upera.shop/thumb?w=364&h=190&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/' +
+                    'https://thumb.upera.tv/thumb?w=364&h=190&q=100&a=c&src=https://cdn.upera.tv/s3/backdrops/' +
                     item.backdrop
                   "
                   :alt="item.name"
@@ -170,7 +170,7 @@
                     show: true,
                   }"
                   :src="
-                    'https://thumb.upera.shop/thumb?w=364&h=190&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/' +
+                    'https://thumb.upera.tv/thumb?w=364&h=190&q=100&a=c&src=https://cdn.upera.tv/s3/backdrops/' +
                     item.backdrop
                   "
                   :alt="item.name"
@@ -190,7 +190,7 @@
                     show: true,
                   }"
                   :src="
-                    'https://thumb.upera.shop/thumb?w=364&h=190&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/' +
+                    'https://thumb.upera.tv/thumb?w=364&h=190&q=100&a=c&src=https://cdn.upera.tv/s3/backdrops/' +
                     item.backdrop
                   "
                   :alt="item.name"
@@ -256,7 +256,7 @@
                           <img
                             class="special-image spec-1"
                             :src="
-                              'https://thumb.upera.shop/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.shop/s3/posters/' +
+                              'https://thumb.upera.tv/thumb?w=142&h=212&q=100&a=c&src=https://cdn.upera.tv/s3/posters/' +
                               item.poster
                             "
                             :alt="item.name"
@@ -1210,7 +1210,7 @@ export default {
             const url = new URL(item.image_src)
             const srcParam = url.searchParams.get('src')
             if (srcParam) {
-              // Extract filename from src URL (e.g., "https://thumb.upera.shop/s3/backdrops/xzVIX3yB1ZK0n4uuoI8z.jpg")
+              // Extract filename from src URL (e.g., "https://thumb.upera.tv/s3/backdrops/xzVIX3yB1ZK0n4uuoI8z.jpg")
               const srcUrl = new URL(srcParam)
               const pathParts = srcUrl.pathname.split('/')
               backdrop = pathParts[pathParts.length - 1]

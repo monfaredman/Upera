@@ -1160,7 +1160,7 @@ export default {
                   // Format image URL with thumb service
                   images[
                     i
-                  ] = `https://thumb.upera.shop/thumb?w=1920&h=1200&q=100&a=c&src=${src}`
+                  ] = `https://thumb.upera.tv/thumb?w=1920&h=1200&q=100&a=c&src=${src}`
                 }
                 this.lightimages = images
               }

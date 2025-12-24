@@ -378,20 +378,20 @@ export default {
       },
       {
         rel: 'dns-prefetch',
-        href: 'https://cdn.upera.shop',
+        href: 'https://cdn.upera.tv',
       },
       {
         rel: 'dns-prefetch',
-        href: 'https://thumb.upera.shop',
+        href: 'https://thumb.upera.tv',
       },
       {
         rel: 'preconnect',
-        href: 'https://cdn.upera.shop',
+        href: 'https://cdn.upera.tv',
         crossorigin: 'anonymous',
       },
       {
         rel: 'preconnect',
-        href: 'https://thumb.upera.shop',
+        href: 'https://thumb.upera.tv',
         crossorigin: 'anonymous',
       },
     ],

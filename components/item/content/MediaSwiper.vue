@@ -157,7 +157,7 @@ export default {
       let imageUrl = item.thumbnail
 
       // For gallery items that already have full URLs
-      if (item.type === 'gallery' && imageUrl.includes('thumb.upera.shop')) {
+      if (item.type === 'gallery' && imageUrl.includes('thumb.upera.tv')) {
         return imageUrl.replace('w=1920&h=1200', 'w=273&h=273&zc=1')
       }
 
@@ -166,7 +166,7 @@ export default {
         item.type === 'musicvideo' ||
         item.type === 'next'
       ) {
-        return `   https://thumb.upera.shop/thumb?w=1920&h=1200&q=100&a=c&src=https://cdn.upera.shop/s3/${imageUrl}`
+        return `   https://thumb.upera.tv/thumb?w=1920&h=1200&q=100&a=c&src=https://cdn.upera.tv/s3/${imageUrl}`
       }
 
       // For other items, construct the CDN URL
@@ -174,8 +174,8 @@ export default {
 
       const cdnBase = imageUrl.startsWith('http')
         ? imageUrl
-        : `https://cdn.upera.shop/s3/backdrops/${imageUrl}`
-      return `https://thumb.upera.shop/thumb?w=273&h=273&q=90&a=c&zc=1&src=${cdnBase}`
+        : `https://cdn.upera.tv/s3/backdrops/${imageUrl}`
+      return `https://thumb.upera.tv/thumb?w=273&h=273&q=90&a=c&zc=1&src=${cdnBase}`
     },
     handleMediaClick(item) {
       if (item.action === 'play-teaser') {

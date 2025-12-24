@@ -15,12 +15,12 @@
       no-enforce-focus
     >
       <div class="download-links">
-        <!-- <div class="download-links-poster" :style="'background-image: url(\'https://thumb.upera.shop/thumb?w=800&h=300&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/'+backdrop+'\')'"> -->
+        <!-- <div class="download-links-poster" :style="'background-image: url(\'https://thumb.upera.tv/thumb?w=800&h=300&q=100&a=c&src=https://cdn.upera.tv/s3/backdrops/'+backdrop+'\')'"> -->
 
         <div
           class="download-links-poster download-links-poster2"
           :style="
-            'background-image: url(\'https://thumb.upera.shop/thumb?w=800&h=412&q=100&a=c&src=https://cdn.upera.shop/s3/backdrops/' +
+            'background-image: url(\'https://thumb.upera.tv/thumb?w=800&h=412&q=100&a=c&src=https://cdn.upera.tv/s3/backdrops/' +
             backdrop +
             '\')'
           "
@@ -30,7 +30,7 @@
               <img
                 class="download-links-thumbnail"
                 :src="
-                  'https://thumb.upera.shop/thumb?w=70&h=103&q=100&a=c&src=https://cdn.upera.shop/s3/posters/' +
+                  'https://thumb.upera.tv/thumb?w=70&h=103&q=100&a=c&src=https://cdn.upera.tv/s3/posters/' +
                   posterf
                 "
               />
@@ -1408,7 +1408,7 @@ export default {
         id: this.id,
         type: this.type,
         poster:
-          'https://thumb.upera.shop/thumb?w=70&h=103&q=100&a=c&src=https://cdn.upera.shop/s3/posters/' +
+          'https://thumb.upera.tv/thumb?w=70&h=103&q=100&a=c&src=https://cdn.upera.tv/s3/posters/' +
           this.posterf,
       })
 
