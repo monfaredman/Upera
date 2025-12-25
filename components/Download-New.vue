@@ -73,12 +73,17 @@
             <!-- Error State -->
             <div v-else-if="error" class="error-state">
               <p class="text-danger">{{ error }}</p>
-              <button
-                class="btn btn-primary"
-                @click="loadContentData(type, id)"
-              >
-                تلاش مجدد
-              </button>
+              <div class="d-flex justify-content-between">
+                <button
+                  class="btn btn-primary ml-2"
+                  @click="loadContentData(type, id)"
+                >
+                  تلاش مجدد
+                </button>
+                <button class="btn btn-secondary" @click="hideModal">
+                  بستن
+                </button>
+              </div>
             </div>
 
             <!-- Content Loaded -->
@@ -331,12 +336,17 @@
                     <!-- Error State -->
                     <div v-else-if="error" class="error-state">
                       <p class="text-danger">{{ error }}</p>
-                      <button
-                        class="btn btn-primary"
-                        @click="loadContentData(type, id)"
-                      >
-                        تلاش مجدد
-                      </button>
+                      <div class="d-flex justify-content-between">
+                        <button
+                          class="btn btn-primary ml-2"
+                          @click="loadContentData(type, id)"
+                        >
+                          تلاش مجدد
+                        </button>
+                        <button class="btn btn-secondary" @click="hideModal">
+                          بستن
+                        </button>
+                      </div>
                     </div>
 
                     <!-- Content Loaded -->
@@ -578,12 +588,13 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import { getGhostPhone, setGhostPhone } from '@/utils/ghostPhone'
 
 const THUMB_BASE = 'https://thumb.upera.tv/thumb'
 const CDN_POSTERS = 'https://cdn.upera.tv/s3/posters'
 
 export default {
-  name: 'Download',
+  name: 'DownloadNew',
   props: {
     show: Boolean,
     staticmodal: Boolean,
@@ -803,6 +814,14 @@ export default {
     this.setupModalEvents()
     this.syncWithCart()
 
+    // Prefill guest phone from storage if available
+    if (process.client && !this.$auth.loggedIn) {
+      const savedMobile = getGhostPhone()
+      if (savedMobile && !this.mobile) {
+        this.mobile = savedMobile
+      }
+    }
+
     if (process.client) {
       this.checkIfMobile()
       window.addEventListener('resize', this.checkIfMobile)
@@ -1007,7 +1026,6 @@ export default {
           console.error('Failed to check skip flag:', error)
         }
       }
-
       this.loading = true
       this.error = null
 
@@ -1154,6 +1172,11 @@ export default {
         this.mobileError = 'شماره موبایل معتبر نیست'
       } else {
         this.mobileError = ''
+
+        // Persist for ghost mode reuse (e.g., basket)
+        if (process.client && !this.$auth.loggedIn) {
+          setGhostPhone(normalizedMobile)
+        }
       }
     },
 

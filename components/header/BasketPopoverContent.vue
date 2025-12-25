@@ -143,6 +143,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import { getGhostPhone, setGhostPhone } from '@/utils/ghostPhone'
 
 const THUMB_BASE = 'https://thumb.upera.tv/thumb'
 const CDN_POSTERS = 'https://cdn.upera.tv/s3/posters'
@@ -156,6 +157,7 @@ export default {
       paymentMethod: 'sep',
       mobile: null,
       mobileError: '',
+      error: '',
       useWalletCredit: false,
       paymentMethods: [
         {
@@ -227,11 +229,54 @@ export default {
   mounted() {
     this.loadCart()
     window.addEventListener('storage', this.loadCart)
+
+    // Prefill guest phone from storage
+    if (process.client && !this.$auth.loggedIn) {
+      const savedMobile = getGhostPhone()
+      if (savedMobile && !this.mobile) {
+        this.mobile = savedMobile
+      }
+    }
   },
   beforeDestroy() {
     window.removeEventListener('storage', this.loadCart)
   },
   methods: {
+    getAxiosErrorMessage(error, fallbackMessage) {
+      if (error && error.response && error.response.data) {
+        const data = error.response.data
+        if (data.message) return data.message
+        if (data.error) return data.error
+        if (Array.isArray(data.errors) && data.errors.length > 0) {
+          return data.errors[0]
+        }
+      }
+
+      if (error && error.message) {
+        return error.message
+      }
+
+      return fallbackMessage
+    },
+    showErrorToast(message) {
+      const text = message || 'خطایی رخ داده است'
+
+      if (this.$swal) {
+        this.$swal({
+          icon: 'error',
+          title: 'خطا',
+          text,
+          timer: 4000,
+          showConfirmButton: false,
+          button: 'بستن',
+        })
+        return
+      }
+
+      if (this.$alertify && this.$alertify.error) {
+        this.$alertify.error(text)
+      }
+    },
     handleAddMore() {
       this.$emit('close-popover')
     },
@@ -240,12 +285,14 @@ export default {
         const cart = localStorage.getItem('_cart')
         if (cart) {
           const parsedCart = JSON.parse(cart)
-          this.cartItems = parsedCart.content || []
+          this.cartItems = parsedCart?.content?.reverse() || []
         } else {
           this.cartItems = []
         }
       } catch (error) {
         console.error('Error loading cart:', error)
+        this.error = 'خطا در بارگذاری سبد خرید'
+        this.showErrorToast(this.error)
         this.cartItems = []
       }
     },
@@ -267,9 +314,12 @@ export default {
         this.loadCart()
       } catch (error) {
         console.error('Error removing item:', error)
+        this.error = 'خطا در حذف آیتم از سبد خرید'
+        this.showErrorToast(this.error)
       }
     },
     async handlePurchase() {
+      this.error = ''
       if (!this.ensureGuestMobile()) {
         return
       }
@@ -319,7 +369,11 @@ export default {
           window.location.href = response.data.data.pay_url
         }
       } catch (error) {
-        console.error('Payment error:', error)
+        this.error = this.getAxiosErrorMessage(
+          error,
+          'خطا در انجام عملیات پرداخت'
+        )
+        this.showErrorToast(this.error)
       } finally {
         this.processing = false
       }
@@ -358,6 +412,11 @@ export default {
         this.mobileError = 'شماره موبایل معتبر نیست'
       } else {
         this.mobileError = ''
+
+        // Persist for ghost mode reuse (e.g., download modal)
+        if (process.client && !this.$auth.loggedIn) {
+          setGhostPhone(normalizedMobile)
+        }
       }
     },
 
@@ -373,6 +432,11 @@ export default {
           this.$refs.mobileInput?.focus()
         })
         return false
+      }
+
+      // Store it once we're sure it's valid
+      if (process.client) {
+        setGhostPhone(this.mobile)
       }
 
       return true
