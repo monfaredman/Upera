@@ -102,7 +102,7 @@ var MediaSwiper = function MediaSwiper() {
   return __webpack_require__.e(/* import() */ 16).then(__webpack_require__.bind(null, 1121));
 };
 var LightGallery = function LightGallery() {
-  return __webpack_require__.e(/* import() */ 15).then(__webpack_require__.bind(null, 940));
+  return __webpack_require__.e(/* import() */ 15).then(__webpack_require__.bind(null, 942));
 };
 /* harmony default export */ var MediaTabsvue_type_script_lang_js = ({
   name: 'MediaTabs',

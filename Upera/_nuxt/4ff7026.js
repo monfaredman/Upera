@@ -40,7 +40,7 @@ var staticRenderFns = [];
 // CONCATENATED MODULE: ./components/item/content/cast/CrewSection.vue?vue&type=template&id=0cbab044
 
 // EXTERNAL MODULE: ./components/item/content/cast/CrewRole.vue + 4 modules
-var CrewRole = __webpack_require__(942);
+var CrewRole = __webpack_require__(940);
 
 // CONCATENATED MODULE: ./node_modules/babel-loader/lib??ref--3-0!./node_modules/@nuxt/components/dist/loader.js??ref--1-0!./node_modules/vue-loader/lib??vue-loader-options!./node_modules/string-replace-loader??ref--13!./components/item/content/cast/CrewSection.vue?vue&type=script&lang=js
 
@@ -117,7 +117,7 @@ var component = Object(componentNormalizer["a" /* default */])(
 
 /***/ }),
 
-/***/ 942:
+/***/ 940:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";

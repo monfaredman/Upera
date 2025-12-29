@@ -936,16 +936,16 @@ var SLIDER_PRESENTATION = {
       return __webpack_require__.e(/* import() */ 26).then(__webpack_require__.bind(null, 923));
     },
     HorizontalListSkeleton: function HorizontalListSkeleton() {
-      return __webpack_require__.e(/* import() */ 12).then(__webpack_require__.bind(null, 1115));
+      return __webpack_require__.e(/* import() */ 12).then(__webpack_require__.bind(null, 1110));
     },
     OccasionSectionSkeleton: function OccasionSectionSkeleton() {
-      return __webpack_require__.e(/* import() */ 13).then(__webpack_require__.bind(null, 1116));
+      return __webpack_require__.e(/* import() */ 13).then(__webpack_require__.bind(null, 1111));
     },
     FilterSkeleton: function FilterSkeleton() {
-      return __webpack_require__.e(/* import() */ 11).then(__webpack_require__.bind(null, 1114));
+      return __webpack_require__.e(/* import() */ 11).then(__webpack_require__.bind(null, 1109));
     },
     OfferSectionSkeleton: function OfferSectionSkeleton() {
-      return __webpack_require__.e(/* import() */ 14).then(__webpack_require__.bind(null, 1117));
+      return __webpack_require__.e(/* import() */ 14).then(__webpack_require__.bind(null, 1112));
     }
   },
   asyncData: function asyncData() {
